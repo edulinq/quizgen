@@ -1,0 +1,14 @@
+*.swp
+.DS_Store
+
+*.egg-info
+.ipynb_checkpoints
+*.pyc
+__pycache__/
+
+/bin/
+/dist/
+test/
+test.json
+
+*.gz

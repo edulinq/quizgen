@@ -1,0 +1,2 @@
+requests>=2.31.0
+pylatexenc>=3.0a21
