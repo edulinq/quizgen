@@ -139,15 +139,15 @@ class DocTransformer(lark.Transformer):
 
 class ParseNode(abc.ABC):
     @abc.abstractmethod
-    def to_markdown(self):
+    def to_markdown(self, **kwargs):
         pass
 
     @abc.abstractmethod
-    def to_tex(self):
+    def to_tex(self, **kwargs):
         pass
 
     @abc.abstractmethod
-    def to_html(self):
+    def to_html(self, **kwargs):
         pass
 
     @abc.abstractmethod
@@ -166,15 +166,14 @@ class DocumentNode(ParseNode):
     def __init__(self, nodes):
         self._nodes = list(nodes)
 
-    def to_markdown(self):
+    def to_markdown(self, **kwargs):
+        return "\n\n".join([node.to_markdown() for node in self._nodes])
+
+    def to_tex(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
-    def to_tex(self):
-        # TEST
-        raise NotImplementedError()
-
-    def to_html(self):
+    def to_html(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
@@ -188,15 +187,14 @@ class BlockNode(ParseNode):
     def __init__(self, nodes):
         self._nodes = list(nodes)
 
-    def to_markdown(self):
+    def to_markdown(self, **kwargs):
+        return "\n".join([node.to_markdown() for node in self._nodes])
+
+    def to_tex(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
-    def to_tex(self):
-        # TEST
-        raise NotImplementedError()
-
-    def to_html(self):
+    def to_html(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
@@ -211,15 +209,14 @@ class LinkNode(ParseNode):
         self._text = text
         self._link = link
 
-    def to_markdown(self):
+    def to_markdown(self, **kwargs):
+        return f"[{self._text}]({self._link})"
+
+    def to_tex(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
-    def to_tex(self):
-        # TEST
-        raise NotImplementedError()
-
-    def to_html(self):
+    def to_html(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
@@ -235,15 +232,14 @@ class ImageNode(ParseNode):
         self._text = text
         self._link = link
 
-    def to_markdown(self):
+    def to_markdown(self, **kwargs):
+        return f"![{self._text}]({self._link})"
+
+    def to_tex(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
-    def to_tex(self):
-        # TEST
-        raise NotImplementedError()
-
-    def to_html(self):
+    def to_html(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
@@ -258,15 +254,18 @@ class TableNode(ParseNode):
     def __init__(self, rows):
         self._rows = list(rows)
 
-    def to_markdown(self):
+        self._width = 0
+        for row in self._rows:
+            self._width = max(self._width, len(row))
+
+    def to_markdown(self, **kwargs):
+        return "\n".join([row.to_markdown(width = self._width) for row in self._rows]) + "\n"
+
+    def to_tex(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
-    def to_tex(self):
-        # TEST
-        raise NotImplementedError()
-
-    def to_html(self):
+    def to_html(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
@@ -281,15 +280,14 @@ class TableRowNode(ParseNode):
         self._cells = list(cells)
         self._head = head
 
-    def to_markdown(self):
+    def to_markdown(self, **kwargs):
+        return "| " + " | ".join([cell.to_markdown() for cell in self._cells]) + " |"
+
+    def to_tex(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
-    def to_tex(self):
-        # TEST
-        raise NotImplementedError()
-
-    def to_html(self):
+    def to_html(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
@@ -300,19 +298,21 @@ class TableRowNode(ParseNode):
             "cells": [cell.to_pod() for cell in self._cells],
         }
 
+    def __len__(self):
+        return len(self._cells)
+
 class TableSepNode(ParseNode):
     def __init__(self):
         pass
 
-    def to_markdown(self):
+    def to_markdown(self, width = 1, **kwargs):
+        return "|" + ("---|" * width)
+
+    def to_tex(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
-    def to_tex(self):
-        # TEST
-        raise NotImplementedError()
-
-    def to_html(self):
+    def to_html(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
@@ -321,19 +321,22 @@ class TableSepNode(ParseNode):
             "type": "table-sep",
         }
 
+    def __len__(self):
+        return 1
+
 class TextNode(ParseNode):
     def __init__(self, nodes):
         self._nodes = list(nodes)
 
-    def to_markdown(self):
+    def to_markdown(self, **kwargs):
+        # TEST: Need space?
+        return "".join([node.to_markdown() for node in self._nodes])
+
+    def to_tex(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
-    def to_tex(self):
-        # TEST
-        raise NotImplementedError()
-
-    def to_html(self):
+    def to_html(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
@@ -357,13 +360,13 @@ class NormalTextNode(ParseNode):
     def __init__(self, text):
         self._text = text
 
-    def to_markdown(self):
+    def to_markdown(self, **kwargs):
         return self._text
 
-    def to_tex(self):
+    def to_tex(self, **kwargs):
         return self._text
 
-    def to_html(self):
+    def to_html(self, **kwargs):
         return f"<span>self._text</span>"
 
     def to_pod(self):
@@ -376,13 +379,13 @@ class ItalicsNode(ParseNode):
     def __init__(self, text):
         self._text = text
 
-    def to_markdown(self):
+    def to_markdown(self, **kwargs):
         return f"*{self._text}*"
 
-    def to_tex(self):
+    def to_tex(self, **kwargs):
         return f"\textit{self._text}"
 
-    def to_html(self):
+    def to_html(self, **kwargs):
         return f"<emph>{self._text}</emph>"
 
     def to_pod(self):
@@ -395,13 +398,13 @@ class BoldNode(ParseNode):
     def __init__(self, text):
         self._text = text
 
-    def to_markdown(self):
+    def to_markdown(self, **kwargs):
         return f"**{self._text}**"
 
-    def to_tex(self):
+    def to_tex(self, **kwargs):
         return f"\textbf{self._text}"
 
-    def to_html(self):
+    def to_html(self, **kwargs):
         return f"<strong>{self._text}</strong>"
 
     def to_pod(self):
@@ -415,17 +418,17 @@ class CodeNode(ParseNode):
         self._text = text
         self._inline = inline
 
-    def to_markdown(self):
-        if (inline):
+    def to_markdown(self, **kwargs):
+        if (self._inline):
             return f"`{self._text}`"
 
         return f"```\n{self._text}\n```"
 
-    def to_tex(self):
+    def to_tex(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
-    def to_html(self):
+    def to_html(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
@@ -441,17 +444,17 @@ class EquationNode(ParseNode):
         self._text = text
         self._inline = inline
 
-    def to_markdown(self):
-        if (inline):
+    def to_markdown(self, **kwargs):
+        if (self._inline):
             return f"$ {self._text} $"
 
         return f"$$\n{self._text}\n$$"
 
-    def to_tex(self):
+    def to_tex(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
-    def to_html(self):
+    def to_html(self, **kwargs):
         # TEST
         raise NotImplementedError()
 
@@ -481,25 +484,9 @@ def parse_file(path):
     text = quizgen.util.file.read(path)
     text = clean_text(text)
 
-    # TEST
-    parser = lark.Lark(GRAMMAR, start = 'document', parser = 'lalr', debug = True)
-    # parser = lark.Lark(GRAMMAR, start = 'document', parser = 'lalr')
-    # parser = lark.Lark(GRAMMAR, start = 'document')
+    parser = lark.Lark(GRAMMAR, start = 'document')
     ast = parser.parse(text)
-
-    # TEST
-    import json
-    print("###")
-    # print(json.dumps(ast, indent = 4))
-    # print(ast)
-    print(ast.pretty())
-    print("###")
 
     document = DocTransformer().transform(ast)
 
-    print("%%%")
-    print(document.to_json())
-    print("%%%")
-
-    # TEST
-    return text
+    return document
