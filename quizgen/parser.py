@@ -24,8 +24,10 @@ GRAMMAR = r'''
     table_head: "|-" table_cell+
     table_cell: text_line "|"
 
-    text_line: ( inline_code | inline_equation | inline_italics | inline_bold | inline_text )+
+    text_line: ( inline_code | inline_equation | inline_italics | inline_bold | inline_link | inline_image | inline_text )+
 
+    inline_link: INLINE_LINK_TEXT INLINE_LINK_LINK
+    inline_image: "!" INLINE_LINK_TEXT INLINE_LINK_LINK
     inline_code: INLINE_CODE
     inline_equation: INLINE_EQUATION
     inline_italics: INLINE_ITALICS
@@ -38,14 +40,18 @@ GRAMMAR = r'''
     INLINE_EQUATION: "$" _ESCAPE_INTERNAL "$"
     INLINE_ITALICS: "*" _ESCAPE_INTERNAL "*"
     INLINE_BOLD: "**" _ESCAPE_INTERNAL "**"
+    INLINE_LINK_TEXT: "[" _ESCAPE_INTERNAL "]"
+    INLINE_LINK_LINK: "(" _ESCAPE_INTERNAL ")"
 
     NON_ESC_TEXT: NON_ESC_CHAR+
-    NON_ESC_CHAR: /[^\n\\`|\*\$\-]/x
+    NON_ESC_CHAR: /[^\n\\`|\*\$\-\[!]/x
     ESC_CHAR: "\\\\"
             | "\\-"
             | "\\*"
             | "\\|"
             | "\\$"
+            | "\\["
+            | "\\!"
             | "\\`"
 
     NEWLINE: /\n/
@@ -112,6 +118,18 @@ class DocTransformer(lark.Transformer):
 
     def table_cell(self, cell):
         return cell[0].trim()
+
+    def inline_link(self, contents):
+        text = str(contents[0])[1:-1]
+        link = str(contents[1])[1:-1]
+
+        return LinkNode(text, link)
+
+    def inline_image(self, contents):
+        text = str(contents[0])[1:-1]
+        link = str(contents[1])[1:-1]
+
+        return ImageNode(text, link)
 
     def NON_ESC_TEXT(self, text):
         return str(text)
@@ -186,6 +204,54 @@ class BlockNode(ParseNode):
         return {
             "type": "block",
             "nodes": [node.to_pod() for node in self._nodes],
+        }
+
+class LinkNode(ParseNode):
+    def __init__(self, text, link):
+        self._text = text
+        self._link = link
+
+    def to_markdown(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_tex(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_html(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_pod(self):
+        return {
+            "type": "link",
+            "text": self._text,
+            "link": self._link,
+        }
+
+class ImageNode(ParseNode):
+    def __init__(self, text, link):
+        self._text = text
+        self._link = link
+
+    def to_markdown(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_tex(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_html(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_pod(self):
+        return {
+            "type": "image",
+            "text": self._text,
+            "link": self._link,
         }
 
 class TableNode(ParseNode):
