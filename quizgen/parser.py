@@ -8,19 +8,20 @@ import lark.visitors
 import quizgen.util.file
 
 GRAMMAR = r'''
-    %import common.WS_INLINE
-    %import common.LF
-
     document: [ block ( NEWLINE+ block )* ]
 
-    block: ( ( codeblock | textline ) NEWLINE )+
+    block: ( ( code_block | equation_block | textline ) NEWLINE )+
 
-    codeblock: "```" NEWLINE? block_code "```"
-    ?block_code: /.+?(?=```)/s
+    code_block: "```" NEWLINE? code_block_internal "```"
+    ?code_block_internal: /.+?(?=```)/s
 
-    textline: ( inline_code | inline_italics | inline_bold | inline_text )+
+    equation_block: "$$" NEWLINE? equation_block_internal "$$"
+    ?equation_block_internal: /.+?(?=\$\$)/s
+
+    textline: ( inline_code | inline_equation | inline_italics | inline_bold | inline_text )+
 
     inline_code: INLINE_CODE
+    inline_equation: INLINE_EQUATION
     inline_italics: INLINE_ITALICS
     inline_bold: INLINE_BOLD
     inline_text: ( ESC_CHAR | NON_ESC_TEXT )+
@@ -28,17 +29,19 @@ GRAMMAR = r'''
     _ESCAPE_INTERNAL: /.+?/ /(?<!\\)(\\\\)*?/
 
     INLINE_CODE: "`" _ESCAPE_INTERNAL "`"
+    INLINE_EQUATION: "$" _ESCAPE_INTERNAL "$"
     INLINE_ITALICS: "*" _ESCAPE_INTERNAL "*"
     INLINE_BOLD: "**" _ESCAPE_INTERNAL "**"
 
     NON_ESC_TEXT: NON_ESC_CHAR+
-    NON_ESC_CHAR: /[^\n\\`|\*]/x
+    NON_ESC_CHAR: /[^\n\\`|\*\$]/x
     ESC_CHAR: "\\\\"
             | "\\*"
             | "\\|"
+            | "\\$"
             | "\\`"
 
-    NEWLINE: LF
+    NEWLINE: /\n/
 '''
 
 class DocTransformer(lark.Transformer):
@@ -48,16 +51,25 @@ class DocTransformer(lark.Transformer):
     def block(self, nodes):
         return BlockNode(nodes)
 
-    def codeblock(self, text):
+    def code_block(self, text):
         # Trim any newlines.
         text = text[0].strip("\n")
         return CodeNode(text, inline = False)
+
+    def equation_block(self, text):
+        # Trim any newlines.
+        text = text[0].strip()
+        return EquationNode(text, inline = False)
 
     def textline(self, nodes):
         return TextNode(nodes)
 
     def inline_text(self, text):
-        return NormalTextNode(str(text[0]))
+        return NormalTextNode(''.join(text))
+
+    def ESC_CHAR(self, text):
+        # Remove the backslash.
+        return text[1:]
 
     def inline_italics(self, text):
         # Strip off the asterisks.
@@ -73,6 +85,11 @@ class DocTransformer(lark.Transformer):
         # Strip off the backticks.
         text = str(text[0])[1:-1]
         return CodeNode(text, inline = True)
+
+    def inline_equation(self, text):
+        # Strip off the dollar signs.
+        text = str(text[0])[1:-1].strip()
+        return EquationNode(text, inline = True)
 
     def NON_ESC_TEXT(self, text):
         return str(text)
@@ -250,6 +267,32 @@ class CodeNode(ParseNode):
     def to_pod(self):
         return {
             "type": "code",
+            "inline": self._inline,
+            "text": self._text,
+        }
+
+class EquationNode(ParseNode):
+    def __init__(self, text, inline = False):
+        self._text = text
+        self._inline = inline
+
+    def to_markdown(self):
+        if (inline):
+            return f"$ {self._text} $"
+
+        return f"$$\n{self._text}\n$$"
+
+    def to_tex(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_html(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_pod(self):
+        return {
+            "type": "equation",
             "inline": self._inline,
             "text": self._text,
         }
