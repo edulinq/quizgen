@@ -15,13 +15,13 @@ def run(args):
 
     content = ""
     if (args.format == FORMAT_HTML):
-        content = document.to_html()
+        content = document.to_html(full_doc = args.full_doc)
     elif (args.format == FORMAT_JSON):
         content = document.to_json()
     elif (args.format == FORMAT_MD):
         content = document.to_markdown()
     elif (args.format == FORMAT_TEX):
-        content = document.to_tex()
+        content = document.to_tex(full_doc = args.full_doc)
     else:
         raise ValueError(f"Unknown format '{args.format}'.")
 
@@ -41,6 +41,10 @@ def _get_parser():
         action = 'store', type = str, default = FORMAT_JSON,
         choices = FORMATS,
         help = 'Output the parsed document in this format (default: %(default)s).')
+
+    parser.add_argument('--full', dest = 'full_doc',
+        action = 'store_true', default = False,
+        help = 'Treat the output as a fill document instead of just a snippet, e.g. TeX will output a full document (default: %(default)s)')
 
     return parser
 

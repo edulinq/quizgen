@@ -57,6 +57,30 @@ GRAMMAR = r'''
     NEWLINE: /\n/
 '''
 
+TEX_REPLACEMENTS = {
+    '\\': '\\textbackslash{}',
+    '|': '\\textbar{}',
+    '`': '\\`{}',
+}
+
+TEX_HEADER = r'''\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{courier}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{times}
+\usepackage{listings}
+
+\begin{document}
+'''
+
+TEX_FOOTER = r'''
+\end{document}'''
+
 class DocTransformer(lark.Transformer):
     def document(self, blocks):
         return DocumentNode(blocks)
@@ -120,14 +144,14 @@ class DocTransformer(lark.Transformer):
         return cell[0].trim()
 
     def inline_link(self, contents):
-        text = str(contents[0])[1:-1]
-        link = str(contents[1])[1:-1]
+        text = str(contents[0])[1:-1].strip()
+        link = str(contents[1])[1:-1].strip()
 
         return LinkNode(text, link)
 
     def inline_image(self, contents):
-        text = str(contents[0])[1:-1]
-        link = str(contents[1])[1:-1]
+        text = str(contents[0])[1:-1].strip()
+        link = str(contents[1])[1:-1].strip()
 
         return ImageNode(text, link)
 
@@ -165,21 +189,39 @@ class ParseNode(abc.ABC):
 class DocumentNode(ParseNode):
     def __init__(self, nodes):
         self._nodes = list(nodes)
+        self._context = {}
+
+    def set_context(self, key, value):
+        self._context[key] = value
 
     def to_markdown(self, **kwargs):
-        return "\n\n".join([node.to_markdown() for node in self._nodes])
+        context = self._context.copy()
+        context.update(kwargs)
 
-    def to_tex(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        return "\n\n".join([node.to_markdown(**context) for node in self._nodes])
 
-    def to_html(self, **kwargs):
+    def to_tex(self, full_doc = False, **kwargs):
+        context = self._context.copy()
+        context.update(kwargs)
+
+        content = "\n\n".join([node.to_tex(**context) for node in self._nodes])
+
+        if (full_doc):
+            content = TEX_HEADER + "\n" + content + "\n" + TEX_FOOTER
+
+        return content
+
+    def to_html(self, full_doc = False, **kwargs):
+        context = self._context.copy()
+        context.update(kwargs)
+
         # TEST
         raise NotImplementedError()
 
     def to_pod(self):
         return {
             "type": "document",
+            "context": self._context,
             "nodes": [node.to_pod() for node in self._nodes],
         }
 
@@ -188,11 +230,10 @@ class BlockNode(ParseNode):
         self._nodes = list(nodes)
 
     def to_markdown(self, **kwargs):
-        return "\n".join([node.to_markdown() for node in self._nodes])
+        return "\n".join([node.to_markdown(**kwargs) for node in self._nodes])
 
     def to_tex(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        return "\n".join([node.to_tex(**kwargs) for node in self._nodes])
 
     def to_html(self, **kwargs):
         # TEST
@@ -213,8 +254,10 @@ class LinkNode(ParseNode):
         return f"[{self._text}]({self._link})"
 
     def to_tex(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        if (self._text == ""):
+            return rf"\url{{{self._link}}}"
+
+        return rf"\href{{{self._link}}}{{{self._text}}}"
 
     def to_html(self, **kwargs):
         # TEST
@@ -235,9 +278,9 @@ class ImageNode(ParseNode):
     def to_markdown(self, **kwargs):
         return f"![{self._text}]({self._link})"
 
-    def to_tex(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+    def to_tex(self, base_dir = '.', **kwargs):
+        path = os.path.join(base_dir, self._link)
+        return rf"\includegraphics[width=0.5\textwidth]{{{path}}}"
 
     def to_html(self, **kwargs):
         # TEST
@@ -259,11 +302,27 @@ class TableNode(ParseNode):
             self._width = max(self._width, len(row))
 
     def to_markdown(self, **kwargs):
-        return "\n".join([row.to_markdown(width = self._width) for row in self._rows]) + "\n"
+        return "\n".join([row.to_markdown(width = self._width, **kwargs) for row in self._rows]) + "\n"
 
     def to_tex(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        column_spec = "c" * self._width
+
+        lines = [
+            r'\begin{center}',
+            r'    \begin{tabular}{ ' + column_spec + ' }',
+        ]
+
+        for row in self._rows:
+            row = row.to_tex(width = self._width, **kwargs)
+            lines.append(f"        {row}")
+
+        lines += [
+            r'    \end{tabular}',
+            r'\end{center}',
+            '',
+        ]
+
+        return "\n".join(lines)
 
     def to_html(self, **kwargs):
         # TEST
@@ -281,11 +340,10 @@ class TableRowNode(ParseNode):
         self._head = head
 
     def to_markdown(self, **kwargs):
-        return "| " + " | ".join([cell.to_markdown() for cell in self._cells]) + " |"
+        return "| " + " | ".join([cell.to_markdown(**kwargs) for cell in self._cells]) + " |"
 
     def to_tex(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        return " & ".join([cell.to_tex(**kwargs) for cell in self._cells]) + r' \\'
 
     def to_html(self, **kwargs):
         # TEST
@@ -309,8 +367,7 @@ class TableSepNode(ParseNode):
         return "|" + ("---|" * width)
 
     def to_tex(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        return r'\hline \\'
 
     def to_html(self, **kwargs):
         # TEST
@@ -329,12 +386,10 @@ class TextNode(ParseNode):
         self._nodes = list(nodes)
 
     def to_markdown(self, **kwargs):
-        # TEST: Need space?
-        return "".join([node.to_markdown() for node in self._nodes])
+        return "".join([node.to_markdown(**kwargs) for node in self._nodes])
 
     def to_tex(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        return "".join([node.to_tex(**kwargs) for node in self._nodes])
 
     def to_html(self, **kwargs):
         # TEST
@@ -364,7 +419,7 @@ class NormalTextNode(ParseNode):
         return self._text
 
     def to_tex(self, **kwargs):
-        return self._text
+        return tex_escape(self._text)
 
     def to_html(self, **kwargs):
         return f"<span>self._text</span>"
@@ -383,7 +438,8 @@ class ItalicsNode(ParseNode):
         return f"*{self._text}*"
 
     def to_tex(self, **kwargs):
-        return f"\textit{self._text}"
+        text = tex_escape(self._text)
+        return rf"\textit{{{text}}}"
 
     def to_html(self, **kwargs):
         return f"<emph>{self._text}</emph>"
@@ -402,7 +458,8 @@ class BoldNode(ParseNode):
         return f"**{self._text}**"
 
     def to_tex(self, **kwargs):
-        return f"\textbf{self._text}"
+        text = tex_escape(self._text)
+        return rf"\textbf{{{text}}}"
 
     def to_html(self, **kwargs):
         return f"<strong>{self._text}</strong>"
@@ -425,8 +482,10 @@ class CodeNode(ParseNode):
         return f"```\n{self._text}\n```"
 
     def to_tex(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        if (self._inline):
+            return rf"\texttt{{{self._text}}}"
+
+        return f"\\begin{{lstlisting}}\n{self._text}\n\\end{{lstlisting}}"
 
     def to_html(self, **kwargs):
         # TEST
@@ -451,8 +510,10 @@ class EquationNode(ParseNode):
         return f"$$\n{self._text}\n$$"
 
     def to_tex(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        if (self._inline):
+            return f"$ {self._text} $"
+
+        return f"$$\n{self._text}\n$$"
 
     def to_html(self, **kwargs):
         # TEST
@@ -464,6 +525,16 @@ class EquationNode(ParseNode):
             "inline": self._inline,
             "text": self._text,
         }
+
+def tex_escape(text):
+    """
+    Prepare normal text for tex.
+    """
+
+    for key, value in TEX_REPLACEMENTS.items():
+        text = text.replace(key, value)
+
+    return text
 
 def clean_text(text):
     # Remove carriage returns.
@@ -488,5 +559,6 @@ def parse_file(path):
     ast = parser.parse(text)
 
     document = DocTransformer().transform(ast)
+    document.set_context("base_dir", os.path.dirname(path))
 
     return document
