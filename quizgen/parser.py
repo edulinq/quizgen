@@ -8,9 +8,9 @@ import lark.visitors
 import quizgen.util.file
 
 GRAMMAR = r'''
-    document: [ block ( NEWLINE+ block )* ]
+    document: [ block ( NEWLINE+ block )* NEWLINE* ]
 
-    block: ( ( code_block | equation_block | textline ) NEWLINE )+
+    block: ( ( code_block | equation_block | table_block | text_line ) NEWLINE )+
 
     code_block: "```" NEWLINE? code_block_internal "```"
     ?code_block_internal: /.+?(?=```)/s
@@ -18,7 +18,13 @@ GRAMMAR = r'''
     equation_block: "$$" NEWLINE? equation_block_internal "$$"
     ?equation_block_internal: /.+?(?=\$\$)/s
 
-    textline: ( inline_code | inline_equation | inline_italics | inline_bold | inline_text )+
+    table_block: ( ( table_head | table_row | table_sep ) NEWLINE )+
+    table_sep: /\|---\|.*/
+    table_row: "|" table_cell+
+    table_head: "|-" table_cell+
+    table_cell: text_line "|"
+
+    text_line: ( inline_code | inline_equation | inline_italics | inline_bold | inline_text )+
 
     inline_code: INLINE_CODE
     inline_equation: INLINE_EQUATION
@@ -34,8 +40,9 @@ GRAMMAR = r'''
     INLINE_BOLD: "**" _ESCAPE_INTERNAL "**"
 
     NON_ESC_TEXT: NON_ESC_CHAR+
-    NON_ESC_CHAR: /[^\n\\`|\*\$]/x
+    NON_ESC_CHAR: /[^\n\\`|\*\$\-]/x
     ESC_CHAR: "\\\\"
+            | "\\-"
             | "\\*"
             | "\\|"
             | "\\$"
@@ -61,7 +68,7 @@ class DocTransformer(lark.Transformer):
         text = text[0].strip()
         return EquationNode(text, inline = False)
 
-    def textline(self, nodes):
+    def text_line(self, nodes):
         return TextNode(nodes)
 
     def inline_text(self, text):
@@ -90,6 +97,21 @@ class DocTransformer(lark.Transformer):
         # Strip off the dollar signs.
         text = str(text[0])[1:-1].strip()
         return EquationNode(text, inline = True)
+
+    def table_block(self, rows):
+        return TableNode(rows)
+
+    def table_row(self, cells):
+        return TableRowNode(cells, head = False)
+
+    def table_head(self, cells):
+        return TableRowNode(cells, head = True)
+
+    def table_sep(self, cells):
+        return TableSepNode()
+
+    def table_cell(self, cell):
+        return cell[0].trim()
 
     def NON_ESC_TEXT(self, text):
         return str(text)
@@ -166,6 +188,73 @@ class BlockNode(ParseNode):
             "nodes": [node.to_pod() for node in self._nodes],
         }
 
+class TableNode(ParseNode):
+    def __init__(self, rows):
+        self._rows = list(rows)
+
+    def to_markdown(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_tex(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_html(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_pod(self):
+        return {
+            "type": "table",
+            "rows": [row.to_pod() for row in self._rows],
+        }
+
+class TableRowNode(ParseNode):
+    def __init__(self, cells, head = False):
+        self._cells = list(cells)
+        self._head = head
+
+    def to_markdown(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_tex(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_html(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_pod(self):
+        return {
+            "type": "table-row",
+            "head": self._head,
+            "cells": [cell.to_pod() for cell in self._cells],
+        }
+
+class TableSepNode(ParseNode):
+    def __init__(self):
+        pass
+
+    def to_markdown(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_tex(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_html(self):
+        # TEST
+        raise NotImplementedError()
+
+    def to_pod(self):
+        return {
+            "type": "table-sep",
+        }
+
 class TextNode(ParseNode):
     def __init__(self, nodes):
         self._nodes = list(nodes)
@@ -187,6 +276,16 @@ class TextNode(ParseNode):
             "type": "text",
             "nodes": [node.to_pod() for node in self._nodes],
         }
+
+    def trim(self):
+        """
+        Trim the whitespace off the edges of this node.
+        """
+
+        self._nodes[0]._text = self._nodes[0]._text.lstrip()
+        self._nodes[-1]._text = self._nodes[-1]._text.rstrip()
+
+        return self
 
 class NormalTextNode(ParseNode):
     def __init__(self, text):
@@ -304,8 +403,8 @@ def clean_text(text):
     # Trim whitespace.
     text = text.strip();
 
-    # Replace the final newline.
-    text += "\n"
+    # Replace the final newline and add one additional one (for tables).
+    text += "\n\n"
 
     return text
 
