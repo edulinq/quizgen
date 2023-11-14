@@ -9,6 +9,8 @@ __pycache__/
 /bin/
 /dist/
 test/
-test.json
+/test.*
 
 *.gz
+
+_sample_quiz
