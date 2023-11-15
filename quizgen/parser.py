@@ -1,11 +1,17 @@
 import abc
+import base64
+import html
 import json
 import os
+import re
 
 import lark
 import lark.visitors
 
+import quizgen.katex
 import quizgen.util.file
+
+ENCODING = 'utf-8'
 
 GRAMMAR = r'''
     document: [ block ( NEWLINE+ block )* NEWLINE* ]
@@ -80,6 +86,11 @@ TEX_HEADER = r'''\documentclass[12pt]{article}
 
 TEX_FOOTER = r'''
 \end{document}'''
+
+HTML_TABLE_STYLE = [
+    'border-collapse: collapse',
+    'text-align: center',
+]
 
 class DocTransformer(lark.Transformer):
     def document(self, blocks):
@@ -215,8 +226,13 @@ class DocumentNode(ParseNode):
         context = self._context.copy()
         context.update(kwargs)
 
-        # TEST
-        raise NotImplementedError()
+        content = "\n\n".join([node.to_html(level = 1, **context) for node in self._nodes])
+        content = f"<div class='document'>\n{content}\n</div>"
+
+        if (full_doc):
+            content = f"<html><body>{content}</body></html>"
+
+        return content
 
     def to_pod(self):
         return {
@@ -236,8 +252,8 @@ class BlockNode(ParseNode):
         return "\n".join([node.to_tex(**kwargs) for node in self._nodes])
 
     def to_html(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        content = "\n".join([node.to_html(**kwargs) for node in self._nodes])
+        return f"<div class='block'>\n{content}\n</div>"
 
     def to_pod(self):
         return {
@@ -260,8 +276,11 @@ class LinkNode(ParseNode):
         return rf"\href{{{self._link}}}{{{self._text}}}"
 
     def to_html(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        text = self._text
+        if (text == ''):
+            text = self._link
+
+        return f"<a href='{self._link}'>{text}</a>"
 
     def to_pod(self):
         return {
@@ -282,9 +301,14 @@ class ImageNode(ParseNode):
         path = os.path.join(base_dir, self._link)
         return rf"\includegraphics[width=0.5\textwidth]{{{path}}}"
 
-    def to_html(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+    def to_html(self, base_dir = '.', **kwargs):
+        if (re.match(r'^http(s)?://', self._link)):
+            return f"<img src='{self._link}' alt='{self._text}' />"
+
+        path = os.path.join(base_dir, self._link)
+        mime, content = encode_image(path)
+        src = f"data:{mime};base64,{content}"
+        return f"<img src='{src}' alt='{self._text}' />"
 
     def to_pod(self):
         return {
@@ -325,8 +349,26 @@ class TableNode(ParseNode):
         return "\n".join(lines)
 
     def to_html(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        table_style = ' ; '.join(HTML_TABLE_STYLE)
+
+        lines = [
+            f'<table style="{table_style}">',
+        ]
+
+        next_cell_style = None
+        for row in self._rows:
+            if (isinstance(row, TableSepNode)):
+                next_cell_style = "border-top: 2px solid black;"
+            else:
+                lines.append(row.to_html(cell_style = next_cell_style, **kwargs))
+                next_cell_style = None
+
+        lines += [
+            '</table>'
+            '',
+        ]
+
+        return "\n".join(lines)
 
     def to_pod(self):
         return {
@@ -345,9 +387,25 @@ class TableRowNode(ParseNode):
     def to_tex(self, **kwargs):
         return " & ".join([cell.to_tex(**kwargs) for cell in self._cells]) + r' \\'
 
-    def to_html(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+    def to_html(self, cell_style = None, **kwargs):
+        tag = 'td'
+        if (self._head):
+            tag = 'th'
+
+        cell_inline_style = ''
+        if (cell_style is not None):
+            cell_inline_style = f'style="{cell_style}"'
+
+        lines = ['<tr>']
+
+        for cell in self._cells:
+            content = cell.to_html(**kwargs)
+            content = f"<{tag} {cell_inline_style} >{content}</{tag}>"
+            lines.append(content)
+
+        lines += ['</tr>']
+
+        return "\n".join(lines)
 
     def to_pod(self):
         return {
@@ -370,8 +428,7 @@ class TableSepNode(ParseNode):
         return r'\hline \\'
 
     def to_html(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        raise RuntimeError("to_html() should never be called on a table separator (row should handle it).")
 
     def to_pod(self):
         return {
@@ -392,8 +449,7 @@ class TextNode(ParseNode):
         return "".join([node.to_tex(**kwargs) for node in self._nodes])
 
     def to_html(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        return "".join([node.to_html(**kwargs) for node in self._nodes])
 
     def to_pod(self):
         return {
@@ -422,7 +478,8 @@ class NormalTextNode(ParseNode):
         return tex_escape(self._text)
 
     def to_html(self, **kwargs):
-        return f"<span>self._text</span>"
+        text = html.escape(self._text)
+        return f"<span>{text}</span>"
 
     def to_pod(self):
         return {
@@ -442,7 +499,8 @@ class ItalicsNode(ParseNode):
         return rf"\textit{{{text}}}"
 
     def to_html(self, **kwargs):
-        return f"<emph>{self._text}</emph>"
+        text = html.escape(self._text)
+        return f"<span><emph>{text}</emph></span>"
 
     def to_pod(self):
         return {
@@ -462,7 +520,8 @@ class BoldNode(ParseNode):
         return rf"\textbf{{{text}}}"
 
     def to_html(self, **kwargs):
-        return f"<strong>{self._text}</strong>"
+        text = html.escape(self._text)
+        return f"<span><strong>{text}</strong></span>"
 
     def to_pod(self):
         return {
@@ -488,8 +547,12 @@ class CodeNode(ParseNode):
         return f"\\begin{{lstlisting}}\n{self._text}\n\\end{{lstlisting}}"
 
     def to_html(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        content = f'<code>{self._text}</code>'
+
+        if (not self._inline):
+            content = f"<pre>{content}</pre>"
+
+        return content
 
     def to_pod(self):
         return {
@@ -499,6 +562,8 @@ class CodeNode(ParseNode):
         }
 
 class EquationNode(ParseNode):
+    katex_available = None
+
     def __init__(self, text, inline = False):
         self._text = text
         self._inline = inline
@@ -516,8 +581,18 @@ class EquationNode(ParseNode):
         return f"$$\n{self._text}\n$$"
 
     def to_html(self, **kwargs):
-        # TEST
-        raise NotImplementedError()
+        if (EquationNode.katex_available is None):
+            EquationNode.katex_available = quizgen.katex.is_available()
+
+        content = f"<code>{self._text}</code>"
+        if (EquationNode.katex_available):
+            content = quizgen.katex.to_html(self._text)
+
+        element = 'p'
+        if (self._inline):
+            element = 'span'
+
+        return f"<{element}>{content}</{element}>"
 
     def to_pod(self):
         return {
@@ -525,6 +600,16 @@ class EquationNode(ParseNode):
             "inline": self._inline,
             "text": self._text,
         }
+
+def encode_image(path):
+    ext = os.path.splitext(path)[-1].lower()
+    mime = f"image/{ext}"
+
+    with open(path, 'rb') as file:
+        data = file.read()
+
+    content = base64.standard_b64encode(data)
+    return mime, content.decode(ENCODING)
 
 def tex_escape(text):
     """
