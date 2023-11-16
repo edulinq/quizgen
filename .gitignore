@@ -14,5 +14,6 @@ test/
 *.gz
 
 /node_modules
+/quizes
 
 _sample_quiz

@@ -205,6 +205,9 @@ class DocumentNode(ParseNode):
     def set_context(self, key, value):
         self._context[key] = value
 
+    def set_base_dir(self, base_dir):
+        self.set_context("base_dir", base_dir)
+
     def to_markdown(self, **kwargs):
         context = self._context.copy()
         context.update(kwargs)
@@ -633,17 +636,22 @@ def clean_text(text):
 
     return text
 
-def parse_file(path):
-    if (not os.path.isfile(path)):
-        raise ValueError(f"Path to parse ('{path}') is not a file.")
-
-    text = quizgen.util.file.read(path)
+def parse_text(text, base_dir = '.'):
     text = clean_text(text)
 
     parser = lark.Lark(GRAMMAR, start = 'document')
     ast = parser.parse(text)
 
     document = DocTransformer().transform(ast)
-    document.set_context("base_dir", os.path.dirname(path))
+    document.set_base_dir(base_dir)
 
     return document
+
+def parse_file(path):
+    if (not os.path.isfile(path)):
+        raise ValueError(f"Path to parse ('{path}') is not a file.")
+
+    text = quizgen.util.file.read(path)
+    base_dir = os.path.dirname(path)
+
+    return parse_text(text, base_dir = base_dir)
