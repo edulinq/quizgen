@@ -8,6 +8,7 @@ import re
 import lark
 import lark.visitors
 
+import quizgen.canvas
 import quizgen.katex
 import quizgen.util.file
 
@@ -20,6 +21,7 @@ GRAMMAR = r'''
 
     code_block: "```" NEWLINE? code_block_internal "```"
     ?code_block_internal: /.+?(?=```)/s
+    CODE_BLOCK_TERMINAL: "```"
 
     equation_block: "$$" NEWLINE? equation_block_internal "$$"
     ?equation_block_internal: /.+?(?=\$\$)/s
@@ -33,7 +35,16 @@ GRAMMAR = r'''
     list_block: ( LIST_ITEM_START text_line NEWLINE )+
     LIST_ITEM_START: /\s*-/
 
-    text_line: ( inline_code | inline_equation | inline_italics | inline_bold | inline_link | inline_image | inline_linebreak | inline_text )+
+    text_line: ( text_line_internal )+
+    ?text_line_internal: inline_code
+                       | inline_equation
+                       | inline_italics
+                       | inline_bold
+                       | inline_link
+                       | inline_image
+                       | inline_linebreak
+                       | inline_answer_reference
+                       | inline_text
 
     inline_link: INLINE_LINK_TEXT INLINE_LINK_LINK
     inline_image: "!" INLINE_LINK_TEXT INLINE_LINK_LINK
@@ -42,6 +53,7 @@ GRAMMAR = r'''
     inline_italics: INLINE_ITALICS
     inline_bold: INLINE_BOLD
     inline_linebreak: "\\n"
+    inline_answer_reference: "[[" REFERENCE_WORD "]]"
     inline_text: ( ESC_CHAR | NON_ESC_TEXT )+
 
     _ESCAPE_INTERNAL: /.+?/ /(?<!\\)(\\\\)*?/
@@ -52,6 +64,8 @@ GRAMMAR = r'''
     INLINE_BOLD: "**" _ESCAPE_INTERNAL "**"
     INLINE_LINK_TEXT: "[" _ESCAPE_INTERNAL "]"
     INLINE_LINK_LINK: "(" _ESCAPE_INTERNAL ")"
+
+    REFERENCE_WORD: /[a-zA-Z][a-zA-Z0-9]*/
 
     NON_ESC_TEXT: NON_ESC_CHAR+
     NON_ESC_CHAR: /[^\n\\`|\*\$\-\[!]/x
@@ -126,6 +140,9 @@ class DocTransformer(lark.Transformer):
 
     def inline_linebreak(self, _):
         return LinebreakNode()
+
+    def inline_answer_reference(self, text):
+        return AnswerReferenceNode(str(text[0]))
 
     def inline_italics(self, text):
         # Strip off the asterisks.
@@ -208,6 +225,9 @@ class ParseNode(abc.ABC):
 
         pass
 
+    def collect_file_paths(self, base_dir):
+        return []
+
     def to_json(self, indent = 4):
         return json.dumps(self.to_pod(), indent = indent)
 
@@ -258,6 +278,14 @@ class DocumentNode(ParseNode):
             "nodes": [node.to_pod() for node in self._nodes],
         }
 
+    def collect_file_paths(self, base_dir):
+        paths = []
+
+        for node in self._nodes:
+            paths += node.collect_file_paths(base_dir)
+
+        return paths
+
 class BlockNode(ParseNode):
     def __init__(self, nodes):
         self._nodes = list(nodes)
@@ -277,6 +305,14 @@ class BlockNode(ParseNode):
             "type": "block",
             "nodes": [node.to_pod() for node in self._nodes],
         }
+
+    def collect_file_paths(self, base_dir):
+        paths = []
+
+        for node in self._nodes:
+            paths += node.collect_file_paths(base_dir)
+
+        return paths
 
 class LinkNode(ParseNode):
     def __init__(self, text, link):
@@ -318,14 +354,33 @@ class ImageNode(ParseNode):
         path = os.path.join(base_dir, self._link)
         return rf"\includegraphics[width=0.5\textwidth]{{{path}}}"
 
-    def to_html(self, base_dir = '.', **kwargs):
+    def to_html(self, base_dir = '.', canvas_instance = None, **kwargs):
         if (re.match(r'^http(s)?://', self._link)):
             return f"<img src='{self._link}' alt='{self._text}' />"
 
-        path = os.path.join(base_dir, self._link)
-        mime, content = encode_image(path)
-        src = f"data:{mime};base64,{content}"
+        path = os.path.realpath(os.path.join(base_dir, self._link))
+
+        if (canvas_instance is None):
+            # If we are not uploading to canvas, do a base64 encode of the image.
+            mime, content = encode_image(path)
+            src = f"data:{mime};base64,{content}"
+            return f"<img src='{src}' alt='{self._text}' />"
+
+        # Canvas requires uploading the image, which should have been done via quizgen.canvas.upload_canvas_files().
+
+        file_id = canvas_instance.context.get('file_ids', {}).get(path)
+        if (file_id is None):
+            raise ValueError(f"Could not get canvas context file id of image '{path}'.")
+
+        src = f"{canvas_instance.base_url}/courses/{canvas_instance.course_id}/files/{file_id}/preview"
         return f"<img src='{src}' alt='{self._text}' />"
+
+    def collect_file_paths(self, base_dir):
+        if (re.match(r'^http(s)?://', self._link)):
+            return []
+
+        path = os.path.realpath(os.path.join(base_dir, self._link))
+        return [path]
 
     def to_pod(self):
         return {
@@ -393,6 +448,14 @@ class TableNode(ParseNode):
             "rows": [row.to_pod() for row in self._rows],
         }
 
+    def collect_file_paths(self, base_dir):
+        paths = []
+
+        for row in self._rows:
+            paths += row.collect_file_paths(base_dir)
+
+        return paths
+
 class TableRowNode(ParseNode):
     def __init__(self, cells, head = False):
         self._cells = list(cells)
@@ -430,6 +493,14 @@ class TableRowNode(ParseNode):
             "head": self._head,
             "cells": [cell.to_pod() for cell in self._cells],
         }
+
+    def collect_file_paths(self, base_dir):
+        paths = []
+
+        for cell in self._cells:
+            paths += cell.collect_file_paths(base_dir)
+
+        return paths
 
     def __len__(self):
         return len(self._cells)
@@ -500,6 +571,14 @@ class ListNode(ParseNode):
             "items": [item.to_pod() for item in self._items],
         }
 
+    def collect_file_paths(self, base_dir):
+        paths = []
+
+        for item in self._items:
+            paths += item.collect_file_paths(base_dir)
+
+        return paths
+
 class TextNode(ParseNode):
     def __init__(self, nodes):
         self._nodes = list(nodes)
@@ -529,6 +608,14 @@ class TextNode(ParseNode):
 
         return self
 
+    def collect_file_paths(self, base_dir):
+        paths = []
+
+        for node in self._nodes:
+            paths += node.collect_file_paths(base_dir)
+
+        return paths
+
 class LinebreakNode(ParseNode):
     def __init__(self):
         pass
@@ -545,6 +632,28 @@ class LinebreakNode(ParseNode):
     def to_pod(self):
         return {
             "type": "linebreak",
+        }
+
+class AnswerReferenceNode(ParseNode):
+    def __init__(self, text):
+        self._text = text
+
+    def to_markdown(self, **kwargs):
+        return f"[[{self._text}]]"
+
+    def to_tex(self, **kwargs):
+        # TODO(eriq): We do not have a convention for this.
+        text = tex_escape(self._text)
+        return rf"\textsc{{{text}}}"
+
+    def to_html(self, **kwargs):
+        text = html.escape(self._text)
+        return f"<span>[{text}]</span>"
+
+    def to_pod(self):
+        return {
+            "type": "answer_reference",
+            "text": self._text,
         }
 
 class NormalTextNode(ParseNode):

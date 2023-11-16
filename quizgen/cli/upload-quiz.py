@@ -23,7 +23,7 @@ def run(args):
         print(json.dumps(quiz.to_dict(), indent = 4))
 
         # TEST
-        quizgen.canvas.upload_quiz(quiz, args.base_url, args.course_id, args.token)
+        quizgen.canvas.upload_quiz(quiz, quizgen.canvas.InstanceInfo(args.base_url, args.course_id, args.token))
 
     return 0
 

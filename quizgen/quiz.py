@@ -1,5 +1,6 @@
 import glob
 import json
+import math
 import os
 import random
 import string
@@ -96,6 +97,14 @@ class Group(object):
         value['questions'] = [question.to_dict() for question in self.questions]
         return value
 
+    def collect_file_paths(self):
+        paths = []
+
+        for question in self.questions:
+            paths += question.collect_file_paths()
+
+        return paths
+
     @staticmethod
     def from_path(path):
         with open(path, 'r') as file:
@@ -127,14 +136,13 @@ class Question(object):
     def __init__(self, prompt = '', question_type = '', answers = [],
             base_dir = '.',
             **kwargs):
+        self.base_dir = base_dir
+
         self.prompt = prompt
-        self.prompt_document = quizgen.parser.parse_text(self.prompt, base_dir = base_dir)
+        self.prompt_document = quizgen.parser.parse_text(self.prompt, base_dir = self.base_dir)
 
         self.question_type = question_type
-
         self.answers = answers
-        for answer in self.answers:
-            answer['document'] = quizgen.parser.parse_text(answer['text'], base_dir = base_dir)
 
         self.validate()
 
@@ -145,18 +153,89 @@ class Question(object):
         if (self.question_type not in quizgen.constants.QUESTION_TYPES):
             raise ValueError(f"Unknown question type: '{self.question_type}'.")
 
+        self._validate_answers()
+
+    def _validate_answers(self):
+        if (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_CHOICE):
+            self._validate_answer_list(self.answers, min_correct = 1, max_correct = 1)
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_ANSWERS):
+            self._validate_answer_list(self.answers)
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_DROPDOWNS):
+            for answers in self.answers.values():
+                self._validate_answer_list(answers, min_correct = 1, max_correct = 1)
+        else:
+            raise ValueError(f"Unknown question type: '{self.question_type}'.")
+
+    def _validate_answer_list(self, answers, min_correct = 0, max_correct = math.inf):
+        if (not isinstance(answers, list)):
+            raise ValueError(f"Expected answers to be a list, found {type(answers)} (base_dir: '{self.base_dir}'.")
+
+        num_correct = 0
+        for answer in answers:
+            self._validate_answer(answer)
+            if (answer['correct']):
+                num_correct += 1
+
+        if (num_correct < min_correct):
+            raise ValueError(f"Did not find enough correct answers. Expected at least {min_correct}, found {num_correct} (base_dir: '{self.base_dir}'.")
+
+        if (num_correct > max_correct):
+            raise ValueError(f"Found too many correct answers. Expected at most {max_correct}, found {num_correct} (base_dir: '{self.base_dir}'.")
+
+    def _validate_answer(self, answer):
+        if ('correct' not in answer):
+            raise ValueError(f"Answer has no 'correct' field (base_dir: '{self.base_dir}'.")
+
+        if ('text' not in answer):
+            raise ValueError(f"Answer has no 'text' field (base_dir: '{self.base_dir}'.")
+
+        answer['document'] = quizgen.parser.parse_text(answer['text'], base_dir = self.base_dir)
+
     def to_dict(self):
         value = self.__dict__.copy()
 
         value['prompt_document'] = self.prompt_document.to_pod()
-
-        value['answers'] = []
-        for answer in self.answers:
-            answer = answer.copy()
-            answer['document'] = answer['document'].to_pod()
-            value['answers'].append(answer)
+        value['answers'] = self._answers_to_dict()
 
         return value
+
+    def _answers_to_dict(self):
+        if (isinstance(self.answers, list)):
+            return self._answers_list_to_dict(self.answers)
+        elif (isinstance(self.answers, dict)):
+            result = {}
+
+            for key, answers in self.answers.items():
+                result[key] = self._answers_list_to_dict(answers)
+
+            return result
+        else:
+            raise ValueError(f"Unknown type for answers '{type(self.answers)}'.")
+
+    def _answers_list_to_dict(self, answers):
+        result = []
+
+        for answer in answers:
+            answer = answer.copy()
+            answer['document'] = answer['document'].to_pod()
+            result.append(answer)
+
+        return result
+
+    def collect_file_paths(self):
+        paths = []
+
+        paths += self.prompt_document.collect_file_paths(self.base_dir)
+
+        answers = [self.answers]
+        if (isinstance(self.answers, dict)):
+            answers = self.answers.values()
+
+        for answer_set in answers:
+            for answer in answer_set:
+                paths += answer['document'].collect_file_paths(self.base_dir)
+
+        return paths
 
     @staticmethod
     def from_path(path):
