@@ -25,12 +25,12 @@ GRAMMAR = r'''
     ?equation_block_internal: /.+?(?=\$\$)/s
 
     table_block: ( ( table_head | table_row | table_sep ) NEWLINE )+
-    table_sep: /\|---\|.*/
+    table_sep: /\|-{3,}\|.*/
     table_row: "|" table_cell+
     table_head: "|-" table_cell+
     table_cell: text_line "|"
 
-    text_line: ( inline_code | inline_equation | inline_italics | inline_bold | inline_link | inline_image | inline_text )+
+    text_line: ( inline_code | inline_equation | inline_italics | inline_bold | inline_link | inline_image | inline_linebreak | inline_text )+
 
     inline_link: INLINE_LINK_TEXT INLINE_LINK_LINK
     inline_image: "!" INLINE_LINK_TEXT INLINE_LINK_LINK
@@ -38,6 +38,7 @@ GRAMMAR = r'''
     inline_equation: INLINE_EQUATION
     inline_italics: INLINE_ITALICS
     inline_bold: INLINE_BOLD
+    inline_linebreak: "\\n"
     inline_text: ( ESC_CHAR | NON_ESC_TEXT )+
 
     _ESCAPE_INTERNAL: /.+?/ /(?<!\\)(\\\\)*?/
@@ -118,6 +119,9 @@ class DocTransformer(lark.Transformer):
     def ESC_CHAR(self, text):
         # Remove the backslash.
         return text[1:]
+
+    def inline_linebreak(self, _):
+        return LinebreakNode()
 
     def inline_italics(self, text):
         # Strip off the asterisks.
@@ -469,6 +473,24 @@ class TextNode(ParseNode):
         self._nodes[-1]._text = self._nodes[-1]._text.rstrip()
 
         return self
+
+class LinebreakNode(ParseNode):
+    def __init__(self):
+        pass
+
+    def to_markdown(self, **kwargs):
+        return "  \n"
+
+    def to_tex(self, **kwargs):
+        return ' \\newline\n'
+
+    def to_html(self, **kwargs):
+        return "<br />"
+
+    def to_pod(self):
+        return {
+            "type": "linebreak",
+        }
 
 class NormalTextNode(ParseNode):
     def __init__(self, text):
