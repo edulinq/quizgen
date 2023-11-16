@@ -16,7 +16,7 @@ ENCODING = 'utf-8'
 GRAMMAR = r'''
     document: [ block ( NEWLINE+ block )* NEWLINE* ]
 
-    block: ( ( code_block | equation_block | table_block | text_line ) NEWLINE )+
+    block: ( ( code_block | equation_block | table_block | list_block | text_line ) NEWLINE )+
 
     code_block: "```" NEWLINE? code_block_internal "```"
     ?code_block_internal: /.+?(?=```)/s
@@ -29,6 +29,9 @@ GRAMMAR = r'''
     table_row: "|" table_cell+
     table_head: "|-" table_cell+
     table_cell: text_line "|"
+
+    list_block: ( LIST_ITEM_START text_line NEWLINE )+
+    LIST_ITEM_START: /\s*-/
 
     text_line: ( inline_code | inline_equation | inline_italics | inline_bold | inline_link | inline_image | inline_linebreak | inline_text )+
 
@@ -91,6 +94,7 @@ TEX_FOOTER = r'''
 HTML_TABLE_STYLE = [
     'border-collapse: collapse',
     'text-align: center',
+    'margin-bottom: 1em',
 ]
 
 class DocTransformer(lark.Transformer):
@@ -158,6 +162,9 @@ class DocTransformer(lark.Transformer):
     def table_cell(self, cell):
         return cell[0].trim()
 
+    def list_block(self, items):
+        return ListNode([item.trim() for item in items])
+
     def inline_link(self, contents):
         text = str(contents[0])[1:-1].strip()
         link = str(contents[1])[1:-1].strip()
@@ -172,6 +179,9 @@ class DocTransformer(lark.Transformer):
 
     def NON_ESC_TEXT(self, text):
         return str(text)
+
+    def LIST_ITEM_START(self, token):
+        return lark.visitors.Discard
 
     def NEWLINE(self, token):
         return lark.visitors.Discard
@@ -260,7 +270,7 @@ class BlockNode(ParseNode):
 
     def to_html(self, **kwargs):
         content = "\n".join([node.to_html(**kwargs) for node in self._nodes])
-        return f"<div class='block'>\n{content}\n</div>"
+        return f"<div class='block' style='margin-bottom: 1em;'>\n{content}\n</div>"
 
     def to_pod(self):
         return {
@@ -399,15 +409,15 @@ class TableRowNode(ParseNode):
         if (self._head):
             tag = 'th'
 
-        cell_inline_style = ''
+        cell_inline_style = "padding: 0.5em;"
         if (cell_style is not None):
-            cell_inline_style = f'style="{cell_style}"'
+            cell_inline_style += (' ' + cell_style)
 
         lines = ['<tr>']
 
         for cell in self._cells:
             content = cell.to_html(**kwargs)
-            content = f"<{tag} {cell_inline_style} >{content}</{tag}>"
+            content = f"<{tag} style='{cell_inline_style}' >{content}</{tag}>"
             lines.append(content)
 
         lines += ['</tr>']
@@ -444,6 +454,51 @@ class TableSepNode(ParseNode):
 
     def __len__(self):
         return 1
+
+class ListNode(ParseNode):
+    def __init__(self, items):
+        self._items = list(items)
+
+    def to_markdown(self, **kwargs):
+        return "\n".join([" - " + item.to_markdown(**kwargs) for item in self._items]) + "\n"
+
+    def to_tex(self, **kwargs):
+        lines = [
+            r'\begin{itemize}',
+        ]
+
+        for item in self._items:
+            text = item.to_tex(**kwargs)
+            lines.append(f"    \item {text}")
+
+        lines += [
+            r'\end{itemize}',
+            '',
+        ]
+
+        return "\n".join(lines)
+
+    def to_html(self, **kwargs):
+        lines = [
+            '<ul style="margin-bottom: 0; margin-top: 0;">',
+        ]
+
+        for item in self._items:
+            text = item.to_html(**kwargs)
+            lines.append(f'<li>{text}</li>')
+
+        lines += [
+            '</ul>'
+            '',
+        ]
+
+        return "\n".join(lines)
+
+    def to_pod(self):
+        return {
+            "type": "list",
+            "items": [item.to_pod() for item in self._items],
+        }
 
 class TextNode(ParseNode):
     def __init__(self, nodes):

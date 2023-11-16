@@ -49,6 +49,12 @@ TODO
 Tables need to have two newlines after them.
 Should still parse, but there will not be the expected space between the table and next block/paragraph.
 
+### Lists
+
+TODO
+
+No nested lists.
+
 ### Quirks
 
 Markdown is an [inherintly ambiguous language](https://roopc.net/posts/2014/markdown-cfg/).
@@ -61,3 +67,10 @@ TODO
 Tables need to have two newlines after them.
 
 Table seps must be between two rows (normal or header doesn't matter).
+
+List items will be trimmed.
+
+Table cells will be trimmed.
+
+Use two newline if you want to guarentee things are in different blocks.
+(For just text one will work fine, but with tables and code it gets more complex.)
