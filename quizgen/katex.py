@@ -27,7 +27,7 @@ def is_available(cwd = ROOT_DIR):
     return True
 
 def to_html(text, cwd = ROOT_DIR):
-    result = subprocess.run(["npx", "katex"], cwd = cwd,
+    result = subprocess.run(["npx", "katex", "--format", "mathml"], cwd = cwd,
         input = text, encoding = ENCODING,
         capture_output = True, check = True)
 
