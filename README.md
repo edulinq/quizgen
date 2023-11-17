@@ -1,6 +1,6 @@
 # Quiz Generator
 
-A tool for generating quizzes from a standard definition into either Canvas quizzes or LaTeX pdf files.
+A tool for generating quizzes from a standard definition into either Canvas quizzes (which will be automatically uploaded) or TeX files.
 
 ## Installation / Requirement
 
@@ -12,8 +12,6 @@ Once NodeJS and NPM are installed, you can just install KaTeX normally:
 ```
 npm install katex
 ```
-
-TEST - Check escapes all over the place.
 
 ## Syntax
 
@@ -34,15 +32,15 @@ Text is generally written the same way as markdown.
 #### Escape Characters
 
 The following characters need to be escaped with a backslash when they appear in inline text:
- - `\`
- - `-`
- - `*`
- - `|`
- - `$`
- - `[`
- - `!`
- - `\`` `
- - `\/`
+ - `/` - Slash / Forward Slash
+ - `\` - Backslash
+ - `-` - Dash
+ - `*` - Star / Asterisk
+ - `|` - Pipe
+ - `$` - Dollar Sign
+ - `[` - Open Bracket
+ - `!` - Bang / Exclamation Point
+ - `` ` `` - Backtick
 
 These characters do not need to be escaped inside code, equations, and comments.
 
@@ -79,7 +77,7 @@ To add in a line break within a block, the characters `\n` can be used.
 
 #### Links
 
-Links are done the same as in markdown: `[text](link)`.
+Links are done the same as in markdown: `[text](url)`.
 
 ```
 // A normal link.
@@ -91,7 +89,7 @@ Links are done the same as in markdown: `[text](link)`.
 
 #### Inline Code
 
-Inline code is done the same as Markdown, where the code is surrounded with a single backtick character "``".
+Inline code is done the same as Markdown, where the code is surrounded with a single backtick character `` ` ``.
 
 ```
 Some text with `code()` inside it.
@@ -99,25 +97,23 @@ Some text with `code()` inside it.
 
 ### Code Blocks
 
-TEST - Check Escape
-Code blocks done the same as markdown, with three backticks "`` `` ``".
-The three backticks should generally be one their own line.
+Code blocks done the same as markdown, with three backticks `` ``` ``.
+The three backticks should generally be on their own line.
 
-TEST - Check Escape
-```
+````
 The below code is in its own block.
 
-`` `` ``
+```
 def some_func(a, b):
     return a + b
-`` `` ``
+```
 
 Where `a` and `b` should be positive.
-```
+````
 
 #### Inline Equations
 
-Inline equations are done the same as Markdown, where the equation is surrounded with a single dollar sign character "$".
+Inline equations are done the same as Markdown, where the equation is surrounded with a single dollar sign character `$`.
 
 ```
 Let $ f $ be defined as $ f(x) = x^2 + \aplha $ where $ \alpha > 3 $.
@@ -129,17 +125,17 @@ When converting a document to HTML, KaTeX will be used to convert the equation t
 
 ### Equation Blocks
 
-Equation blocks are similar to code blocks, but with three dollar sign characters "$$$".
+Equation blocks are similar to code blocks, but with three dollar sign characters `$$$`.
 Like code blocks, the dollar signs should generally be one their own line.
 
 ```
 The below equation is in its own block.
 
 $$$
-\text{some_func}(a, b) = a + b
+    \text{some_func}(a, b) = a + b
 $$$
 
-Where `a` and `b` should be positive.
+Where $ a $ and $ b $ should be positive.
 ```
 
 ### Tables
@@ -151,7 +147,7 @@ Our syntax is similar to Github-Flavored Markdown (GFM), but does not support mo
 Tables should be in their own block,
 and are composed of multiple table rows.
 A table row can be either a normal row, a header row, or a separator row.
-Each type of row must start on a new line with a pipe character "|".
+Each type of row must start on a new line with a pipe character `|`.
 
 A normal table row has a space after the initial pipe, followed by at least one table cell.
 A table tell is standard inline text (which can include things like inline code, inline equations, etc)
