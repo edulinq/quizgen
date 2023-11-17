@@ -22,8 +22,8 @@ classifiers = [
 ]
 
 dependencies = [
+    "lark>=1.1.8",
     "requests>=2.31.0",
-    "pylatexenc>=3.0a21",
 ]
 
 [project.urls]

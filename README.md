@@ -2,17 +2,34 @@
 
 A tool for generating quizzes from a standard definition into either Canvas quizzes or LaTeX pdf files.
 
-NodeJS and the `katex` package is required for producing HTML equations.
+## Installation / Requirement
+
+Standard Python requirements are listed in `requirements.txt`.
+
+Additionally, to output equations in HTML documents, [KaTeX](https://katex.org) is required.
+KaTeX is distributed as a NodeJS package, and this project requires that is is accessible via `npx` (which typically requires it to be installed via `npm`).
+Once NodeJS and NPM are installed, you can just install KaTeX normally:
+```
+npm install katex
+```
+
+TEST - Check escapes all over the place.
 
 ## Syntax
 
 The syntax for text fields is similar to [Markdown](https://www.markdownguide.org/basic-syntax/).
+This should generally make files readable as both text files and by Markdown readers (e.g. via GitHub's web GUI).
 
-TODO
+Documents are separated into "blocks" which are generally separated by a blank line (which literally translates to two newline characters).
+This can be a little tricky with some structures like tables (which use newline characters as a row delimiter),
+so if you want to be safe you can separate blocks with two empty lines.
 
-### Inline Text
+In general, when text structure (code, table, links, etc) require some sort of context to be in them.
+So empty code blocks may throw an error.
 
-TODO
+### Text
+
+Text is generally written the same way as markdown.
 
 #### Escape Characters
 
@@ -24,53 +41,164 @@ The following characters need to be escaped with a backslash when they appear in
  - `$`
  - `[`
  - `!`
- - `\``
+ - `\`` `
+ - `\/`
+
+These characters do not need to be escaped inside code, equations, and comments.
+
+#### Comments
+
+Line comments that start with two slashes (`//`) are supported.
+Block comments are not supported.
+
+```
+// This shows a full line comment.
+
+Some text // Here is a comment after text.
+
+// `code that is commented out`
+```
+
+Note that the more standard markdown comments (HTML comments) are not supported.
+This is because we want comments to show up in the rendered markdown.
+
+#### Text Style
+
+The markdown syntax for italics and bold is supported.
+
+```
+Some *italics* text.
+Some **bold** text.
+```
+
+#### Line Break
+
+Blocks will always be separated by some whitespace.
+To add in a line break within a block, the characters `\n` can be used.
+(Note that this is not a literal newline/linefeed character, but a backslash followed by the letter "n".
 
 #### Links
 
-TODO
+Links are done the same as in markdown: `[text](link)`.
+
+```
+// A normal link.
+[Normal Link](https://linqs.org)
+
+// A link with no text (the url will be used as the text).
+[ ](https://some.link/with/no.text
+```
 
 #### Inline Code
 
-TODO
+Inline code is done the same as Markdown, where the code is surrounded with a single backtick character "``".
 
-#### Inline Equations
-
-TODO
+```
+Some text with `code()` inside it.
+```
 
 ### Code Blocks
 
-TODO
+TEST - Check Escape
+Code blocks done the same as markdown, with three backticks "`` `` ``".
+The three backticks should generally be one their own line.
+
+TEST - Check Escape
+```
+The below code is in its own block.
+
+`` `` ``
+def some_func(a, b):
+    return a + b
+`` `` ``
+
+Where `a` and `b` should be positive.
+```
+
+#### Inline Equations
+
+Inline equations are done the same as Markdown, where the equation is surrounded with a single dollar sign character "$".
+
+```
+Let $ f $ be defined as $ f(x) = x^2 + \aplha $ where $ \alpha > 3 $.
+```
+
+Most standard LaTeX math syntax and operators are supported.
+When converting a document to LaTeX, the contents of an equation will just be dumped into a math context verbatim.
+When converting a document to HTML, KaTeX will be used to convert the equation to HTML.
+
+### Equation Blocks
+
+Equation blocks are similar to code blocks, but with three dollar sign characters "$$$".
+Like code blocks, the dollar signs should generally be one their own line.
+
+```
+The below equation is in its own block.
+
+$$$
+\text{some_func}(a, b) = a + b
+$$$
+
+Where `a` and `b` should be positive.
+```
 
 ### Tables
 
-TODO
+Basic tables are supported.
+Vanilla markdown does not support tables, and there are several extended markdown languages that support tables.
+Our syntax is similar to Github-Flavored Markdown (GFM), but does not support more advanced features.
 
-Tables need to have two newlines after them.
-Should still parse, but there will not be the expected space between the table and next block/paragraph.
+Tables should be in their own block,
+and are composed of multiple table rows.
+A table row can be either a normal row, a header row, or a separator row.
+Each type of row must start on a new line with a pipe character "|".
+
+A normal table row has a space after the initial pipe, followed by at least one table cell.
+A table tell is standard inline text (which can include things like inline code, inline equations, etc)
+followed by a pipe character.
+The contents of table cells will be stripped of leading and trailing whitespace.
+
+A header row is like a normal row, but has a dash directly following the initial pipe character.
+Header rows will be rendered with different styling from normal rows.
+
+A separator row starts with a pipe and at least three dashes followed by another pipe.
+Everything else on the line is ignored.
+A table separator cannot be the first or last row of a table.
+Although not required, it is common markdown style to pad separators so they match the rest of the table.
+Separator rows will be rendered as a horizontal rule in the table.
+
+```
+|- Some | Header | Row |
+|-------|--------|-----|
+| 1     | \-2    | N/A |
+| *a*   | **b**  | $x$ |
+```
 
 ### Lists
 
-TODO
+Basic lists are supported.
+Lists should be in their own block
+and are a series of list items.
+List items begin with a dash `-` character and may be preceded by any amount of whitespace.
+The text of each list item will be stripped of leading and trailing whitespace.
 
-No nested lists.
+Nested lists are not supported.
+
+```
+ - Item 1.
+ - Item $ 2 $.
+ - A `third()` item.
+```
 
 ### Quirks
 
-Markdown is an [inherintly ambiguous language](https://roopc.net/posts/2014/markdown-cfg/).
-So, converting it into a language that can be represented by a CFG will mean a few quirks
-(also, I am no programming languages expert).
-Below are some quirks that should be noted.
+Markdown is an [inherently ambiguous language](https://roopc.net/posts/2014/markdown-cfg/),
+so converting it into a language that can be represented by a CFG will mean a few quirks.
+Below are some quirks that should be noted:
 
-TODO
-
-Tables need to have two newlines after them.
-
-Table seps must be between two rows (normal or header doesn't matter).
-
-List items will be trimmed.
-
-Table cells will be trimmed.
-
-Use two newline if you want to guarentee things are in different blocks.
-(For just text one will work fine, but with tables and code it gets more complex.)
+ - Tables and lists need to have two blank lines after them (hence the general recommendation that all blocks be separated by two blank lines).
+ - Table separators cannot be the first or last row.
+ - Table cells, list items, and equations will be stripped of leading and trailing whitespace.
+ - Most syntax that surrounds some text requires that there be something inside (e.g. you cannot have an empty inline code).
+ - Leading and trailing new lines in code blocks will be stripped.
+ - Bold and italics cannot be nested.
