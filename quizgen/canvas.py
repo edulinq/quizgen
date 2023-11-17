@@ -176,7 +176,9 @@ def create_question(quiz_id, group_id, question, index, instance):
     response.raise_for_status()
 
 def _serialize_answers(data, question, instance):
-    if (isinstance(question.answers, list)):
+    if (question.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
+        _serialize_matching_answers(data, question.answers, instance)
+    elif (isinstance(question.answers, list)):
         use_text = (question.question_type == quizgen.constants.QUESTION_TYPE_TF)
         _serialize_answer_list(data, question.answers, instance, use_text = use_text)
     elif (isinstance(question.answers, dict)):
@@ -210,6 +212,25 @@ def _serialize_answer(data, answer, index, instance, blank_id = None, use_text =
 
     if (blank_id is not None):
         data["question[answers][%d][blank_id]" % (index)] = blank_id
+
+def _serialize_matching_answers(data, answers, instance):
+    right_contents = []
+
+    for (_, right_text) in answers['matches']:
+        right_contents.append(right_text)
+
+    for right_text in answers['distractors']:
+        right_contents.append(right_text)
+
+    for i in range(len(answers['matches'])):
+        left_content = answers['matches'][i][0]
+        right_content = answers['matches'][i][1]
+
+        data["question[answers][%d][answer_match_left]" % (i)] = left_content
+        data["question[answers][%d][answer_match_right]" % (i)] = right_content
+
+    if (len(answers['distractors']) > 0):
+        data["question[matching_answer_incorrect_matches]"] = "\n".join(answers['distractors'])
 
 def upload_file(path, canvas_path, instance):
     parent_id = ensure_folder(os.path.dirname(canvas_path), instance)

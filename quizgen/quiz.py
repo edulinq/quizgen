@@ -20,7 +20,7 @@ class Quiz(object):
             time_limit = 30, shuffle_answers = True,
             hide_results = None, show_correct_answers = True,
             assignment_group_name = "Quizzes",
-            groups = [], **kwargs):
+            groups = [], path = None, **kwargs):
         self.title = title
         self.description = description
         self.quiz_type = quiz_type
@@ -33,7 +33,10 @@ class Quiz(object):
 
         self.groups = groups
 
-        self.validate()
+        try:
+            self.validate()
+        except Exception as ex:
+            raise ValueError(f"Error while validating quiz: '{path}'.") from ex
 
     def validate(self):
         # TEST - More to validate, check all init params.
@@ -58,35 +61,22 @@ class Quiz(object):
             quiz_info = json.load(file)
 
         groups = _parse_groups(os.path.dirname(path))
-        return Quiz(groups = groups, **quiz_info)
-
-    def to_tex(self):
-        # TEST
-        groupsText = "\n".join([group.to_tex() for group in self.groups])
-
-        replacements = {
-            '%%title%%': self.title,
-            '%%groups%%': groupsText,
-        }
-
-        text = LATEX_QUIZ_TEMPLATE
-
-        for (key, value) in replacements.items():
-            text = text.replace(key, value)
-
-        return text
+        return Quiz(groups = groups, path = path, **quiz_info)
 
 class Group(object):
     def __init__(self, name = '',
-            pick_count = 1, question_points = 1, questions = [],
-            **kwargs):
+            pick_count = 1, question_points = 1,
+            questions = [], path = None, **kwargs):
         self.name = name
         self.pick_count = pick_count
         self.question_points = question_points
 
         self.questions = questions
 
-        self.validate()
+        try:
+            self.validate()
+        except Exception as ex:
+            raise ValueError(f"Error while validating group: '{path}'.") from ex
 
     def validate(self):
         if ((self.name is None) or (self.name == "")):
@@ -111,30 +101,11 @@ class Group(object):
             group_info = json.load(file)
 
         questions = _parse_questions(os.path.dirname(path))
-        return Group(questions = questions, **group_info)
-
-    def to_tex(self):
-        # TEST
-        # TODO(eriq): Pick count is not honored.
-
-        question = random.choice(self.questions)
-        replacements = {
-            '%%name%%': self.name,
-            '%%question%%': question.to_tex(),
-
-            ' \\n ': " \\\\ ",
-        }
-
-        text = LATEX_GROUP_TEMPLATE
-
-        for (key, value) in replacements.items():
-            text = text.replace(key, value)
-
-        return text
+        return Group(questions = questions, path = path, **group_info)
 
 class Question(object):
     def __init__(self, prompt = '', question_type = '', answers = [],
-            base_dir = '.',
+            base_dir = '.', path = None,
             **kwargs):
         self.base_dir = base_dir
 
@@ -144,7 +115,10 @@ class Question(object):
         self.question_type = question_type
         self.answers = answers
 
-        self.validate()
+        try:
+            self.validate()
+        except Exception as ex:
+            raise ValueError(f"Error while validating question: '{path}'.") from ex
 
     def validate(self):
         if ((self.prompt is None) or (self.prompt == "")):
@@ -164,18 +138,41 @@ class Question(object):
             for answers in self.answers.values():
                 self._validate_answer_list(answers, min_correct = 1, max_correct = 1)
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_TF):
-            if (not isinstance(self.answers, bool)):
-                raise ValueError(f"'answers' for a T/F question must be a boolean, found '{self.answers}' ({type(self.answers)}).")
-
-            # Change answers to look like multiple choice.
-            self.answers = [
-                {"correct": self.answers, "text": 'True'},
-                {"correct": (not self.answers), "text": 'False'},
-            ]
-
-            self._validate_answer_list(self.answers)
+            self._validate_tf_answers()
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
+            self._validate_matching_answers()
         else:
             raise ValueError(f"Unknown question type: '{self.question_type}'.")
+
+    def _validate_tf_answers(self):
+        if (not isinstance(self.answers, bool)):
+            raise ValueError(f"'answers' for a T/F question must be a boolean, found '{self.answers}' ({type(self.answers)}).")
+
+        # Change answers to look like multiple choice.
+        self.answers = [
+            {"correct": self.answers, "text": 'True'},
+            {"correct": (not self.answers), "text": 'False'},
+        ]
+
+        self._validate_answer_list(self.answers)
+
+    def _validate_matching_answers(self):
+        if (not isinstance(self.answers, dict)):
+            raise ValueError(f"Expected dict for matching answers, found {type(self.answers)}.")
+
+        if ('matches' not in self.answers):
+            raise ValueError("Matching answer type is missing the 'matches' field.")
+
+        for match in self.answers['matches']:
+            if (len(match) != 2):
+                raise ValueError(f"Expected exactly two items for a match list, found {len(match)}.")
+
+        if ('distractors' not in self.answers):
+            self.answers['distractors'] = []
+
+        for distractor in self.answers['distractors']:
+            if (not isinstance(distractor, str)):
+                raise ValueError(f"Distractors must be strings, found {type(distractor)}.")
 
     def _validate_answer_list(self, answers, min_correct = 0, max_correct = math.inf):
         if (not isinstance(answers, list)):
@@ -206,47 +203,42 @@ class Question(object):
         value = self.__dict__.copy()
 
         value['prompt_document'] = self.prompt_document.to_pod()
-        value['answers'] = self._answers_to_dict()
+        value['answers'] = self._answers_to_dict(self.answers)
 
         return value
 
-    def _answers_to_dict(self):
-        if (isinstance(self.answers, list)):
-            return self._answers_list_to_dict(self.answers)
-        elif (isinstance(self.answers, dict)):
-            result = {}
-
-            for key, answers in self.answers.items():
-                result[key] = self._answers_list_to_dict(answers)
-
-            return result
+    def _answers_to_dict(self, target):
+        if (isinstance(target, dict)):
+            return {key: self._answers_to_dict(value) for (key, value) in target.items()}
+        elif (isinstance(target, list)):
+            return [self._answers_to_dict(answer) for answer in target]
+        elif (isinstance(target, quizgen.parser.ParseNode)):
+            return target.to_pod()
         else:
-            raise ValueError(f"Unknown type for answers '{type(self.answers)}'.")
-
-    def _answers_list_to_dict(self, answers):
-        result = []
-
-        for answer in answers:
-            answer = answer.copy()
-            answer['document'] = answer['document'].to_pod()
-            result.append(answer)
-
-        return result
+            return target
 
     def collect_file_paths(self):
         paths = []
 
         paths += self.prompt_document.collect_file_paths(self.base_dir)
 
-        answers = [self.answers]
-        if (isinstance(self.answers, dict)):
-            answers = self.answers.values()
-
-        for answer_set in answers:
-            for answer in answer_set:
-                paths += answer['document'].collect_file_paths(self.base_dir)
+        for document in self._collect_documents(self.answers):
+            paths += document.collect_file_paths(self.base_dir)
 
         return paths
+
+    def _collect_documents(self, target):
+        if (isinstance(target, dict)):
+            return self._collect_documents(list(target.values()))
+        elif (isinstance(target, list)):
+            documents = []
+            for value in target:
+                documents += self._collect_documents(value)
+            return documents
+        elif (isinstance(target, quizgen.parser.ParseNode)):
+            return [target]
+        else:
+            return []
 
     @staticmethod
     def from_path(path):
@@ -260,25 +252,7 @@ class Question(object):
 
         base_dir = os.path.dirname(path)
 
-        return Question(base_dir = base_dir, **question_info)
-
-    def to_tex(self):
-        # TEST
-        answersText = "\n".join(["%s. %s" % (string.ascii_uppercase[i], self.answers[i]['text']) for i in range(len(self.answers))])
-
-        replacements = {
-            '%%prompt%%': self.prompt,
-            '%%answers%%': answersText,
-
-            ' \\n ': " \\\\ ",
-        }
-
-        text = LATEX_QUESTION_TEMPLATE
-
-        for (key, value) in replacements.items():
-            text = text.replace(key, value)
-
-        return text
+        return Question(base_dir = base_dir, path = path, **question_info)
 
 def _parse_questions(base_dir):
     questions = []
