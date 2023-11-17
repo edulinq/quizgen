@@ -166,7 +166,7 @@ def create_question(quiz_id, group_id, question, index, instance):
         'question[question_text]': question.prompt_document.to_html(canvas_instance = instance),
     }
 
-    _serialize_answers(data, question.answers, instance)
+    _serialize_answers(data, question, instance)
 
     response = requests.request(
         method = "POST",
@@ -175,17 +175,18 @@ def create_question(quiz_id, group_id, question, index, instance):
         data = data)
     response.raise_for_status()
 
-def _serialize_answers(data, answers, instance):
-    if (isinstance(answers, list)):
-        _serialize_answer_list(data, answers, instance)
-    elif (isinstance(answers, dict)):
+def _serialize_answers(data, question, instance):
+    if (isinstance(question.answers, list)):
+        use_text = (question.question_type == quizgen.constants.QUESTION_TYPE_TF)
+        _serialize_answer_list(data, question.answers, instance, use_text = use_text)
+    elif (isinstance(question.answers, dict)):
         count = 0
-        for key, value in answers.items():
+        for key, value in question.answers.items():
             _serialize_answer_list(data, value, instance,
                     start_index = count, blank_id = key, use_text = True)
             count += len(value)
     else:
-        raise ValueError(f"Unknown answers type '{type(answers)}'.")
+        raise ValueError(f"Unknown answers type '{type(question.answers)}'.")
 
 def _serialize_answer_list(data, answers, instance,
         start_index = 0, blank_id = None, use_text = False):

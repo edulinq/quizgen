@@ -163,6 +163,17 @@ class Question(object):
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_DROPDOWNS):
             for answers in self.answers.values():
                 self._validate_answer_list(answers, min_correct = 1, max_correct = 1)
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_TF):
+            if (not isinstance(self.answers, bool)):
+                raise ValueError(f"'answers' for a T/F question must be a boolean, found '{self.answers}' ({type(self.answers)}).")
+
+            # Change answers to look like multiple choice.
+            self.answers = [
+                {"correct": self.answers, "text": 'True'},
+                {"correct": (not self.answers), "text": 'False'},
+            ]
+
+            self._validate_answer_list(self.answers)
         else:
             raise ValueError(f"Unknown question type: '{self.question_type}'.")
 

@@ -17,9 +17,10 @@ QUESTION_TYPE_SHORT_ANSWER = 'short_answer_question'
 QUESTION_TYPE_TEXT_ONLY = 'text_only_question'
 QUESTION_TYPE_TF = 'true_false_question'
 
-# TODO(eriq): Support additional types.
+# Supported question types.
 QUESTION_TYPES = [
     QUESTION_TYPE_MULTIPLE_ANSWERS,
     QUESTION_TYPE_MULTIPLE_CHOICE,
     QUESTION_TYPE_MULTIPLE_DROPDOWNS,
+    QUESTION_TYPE_TF,
 ]
