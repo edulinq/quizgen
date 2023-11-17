@@ -36,7 +36,8 @@ GRAMMAR = r'''
     LIST_ITEM_START: /\s*-/
 
     text_line: ( text_line_internal )+
-    ?text_line_internal: inline_code
+    ?text_line_internal: inline_comment
+                       | inline_code
                        | inline_equation
                        | inline_italics
                        | inline_bold
@@ -46,6 +47,7 @@ GRAMMAR = r'''
                        | inline_answer_reference
                        | inline_text
 
+    inline_comment: /\s*\/\// INLINE_COMMENT
     inline_link: INLINE_LINK_TEXT INLINE_LINK_LINK
     inline_image: "!" INLINE_LINK_TEXT INLINE_LINK_LINK
     inline_code: INLINE_CODE
@@ -58,6 +60,7 @@ GRAMMAR = r'''
 
     _ESCAPE_INTERNAL: /.+?/ /(?<!\\)(\\\\)*?/
 
+    INLINE_COMMENT: /.*?\n/s
     INLINE_CODE: "`" _ESCAPE_INTERNAL "`"
     INLINE_EQUATION: "$" _ESCAPE_INTERNAL "$"
     INLINE_ITALICS: "*" _ESCAPE_INTERNAL "*"
@@ -68,7 +71,7 @@ GRAMMAR = r'''
     REFERENCE_WORD: /[a-zA-Z][a-zA-Z0-9]*/
 
     NON_ESC_TEXT: NON_ESC_CHAR+
-    NON_ESC_CHAR: /[^\n\\`|\*\$\-\[!]/x
+    NON_ESC_CHAR: /[^\n\\`|\*\$\-\[!\/]/x
     ESC_CHAR: "\\\\"
             | "\\-"
             | "\\*"
@@ -77,6 +80,7 @@ GRAMMAR = r'''
             | "\\["
             | "\\!"
             | "\\`"
+            | "\\/"
 
     NEWLINE: /\n/
 '''
@@ -131,12 +135,11 @@ class DocTransformer(lark.Transformer):
     def text_line(self, nodes):
         return TextNode(nodes)
 
+    def inline_comment(self, text):
+        return CommentNode(str(text[1]).strip())
+
     def inline_text(self, text):
         return NormalTextNode(''.join(text))
-
-    def ESC_CHAR(self, text):
-        # Remove the backslash.
-        return text[1:]
 
     def inline_linebreak(self, _):
         return LinebreakNode()
@@ -196,6 +199,10 @@ class DocTransformer(lark.Transformer):
 
     def NON_ESC_TEXT(self, text):
         return str(text)
+
+    def ESC_CHAR(self, text):
+        # Remove the backslash.
+        return text[1:]
 
     def LIST_ITEM_START(self, token):
         return lark.visitors.Discard
@@ -653,6 +660,35 @@ class AnswerReferenceNode(ParseNode):
     def to_pod(self):
         return {
             "type": "answer_reference",
+            "text": self._text,
+        }
+
+class CommentNode(ParseNode):
+    def __init__(self, text):
+        self._text = text
+
+    def to_markdown(self, display_comments = False, **kwargs):
+        if (not display_comments):
+            return ""
+
+        return f"<!--- {self._text} -->"
+
+    def to_tex(self, display_comments = False, **kwargs):
+        if (not display_comments):
+            return ""
+
+        return f"% {self._text}"
+
+    def to_html(self, display_comments = False, **kwargs):
+        if (not display_comments):
+            return ""
+
+        text = html.escape(self._text)
+        return f"<!--- {text} -->"
+
+    def to_pod(self):
+        return {
+            "type": "comment",
             "text": self._text,
         }
 
