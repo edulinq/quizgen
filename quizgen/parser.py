@@ -1,5 +1,6 @@
 import abc
 import base64
+import copy
 import html
 import json
 import os
@@ -250,13 +251,13 @@ class DocumentNode(ParseNode):
         self.set_context("base_dir", base_dir)
 
     def to_markdown(self, **kwargs):
-        context = self._context.copy()
+        context = copy.deepcopy(self._context)
         context.update(kwargs)
 
         return "\n\n".join([node.to_markdown(**context) for node in self._nodes])
 
     def to_tex(self, full_doc = False, **kwargs):
-        context = self._context.copy()
+        context = copy.deepcopy(self._context)
         context.update(kwargs)
 
         content = "\n\n".join([node.to_tex(**context) for node in self._nodes])
@@ -267,7 +268,7 @@ class DocumentNode(ParseNode):
         return content
 
     def to_html(self, full_doc = False, **kwargs):
-        context = self._context.copy()
+        context = copy.deepcopy(self._context)
         context.update(kwargs)
 
         content = "\n\n".join([node.to_html(level = 1, **context) for node in self._nodes])
