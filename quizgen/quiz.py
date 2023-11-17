@@ -136,7 +136,7 @@ class Question(object):
             self._validate_answer_list(self.answers)
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_DROPDOWNS):
             for answers in self.answers.values():
-                self._validate_answer_list(answers, min_correct = 1, max_correct = 1)
+                self._validate_answer_list(answers, min_correct = 1, max_correct = 1, parse = False)
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_TF):
             self._validate_tf_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
@@ -174,13 +174,13 @@ class Question(object):
             if (not isinstance(distractor, str)):
                 raise ValueError(f"Distractors must be strings, found {type(distractor)}.")
 
-    def _validate_answer_list(self, answers, min_correct = 0, max_correct = math.inf):
+    def _validate_answer_list(self, answers, min_correct = 0, max_correct = math.inf, parse = True):
         if (not isinstance(answers, list)):
             raise ValueError(f"Expected answers to be a list, found {type(answers)} (base_dir: '{self.base_dir}'.")
 
         num_correct = 0
         for answer in answers:
-            self._validate_answer(answer)
+            self._validate_answer(answer, parse = parse)
             if (answer['correct']):
                 num_correct += 1
 
@@ -190,14 +190,15 @@ class Question(object):
         if (num_correct > max_correct):
             raise ValueError(f"Found too many correct answers. Expected at most {max_correct}, found {num_correct} (base_dir: '{self.base_dir}'.")
 
-    def _validate_answer(self, answer):
+    def _validate_answer(self, answer, parse = True):
         if ('correct' not in answer):
             raise ValueError(f"Answer has no 'correct' field (base_dir: '{self.base_dir}'.")
 
         if ('text' not in answer):
             raise ValueError(f"Answer has no 'text' field (base_dir: '{self.base_dir}'.")
 
-        answer['document'] = quizgen.parser.parse_text(answer['text'], base_dir = self.base_dir)
+        if (parse):
+            answer['document'] = quizgen.parser.parse_text(answer['text'], base_dir = self.base_dir)
 
     def to_dict(self):
         value = self.__dict__.copy()
