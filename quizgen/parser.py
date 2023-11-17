@@ -480,9 +480,9 @@ class TableRowNode(ParseNode):
         if (self._head):
             tag = 'th'
 
-        cell_inline_style = "padding: 0.5em;"
+        cell_inline_style = "padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em "
         if (cell_style is not None):
-            cell_inline_style += (' ' + cell_style)
+            cell_inline_style += (' ; ' + cell_style)
 
         lines = ['<tr>']
 
@@ -776,7 +776,7 @@ class CodeNode(ParseNode):
         content = f'<code>{self._text}</code>'
 
         if (not self._inline):
-            content = f"<pre>{content}</pre>"
+            content = f"<pre style='margin: 1em'>{content}</pre>"
 
         return content
 
