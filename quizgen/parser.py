@@ -161,6 +161,10 @@ class DocTransformer(lark.Transformer):
     def inline_code(self, text):
         # Strip off the backticks.
         text = str(text[0])[1:-1]
+
+        # Replace any escaped backticks.
+        text = text.replace(r'\`', '`')
+
         return CodeNode(text, inline = True)
 
     def inline_equation(self, text):
@@ -225,7 +229,7 @@ class ParseNode(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         """
         Get a "Plain Old Data" representation of the node."
         This representation should be convertable to JSON."
@@ -237,7 +241,7 @@ class ParseNode(abc.ABC):
         return []
 
     def to_json(self, indent = 4, **kwargs):
-        return json.dumps(self.to_pod(), indent = indent)
+        return json.dumps(self.to_pod(**kwargs), indent = indent)
 
     def to_format(self, format, **kwargs):
         if (format == quizgen.constants.DOC_FORMAT_HTML):
@@ -291,12 +295,16 @@ class DocumentNode(ParseNode):
 
         return content
 
-    def to_pod(self):
-        return {
+    def to_pod(self, include_metadata = True, **kwargs):
+        data = {
             "type": "document",
-            "context": self._context,
-            "nodes": [node.to_pod() for node in self._nodes],
+            "nodes": [node.to_pod(include_metadata = True, **kwargs) for node in self._nodes],
         }
+
+        if (include_metadata):
+            data["context"] = self._context
+
+        return data
 
     def collect_file_paths(self, base_dir):
         paths = []
@@ -320,10 +328,10 @@ class BlockNode(ParseNode):
         content = "\n".join([node.to_html(**kwargs) for node in self._nodes])
         return f"<div class='block' style='margin-bottom: 1em;'>\n{content}\n</div>"
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "block",
-            "nodes": [node.to_pod() for node in self._nodes],
+            "nodes": [node.to_pod(**kwargs) for node in self._nodes],
         }
 
     def collect_file_paths(self, base_dir):
@@ -355,7 +363,7 @@ class LinkNode(ParseNode):
 
         return f"<a href='{self._link}'>{text}</a>"
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "link",
             "text": self._text,
@@ -402,7 +410,7 @@ class ImageNode(ParseNode):
         path = os.path.realpath(os.path.join(base_dir, self._link))
         return [path]
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "image",
             "text": self._text,
@@ -462,10 +470,10 @@ class TableNode(ParseNode):
 
         return "\n".join(lines)
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "table",
-            "rows": [row.to_pod() for row in self._rows],
+            "rows": [row.to_pod(**kwargs) for row in self._rows],
         }
 
     def collect_file_paths(self, base_dir):
@@ -507,11 +515,11 @@ class TableRowNode(ParseNode):
 
         return "\n".join(lines)
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "table-row",
             "head": self._head,
-            "cells": [cell.to_pod() for cell in self._cells],
+            "cells": [cell.to_pod(**kwargs) for cell in self._cells],
         }
 
     def collect_file_paths(self, base_dir):
@@ -538,7 +546,7 @@ class TableSepNode(ParseNode):
     def to_html(self, **kwargs):
         raise RuntimeError("to_html() should never be called on a table separator (row should handle it).")
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "table-sep",
         }
@@ -585,10 +593,10 @@ class ListNode(ParseNode):
 
         return "\n".join(lines)
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "list",
-            "items": [item.to_pod() for item in self._items],
+            "items": [item.to_pod(**kwargs) for item in self._items],
         }
 
     def collect_file_paths(self, base_dir):
@@ -612,10 +620,10 @@ class TextNode(ParseNode):
     def to_html(self, **kwargs):
         return "".join([node.to_html(**kwargs) for node in self._nodes])
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "text",
-            "nodes": [node.to_pod() for node in self._nodes],
+            "nodes": [node.to_pod(**kwargs) for node in self._nodes],
         }
 
     def trim(self):
@@ -649,7 +657,7 @@ class LinebreakNode(ParseNode):
     def to_html(self, **kwargs):
         return "<br />"
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "linebreak",
         }
@@ -670,7 +678,7 @@ class AnswerReferenceNode(ParseNode):
         text = html.escape(self._text)
         return f"<span>[{text}]</span>"
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "answer_reference",
             "text": self._text,
@@ -699,7 +707,7 @@ class CommentNode(ParseNode):
         text = html.escape(self._text)
         return f"<!--- {text} -->"
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "comment",
             "text": self._text,
@@ -719,7 +727,7 @@ class NormalTextNode(ParseNode):
         text = html.escape(self._text)
         return f"<span>{text}</span>"
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "normal_text",
             "text": self._text,
@@ -740,7 +748,7 @@ class ItalicsNode(ParseNode):
         text = html.escape(self._text)
         return f"<span><emph>{text}</emph></span>"
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "italics_text",
             "text": self._text,
@@ -761,7 +769,7 @@ class BoldNode(ParseNode):
         text = html.escape(self._text)
         return f"<span><strong>{text}</strong></span>"
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "bold_text",
             "text": self._text,
@@ -792,7 +800,7 @@ class CodeNode(ParseNode):
 
         return content
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "code",
             "inline": self._inline,
@@ -832,7 +840,7 @@ class EquationNode(ParseNode):
 
         return f"<{element}>{content}</{element}>"
 
-    def to_pod(self):
+    def to_pod(self, **kwargs):
         return {
             "type": "equation",
             "inline": self._inline,
