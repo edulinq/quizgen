@@ -236,8 +236,20 @@ class ParseNode(abc.ABC):
     def collect_file_paths(self, base_dir):
         return []
 
-    def to_json(self, indent = 4):
+    def to_json(self, indent = 4, **kwargs):
         return json.dumps(self.to_pod(), indent = indent)
+
+    def to_format(self, format, **kwargs):
+        if (format == quizgen.constants.DOC_FORMAT_HTML):
+            return self.to_html(**kwargs)
+        elif (format == quizgen.constants.DOC_FORMAT_JSON):
+            return self.to_json(**kwargs)
+        elif (format == quizgen.constants.DOC_FORMAT_MD):
+            return self.to_markdown(**kwargs)
+        elif (format == quizgen.constants.DOC_FORMAT_TEX):
+            return self.to_tex(**kwargs)
+        else:
+            raise ValueError(f"Unknown format '{format}'.")
 
 class DocumentNode(ParseNode):
     def __init__(self, nodes):

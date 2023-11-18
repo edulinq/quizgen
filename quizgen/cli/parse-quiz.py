@@ -1,13 +1,25 @@
 import argparse
+import os
 import sys
 
 import quizgen.constants
 import quizgen.parser
+import quizgen.quiz
 
 def run(args):
-    document = quizgen.parser.parse_file(args.path)
+    if (not os.path.exists(args.path)):
+        raise ValueError(f"Provided path '{args.path}' does not exist.")
 
-    content = document.to_format(args.format, full_doc = args.full_doc)
+    quizzes = []
+    if (os.path.isfile(args.path)):
+        quizzes.append(quizgen.quiz.Quiz.from_path(args.path))
+    else:
+        quizzes += quizgen.quiz.parse_quiz_dir(args.path)
+
+    if (len(quizzes) != 1):
+        raise ValueError(f"Expected exactly one quiz, found {len(quizzes)}.")
+
+    content = quizzes[0].to_format(args.format)
     print(content)
 
     return 0
@@ -24,10 +36,6 @@ def _get_parser():
         action = 'store', type = str, default = quizgen.constants.DOC_FORMAT_JSON,
         choices = quizgen.constants.DOC_FORMATS,
         help = 'Output the parsed document in this format (default: %(default)s).')
-
-    parser.add_argument('--full', dest = 'full_doc',
-        action = 'store_true', default = False,
-        help = 'Treat the output as a fill document instead of just a snippet, e.g. TeX will output a full document (default: %(default)s)')
 
     return parser
 

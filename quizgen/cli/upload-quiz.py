@@ -1,5 +1,4 @@
 import argparse
-import json
 import os
 import sys
 
@@ -18,11 +17,10 @@ def run(args):
     else:
         quizzes += quizgen.quiz.parse_quiz_dir(args.path)
 
-    for quiz in quizzes:
-        # TEST
-        print(json.dumps(quiz.to_dict(), indent = 4))
+    if (len(quizzes) != 1):
+        raise ValueError(f"Expected exactly one quiz, found {len(quizzes)}.")
 
-        quizgen.canvas.upload_quiz(quiz, quizgen.canvas.InstanceInfo(args.base_url, args.course_id, args.token))
+    quizgen.canvas.upload_quiz(quizzes[0], quizgen.canvas.InstanceInfo(args.base_url, args.course_id, args.token))
 
     return 0
 

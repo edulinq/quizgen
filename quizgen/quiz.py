@@ -63,6 +63,33 @@ class Quiz(object):
         groups = _parse_groups(os.path.dirname(path))
         return Quiz(groups = groups, path = path, **quiz_info)
 
+    def to_json(self, indent = 4):
+        return json.dumps(self.to_dict(), indent = indent)
+
+    # TODO
+    def to_html(self, **kwargs):
+        raise NotImplementedError()
+
+    # TODO
+    def to_markdown(self, **kwargs):
+        raise NotImplementedError()
+
+    # TODO
+    def to_tex(self, **kwargs):
+        raise NotImplementedError()
+
+    def to_format(self, format, **kwargs):
+        if (format == quizgen.constants.DOC_FORMAT_HTML):
+            return self.to_html(**kwargs)
+        elif (format == quizgen.constants.DOC_FORMAT_JSON):
+            return self.to_json(**kwargs)
+        elif (format == quizgen.constants.DOC_FORMAT_MD):
+            return self.to_markdown(**kwargs)
+        elif (format == quizgen.constants.DOC_FORMAT_TEX):
+            return self.to_tex(**kwargs)
+        else:
+            raise ValueError(f"Unknown format '{format}'.")
+
 class Group(object):
     def __init__(self, name = '',
             pick_count = 1, question_points = 1,
