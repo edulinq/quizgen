@@ -170,6 +170,10 @@ class DocTransformer(lark.Transformer):
     def inline_equation(self, text):
         # Strip off the dollar signs.
         text = str(text[0])[1:-1].strip()
+
+        # Replace any escaped dollar signs.
+        text = text.replace(r'\$', '$')
+
         return EquationNode(text, inline = True)
 
     def table_block(self, rows):

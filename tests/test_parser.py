@@ -1,3 +1,4 @@
+import json
 import unittest
 
 import quizgen.parser
@@ -10,7 +11,12 @@ class TestParser(unittest.TestCase):
             with self.subTest(index = i, text = text):
                 document = quizgen.parser.parse_text(text)
                 result = document.to_pod(include_metadata = False)
-                self.assertDictEqual(result, expected)
+
+                expected_json = json.dumps(expected, indent = 4)
+                actual_json = json.dumps(result, indent = 4)
+
+                message = f"\n---\nExpected: {expected_json}\nActual: {actual_json}\n---\n"
+                self.assertDictEqual(result, expected, msg = message)
 
 # Wrap a pod parser node in a block.
 def _wrap_block(node):
@@ -193,4 +199,100 @@ TEST_CASES = [
             'text': 'inline_code("`");'
         },
     ])],
+
+    ['```code_block()```', _wrap_block(
+        {
+            'type': 'code',
+            'inline': False,
+            'text': 'code_block()'
+        },
+    )],
+
+    ['``` code_block() ```', _wrap_block(
+        {
+            'type': 'code',
+            'inline': False,
+            'text': ' code_block() '
+        },
+    )],
+
+    ['```\ncode_block()\n```', _wrap_block(
+        {
+            'type': 'code',
+            'inline': False,
+            'text': 'code_block()'
+        },
+    )],
+
+    ['```foo(1, \'-2\')\nbar("|", x*);```', _wrap_block(
+        {
+            'type': 'code',
+            'inline': False,
+            'text': 'foo(1, \'-2\')\nbar("|", x*);'
+        },
+    )],
+
+    ['$ f(x) = x_i + x^2 \\alpha $', _wrap_text_nodes([
+        {
+            'type': 'equation',
+            'inline': True,
+            'text': 'f(x) = x_i + x^2 \\alpha'
+        },
+    ])],
+
+    ['Inline $\\text{equation}$.', _wrap_text_nodes([
+        {
+            'type': 'normal_text',
+            'text': 'Inline '
+        },
+        {
+            'type': 'equation',
+            'inline': True,
+            'text': '\\text{equation}'
+        },
+        {
+            'type': 'normal_text',
+            'text': '.'
+        },
+    ])],
+
+    ['$f(\\$a)$', _wrap_text_nodes([
+        {
+            'type': 'equation',
+            'inline': True,
+            'text': 'f($a)'
+        },
+    ])],
+
+    ['$$equation + block$$', _wrap_block(
+        {
+            'type': 'equation',
+            'inline': False,
+            'text': 'equation + block'
+        },
+    )],
+
+    ['$$ equation + - * / block() $$', _wrap_block(
+        {
+            'type': 'equation',
+            'inline': False,
+            'text': 'equation + - * / block()'
+        },
+    )],
+
+    ['$$\nf(x)\n$$', _wrap_block(
+        {
+            'type': 'equation',
+            'inline': False,
+            'text': 'f(x)'
+        },
+    )],
+
+    ['$$ f(x)\ng(x) $$', _wrap_block(
+        {
+            'type': 'equation',
+            'inline': False,
+            'text': 'f(x)\ng(x)'
+        },
+    )],
 ]
