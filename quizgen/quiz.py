@@ -8,6 +8,7 @@ import string
 import quizgen.constants
 import quizgen.parser
 import quizgen.util.file
+import quizgen.util.git
 
 QUIZ_FILENAME = 'quiz.json'
 GROUP_FILENAME = 'group.json'
@@ -20,7 +21,10 @@ class Quiz(object):
             time_limit = 30, shuffle_answers = True,
             hide_results = None, show_correct_answers = True,
             assignment_group_name = "Quizzes",
-            groups = [], path = None, **kwargs):
+            groups = [],
+            base_dir = '.', id = None,
+            version = None,
+            **kwargs):
         self.title = title
         self.description = description
         self.quiz_type = quiz_type
@@ -32,15 +36,15 @@ class Quiz(object):
         self.assignment_group_name = assignment_group_name
 
         self.groups = groups
+        self.base_dir = base_dir
+        self.version = version
 
         try:
             self.validate()
         except Exception as ex:
-            raise ValueError(f"Error while validating quiz: '{path}'.") from ex
+            raise ValueError(f"Error while validating quiz: '{id}'.") from ex
 
     def validate(self):
-        # TEST - More to validate, check all init params.
-
         if ((self.title is None) or (self.title == "")):
             raise ValueError("Title cannot be empty.")
 
@@ -49,6 +53,9 @@ class Quiz(object):
 
         if (self.quiz_type not in quizgen.constants.QUIZ_TYPES):
             raise ValueError(f"Unknown quiz type: '{self.quiz_type}'.")
+
+        if (self.version is None):
+            self.version = quizgen.util.git.get_version(self.base_dir, throw = True)
 
     def to_dict(self):
         value = self.__dict__.copy()
@@ -60,8 +67,9 @@ class Quiz(object):
         with open(path, 'r') as file:
             quiz_info = json.load(file)
 
-        groups = _parse_groups(os.path.dirname(path))
-        return Quiz(groups = groups, path = path, **quiz_info)
+        base_dir = os.path.dirname(path)
+        groups = _parse_groups(base_dir)
+        return Quiz(groups = groups, base_dir = base_dir, id = path, **quiz_info)
 
     def to_json(self, indent = 4):
         return json.dumps(self.to_dict(), indent = indent)
@@ -93,7 +101,7 @@ class Quiz(object):
 class Group(object):
     def __init__(self, name = '',
             pick_count = 1, question_points = 1,
-            questions = [], path = None, **kwargs):
+            questions = [], id = None, **kwargs):
         self.name = name
         self.pick_count = pick_count
         self.question_points = question_points
@@ -103,7 +111,7 @@ class Group(object):
         try:
             self.validate()
         except Exception as ex:
-            raise ValueError(f"Error while validating group: '{path}'.") from ex
+            raise ValueError(f"Error while validating group: '{id}'.") from ex
 
     def validate(self):
         if ((self.name is None) or (self.name == "")):
@@ -128,11 +136,11 @@ class Group(object):
             group_info = json.load(file)
 
         questions = _parse_questions(os.path.dirname(path))
-        return Group(questions = questions, path = path, **group_info)
+        return Group(questions = questions, id = path, **group_info)
 
 class Question(object):
     def __init__(self, prompt = '', question_type = '', answers = [],
-            base_dir = '.', path = None,
+            base_dir = '.', id = None,
             **kwargs):
         self.base_dir = base_dir
 
@@ -145,7 +153,7 @@ class Question(object):
         try:
             self.validate()
         except Exception as ex:
-            raise ValueError(f"Error while validating question: '{path}'.") from ex
+            raise ValueError(f"Error while validating question: '{id}'.") from ex
 
     def validate(self):
         if ((self.prompt is None) or (self.prompt == "")):
@@ -280,7 +288,7 @@ class Question(object):
 
         base_dir = os.path.dirname(path)
 
-        return Question(base_dir = base_dir, path = path, **question_info)
+        return Question(base_dir = base_dir, id = path, **question_info)
 
 def _parse_questions(base_dir):
     questions = []

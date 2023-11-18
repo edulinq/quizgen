@@ -117,7 +117,7 @@ def create_quiz(quiz, instance):
 
     data = {
         'quiz[title]': quiz.title,
-        'quiz[description]': quiz.description,
+        'quiz[description]': f"<p>{quiz.description}</p><br /><hr /><p>Version: {quiz.version}</p>",
         'quiz[quiz_type]': quiz.quiz_type,
         'quiz[published]': quiz.published,
         'quiz[assignment_group_id]': assignment_group_id,

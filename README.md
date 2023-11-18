@@ -13,6 +13,20 @@ Once NodeJS and NPM are installed, you can just install KaTeX normally:
 npm install katex
 ```
 
+### Canvas Uploading
+
+To upload quizzes to Canvas, you will need three things:
+ - The Canvas Base URL
+   - The base URL for the Canvas instance you are using.
+   - Ex: `https://canvas.ucsc.edu`
+ - The Canvas Course ID
+   - The numeric ID for the course you want to upload the quiz under.
+   - You can find this by going to the main page for your course (or almost any page related to your course), and looking at the url.
+   - Ex: For `https://canvas.ucsc.edu/courses/12345`, the course ID is `12345`.
+ - A Canvas Access Token
+   - A token is specific for each user, and that user should the have ability to make quizzes for your specific course.
+   - To get a new token, go to your account settings ("Account" -> "Settings"), and under "Approved Integrations" click "+ New Access Token".
+
 ## Syntax
 
 The syntax for text fields is similar to [Markdown](https://www.markdownguide.org/basic-syntax/).
