@@ -195,8 +195,9 @@ class DocTransformer(lark.Transformer):
         return ListNode([item.trim() for item in items])
 
     def inline_link(self, contents):
-        text = str(contents[0])[1:-1].strip()
-        link = str(contents[1])[1:-1].strip()
+        # Remove the surrounding characters, strip it, and replace escaped end markers.
+        text = str(contents[0])[1:-1].strip().replace(r'\]', ']')
+        link = str(contents[1])[1:-1].strip().replace(r'\)', ')')
 
         return LinkNode(text, link)
 
@@ -243,6 +244,12 @@ class ParseNode(abc.ABC):
 
     def collect_file_paths(self, base_dir):
         return []
+
+    def trim(self, left = True, right = True):
+        pass
+
+    def is_empty(self):
+        return False
 
     def to_json(self, indent = 4, **kwargs):
         return json.dumps(self.to_pod(**kwargs), indent = indent)
@@ -630,13 +637,22 @@ class TextNode(ParseNode):
             "nodes": [node.to_pod(**kwargs) for node in self._nodes],
         }
 
-    def trim(self):
+    def trim(self, left = True, right = True):
         """
         Trim the whitespace off the edges of this node.
         """
 
-        self._nodes[0]._text = self._nodes[0]._text.lstrip()
-        self._nodes[-1]._text = self._nodes[-1]._text.rstrip()
+        if (left):
+            self._nodes[0].trim(right = False)
+
+        if (right):
+            self._nodes[-1].trim(left = False)
+
+        if (self._nodes[0].is_empty()):
+            self._nodes.pop(0)
+
+        if ((len(self._nodes) > 0) and (self._nodes[-1].is_empty())):
+            self._nodes.pop()
 
         return self
 
@@ -666,9 +682,32 @@ class LinebreakNode(ParseNode):
             "type": "linebreak",
         }
 
-class AnswerReferenceNode(ParseNode):
-    def __init__(self, text):
+class BaseTextNode(ParseNode):
+    def __init__(self, text, type):
         self._text = text
+        self._type = type
+
+    def to_pod(self, **kwargs):
+        return {
+            "type": self._type,
+            "text": self._text,
+        }
+
+    def trim(self, left = True, right = True):
+        if (left):
+            self._text = self._text.lstrip()
+
+        if (right):
+            self._text = self._text.rstrip()
+
+        return self
+
+    def is_empty(self):
+        return (len(self._text) == 0)
+
+class AnswerReferenceNode(BaseTextNode):
+    def __init__(self, text):
+        super().__init__(text, 'answer-reference')
 
     def to_markdown(self, **kwargs):
         return f"[[{self._text}]]"
@@ -682,15 +721,9 @@ class AnswerReferenceNode(ParseNode):
         text = html.escape(self._text)
         return f"<span>[{text}]</span>"
 
-    def to_pod(self, **kwargs):
-        return {
-            "type": "answer_reference",
-            "text": self._text,
-        }
-
-class CommentNode(ParseNode):
+class CommentNode(BaseTextNode):
     def __init__(self, text):
-        self._text = text
+        super().__init__(text, 'comment')
 
     def to_markdown(self, display_comments = False, **kwargs):
         if (not display_comments):
@@ -711,15 +744,9 @@ class CommentNode(ParseNode):
         text = html.escape(self._text)
         return f"<!--- {text} -->"
 
-    def to_pod(self, **kwargs):
-        return {
-            "type": "comment",
-            "text": self._text,
-        }
-
-class NormalTextNode(ParseNode):
+class NormalTextNode(BaseTextNode):
     def __init__(self, text):
-        self._text = text
+        super().__init__(text, 'normal_text')
 
     def to_markdown(self, **kwargs):
         return self._text
@@ -731,15 +758,9 @@ class NormalTextNode(ParseNode):
         text = html.escape(self._text)
         return f"<span>{text}</span>"
 
-    def to_pod(self, **kwargs):
-        return {
-            "type": "normal_text",
-            "text": self._text,
-        }
-
-class ItalicsNode(ParseNode):
+class ItalicsNode(BaseTextNode):
     def __init__(self, text):
-        self._text = text
+        super().__init__(text, 'italics_text')
 
     def to_markdown(self, **kwargs):
         return f"*{self._text}*"
@@ -752,15 +773,9 @@ class ItalicsNode(ParseNode):
         text = html.escape(self._text)
         return f"<span><emph>{text}</emph></span>"
 
-    def to_pod(self, **kwargs):
-        return {
-            "type": "italics_text",
-            "text": self._text,
-        }
-
-class BoldNode(ParseNode):
+class BoldNode(BaseTextNode):
     def __init__(self, text):
-        self._text = text
+        super().__init__(text, 'bold_text')
 
     def to_markdown(self, **kwargs):
         return f"**{self._text}**"
@@ -773,15 +788,9 @@ class BoldNode(ParseNode):
         text = html.escape(self._text)
         return f"<span><strong>{text}</strong></span>"
 
-    def to_pod(self, **kwargs):
-        return {
-            "type": "bold_text",
-            "text": self._text,
-        }
-
-class CodeNode(ParseNode):
+class CodeNode(BaseTextNode):
     def __init__(self, text, inline = False):
-        self._text = text
+        super().__init__(text, 'code')
         self._inline = inline
 
     def to_markdown(self, **kwargs):
@@ -805,17 +814,16 @@ class CodeNode(ParseNode):
         return content
 
     def to_pod(self, **kwargs):
-        return {
-            "type": "code",
-            "inline": self._inline,
-            "text": self._text,
-        }
+        value = super().to_pod(**kwargs)
+        value["inline"] = self._inline
 
-class EquationNode(ParseNode):
+        return value
+
+class EquationNode(BaseTextNode):
     katex_available = None
 
     def __init__(self, text, inline = False):
-        self._text = text
+        super().__init__(text, 'equation')
         self._inline = inline
 
     def to_markdown(self, **kwargs):
@@ -845,11 +853,10 @@ class EquationNode(ParseNode):
         return f"<{element}>{content}</{element}>"
 
     def to_pod(self, **kwargs):
-        return {
-            "type": "equation",
-            "inline": self._inline,
-            "text": self._text,
-        }
+        value = super().to_pod(**kwargs)
+        value["inline"] = self._inline
+
+        return value
 
 def encode_image(path):
     ext = os.path.splitext(path)[-1].lower()

@@ -19,23 +19,23 @@ class TestParser(unittest.TestCase):
                 self.assertDictEqual(result, expected, msg = message)
 
 # Wrap a pod parser node in a block.
-def _wrap_block(node):
+def _wrap_block(nodes):
     return {
         'type': 'document',
         'nodes': [
             {
                 'type': 'block',
-                'nodes': [node],
+                'nodes': nodes,
             },
         ],
     }
 
 # Wrap text nodes in a text block.
 def _wrap_text_nodes(nodes):
-    return _wrap_block({
+    return _wrap_block([{
         'type': 'text',
         'nodes': nodes,
-    })
+    }])
 
 TEST_CASES = [
     ['Text', _wrap_text_nodes([
@@ -49,6 +49,37 @@ TEST_CASES = [
         {
             'type': 'normal_text',
             'text': 'Foo bar'
+        },
+    ])],
+
+    ['\nFoo\nbar\n', _wrap_block([
+        {
+            'type': 'text',
+            'nodes': [{
+                'type': 'normal_text',
+                'text': 'Foo',
+            }],
+        },
+        {
+            'type': 'text',
+            'nodes': [{
+                'type': 'normal_text',
+                'text': 'bar',
+            }],
+        },
+    ])],
+
+    ['\nFoo\\nbar\n', _wrap_text_nodes([
+        {
+            'type': 'normal_text',
+            'text': 'Foo',
+        },
+        {
+            'type': 'linebreak',
+        },
+        {
+            'type': 'normal_text',
+            'text': 'bar'
         },
     ])],
 
@@ -200,37 +231,37 @@ TEST_CASES = [
         },
     ])],
 
-    ['```code_block()```', _wrap_block(
+    ['```code_block()```', _wrap_block([
         {
             'type': 'code',
             'inline': False,
             'text': 'code_block()'
         },
-    )],
+    ])],
 
-    ['``` code_block() ```', _wrap_block(
+    ['``` code_block() ```', _wrap_block([
         {
             'type': 'code',
             'inline': False,
             'text': ' code_block() '
         },
-    )],
+    ])],
 
-    ['```\ncode_block()\n```', _wrap_block(
+    ['```\ncode_block()\n```', _wrap_block([
         {
             'type': 'code',
             'inline': False,
             'text': 'code_block()'
         },
-    )],
+    ])],
 
-    ['```foo(1, \'-2\')\nbar("|", x*);```', _wrap_block(
+    ['```foo(1, \'-2\')\nbar("|", x*);```', _wrap_block([
         {
             'type': 'code',
             'inline': False,
             'text': 'foo(1, \'-2\')\nbar("|", x*);'
         },
-    )],
+    ])],
 
     ['$ f(x) = x_i + x^2 \\alpha $', _wrap_text_nodes([
         {
@@ -264,35 +295,247 @@ TEST_CASES = [
         },
     ])],
 
-    ['$$equation + block$$', _wrap_block(
+    ['$$equation + block$$', _wrap_block([
         {
             'type': 'equation',
             'inline': False,
             'text': 'equation + block'
         },
-    )],
+    ])],
 
-    ['$$ equation + - * / block() $$', _wrap_block(
+    ['$$ equation + - * / block() $$', _wrap_block([
         {
             'type': 'equation',
             'inline': False,
             'text': 'equation + - * / block()'
         },
-    )],
+    ])],
 
-    ['$$\nf(x)\n$$', _wrap_block(
+    ['$$\nf(x)\n$$', _wrap_block([
         {
             'type': 'equation',
             'inline': False,
             'text': 'f(x)'
         },
-    )],
+    ])],
 
-    ['$$ f(x)\ng(x) $$', _wrap_block(
+    ['$$ f(x)\ng(x) $$', _wrap_block([
         {
             'type': 'equation',
             'inline': False,
             'text': 'f(x)\ng(x)'
         },
-    )],
+    ])],
+
+    ['[text](url)', _wrap_text_nodes([
+        {
+            'type': 'link',
+            'text': 'text',
+            'link': 'url',
+        },
+    ])],
+
+    ['[text]( )', _wrap_text_nodes([
+        {
+            'type': 'link',
+            'text': 'text',
+            'link': '',
+        },
+    ])],
+
+    ['[ ](url)', _wrap_text_nodes([
+        {
+            'type': 'link',
+            'text': '',
+            'link': 'url',
+        },
+    ])],
+
+    ['[ some text ]( some url )', _wrap_text_nodes([
+        {
+            'type': 'link',
+            'text': 'some text',
+            'link': 'some url',
+        },
+    ])],
+
+    ['[ some [\\] text ]( some (\\) url )', _wrap_text_nodes([
+        {
+            'type': 'link',
+            'text': 'some [] text',
+            'link': 'some () url',
+        },
+    ])],
+
+    ['[[answerReference]]', _wrap_text_nodes([
+        {
+            'type': 'answer-reference',
+            'text': 'answerReference',
+        },
+    ])],
+
+    ['// Some comment.', _wrap_text_nodes([
+        {
+            'type': 'comment',
+            'text': 'Some comment.'
+        },
+    ])],
+
+    ['// Some // comment. \\ * | ` - ! [ / ', _wrap_text_nodes([
+        {
+            'type': 'comment',
+            'text': 'Some // comment. \\ * | ` - ! [ /'
+        },
+    ])],
+
+    ['Some // comment.', _wrap_text_nodes([
+        {
+            'type': 'normal_text',
+            'text': 'Some '
+        },
+        {
+            'type': 'comment',
+            'text': 'comment.'
+        },
+    ])],
+
+    [
+        '''
+| a | b | c |
+        ''',
+        _wrap_block([
+            {
+                'type': 'table',
+                'rows': [
+                    {
+                        'type': 'table-row',
+                        'head': False,
+                        'cells': [
+                            {
+                                'type': 'text',
+                                'nodes': [
+                                    {
+                                        'type': 'normal_text',
+                                        'text': 'a'
+                                    },
+                                ],
+                            },
+                            {
+                                'type': 'text',
+                                'nodes': [
+                                    {
+                                        'type': 'normal_text',
+                                        'text': 'b'
+                                    },
+                                ],
+                            },
+                            {
+                                'type': 'text',
+                                'nodes': [
+                                    {
+                                        'type': 'normal_text',
+                                        'text': 'c'
+                                    },
+                                ],
+                            },
+                        ]
+                    },
+                ],
+            }
+        ])
+    ],
+
+    [
+        '''
+|- 1  | \-2   |         3^        |
+|-----|-------|-------------------|
+| *a* | **b** | `c()` and $ d() $ |
+        ''',
+        _wrap_block([
+            {
+                'type': 'table',
+                'rows': [
+                    {
+                        'type': 'table-row',
+                        'head': True,
+                        'cells': [
+                            {
+                                'type': 'text',
+                                'nodes': [
+                                    {
+                                        'type': 'normal_text',
+                                        'text': '1'
+                                    },
+                                ],
+                            },
+                            {
+                                'type': 'text',
+                                'nodes': [
+                                    {
+                                        'type': 'normal_text',
+                                        'text': '-2',
+                                    },
+                                ],
+                            },
+                            {
+                                'type': 'text',
+                                'nodes': [
+                                    {
+                                        'type': 'normal_text',
+                                        'text': '3^'
+                                    },
+                                ],
+                            },
+                        ]
+                    },
+                    {
+                        'type': 'table-sep'
+                    },
+                    {
+                        'type': 'table-row',
+                        'head': False,
+                        'cells': [
+                            {
+                                'type': 'text',
+                                'nodes': [
+                                    {
+                                        'type': 'italics_text',
+                                        'text': 'a'
+                                    },
+                                ],
+                            },
+                            {
+                                'type': 'text',
+                                'nodes': [
+                                    {
+                                        'type': 'bold_text',
+                                        'text': 'b'
+                                    },
+                                ],
+                            },
+                            {
+                                'type': 'text',
+                                'nodes': [
+                                    {
+                                        'type': 'code',
+                                        'inline': True,
+                                        'text': 'c()'
+                                    },
+                                    {
+                                        'type': 'normal_text',
+                                        'text': ' and '
+                                    },
+                                    {
+                                        'type': 'equation',
+                                        'inline': True,
+                                        'text': 'd()'
+                                    },
+                                ],
+                            },
+                        ]
+                    },
+                ],
+            }
+        ])
+    ],
 ]
