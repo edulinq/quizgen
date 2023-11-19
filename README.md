@@ -40,6 +40,32 @@ To upload quizzes to Canvas, you will need three things:
    - A token is specific for each user, and that user should the have ability to make quizzes for your specific course.
    - To get a new token, go to your account settings ("Account" -> "Settings"), and under "Approved Integrations" click "+ New Access Token".
 
+## Usage
+
+This project has executable modules in the `quizgen.cli` package.
+All executable modules have their own help/usage accessible with the `-h` / `--help` option.
+
+### Uploading a Quiz to Canvas
+
+To upload a quiz to Canvas, the `quizgen.cli.upload-quiz` module can be used.
+The basic usage is as follows:
+```
+python3 -m quizgen.cli.upload-quiz <path to quiz file/dir> --course <canvas course id> --token <canvas access token>
+```
+
+Where the format (shown as `html`) can be one of: `json`, `html`, `md`, and `tex`.
+
+### Parsing a Specific File
+
+To parse a specific file, you can use the `quizgen.cli.parse-file` module.
+This is useful if you want to check if/how a specific document parses.
+The basic usage is as follows:
+```
+python3 -m quizgen.cli.parse-file <path to file> --format html
+```
+
+Where the format (shown as `html`) can be one of: `json`, `html`, `md`, and `tex`.
+
 ## Syntax
 
 The syntax for text fields is similar to [Markdown](https://www.markdownguide.org/basic-syntax/).
