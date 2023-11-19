@@ -2,9 +2,22 @@
 
 A tool for generating quizzes from a standard definition into either Canvas quizzes (which will be automatically uploaded) or TeX files.
 
-## Installation / Requirement
+## Installation / Requirements
 
-Standard Python requirements are listed in `requirements.txt`.
+### Python
+
+The project can be installed from PyPi with:
+```
+pip install eq-quizgen
+```
+
+Standard Python requirements are listed in `pyproject.toml`,
+and can be installed from source with:
+```
+pip3 install .
+```
+
+### KaTeX (NodeJS)
 
 Additionally, to output equations in HTML documents, [KaTeX](https://katex.org) is required.
 KaTeX is distributed as a NodeJS package, and this project requires that is is accessible via `npx` (which typically requires it to be installed via `npm`).
