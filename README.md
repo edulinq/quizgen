@@ -11,8 +11,8 @@ The project can be installed from PyPi with:
 pip install eq-quizgen
 ```
 
-Standard Python requirements are listed in `pyproject.toml`,
-and can be installed from source with:
+Standard Python requirements are listed in `pyproject.toml`.
+The project and Python dependencies can be installed from source with:
 ```
 pip3 install .
 ```
