@@ -10,27 +10,22 @@ def run(args):
     if (not os.path.exists(args.path)):
         raise ValueError(f"Provided path '{args.path}' does not exist.")
 
-    quizzes = []
-    if (os.path.isfile(args.path)):
-        quizzes.append(quizgen.quiz.Quiz.from_path(args.path))
-    else:
-        quizzes += quizgen.quiz.parse_quiz_dir(args.path)
+    if (not os.path.isfile(args.path)):
+        raise ValueError(f"Provided path '{args.path}' is not a file.")
 
-    if (len(quizzes) != 1):
-        raise ValueError(f"Expected exactly one quiz, found {len(quizzes)}.")
-
-    content = quizzes[0].to_format(args.format)
+    quiz = quizgen.quiz.Quiz.from_path(args.path)
+    content = quiz.to_format(args.format)
     print(content)
 
     return 0
 
 def _get_parser():
     parser = argparse.ArgumentParser(description =
-        "Parse a single file and output the results of the parse.")
+        "Parse a single quiz and output the results of the parse.")
 
     parser.add_argument('path',
         type = str,
-        help = 'The path to parse.')
+        help = 'The path to a quiz json file.')
 
     parser.add_argument('--format',
         action = 'store', type = str, default = quizgen.constants.DOC_FORMAT_JSON,

@@ -11,26 +11,21 @@ def run(args):
     if (not os.path.exists(args.path)):
         raise ValueError(f"Provided path '{args.path}' does not exist.")
 
-    quizzes = []
-    if (os.path.isfile(args.path)):
-        quizzes.append(quizgen.quiz.Quiz.from_path(args.path))
-    else:
-        quizzes += quizgen.quiz.parse_quiz_dir(args.path)
+    if (not os.path.isfile(args.path)):
+        raise ValueError(f"Provided path '{args.path}' is not a file.")
 
-    if (len(quizzes) != 1):
-        raise ValueError(f"Expected exactly one quiz, found {len(quizzes)}.")
-
-    quizgen.canvas.upload_quiz(quizzes[0], quizgen.canvas.InstanceInfo(args.base_url, args.course_id, args.token))
+    quiz = quizgen.quiz.Quiz.from_path(args.path)
+    quizgen.canvas.upload_quiz(quiz, quizgen.canvas.InstanceInfo(args.base_url, args.course_id, args.token), force = args.force)
 
     return 0
 
 def _get_parser():
     parser = argparse.ArgumentParser(description =
-        "Parse a single file and output the results of the parse.")
+        "Parse a quiz and upload the quiz to Canvas.")
 
     parser.add_argument('path',
         type = str,
-        help = 'The path to parse.')
+        help = 'The path to a quiz json file.')
 
     parser.add_argument('--course', dest = 'course_id',
         action = 'store', type = str, required = True,
@@ -43,6 +38,10 @@ def _get_parser():
     parser.add_argument('--token', dest = 'token',
         action = 'store', type = str, required = True,
         help = 'The authentication token to use with Canvas.')
+
+    parser.add_argument('--force', dest = 'force',
+        action = 'store_true', default = False,
+        help = 'Override (delete) any exiting quiz with the same name.')
 
     return parser
 

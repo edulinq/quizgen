@@ -50,7 +50,7 @@ All executable modules have their own help/usage accessible with the `-h` / `--h
 To upload a quiz to Canvas, the `quizgen.cli.upload-quiz` module can be used.
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.upload-quiz <path to quiz file/dir> --course <canvas course id> --token <canvas access token>
+python3 -m quizgen.cli.upload-quiz <path to quiz json file> --course <canvas course id> --token <canvas access token>
 ```
 
 Where the format (shown as `html`) can be one of: `json`, `html`, `md`, and `tex`.

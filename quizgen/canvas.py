@@ -11,8 +11,6 @@ import quizgen.util.hash
 # TODO(eriq): This code assumes there will never be more than a page of items returned.
 PAGE_SIZE = 75
 
-# TODO(eriq): Put in a force paramater to avoid overwriting existing quizes.
-
 # TODO(eriq): Logging.
 
 CANVAS_QUIZGEN_BASEDIR = '/quiz-generator'
@@ -32,16 +30,22 @@ class InstanceInfo(object):
             "Accept": "application/json+canvas-string-ids",
         }
 
-def upload_quiz(quiz, instance):
+def upload_quiz(quiz, instance, force = False):
     """
     Data may be written into the instance context.
     """
 
     existing_ids = get_matching_quiz_ids(quiz.title, instance)
+    if ((len(existing_ids) > 0) and (not force)):
+        print("Found a quiz with a matching name '%s', skipping upload." % (quiz.title))
+        return False
+
     for existing_id in existing_ids:
+        print("Deleting existing quiz '%s' (%s)." % (quiz.title, existing_id))
         delete_quiz(existing_id, instance)
 
     create_quiz(quiz, instance)
+    return True
 
 def upload_canvas_files(quiz, instance):
     """
@@ -115,10 +119,14 @@ def create_quiz(quiz, instance):
 
     assignment_group_id = fetch_assignment_group(quiz.assignment_group_name, instance)
 
+    quiz_type = quizgen.constants.QUIZ_TYPE_ASSIGNMENT
+    if (quiz.practice):
+        quiz_type = quizgen.constants.QUIZ_TYPE_PRACTICE
+
     data = {
         'quiz[title]': quiz.title,
         'quiz[description]': f"<p>{quiz.description}</p><br /><hr /><p>Version: {quiz.version}</p>",
-        'quiz[quiz_type]': quiz.quiz_type,
+        'quiz[quiz_type]': quiz_type,
         'quiz[published]': quiz.published,
         'quiz[assignment_group_id]': assignment_group_id,
         'quiz[time_limit]': quiz.time_limit,
@@ -143,7 +151,7 @@ def create_question_group(quiz_id, group, instance):
     data = {
         'quiz_groups[][name]': group.name,
         'quiz_groups[][pick_count]': group.pick_count,
-        'quiz_groups[][question_points]': group.question_points,
+        'quiz_groups[][question_points]': group.points,
     }
 
     response = requests.request(

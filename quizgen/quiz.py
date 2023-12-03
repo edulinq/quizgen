@@ -1,5 +1,6 @@
 import glob
 import json
+import json5
 import math
 import os
 import random
@@ -16,18 +17,19 @@ QUESTION_FILENAME = 'question.json'
 PROMPT_FILENAME = 'prompt.md'
 
 class Quiz(object):
+    # TEST
     def __init__(self, title = '', description = '',
-            quiz_type = quizgen.constants.QUIZ_TYPE_PRACTICE, published = False,
+            practice = True, published = False,
             time_limit = 30, shuffle_answers = True,
             hide_results = None, show_correct_answers = True,
             assignment_group_name = "Quizzes",
             groups = [],
-            base_dir = '.', id = None,
+            base_dir = '.',
             version = None,
             **kwargs):
         self.title = title
         self.description = description
-        self.quiz_type = quiz_type
+        self.practice = practice
         self.published = published
         self.time_limit = time_limit
         self.shuffle_answers = shuffle_answers
@@ -36,13 +38,14 @@ class Quiz(object):
         self.assignment_group_name = assignment_group_name
 
         self.groups = groups
-        self.base_dir = base_dir
+
         self.version = version
+        self.base_dir = base_dir
 
         try:
             self.validate()
         except Exception as ex:
-            raise ValueError(f"Error while validating quiz: '{id}'.") from ex
+            raise ValueError(f"Error while validating quiz.") from ex
 
     def validate(self):
         if ((self.title is None) or (self.title == "")):
@@ -50,9 +53,6 @@ class Quiz(object):
 
         if ((self.description is None) or (self.description == "")):
             raise ValueError("Description cannot be empty.")
-
-        if (self.quiz_type not in quizgen.constants.QUIZ_TYPES):
-            raise ValueError(f"Unknown quiz type: '{self.quiz_type}'.")
 
         if (self.version is None):
             self.version = quizgen.util.git.get_version(self.base_dir, throw = True)
@@ -65,11 +65,13 @@ class Quiz(object):
     @staticmethod
     def from_path(path):
         with open(path, 'r') as file:
-            quiz_info = json.load(file)
+            quiz_info = json5.load(file)
 
         base_dir = os.path.dirname(path)
-        groups = _parse_groups(base_dir)
-        return Quiz(groups = groups, base_dir = base_dir, id = path, **quiz_info)
+
+        quiz_info['groups'] = [Group.from_dict(group_info, base_dir) for group_info in quiz_info.get('groups', [])]
+
+        return Quiz(base_dir = base_dir, **quiz_info)
 
     def to_json(self, indent = 4):
         return json.dumps(self.to_dict(), indent = indent)
@@ -100,18 +102,18 @@ class Quiz(object):
 
 class Group(object):
     def __init__(self, name = '',
-            pick_count = 1, question_points = 1,
-            questions = [], id = None, **kwargs):
+            pick_count = 1, points = 10,
+            questions = [], **kwargs):
         self.name = name
         self.pick_count = pick_count
-        self.question_points = question_points
+        self.points = points
 
         self.questions = questions
 
         try:
             self.validate()
         except Exception as ex:
-            raise ValueError(f"Error while validating group: '{id}'.") from ex
+            raise ValueError(f"Error while validating group.") from ex
 
     def validate(self):
         if ((self.name is None) or (self.name == "")):
@@ -131,16 +133,25 @@ class Group(object):
         return paths
 
     @staticmethod
-    def from_path(path):
-        with open(path, 'r') as file:
-            group_info = json.load(file)
+    def from_dict(group_info, base_dir):
+        group_info = group_info.copy()
 
-        questions = _parse_questions(os.path.dirname(path))
-        return Group(questions = questions, id = path, **group_info)
+        questions = []
+        for path in group_info.get('questions', []):
+            if (not os.path.isabs(path)):
+                path = os.path.join(base_dir, path)
+
+            path = os.path.abspath(path)
+
+            questions += _parse_questions(path)
+
+        group_info['questions'] = questions
+
+        return Group(**group_info)
 
 class Question(object):
     def __init__(self, prompt = '', question_type = '', answers = [],
-            base_dir = '.', id = None,
+            base_dir = '.',
             **kwargs):
         self.base_dir = base_dir
 
@@ -153,7 +164,7 @@ class Question(object):
         try:
             self.validate()
         except Exception as ex:
-            raise ValueError(f"Error while validating question: '{id}'.") from ex
+            raise ValueError(f"Error while validating question.") from ex
 
     def validate(self):
         if ((self.prompt is None) or (self.prompt == "")):
@@ -279,7 +290,7 @@ class Question(object):
     @staticmethod
     def from_path(path):
         with open(path, 'r') as file:
-            question_info = json.load(file)
+            question_info = json5.load(file)
 
         # Check for a prompt file.
         prompt_path = os.path.join(os.path.dirname(path), PROMPT_FILENAME)
@@ -288,29 +299,20 @@ class Question(object):
 
         base_dir = os.path.dirname(path)
 
-        return Question(base_dir = base_dir, id = path, **question_info)
+        return Question(base_dir = base_dir, **question_info)
 
-def _parse_questions(base_dir):
+def _parse_questions(path):
+    if (not os.path.exists(path)):
+        raise ValueError(f"Question path does not exist: '{path}'.")
+
+    if (os.path.isfile(path)):
+        return [Question.from_path(path)]
+
     questions = []
-    for path in sorted(glob.glob(os.path.join(base_dir, '**', QUESTION_FILENAME), recursive = True)):
-        questions.append(Question.from_path(path))
+    for subpath in sorted(glob.glob(os.path.join(path, '**', QUESTION_FILENAME), recursive = True)):
+        questions.append(Question.from_path(subpath))
 
     return questions
-
-def _parse_groups(base_dir):
-    groups = []
-    for path in sorted(glob.glob(os.path.join(base_dir, '**', GROUP_FILENAME), recursive = True)):
-        groups.append(Group.from_path(path))
-
-    return groups
-
-def parse_quiz_dir(basedir):
-    quizzes = []
-
-    for path in sorted(glob.glob(os.path.join(basedir, '**', QUIZ_FILENAME), recursive = True)):
-        quizzes.append(Quiz.from_path(path))
-
-    return quizzes
 
 LATEX_QUIZ_TEMPLATE = r"""
     \documentclass{exam}

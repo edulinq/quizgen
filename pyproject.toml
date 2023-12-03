@@ -7,7 +7,7 @@ requires = [
 
 [project]
 name = "eq-quizgen"
-version = "0.0.2"
+version = "0.0.3"
 description = "A tool that can generate both Canvas quizzes and LaTeX files from a common configuration."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -27,6 +27,7 @@ classifiers = [
 dependencies = [
     "GitPython>=3.1",
     "lark>=1.1.8",
+    "json5>=0.9.14",
     "requests>=2.31.0",
 ]
 
