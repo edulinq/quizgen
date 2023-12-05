@@ -8,7 +8,8 @@ import tests.base
 
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 QUESTIONS_DIR = os.path.join(THIS_DIR, "questions")
-FAIL_QUESTIONS_DIR = os.path.join(THIS_DIR, "questions_fail")
+GOOD_QUESTIONS_DIR = os.path.join(QUESTIONS_DIR, "good")
+BAD_QUESTIONS_DIR = os.path.join(QUESTIONS_DIR, "bad")
 
 QUESTIONS_FILENAME = 'question.json'
 CANVAS_FILENAME = 'canvas.json'
@@ -29,13 +30,13 @@ class QuestionsTest(tests.base.BaseTest):
     pass
 
 def _discover_question_tests():
-    for path in sorted(glob.glob(os.path.join(QUESTIONS_DIR, "**", QUESTIONS_FILENAME), recursive = True)):
+    for path in sorted(glob.glob(os.path.join(GOOD_QUESTIONS_DIR, "**", QUESTIONS_FILENAME), recursive = True)):
         try:
             _add_question_test(path)
         except Exception as ex:
             raise ValueError("Failed to parse test case '%s'." % (path)) from ex
 
-    for path in sorted(glob.glob(os.path.join(FAIL_QUESTIONS_DIR, "**", QUESTIONS_FILENAME), recursive = True)):
+    for path in sorted(glob.glob(os.path.join(BAD_QUESTIONS_DIR, "**", QUESTIONS_FILENAME), recursive = True)):
         try:
             _add_fail_question_test(path)
         except Exception as ex:
