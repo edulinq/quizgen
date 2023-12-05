@@ -1,0 +1,10 @@
+{
+    "prompt": "Multiple Answers: All True",
+    "question_type": "multiple_answers_question",
+    "answers": [
+        {"correct": true, "text": "A"},
+        {"correct": true, "text": "B"},
+        {"correct": true, "text": "C"},
+        {"correct": true, "text": "D"}
+    ]
+}

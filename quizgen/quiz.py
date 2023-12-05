@@ -256,6 +256,9 @@ class Question(object):
         if (not isinstance(answers, list)):
             raise QuizValidationError(f"Expected answers to be a list, found {type(answers)} (base_dir: '{self.base_dir}'.")
 
+        if (len(answers) == 0):
+            raise QuizValidationError(f"No answers provided, at least one answer required.")
+
         num_correct = 0
         for answer in answers:
             self._validate_answer(answer, parse = parse)
