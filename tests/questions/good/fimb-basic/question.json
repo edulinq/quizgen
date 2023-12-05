@@ -1,0 +1,10 @@
+{
+    "prompt": "Fill in Multiple Blanks: Basic",
+    "question_type": "fill_in_multiple_blanks_question",
+    "answers": {
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4"
+    }
+}

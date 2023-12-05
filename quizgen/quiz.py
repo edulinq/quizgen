@@ -181,6 +181,8 @@ class Question(object):
 
             if (len(self.answers) != 0):
                 raise QuizValidationError("Essay questions cannot have answers.")
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_FILL_IN_MULTIPLE_BLANKS):
+            self._validate_fimb_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
             self._validate_matching_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_ANSWERS):
@@ -234,6 +236,26 @@ class Question(object):
             for key in required_keys:
                 if (key not in answer):
                     raise QuizValidationError(f"Missing required key '{key}' for numerical answer type '{answer['type']}'.")
+
+    def _validate_fimb_answers(self):
+        if (not isinstance(self.answers, dict)):
+            raise QuizValidationError(f"Expected dict for fill in multiple blanks answers, found {type(self.answers)}.")
+
+        if (len(self.answers) == 0):
+            raise QuizValidationError("Expected fill in multiple blanks answers to be non-empty.")
+
+        for (key, values) in self.answers.items():
+            if (not isinstance(values, list)):
+                self.answers[key] = [values]
+
+        for (key, values) in self.answers.items():
+            _check_type(key, str, 'key for fill in multiple blanks answers')
+
+            if (len(values) == 0):
+                raise QuizValidationError("Expected fill in multiple blanks possible values to be non-empty.")
+
+            for value in values:
+                _check_type(value, str, 'value for fill in multiple blanks answers')
 
     def _validate_matching_answers(self):
         if (not isinstance(self.answers, dict)):

@@ -192,6 +192,8 @@ def _serialize_answers(data, question, instance):
     if (question.question_type == quizgen.constants.QUESTION_TYPE_ESSAY):
         # Essay questions have no answers.
         pass
+    elif (question.question_type == quizgen.constants.QUESTION_TYPE_FILL_IN_MULTIPLE_BLANKS):
+        _serialize_fimb_answers(data, question.answers, instance)
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
         _serialize_matching_answers(data, question.answers, instance)
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_NUMERICAL):
@@ -249,6 +251,17 @@ def _serialize_matching_answers(data, answers, instance):
 
     if (len(answers['distractors']) > 0):
         data["question[matching_answer_incorrect_matches]"] = "\n".join(answers['distractors'])
+
+def _serialize_fimb_answers(data, answers, instance):
+    index = 0
+
+    for (key, values) in answers.items():
+        for value in values:
+            data[f"question[answers][{index}][blank_id]"] = key
+            data[f"question[answers][{index}][answer_weight]"] = 100
+            data[f"question[answers][{index}][answer_text]"] = value
+
+            index += 1
 
 def _serialize_numeric_answers(data, answers, instance):
     # Note that the keys/constants for numerical answers are different than what the documentation says:
