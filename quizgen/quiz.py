@@ -182,6 +182,9 @@ class Question(object):
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_CHOICE):
             self._validate_answer_list(self.answers, min_correct = 1, max_correct = 1)
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_DROPDOWNS):
+            if (len(self.answers) == 0):
+                raise QuizValidationError(f"No answers provided, at least one answer required.")
+
             for answers in self.answers.values():
                 self._validate_answer_list(answers, min_correct = 1, max_correct = 1, parse = False)
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_NUMERICAL):

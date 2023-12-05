@@ -1,0 +1,17 @@
+{
+    "prompt": "Multiple Drop Downs: Basic",
+    "question_type": "multiple_dropdowns_question",
+    "answers": {
+        "part1": [
+            {"correct": true,  "text": "a"},
+            {"correct": false, "text": "b"},
+            {"correct": false, "text": "c"}
+        ],
+        "part2": [
+            {"correct": true,  "text": "1"},
+            {"correct": false, "text": "2"},
+            {"correct": false, "text": "3"}
+        ]
+    }
+}
+
