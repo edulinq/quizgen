@@ -156,7 +156,6 @@ class Question(object):
         self.base_dir = base_dir
 
         self.prompt = prompt
-        self.prompt_document = quizgen.parser.parse_text(self.prompt, base_dir = self.base_dir)
 
         self.question_type = question_type
         self.answers = answers
@@ -169,6 +168,7 @@ class Question(object):
     def validate(self):
         if ((self.prompt is None) or (self.prompt == "")):
             raise ValueError("Prompt cannot be empty.")
+        self.prompt_document = quizgen.parser.parse_text(self.prompt, base_dir = self.base_dir)
 
         if (self.question_type not in quizgen.constants.QUESTION_TYPES):
             raise ValueError(f"Unknown question type: '{self.question_type}'.")

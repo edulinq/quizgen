@@ -167,6 +167,16 @@ def create_question_group(quiz_id, group, instance):
         create_question(quiz_id, group_id, group.questions[i], i, instance)
 
 def create_question(quiz_id, group_id, question, index, instance):
+    data = _create_question_json(group_id, question, index, instance = instance)
+
+    response = requests.request(
+        method = "POST",
+        url = "%s/api/v1/courses/%s/quizzes/%s/questions" % (instance.base_url, instance.course_id, quiz_id),
+        headers = instance.base_headers(),
+        data = data)
+    response.raise_for_status()
+
+def _create_question_json(group_id, question, index, instance = None):
     data = {
         'question[question_type]': question.question_type,
         'question[quiz_group_id]': group_id,
@@ -176,12 +186,7 @@ def create_question(quiz_id, group_id, question, index, instance):
 
     _serialize_answers(data, question, instance)
 
-    response = requests.request(
-        method = "POST",
-        url = "%s/api/v1/courses/%s/quizzes/%s/questions" % (instance.base_url, instance.course_id, quiz_id),
-        headers = instance.base_headers(),
-        data = data)
-    response.raise_for_status()
+    return data
 
 def _serialize_answers(data, question, instance):
     if (question.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):

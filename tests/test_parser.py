@@ -1,9 +1,7 @@
-import json
-import unittest
-
 import quizgen.parser
+import tests.base
 
-class TestParser(unittest.TestCase):
+class TestParser(tests.base.BaseTest):
     def test_cases(self):
         for i in range(len(TEST_CASES)):
             text, expected = TEST_CASES[i]
@@ -12,11 +10,7 @@ class TestParser(unittest.TestCase):
                 document = quizgen.parser.parse_text(text)
                 result = document.to_pod(include_metadata = False)
 
-                expected_json = json.dumps(expected, indent = 4)
-                actual_json = json.dumps(result, indent = 4)
-
-                message = f"\n---\nExpected: {expected_json}\nActual: {actual_json}\n---\n"
-                self.assertDictEqual(result, expected, msg = message)
+                self.assertJSONDictEqual(expected, result)
 
 # Wrap a pod parser node in a block.
 def _wrap_block(nodes):

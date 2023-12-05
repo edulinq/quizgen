@@ -1,0 +1,10 @@
+{
+    "prompt": "Basic Multiple Choice",
+    "question_type": "multiple_choice_question",
+    "answers": [
+        {"correct": true,  "text": "A"},
+        {"correct": false, "text": "B"},
+        {"correct": false, "text": "C"},
+        {"correct": false, "text": "D"}
+    ]
+}
