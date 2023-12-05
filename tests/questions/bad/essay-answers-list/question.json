@@ -1,0 +1,10 @@
+{
+    "prompt": "Bad Essay: Answers List",
+    "question_type": "essay_question",
+    "answers": [
+        {"correct": true,  "text": "A"},
+        {"correct": false, "text": "B"},
+        {"correct": false, "text": "C"},
+        {"correct": false, "text": "D"}
+    ]
+}

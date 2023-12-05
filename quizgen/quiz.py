@@ -175,7 +175,13 @@ class Question(object):
         self._validate_answers()
 
     def _validate_answers(self):
-        if (self.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
+        if (self.question_type == quizgen.constants.QUESTION_TYPE_ESSAY):
+            if (not isinstance(self.answers, list)):
+                raise QuizValidationError("Essay questions cannot have answers.")
+
+            if (len(self.answers) != 0):
+                raise QuizValidationError("Essay questions cannot have answers.")
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
             self._validate_matching_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_ANSWERS):
             self._validate_answer_list(self.answers)
@@ -183,7 +189,7 @@ class Question(object):
             self._validate_answer_list(self.answers, min_correct = 1, max_correct = 1)
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_DROPDOWNS):
             if (len(self.answers) == 0):
-                raise QuizValidationError(f"No answers provided, at least one answer required.")
+                raise QuizValidationError("No answers provided, at least one answer required.")
 
             for answers in self.answers.values():
                 self._validate_answer_list(answers, min_correct = 1, max_correct = 1, parse = False)

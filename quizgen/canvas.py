@@ -189,7 +189,10 @@ def _create_question_json(group_id, question, index, instance = None):
     return data
 
 def _serialize_answers(data, question, instance):
-    if (question.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
+    if (question.question_type == quizgen.constants.QUESTION_TYPE_ESSAY):
+        # Essay questions have no answers.
+        pass
+    elif (question.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
         _serialize_matching_answers(data, question.answers, instance)
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_NUMERICAL):
         _serialize_numeric_answers(data, question.answers, instance)
