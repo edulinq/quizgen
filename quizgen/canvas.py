@@ -191,6 +191,8 @@ def _create_question_json(group_id, question, index, instance = None):
 def _serialize_answers(data, question, instance):
     if (question.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
         _serialize_matching_answers(data, question.answers, instance)
+    elif (question.question_type == quizgen.constants.QUESTION_TYPE_NUMERICAL):
+        _serialize_numeric_answers(data, question.answers, instance)
     elif (isinstance(question.answers, list)):
         use_text = (question.question_type == quizgen.constants.QUESTION_TYPE_TF)
         _serialize_answer_list(data, question.answers, instance, use_text = use_text)
@@ -244,6 +246,28 @@ def _serialize_matching_answers(data, answers, instance):
 
     if (len(answers['distractors']) > 0):
         data["question[matching_answer_incorrect_matches]"] = "\n".join(answers['distractors'])
+
+def _serialize_numeric_answers(data, answers, instance):
+    # Note that the keys/constants for numerical answers are different than what the documentation says:
+    # https://canvas.instructure.com/doc/api/quiz_questions.html#QuizQuestion
+
+    for i in range(len(answers)):
+        answer = answers[i]
+
+        data[f"question[answers][{i}][answer_weight]"] = 100
+        data[f"question[answers][{i}][numerical_answer_type]"] = answer['type'] + '_answer'
+
+        if (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_EXACT):
+            data[f"question[answers][{i}][answer_exact]"] = answer['value']
+            data[f"question[answers][{i}][answer_error_margin]"] = answer['margin']
+        elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_RANGE):
+            data[f"question[answers][{i}][answer_range_start]"] = answer['min']
+            data[f"question[answers][{i}][answer_range_end]"] = answer['max']
+        elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_PRECISION):
+            data[f"question[answers][{i}][answer_approximate]"] = answer['value']
+            data[f"question[answers][{i}][answer_precision]"] = answer['precision']
+        else:
+            raise ValueError(f"Unknown numerical answer type: '{answer['type']}'.")
 
 def upload_file(path, canvas_path, instance):
     parent_id = ensure_folder(os.path.dirname(canvas_path), instance)

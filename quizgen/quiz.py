@@ -17,7 +17,6 @@ QUESTION_FILENAME = 'question.json'
 PROMPT_FILENAME = 'prompt.md'
 
 class Quiz(object):
-    # TEST
     def __init__(self, title = '', description = '',
             practice = True, published = False,
             time_limit = 30, shuffle_answers = True,
@@ -45,14 +44,14 @@ class Quiz(object):
         try:
             self.validate()
         except Exception as ex:
-            raise ValueError(f"Error while validating quiz.") from ex
+            raise QuizValidationError(f"Error while validating quiz.") from ex
 
     def validate(self):
         if ((self.title is None) or (self.title == "")):
-            raise ValueError("Title cannot be empty.")
+            raise QuizValidationError("Title cannot be empty.")
 
         if ((self.description is None) or (self.description == "")):
-            raise ValueError("Description cannot be empty.")
+            raise QuizValidationError("Description cannot be empty.")
 
         if (self.version is None):
             self.version = quizgen.util.git.get_version(self.base_dir, throw = True)
@@ -98,7 +97,7 @@ class Quiz(object):
         elif (format == quizgen.constants.DOC_FORMAT_TEX):
             return self.to_tex(**kwargs)
         else:
-            raise ValueError(f"Unknown format '{format}'.")
+            raise QuizValidationError(f"Unknown format '{format}'.")
 
 class Group(object):
     def __init__(self, name = '',
@@ -113,11 +112,11 @@ class Group(object):
         try:
             self.validate()
         except Exception as ex:
-            raise ValueError(f"Error while validating group.") from ex
+            raise QuizValidationError(f"Error while validating group.") from ex
 
     def validate(self):
         if ((self.name is None) or (self.name == "")):
-            raise ValueError("Name cannot be empty.")
+            raise QuizValidationError("Name cannot be empty.")
 
     def to_dict(self):
         value = self.__dict__.copy()
@@ -163,36 +162,38 @@ class Question(object):
         try:
             self.validate()
         except Exception as ex:
-            raise ValueError(f"Error while validating question.") from ex
+            raise QuizValidationError(f"Error while validating question.") from ex
 
     def validate(self):
         if ((self.prompt is None) or (self.prompt == "")):
-            raise ValueError("Prompt cannot be empty.")
+            raise QuizValidationError("Prompt cannot be empty.")
         self.prompt_document = quizgen.parser.parse_text(self.prompt, base_dir = self.base_dir)
 
         if (self.question_type not in quizgen.constants.QUESTION_TYPES):
-            raise ValueError(f"Unknown question type: '{self.question_type}'.")
+            raise QuizValidationError(f"Unknown question type: '{self.question_type}'.")
 
         self._validate_answers()
 
     def _validate_answers(self):
-        if (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_CHOICE):
-            self._validate_answer_list(self.answers, min_correct = 1, max_correct = 1)
+        if (self.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
+            self._validate_matching_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_ANSWERS):
             self._validate_answer_list(self.answers)
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_CHOICE):
+            self._validate_answer_list(self.answers, min_correct = 1, max_correct = 1)
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_DROPDOWNS):
             for answers in self.answers.values():
                 self._validate_answer_list(answers, min_correct = 1, max_correct = 1, parse = False)
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_NUMERICAL):
+            self._validate_numerical_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_TF):
             self._validate_tf_answers()
-        elif (self.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
-            self._validate_matching_answers()
         else:
-            raise ValueError(f"Unknown question type: '{self.question_type}'.")
+            raise QuizValidationError(f"Unknown question type: '{self.question_type}'.")
 
     def _validate_tf_answers(self):
         if (not isinstance(self.answers, bool)):
-            raise ValueError(f"'answers' for a T/F question must be a boolean, found '{self.answers}' ({type(self.answers)}).")
+            raise QuizValidationError(f"'answers' for a T/F question must be a boolean, found '{self.answers}' ({type(self.answers)}).")
 
         # Change answers to look like multiple choice.
         self.answers = [
@@ -202,27 +203,50 @@ class Question(object):
 
         self._validate_answer_list(self.answers)
 
+    def _validate_numerical_answers(self):
+        _check_type(self.answers, list, "'answers' for a numerical question")
+
+        for answer in self.answers:
+            label = "values of 'answers' for a numerical question"
+            _check_type(answer, dict, label)
+
+            if ('type' not in answer):
+                raise QuizValidationError(f"Missing key ('type') for {label}.")
+
+            if (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_EXACT):
+                required_keys = ['value', 'margin']
+            elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_RANGE):
+                required_keys = ['min', 'max']
+            elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_PRECISION):
+                required_keys = ['value', 'precision']
+            else:
+                raise QuizValidationError(f"Unknown numerical answer type: '{answer['type']}'.")
+
+            for key in required_keys:
+                if (key not in answer):
+                    raise QuizValidationError(f"Missing required key '{key}' for numerical answer type '{answer['type']}'.")
+
     def _validate_matching_answers(self):
         if (not isinstance(self.answers, dict)):
-            raise ValueError(f"Expected dict for matching answers, found {type(self.answers)}.")
+            raise QuizValidationError(f"Expected dict for matching answers, found {type(self.answers)}.")
 
         if ('matches' not in self.answers):
-            raise ValueError("Matching answer type is missing the 'matches' field.")
+            raise QuizValidationError("Matching answer type is missing the 'matches' field.")
 
         for match in self.answers['matches']:
             if (len(match) != 2):
-                raise ValueError(f"Expected exactly two items for a match list, found {len(match)}.")
+                raise QuizValidationError(f"Expected exactly two items for a match list, found {len(match)}.")
 
         if ('distractors' not in self.answers):
             self.answers['distractors'] = []
 
         for distractor in self.answers['distractors']:
             if (not isinstance(distractor, str)):
-                raise ValueError(f"Distractors must be strings, found {type(distractor)}.")
+                raise QuizValidationError(f"Distractors must be strings, found {type(distractor)}.")
 
     def _validate_answer_list(self, answers, min_correct = 0, max_correct = math.inf, parse = True):
         if (not isinstance(answers, list)):
-            raise ValueError(f"Expected answers to be a list, found {type(answers)} (base_dir: '{self.base_dir}'.")
+            raise QuizValidationError(f"Expected answers to be a list, found {type(answers)} (base_dir: '{self.base_dir}'.")
 
         num_correct = 0
         for answer in answers:
@@ -231,17 +255,17 @@ class Question(object):
                 num_correct += 1
 
         if (num_correct < min_correct):
-            raise ValueError(f"Did not find enough correct answers. Expected at least {min_correct}, found {num_correct} (base_dir: '{self.base_dir}'.")
+            raise QuizValidationError(f"Did not find enough correct answers. Expected at least {min_correct}, found {num_correct} (base_dir: '{self.base_dir}'.")
 
         if (num_correct > max_correct):
-            raise ValueError(f"Found too many correct answers. Expected at most {max_correct}, found {num_correct} (base_dir: '{self.base_dir}'.")
+            raise QuizValidationError(f"Found too many correct answers. Expected at most {max_correct}, found {num_correct} (base_dir: '{self.base_dir}'.")
 
     def _validate_answer(self, answer, parse = True):
         if ('correct' not in answer):
-            raise ValueError(f"Answer has no 'correct' field (base_dir: '{self.base_dir}'.")
+            raise QuizValidationError(f"Answer has no 'correct' field (base_dir: '{self.base_dir}'.")
 
         if ('text' not in answer):
-            raise ValueError(f"Answer has no 'text' field (base_dir: '{self.base_dir}'.")
+            raise QuizValidationError(f"Answer has no 'text' field (base_dir: '{self.base_dir}'.")
 
         if (parse):
             answer['document'] = quizgen.parser.parse_text(answer['text'], base_dir = self.base_dir)
@@ -303,7 +327,7 @@ class Question(object):
 
 def _parse_questions(path):
     if (not os.path.exists(path)):
-        raise ValueError(f"Question path does not exist: '{path}'.")
+        raise QuizValidationError(f"Question path does not exist: '{path}'.")
 
     if (os.path.isfile(path)):
         return [Question.from_path(path)]
@@ -313,6 +337,13 @@ def _parse_questions(path):
         questions.append(Question.from_path(subpath))
 
     return questions
+
+def _check_type(value, expected_type, label):
+    if (not isinstance(value, expected_type)):
+        raise QuizValidationError(f"{label} must be a {expected_type}, found '{value}' ({type(value)}).")
+
+class QuizValidationError(ValueError):
+    pass
 
 LATEX_QUIZ_TEMPLATE = r"""
     \documentclass{exam}
