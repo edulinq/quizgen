@@ -1,0 +1,17 @@
+{
+    "prompt": "Bad Matching: Too Few",
+    "question_type": "matching_question",
+    "answers": {
+        "matches": [
+            ["A"],
+            ["B", "2"],
+            ["C", "3"]
+        ],
+        "distractors": [
+            "4",
+            "5",
+            "6"
+        ]
+    }
+}
+

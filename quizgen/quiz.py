@@ -240,9 +240,17 @@ class Question(object):
         if ('distractors' not in self.answers):
             self.answers['distractors'] = []
 
-        for distractor in self.answers['distractors']:
+        for i in range(len(self.answers['distractors'])):
+            distractor = self.answers['distractors'][i]
             if (not isinstance(distractor, str)):
                 raise QuizValidationError(f"Distractors must be strings, found {type(distractor)}.")
+
+            distractor = distractor.strip()
+
+            if ("\n" in distractor):
+                raise QuizValidationError(f"Distractors cannot have newlines, found {type(distractor)}.")
+
+            self.answers['distractors'][i] = distractor
 
     def _validate_answer_list(self, answers, min_correct = 0, max_correct = math.inf, parse = True):
         if (not isinstance(answers, list)):
