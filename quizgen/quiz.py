@@ -197,6 +197,12 @@ class Question(object):
                 self._validate_answer_list(answers, min_correct = 1, max_correct = 1, parse = False)
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_NUMERICAL):
             self._validate_numerical_answers()
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_TEXT_ONLY):
+            if (not isinstance(self.answers, list)):
+                raise QuizValidationError("Text-Only questions cannot have answers.")
+
+            if (len(self.answers) != 0):
+                raise QuizValidationError("Text-Only questions cannot have answers.")
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_TF):
             self._validate_tf_answers()
         else:
