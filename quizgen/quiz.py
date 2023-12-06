@@ -197,6 +197,8 @@ class Question(object):
                 self._validate_answer_list(answers, min_correct = 1, max_correct = 1, parse = False)
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_NUMERICAL):
             self._validate_numerical_answers()
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_SHORT_ANSWER):
+            self._validate_fitb_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_TEXT_ONLY):
             if (not isinstance(self.answers, list)):
                 raise QuizValidationError("Text-Only questions cannot have answers.")
@@ -243,25 +245,42 @@ class Question(object):
                 if (key not in answer):
                     raise QuizValidationError(f"Missing required key '{key}' for numerical answer type '{answer['type']}'.")
 
-    def _validate_fimb_answers(self):
-        if (not isinstance(self.answers, dict)):
-            raise QuizValidationError(f"Expected dict for fill in multiple blanks answers, found {type(self.answers)}.")
+    def _validate_fitb_answers(self):
+        """
+        "Short Answer" questions are actually fill in the blank questions.
+        Just set up the answers to look like fill in multiple blanks with an empty key.
+        """
+
+        label = "short answer (fill in the blank)"
+
+        _check_type(self.answers, list, f"{label} answers")
 
         if (len(self.answers) == 0):
-            raise QuizValidationError("Expected fill in multiple blanks answers to be non-empty.")
+            raise QuizValidationError(f"Expected {label} answers to be non-empty.")
+
+        self.answers = {"": self.answers}
+
+        self._validate_fimb_answers(label = label)
+
+    def _validate_fimb_answers(self, label = 'fill in multiple blanks'):
+        if (not isinstance(self.answers, dict)):
+            raise QuizValidationError(f"Expected dict for {label} answers, found {type(self.answers)}.")
+
+        if (len(self.answers) == 0):
+            raise QuizValidationError(f"Expected {label} answers to be non-empty.")
 
         for (key, values) in self.answers.items():
             if (not isinstance(values, list)):
                 self.answers[key] = [values]
 
         for (key, values) in self.answers.items():
-            _check_type(key, str, 'key for fill in multiple blanks answers')
+            _check_type(key, str, f"key for {label} answers")
 
             if (len(values) == 0):
-                raise QuizValidationError("Expected fill in multiple blanks possible values to be non-empty.")
+                raise QuizValidationError(f"Expected {label} possible values to be non-empty.")
 
             for value in values:
-                _check_type(value, str, 'value for fill in multiple blanks answers')
+                _check_type(value, str, f"value for {label} answers")
 
     def _validate_matching_answers(self):
         if (not isinstance(self.answers, dict)):

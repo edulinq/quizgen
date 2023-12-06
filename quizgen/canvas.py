@@ -198,6 +198,8 @@ def _serialize_answers(data, question, instance):
         _serialize_matching_answers(data, question.answers, instance)
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_NUMERICAL):
         _serialize_numeric_answers(data, question.answers, instance)
+    elif (question.question_type == quizgen.constants.QUESTION_TYPE_SHORT_ANSWER):
+        _serialize_fimb_answers(data, question.answers, instance)
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_TEXT_ONLY):
         # Text-Only questions have no answers.
         pass
