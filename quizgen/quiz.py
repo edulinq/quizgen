@@ -135,13 +135,16 @@ class Group(object):
     def from_dict(group_info, base_dir):
         group_info = group_info.copy()
 
-        questions = []
+        paths = []
         for path in group_info.get('questions', []):
             if (not os.path.isabs(path)):
                 path = os.path.join(base_dir, path)
+            paths.append(os.path.abspath(path))
 
-            path = os.path.abspath(path)
+        paths = list(sorted(set(paths)))
 
+        questions = []
+        for path in paths:
             questions += _parse_questions(path)
 
         group_info['questions'] = questions
