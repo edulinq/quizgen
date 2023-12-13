@@ -55,6 +55,15 @@ python3 -m quizgen.cli.upload-quiz <path to quiz json file> --course <canvas cou
 
 Where the format (shown as `html`) can be one of: `json`, `html`, `md`, and `tex`.
 
+### Parsing a Specific Quiz
+
+To parse an entire specific quiz, you can use the `quizgen.cli.parse-quiz` module.
+This is useful if you want to check if a quiz properly parses.
+The basic usage is as follows:
+```
+python3 -m quizgen.cli.parse-quiz <path to quiz file>
+```
+
 ### Parsing a Specific File
 
 To parse a specific file, you can use the `quizgen.cli.parse-file` module.
