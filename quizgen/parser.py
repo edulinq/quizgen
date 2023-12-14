@@ -9,7 +9,6 @@ import re
 import lark
 import lark.visitors
 
-import quizgen.canvas
 import quizgen.katex
 import quizgen.util.file
 
@@ -405,7 +404,7 @@ class ImageNode(ParseNode):
             src = f"data:{mime};base64,{content}"
             return f"<img src='{src}' alt='{self._text}' />"
 
-        # Canvas requires uploading the image, which should have been done via quizgen.canvas.upload_canvas_files().
+        # Canvas requires uploading the image, which should have been done via quizgen.converter.canvas.upload_canvas_files().
 
         file_id = canvas_instance.context.get('file_ids', {}).get(path)
         if (file_id is None):

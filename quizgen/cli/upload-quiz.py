@@ -2,7 +2,7 @@ import argparse
 import os
 import sys
 
-import quizgen.canvas
+import quizgen.converter.canvas
 import quizgen.quiz
 
 DEFAULT_BASE_URL = 'https://canvas.ucsc.edu'
@@ -15,7 +15,10 @@ def run(args):
         raise ValueError(f"Provided path '{args.path}' is not a file.")
 
     quiz = quizgen.quiz.Quiz.from_path(args.path)
-    quizgen.canvas.upload_quiz(quiz, quizgen.canvas.InstanceInfo(args.base_url, args.course_id, args.token), force = args.force)
+    canvas_instance = quizgen.converter.canvas.InstanceInfo(args.base_url, args.course_id, args.token)
+
+    converter = quizgen.converter.canvas.CanvasUploader(canvas_instance, force = args.force)
+    converter.convert_quiz(quiz)
 
     return 0
 

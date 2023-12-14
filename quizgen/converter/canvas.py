@@ -6,12 +6,11 @@ import re
 
 import requests
 
+import quizgen.converter.base
 import quizgen.util.hash
 
 # TODO(eriq): This code assumes there will never be more than a page of items returned.
 PAGE_SIZE = 75
-
-# TODO(eriq): Logging.
 
 CANVAS_QUIZGEN_BASEDIR = '/quiz-generator'
 CANVAS_QUIZGEN_QUIZ_DIRNAME = 'quiz'
@@ -29,6 +28,19 @@ class InstanceInfo(object):
             "Authorization": "Bearer %s" % (self.token),
             "Accept": "application/json+canvas-string-ids",
         }
+
+class CanvasUploader(quizgen.converter.base.QuizConverter):
+    def __init__(self, instance, force = False, **kwargs):
+        super().__init__(**kwargs)
+
+        if (instance is None):
+            raise ValueError("Canvas instance information cannot be None.")
+
+        self.instance = instance
+        self.force = force
+
+    def convert_quiz(self, quiz, **kwargs):
+        upload_quiz(quiz, self.instance, force = self.force);
 
 def upload_quiz(quiz, instance, force = False):
     """
