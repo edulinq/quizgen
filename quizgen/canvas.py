@@ -180,6 +180,9 @@ def _create_question_json(group_id, question, index, instance = None):
     data = {
         'question[question_type]': question.question_type,
         'question[quiz_group_id]': group_id,
+        # The actual points is taken from the group,
+        # but put in a one here so people don't get scared when they see a zero.
+        'question[points_possible]': 1,
         'question[position]': index,
         'question[question_text]': question.prompt_document.to_html(canvas_instance = instance),
     }
