@@ -1,7 +1,7 @@
 {{{QUESTION_PROMPT}}}
 
-\begin{enumerate}[label=(\Alph*)]
+\begin{choices}
 
 {{{QUESTION_ANSWERS}}}
 
-\end{enumerate}
+\end{choices}

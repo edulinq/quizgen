@@ -1,3 +1,7 @@
-\subsection{{{{QUESTION_NUMBER}}}. [{{{QUESTION_POINTS}}} points] {{{QUESTION_NAME}}}}
+%%% BEGIN Question {{{{QUESTION_NUMBER}}} -- {{{QUESTION_NAME}}}} %%%
+
+\question[{{{QUESTION_POINTS}}}]
 
 {{{QUESTION_BODY}}}
+
+%%% END Question {{{{QUESTION_NUMBER}}} -- {{{QUESTION_NAME}}}} %%%

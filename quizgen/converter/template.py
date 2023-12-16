@@ -2,14 +2,18 @@
 Convert a quiz using template files.
 """
 
+import math
 import os
 import random
+import re
 
 import quizgen.constants
 import quizgen.converter.base
 import quizgen.util.file
 
 # TEST -- Question TOC
+# TEST -- Answer Shuffling
+# TEST -- Generate Seed as part of footer.
 
 # Template variabes.
 TEMPLATE_VAR_ANSWER_TEXT = '{{{ANSWER_TEXT}}}'
@@ -17,6 +21,8 @@ TEMPLATE_VAR_COURSE_TITLE = '{{{COURSE_TITLE}}}'
 TEMPLATE_VAR_DATE = '{{{DATE}}}'
 TEMPLATE_VAR_DESCRIPTION = '{{{DESCRIPTION}}}'
 TEMPLATE_VAR_GROUPS = '{{{GROUPS}}}'
+TEMPLATE_VAR_NUM_QUESTIONS = '{{{NUM_QUESTIONS}}}'
+TEMPLATE_VAR_NUM_QUESTIONS_DIV_EIGHT_CEIL = '{{{NUM_QUESTIONS_DIV_EIGHT_CEIL}}}'
 TEMPLATE_VAR_QUESTION_ANSWERS = '{{{QUESTION_ANSWERS}}}'
 TEMPLATE_VAR_QUESTION_BODY = '{{{QUESTION_BODY}}}'
 TEMPLATE_VAR_QUESTION_NAME = '{{{QUESTION_NAME}}}'
@@ -62,6 +68,10 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
         groups = self.create_groups(quiz)
         template = self.fill_variable(template, TEMPLATE_VAR_GROUPS, groups)
 
+        match = re.search(r'\{\{\{\w+\}\}\}', template)
+        if (match is not None):
+            raise ValueError("Found unresolved template variable: '%s'." % (match.group(0)))
+
         return template
 
     def create_groups(self, quiz):
@@ -88,9 +98,6 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
 
         template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_NUMBER, str(number))
 
-        question_type = self.check_variable(question, 'question_type', label = 'Question')
-        body = None
-
         body = self.create_question_body(question)
         template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_BODY, body)
 
@@ -100,7 +107,11 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
         question_type = self.check_variable(question, 'question_type', label = 'Question')
 
         filename = "%s_%s" % (question_type, TEMPLATE_FILENAME_BODY)
-        template = quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_QUESTION_TYPES_DIR, filename))
+        path = os.path.join(self.template_dir, TEMPLATE_QUESTION_TYPES_DIR, filename)
+        if (not os.path.isfile(path)):
+            raise ValueError("Question template does not exist or is not a file: '%s'." % (path))
+
+        template = quizgen.util.file.read(path)
 
         prompt_document = self.check_variable(question, 'prompt_document', label = 'Question')
         template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_PROMPT,
@@ -157,6 +168,10 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
         # TEST - Variant Information
         version = self.check_variable(quiz, 'version', label = 'Quiz')
         template = self.fill_variable(template, TEMPLATE_VAR_VERSION, "Version: " + version)
+
+        num_questions = quiz.num_questions()
+        template = self.fill_variable(template, TEMPLATE_VAR_NUM_QUESTIONS, str(num_questions))
+        template = self.fill_variable(template, TEMPLATE_VAR_NUM_QUESTIONS_DIV_EIGHT_CEIL, str(math.ceil(num_questions / 8)))
 
         return template
 

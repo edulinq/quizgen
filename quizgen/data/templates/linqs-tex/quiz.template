@@ -1,86 +1,63 @@
-\documentclass[12pt]{article}
+\documentclass[addpoints]{exam}
 
 \usepackage{amsmath}
-\usepackage{centernot}
 \usepackage{enumitem}
 \usepackage{epsfig}
-\usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{multicol}
 \usepackage{upquote}
 
-% Remove section numbers.
-\setcounter{secnumdepth}{0}
-
-% Set Margins and Text Length
-\topmargin -0.5in
-\oddsidemargin -0.5in
-\evensidemargin -0.5in
-\textwidth 7in
-\textheight 9in
-
 \begin{document}
 
-\pagestyle{myheadings}
-\markright{{{{HEADER}}}}
-
 % Headers and footers.
-\pagestyle{fancy}
-\fancyhead[L]{{{{TITLE}}}}
-\fancyhead[C]{{{{COURSE_TITLE}}}}
-\fancyhead[R]{{{{TERM_TITLE}}}}
-\fancyfoot[L]{{{{VERSION}}}}
-\fancyfoot[C]{}
-\fancyfoot[R]{\thepage}
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{2pt}
+\pagestyle{headandfoot}
+\runningheader{{{{TITLE}}}}{{{{COURSE_TITLE}}}}{{{{TERM_TITLE}}}}
+\runningheadrule
+\runningfooter{{{{VERSION}}}}{}{\thepage}
+\runningfootrule
+
+\begin{coverpages}
 
 \centerline{\Large {{{TITLE}}}}
+\vspace{0.2cm}
+
 \centerline{\large {{{COURSE_TITLE}}} -- {{{TERM_TITLE}}}}
 \centerline{\large {{{DATE}}}}
-
-\section*{Instructions}
+\vspace{1.0cm}
 
 {{{DESCRIPTION}}}
 
-\vspace{0.15in}
+\vspace{1.0cm}
 
 \begin{center}
-\Large
-\begin{tabular}{|c|c| }
-    \hline
-    question & points  \\
-    \hline
-    \hline
-    1  \textbf{20} & \\
-    2  \textbf{20} & \\
-    3  \textbf{20} & \\
-    4  \textbf{20} & \\
-    5  \textbf{24} & \\
-    6  \textbf{16} & \\
-    \hline
-    total & \\
-    \hline
-\end{tabular}
+    \multirowgradetable{{{{NUM_QUESTIONS_DIV_EIGHT_CEIL}}}}[questions]
 \end{center}
 
-\vspace{0.5in}
-Name:
-\rule{3.5in}{0.2mm} \\
+\vspace{1.0cm}
 
-Email:
-\rule{3.5in}{0.2mm} \\
+\makebox[\textwidth]{Name:\enspace\hrulefill}
+
+\vspace{1.0cm}
+
+\makebox[\textwidth]{Email:\enspace\hrulefill}
+
+\vspace{0.5cm}
 
 \begin{quote}
 I acknowledge that I have neither given nor received inappropriate help on this exam, and have abided by the letter and spirit of the University of California, Santa Cruz Code of Academic Integrity  while taking this exam.
 \end{quote}
 
-Signature:
-\rule{3.5in}{0.2mm} \\
+\vspace{1.0cm}
 
-\newpage
+\makebox[\textwidth]{Signature:\enspace\hrulefill}
+
+\end{coverpages}
+
+\begin{questions}
 
 {{{GROUPS}}}
+
+\end{questions}
 
 \end{document}

@@ -121,6 +121,14 @@ class Quiz(object):
         else:
             raise QuizValidationError(f"Unknown format '{format}'.")
 
+    def num_questions(self):
+        count = 0
+
+        for group in self.groups:
+            count += group.pick_count
+
+        return count
+
 class Group(object):
     def __init__(self, name = '',
             pick_count = 1, points = 10,
