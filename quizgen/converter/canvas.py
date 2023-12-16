@@ -1,4 +1,7 @@
-#!/usr/bin/env python3
+"""
+Upload quizes to Canvas.
+The "conversion" here is to Canvas-style HTML.
+"""
 
 import os
 import urllib.parse

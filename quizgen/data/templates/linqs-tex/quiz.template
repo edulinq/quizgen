@@ -1,0 +1,80 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{centernot}
+\usepackage{enumitem}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{upquote}
+
+\newcommand{\figref}[1]{Figure~\ref{#1}}
+\newcommand{\topic}[1]{{\bf #1}}
+\newcommand{\pts}[1]{{\bf [#1 points]}}
+\newcommand{\commentout}[1]{%
+}
+
+% Removes Page Numbers
+\pagenumbering{gobble}
+
+% Set Margins and Text Length
+\topmargin -0.5in
+\oddsidemargin -0.5in
+\evensidemargin -0.5in
+\textwidth 7in
+\textheight 9in
+
+\begin{document}
+
+\pagestyle{myheadings}
+\markright{{{{HEADER}}}}
+
+\centerline{\Large {{{TITLE}}}}
+\centerline{\large {{{COURSE_TITLE}}} -- {{{TERM_TITLE}}}}
+\centerline{\large {{{DATE}}}}
+
+\section*{Instructions}
+
+{{{DESCRIPTION}}}
+
+\vspace{0.15in}
+
+\begin{center}
+\Large
+\begin{tabular}{|c|c| }
+    \hline
+    question & points  \\
+    \hline
+    \hline
+    1  \pts{20} & \\
+    2  \pts{20} & \\
+    3  \pts{20} & \\
+    4  \pts{20} & \\
+    5  \pts{24} & \\
+    6  \pts{16} & \\
+    \hline
+    total & \\
+    \hline
+\end{tabular}
+\end{center}
+
+\vspace{0.5in}
+Name:
+\rule{3.5in}{0.2mm} \\
+
+Email:
+\rule{3.5in}{0.2mm} \\
+
+\begin{quote}
+I acknowledge that I have neither given nor received inappropriate help on this exam, and have abided by the letter and spirit of the University of California, Santa Cruz Code of Academic Integrity  while taking this exam.
+\end{quote}
+
+Signature:
+\rule{3.5in}{0.2mm} \\
+
+\newpage
+
+{{{GROUPS}}}
+
+\end{document}

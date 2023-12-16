@@ -2,7 +2,7 @@ import glob
 import json
 import os
 
-import quizgen.canvas
+import quizgen.converter.canvas
 import quizgen.quiz
 import tests.base
 
@@ -63,7 +63,7 @@ def _get_question_parse_test_method(path):
 def _get_question_canvas_test_method(path, canvas_path):
     def __method(self):
         question = quizgen.quiz.Question.from_path(path)
-        canvas_info = quizgen.canvas._create_question_json(CANVAS_TEST_GROUP_ID, question, CANVAS_TEST_INDEX)
+        canvas_info = quizgen.converter.canvas._create_question_json(CANVAS_TEST_GROUP_ID, question, CANVAS_TEST_INDEX)
 
         with open(canvas_path, 'r') as file:
             expected_canvas_info = json.load(file)

@@ -2,6 +2,7 @@ import argparse
 import os
 import sys
 
+import quizgen.converter.textemplate
 import quizgen.constants
 import quizgen.parser
 import quizgen.quiz
@@ -14,7 +15,13 @@ def run(args):
         raise ValueError(f"Provided path '{args.path}' is not a file.")
 
     quiz = quizgen.quiz.Quiz.from_path(args.path)
-    content = quiz.to_format(args.format)
+
+    if (args.format == quizgen.constants.DOC_FORMAT_TEX):
+        converter = quizgen.converter.textemplate.TexTemplateConverter()
+        content = converter.convert_quiz(quiz)
+    else:
+        content = quiz.to_format(args.format)
+
     print(content)
 
     return 0

@@ -115,6 +115,8 @@ HTML_TABLE_STYLE = [
     'margin-bottom: 1em',
 ]
 
+VERB_CHARACTERS = ['|', '!', '@', '#', '$', '^', '&', '-', '_', '=', '+']
+
 class DocTransformer(lark.Transformer):
     def document(self, blocks):
         return DocumentNode(blocks)
@@ -799,10 +801,19 @@ class CodeNode(BaseTextNode):
         return f"```\n{self._text}\n```"
 
     def to_tex(self, **kwargs):
-        if (self._inline):
-            return rf"\texttt{{{self._text}}}"
+        if (not self._inline):
+            return f"\\begin{{lstlisting}}\n{self._text}\n\\end{{lstlisting}}"
 
-        return f"\\begin{{lstlisting}}\n{self._text}\n\\end{{lstlisting}}"
+        delim = None
+        for char in VERB_CHARACTERS:
+            if (char not in self._text):
+                delim = char
+                break
+
+        if (delim is None):
+            raise ValueError("Could not find a delimiter to use with tex's `\verb'.")
+
+        return r"\verb%s%s%s" % (delim, self._text, delim)
 
     def to_html(self, **kwargs):
         content = f'<code>{self._text}</code>'

@@ -1,0 +1,7 @@
+{{{QUESTION_PROMPT}}}
+
+\begin{enumerate}[label=(\Alph*)]
+
+{{{QUESTION_ANSWERS}}}
+
+\end{enumerate}

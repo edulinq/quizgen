@@ -1,3 +1,4 @@
+import datetime
 import glob
 import json
 import json5
@@ -17,7 +18,10 @@ QUESTION_FILENAME = 'question.json'
 PROMPT_FILENAME = 'prompt.md'
 
 class Quiz(object):
-    def __init__(self, title = '', description = '',
+    def __init__(self,
+            title = '',
+            course_title = '', term_title = '',
+            description = '', date = '',
             practice = True, published = False,
             time_limit = 30, shuffle_answers = True,
             hide_results = None, show_correct_answers = True,
@@ -27,9 +31,14 @@ class Quiz(object):
             version = None,
             **kwargs):
         self.title = title
+        self.course_title = course_title
+        self.term_title = term_title
         self.description = description
+        self.date = date
+
         self.practice = practice
         self.published = published
+
         self.time_limit = time_limit
         self.shuffle_answers = shuffle_answers
         self.hide_results = hide_results
@@ -52,12 +61,25 @@ class Quiz(object):
 
         if ((self.description is None) or (self.description == "")):
             raise QuizValidationError("Description cannot be empty.")
+        self.description_document = quizgen.parser.parse_text(self.description,
+                base_dir = self.base_dir)
 
         if (self.version is None):
             self.version = quizgen.util.git.get_version(self.base_dir, throw = True)
 
+        if (self.date == ''):
+            self.date = datetime.date.today()
+        else:
+            self.date = datetime.date.fromisoformat(self.date)
+
     def to_dict(self):
         value = self.__dict__.copy()
+
+        if ('date' in value):
+            value['date'] = value['date'].isoformat()
+
+        value['description_document'] = self.description_document.to_pod()
+
         value['groups'] = [group.to_dict() for group in self.groups]
         return value
 
