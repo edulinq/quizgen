@@ -210,13 +210,13 @@ def _serialize_answers(data, question, instance):
     if (question.question_type == quizgen.constants.QUESTION_TYPE_ESSAY):
         # Essay questions have no answers.
         pass
-    elif (question.question_type == quizgen.constants.QUESTION_TYPE_FILL_IN_MULTIPLE_BLANKS):
+    elif (question.question_type == quizgen.constants.QUESTION_TYPE_FIMB):
         _serialize_fimb_answers(data, question.answers, instance)
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
         _serialize_matching_answers(data, question.answers, instance)
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_NUMERICAL):
         _serialize_numeric_answers(data, question.answers, instance)
-    elif (question.question_type == quizgen.constants.QUESTION_TYPE_SHORT_ANSWER):
+    elif (question.question_type == quizgen.constants.QUESTION_TYPE_SA):
         _serialize_fimb_answers(data, question.answers, instance)
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_TEXT_ONLY):
         # Text-Only questions have no answers.

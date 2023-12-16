@@ -14,26 +14,26 @@ QUIZ_TYPES = [QUIZ_TYPE_PRACTICE, QUIZ_TYPE_ASSIGNMENT, QUIZ_TYPE_GRADED_SURVEY,
 QUESTION_TYPE_CALCULATED = 'calculated_question'
 QUESTION_TYPE_ESSAY = 'essay_question'
 QUESTION_TYPE_FILE_UPLOAD = 'file_upload_question'
-QUESTION_TYPE_FILL_IN_MULTIPLE_BLANKS = 'fill_in_multiple_blanks_question'
+QUESTION_TYPE_FIMB = 'fill_in_multiple_blanks_question'
 QUESTION_TYPE_MATCHING = 'matching_question'
-QUESTION_TYPE_MULTIPLE_ANSWERS = 'multiple_answers_question'
-QUESTION_TYPE_MULTIPLE_CHOICE = 'multiple_choice_question'
-QUESTION_TYPE_MULTIPLE_DROPDOWNS = 'multiple_dropdowns_question'
+QUESTION_TYPE_MA = 'multiple_answers_question'
+QUESTION_TYPE_MCQ = 'multiple_choice_question'
+QUESTION_TYPE_MDD = 'multiple_dropdowns_question'
 QUESTION_TYPE_NUMERICAL = 'numerical_question'
-QUESTION_TYPE_SHORT_ANSWER = 'short_answer_question'
+QUESTION_TYPE_SA = 'short_answer_question'
 QUESTION_TYPE_TEXT_ONLY = 'text_only_question'
 QUESTION_TYPE_TF = 'true_false_question'
 
 # Supported question types.
 QUESTION_TYPES = [
     QUESTION_TYPE_ESSAY,
-    QUESTION_TYPE_FILL_IN_MULTIPLE_BLANKS,
+    QUESTION_TYPE_FIMB,
     QUESTION_TYPE_MATCHING,
-    QUESTION_TYPE_MULTIPLE_ANSWERS,
-    QUESTION_TYPE_MULTIPLE_CHOICE,
-    QUESTION_TYPE_MULTIPLE_DROPDOWNS,
+    QUESTION_TYPE_MA,
+    QUESTION_TYPE_MCQ,
+    QUESTION_TYPE_MDD,
     QUESTION_TYPE_NUMERICAL,
-    QUESTION_TYPE_SHORT_ANSWER,
+    QUESTION_TYPE_SA,
     QUESTION_TYPE_TEXT_ONLY,
     QUESTION_TYPE_TF,
 ]

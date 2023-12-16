@@ -4,19 +4,14 @@
 \usepackage{centernot}
 \usepackage{enumitem}
 \usepackage{epsfig}
+\usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{multicol}
 \usepackage{upquote}
 
-\newcommand{\figref}[1]{Figure~\ref{#1}}
-\newcommand{\topic}[1]{{\bf #1}}
-\newcommand{\pts}[1]{{\bf [#1 points]}}
-\newcommand{\commentout}[1]{%
-}
-
-% Removes Page Numbers
-\pagenumbering{gobble}
+% Remove section numbers.
+\setcounter{secnumdepth}{0}
 
 % Set Margins and Text Length
 \topmargin -0.5in
@@ -29,6 +24,17 @@
 
 \pagestyle{myheadings}
 \markright{{{{HEADER}}}}
+
+% Headers and footers.
+\pagestyle{fancy}
+\fancyhead[L]{{{{TITLE}}}}
+\fancyhead[C]{{{{COURSE_TITLE}}}}
+\fancyhead[R]{{{{TERM_TITLE}}}}
+\fancyfoot[L]{{{{VERSION}}}}
+\fancyfoot[C]{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{2pt}
 
 \centerline{\Large {{{TITLE}}}}
 \centerline{\large {{{COURSE_TITLE}}} -- {{{TERM_TITLE}}}}
@@ -47,12 +53,12 @@
     question & points  \\
     \hline
     \hline
-    1  \pts{20} & \\
-    2  \pts{20} & \\
-    3  \pts{20} & \\
-    4  \pts{20} & \\
-    5  \pts{24} & \\
-    6  \pts{16} & \\
+    1  \textbf{20} & \\
+    2  \textbf{20} & \\
+    3  \textbf{20} & \\
+    4  \textbf{20} & \\
+    5  \textbf{24} & \\
+    6  \textbf{16} & \\
     \hline
     total & \\
     \hline

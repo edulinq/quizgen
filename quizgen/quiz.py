@@ -206,15 +206,15 @@ class Question(object):
 
             if (len(self.answers) != 0):
                 raise QuizValidationError("Essay questions cannot have answers.")
-        elif (self.question_type == quizgen.constants.QUESTION_TYPE_FILL_IN_MULTIPLE_BLANKS):
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_FIMB):
             self._validate_fimb_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
             self._validate_matching_answers()
-        elif (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_ANSWERS):
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_MA):
             self._validate_answer_list(self.answers)
-        elif (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_CHOICE):
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_MCQ):
             self._validate_answer_list(self.answers, min_correct = 1, max_correct = 1)
-        elif (self.question_type == quizgen.constants.QUESTION_TYPE_MULTIPLE_DROPDOWNS):
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_MDD):
             if (len(self.answers) == 0):
                 raise QuizValidationError("No answers provided, at least one answer required.")
 
@@ -222,7 +222,7 @@ class Question(object):
                 self._validate_answer_list(answers, min_correct = 1, max_correct = 1, parse = False)
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_NUMERICAL):
             self._validate_numerical_answers()
-        elif (self.question_type == quizgen.constants.QUESTION_TYPE_SHORT_ANSWER):
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_SA):
             self._validate_fitb_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_TEXT_ONLY):
             if (not isinstance(self.answers, list)):
