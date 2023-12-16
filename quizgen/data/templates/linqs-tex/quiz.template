@@ -8,14 +8,14 @@
 \usepackage{multicol}
 \usepackage{upquote}
 
-\begin{document}
-
 % Headers and footers.
 \pagestyle{headandfoot}
-\runningheader{{{{TITLE}}}}{{{{COURSE_TITLE}}}}{{{{TERM_TITLE}}}}
-\runningheadrule
-\runningfooter{{{{VERSION}}}}{}{\thepage}
-\runningfootrule
+\header{{{{COURSE_TITLE}}}}{{{{TITLE}}}}{{{{TERM_TITLE}}}}
+\headrule
+\footer{{{{VERSION}}}}{}{\thepage}
+\footrule
+
+\begin{document}
 
 \begin{coverpages}
 

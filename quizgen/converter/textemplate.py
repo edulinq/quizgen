@@ -13,3 +13,6 @@ DEFAULT_TEMPLATE_DIR = os.path.join(THIS_DIR, '..', 'data', 'templates', 'linqs-
 class TexTemplateConverter(quizgen.converter.template.TemplateConverter):
     def __init__(self, template_dir = DEFAULT_TEMPLATE_DIR, **kwargs):
         super().__init__(quizgen.constants.DOC_FORMAT_TEX, template_dir, **kwargs)
+
+    def get_left_ids(self):
+        return [r'\underline{\hspace{1cm}}'] * len(self.get_right_ids())

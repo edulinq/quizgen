@@ -1,0 +1,11 @@
+{{{QUESTION_PROMPT}}}
+
+\begin{center}
+    \begin{tabular}{ l c l }
+
+\vspace{0.2cm}
+
+{{{QUESTION_ANSWERS}}}
+
+    \end{tabular}
+\end{center}
