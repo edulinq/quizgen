@@ -8,11 +8,19 @@
 \usepackage{multicol}
 \usepackage{upquote}
 
+\usepackage[
+    pdftex,
+    hidelinks,
+    pdftitle={{{{TITLE}}} - {{{COURSE_TITLE}}} {{{TERM_TITLE}}}},
+    pdfcreator={Quiz Generator},
+    pdfkeywords={Version: {{{VERSION}}}}
+]{hyperref}
+
 % Headers and footers.
 \pagestyle{headandfoot}
 \header{{{{COURSE_TITLE}}}}{{{{TITLE}}}}{{{{TERM_TITLE}}}}
 \headrule
-\footer{{{{VERSION}}}}{}{\thepage}
+\footer{Version: {{{VERSION}}}}{}{\thepage}
 \footrule
 
 \begin{document}

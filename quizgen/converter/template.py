@@ -227,7 +227,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
 
         # TEST - Variant Information
         version = self.check_variable(quiz, 'version', label = 'Quiz')
-        template = self.fill_variable(template, TEMPLATE_VAR_VERSION, "Version: " + version)
+        template = self.fill_variable(template, TEMPLATE_VAR_VERSION, version)
 
         num_questions = quiz.num_questions()
         template = self.fill_variable(template, TEMPLATE_VAR_NUM_QUESTIONS, str(num_questions))

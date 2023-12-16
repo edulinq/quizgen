@@ -1,9 +1,13 @@
 %%% BEGIN Question {{{{QUESTION_NUMBER}}} -- {{{QUESTION_NAME}}}} %%%
 
+\begin{samepage}
+
 \vspace{1cm}
 
 \question[{{{QUESTION_POINTS}}}]
 
 {{{QUESTION_BODY}}}
+
+\end{samepage}
 
 %%% END Question {{{{QUESTION_NUMBER}}} -- {{{QUESTION_NAME}}}} %%%
