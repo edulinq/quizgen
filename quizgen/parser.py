@@ -264,6 +264,8 @@ class ParseNode(abc.ABC):
             return self.to_markdown(**kwargs)
         elif (format == quizgen.constants.DOC_FORMAT_TEX):
             return self.to_tex(**kwargs)
+        elif (format == quizgen.constants.DOC_FORMAT_TEXT):
+            return self.to_tex(**kwargs)
         else:
             raise ValueError(f"Unknown format '{format}'.")
 
@@ -283,6 +285,12 @@ class DocumentNode(ParseNode):
         context.update(kwargs)
 
         return "\n\n".join([node.to_markdown(**context) for node in self._nodes])
+
+    def to_text(self, **kwargs):
+        context = copy.deepcopy(self._context)
+        context.update(kwargs)
+
+        return "\n\n".join([node.to_text(**context) for node in self._nodes])
 
     def to_tex(self, full_doc = False, **kwargs):
         context = copy.deepcopy(self._context)
@@ -333,6 +341,9 @@ class BlockNode(ParseNode):
     def to_markdown(self, **kwargs):
         return "\n".join([node.to_markdown(**kwargs) for node in self._nodes])
 
+    def to_text(self, **kwargs):
+        return "\n".join([node.to_text(**kwargs) for node in self._nodes])
+
     def to_tex(self, **kwargs):
         return "\n".join([node.to_tex(**kwargs) for node in self._nodes])
 
@@ -362,6 +373,9 @@ class LinkNode(ParseNode):
     def to_markdown(self, **kwargs):
         return f"[{self._text}]({self._link})"
 
+    def to_text(self, **kwargs):
+        return f"{self._text} ({self._link})"
+
     def to_tex(self, **kwargs):
         if (self._text == ""):
             return rf"\url{{{self._link}}}"
@@ -389,6 +403,9 @@ class ImageNode(ParseNode):
 
     def to_markdown(self, **kwargs):
         return f"![{self._text}]({self._link})"
+
+    def to_text(self, **kwargs):
+        return f"{self._text} ({self._link})"
 
     def to_tex(self, base_dir = '.', **kwargs):
         path = os.path.join(base_dir, self._link)
@@ -439,6 +456,9 @@ class TableNode(ParseNode):
 
     def to_markdown(self, **kwargs):
         return "\n".join([row.to_markdown(width = self._width, **kwargs) for row in self._rows]) + "\n"
+
+    def to_text(self, **kwargs):
+        return "\n".join([row.to_text(width = self._width, **kwargs) for row in self._rows]) + "\n"
 
     def to_tex(self, **kwargs):
         column_spec = "c" * self._width
@@ -504,6 +524,9 @@ class TableRowNode(ParseNode):
     def to_markdown(self, **kwargs):
         return "| " + " | ".join([cell.to_markdown(**kwargs) for cell in self._cells]) + " |"
 
+    def to_text(self, **kwargs):
+        return "| " + " | ".join([cell.to_text(**kwargs) for cell in self._cells]) + " |"
+
     def to_tex(self, **kwargs):
         return " & ".join([cell.to_tex(**kwargs) for cell in self._cells]) + r' \\'
 
@@ -552,6 +575,9 @@ class TableSepNode(ParseNode):
     def to_markdown(self, width = 1, **kwargs):
         return "|" + ("---|" * width)
 
+    def to_text(self, width = 1, **kwargs):
+        return "|" + ("---|" * width)
+
     def to_tex(self, **kwargs):
         return r'\hline \\'
 
@@ -572,6 +598,9 @@ class ListNode(ParseNode):
 
     def to_markdown(self, **kwargs):
         return "\n".join([" - " + item.to_markdown(**kwargs) for item in self._items]) + "\n"
+
+    def to_text(self, **kwargs):
+        return "\n".join([" - " + item.to_text(**kwargs) for item in self._items]) + "\n"
 
     def to_tex(self, **kwargs):
         lines = [
@@ -626,6 +655,9 @@ class TextNode(ParseNode):
     def to_markdown(self, **kwargs):
         return "".join([node.to_markdown(**kwargs) for node in self._nodes])
 
+    def to_text(self, **kwargs):
+        return "".join([node.to_text(**kwargs) for node in self._nodes])
+
     def to_tex(self, **kwargs):
         return "".join([node.to_tex(**kwargs) for node in self._nodes])
 
@@ -672,6 +704,9 @@ class LinebreakNode(ParseNode):
     def to_markdown(self, **kwargs):
         return "  \n"
 
+    def to_text(self, **kwargs):
+        return "\n\n"
+
     def to_tex(self, **kwargs):
         return ' \\newline\n'
 
@@ -713,6 +748,9 @@ class AnswerReferenceNode(BaseTextNode):
     def to_markdown(self, **kwargs):
         return f"[[{self._text}]]"
 
+    def to_text(self, **kwargs):
+        return f"[{self._text}]"
+
     def to_tex(self, **kwargs):
         # TODO(eriq): We do not have a convention for this.
         text = tex_escape(self._text)
@@ -731,6 +769,12 @@ class CommentNode(BaseTextNode):
             return ""
 
         return f"<!--- {self._text} -->"
+
+    def to_text(self, display_comments = False, **kwargs):
+        if (not display_comments):
+            return ""
+
+        return f"# {self._text}"
 
     def to_tex(self, display_comments = False, **kwargs):
         if (not display_comments):
@@ -752,6 +796,9 @@ class NormalTextNode(BaseTextNode):
     def to_markdown(self, **kwargs):
         return self._text
 
+    def to_text(self, **kwargs):
+        return self._text
+
     def to_tex(self, **kwargs):
         return tex_escape(self._text)
 
@@ -765,6 +812,9 @@ class ItalicsNode(BaseTextNode):
 
     def to_markdown(self, **kwargs):
         return f"*{self._text}*"
+
+    def to_text(self, **kwargs):
+        return self._text
 
     def to_tex(self, **kwargs):
         text = tex_escape(self._text)
@@ -781,6 +831,9 @@ class BoldNode(BaseTextNode):
     def to_markdown(self, **kwargs):
         return f"**{self._text}**"
 
+    def to_text(self, **kwargs):
+        return self._text
+
     def to_tex(self, **kwargs):
         text = tex_escape(self._text)
         return rf"\textbf{{{text}}}"
@@ -795,6 +848,12 @@ class CodeNode(BaseTextNode):
         self._inline = inline
 
     def to_markdown(self, **kwargs):
+        if (self._inline):
+            return f"`{self._text}`"
+
+        return f"```\n{self._text}\n```"
+
+    def to_text(self, **kwargs):
         if (self._inline):
             return f"`{self._text}`"
 
@@ -837,6 +896,12 @@ class EquationNode(BaseTextNode):
         self._inline = inline
 
     def to_markdown(self, **kwargs):
+        if (self._inline):
+            return f"$ {self._text} $"
+
+        return f"$$\n{self._text}\n$$"
+
+    def to_text(self, **kwargs):
         if (self._inline):
             return f"$ {self._text} $"
 
@@ -901,6 +966,10 @@ def clean_text(text):
     return text
 
 def parse_text(text, base_dir = '.'):
+    # Special case for empty documents.
+    if (text.strip() == ''):
+        return DocumentNode([])
+
     text = clean_text(text)
 
     parser = lark.Lark(GRAMMAR, start = 'document')

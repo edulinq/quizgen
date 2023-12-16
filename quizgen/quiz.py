@@ -97,30 +97,6 @@ class Quiz(object):
     def to_json(self, indent = 4):
         return json.dumps(self.to_dict(), indent = indent)
 
-    # TODO
-    def to_html(self, **kwargs):
-        raise NotImplementedError()
-
-    # TODO
-    def to_markdown(self, **kwargs):
-        raise NotImplementedError()
-
-    # TODO
-    def to_tex(self, **kwargs):
-        raise NotImplementedError()
-
-    def to_format(self, format, **kwargs):
-        if (format == quizgen.constants.DOC_FORMAT_HTML):
-            return self.to_html(**kwargs)
-        elif (format == quizgen.constants.DOC_FORMAT_JSON):
-            return self.to_json(**kwargs)
-        elif (format == quizgen.constants.DOC_FORMAT_MD):
-            return self.to_markdown(**kwargs)
-        elif (format == quizgen.constants.DOC_FORMAT_TEX):
-            return self.to_tex(**kwargs)
-        else:
-            raise QuizValidationError(f"Unknown format '{format}'.")
-
     def num_questions(self):
         count = 0
 
@@ -190,7 +166,9 @@ class Question(object):
         self.prompt = prompt
 
         self.question_type = question_type
+
         self.answers = answers
+        self.answers_documents = None
 
         try:
             self.validate()
@@ -208,36 +186,26 @@ class Question(object):
         self._validate_answers()
 
     def _validate_answers(self):
-        if (self.question_type == quizgen.constants.QUESTION_TYPE_ESSAY):
+        if (self.question_type in [quizgen.constants.QUESTION_TYPE_ESSAY, quizgen.constants.QUESTION_TYPE_TEXT_ONLY]):
             if (not isinstance(self.answers, list)):
-                raise QuizValidationError("Essay questions cannot have answers.")
+                raise QuizValidationError("Question type '%s' cannot have answers." % (self.question_type))
 
             if (len(self.answers) != 0):
-                raise QuizValidationError("Essay questions cannot have answers.")
+                raise QuizValidationError("Question type '%s' cannot have answers." % (self.question_type))
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_FIMB):
             self._validate_fimb_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
             self._validate_matching_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MA):
-            self._validate_answer_list(self.answers)
+            self._validate_answer_list()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MCQ):
-            self._validate_answer_list(self.answers, min_correct = 1, max_correct = 1)
+            self._validate_answer_list(min_correct = 1, max_correct = 1)
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MDD):
-            if (len(self.answers) == 0):
-                raise QuizValidationError("No answers provided, at least one answer required.")
-
-            for answers in self.answers.values():
-                self._validate_answer_list(answers, min_correct = 1, max_correct = 1, parse = False)
+            self._validate_mdd_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_NUMERICAL):
             self._validate_numerical_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_SA):
             self._validate_fitb_answers()
-        elif (self.question_type == quizgen.constants.QUESTION_TYPE_TEXT_ONLY):
-            if (not isinstance(self.answers, list)):
-                raise QuizValidationError("Text-Only questions cannot have answers.")
-
-            if (len(self.answers) != 0):
-                raise QuizValidationError("Text-Only questions cannot have answers.")
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_TF):
             self._validate_tf_answers()
         else:
@@ -253,7 +221,16 @@ class Question(object):
             {"correct": (not self.answers), "text": 'False'},
         ]
 
-        self._validate_answer_list(self.answers)
+        self._validate_answer_list()
+
+    def _validate_mdd_answers(self):
+        if (len(self.answers) == 0):
+            raise QuizValidationError("No answers provided, at least one answer required.")
+
+        self.answers_documents = {}
+        for (key, answers) in self.answers.items():
+            docs = _validate_answer_list(answers, self.base_dir, min_correct = 1, max_correct = 1)
+            self.answers_documents[key] = docs
 
     def _validate_numerical_answers(self):
         _check_type(self.answers, list, "'answers' for a numerical question")
@@ -315,6 +292,19 @@ class Question(object):
             for value in values:
                 _check_type(value, str, f"value for {label} answers")
 
+        self.answers_documents = {}
+        for (key, values) in self.answers.items():
+            key_doc = quizgen.parser.parse_text(key, base_dir = self.base_dir)
+
+            values_docs = []
+            for value in values:
+                values_docs.append(quizgen.parser.parse_text(value, base_dir = self.base_dir))
+
+            self.answers_documents[key] = {
+                'key': key_doc,
+                'values': values_docs,
+            }
+
     def _validate_matching_answers(self):
         if (not isinstance(self.answers, dict)):
             raise QuizValidationError(f"Expected dict for matching answers, found {type(self.answers)}.")
@@ -341,40 +331,31 @@ class Question(object):
 
             self.answers['distractors'][i] = distractor
 
-    def _validate_answer_list(self, answers, min_correct = 0, max_correct = math.inf, parse = True):
-        if (not isinstance(answers, list)):
-            raise QuizValidationError(f"Expected answers to be a list, found {type(answers)} (base_dir: '{self.base_dir}'.")
+        self.answers_documents = {
+            'matches': [],
+            'distractors': [],
+        }
 
-        if (len(answers) == 0):
-            raise QuizValidationError(f"No answers provided, at least one answer required.")
+        for (left, right) in self.answers['matches']:
+            left_doc = quizgen.parser.parse_text(left, base_dir = self.base_dir)
+            right_doc = quizgen.parser.parse_text(right, base_dir = self.base_dir)
 
-        num_correct = 0
-        for answer in answers:
-            self._validate_answer(answer, parse = parse)
-            if (answer['correct']):
-                num_correct += 1
+            self.answers_documents['matches'].append([left_doc, right_doc])
 
-        if (num_correct < min_correct):
-            raise QuizValidationError(f"Did not find enough correct answers. Expected at least {min_correct}, found {num_correct} (base_dir: '{self.base_dir}'.")
+        for distractor in self.answers['distractors']:
+            doc = quizgen.parser.parse_text(distractor, base_dir = self.base_dir)
+            self.answers_documents['distractors'].append(doc)
 
-        if (num_correct > max_correct):
-            raise QuizValidationError(f"Found too many correct answers. Expected at most {max_correct}, found {num_correct} (base_dir: '{self.base_dir}'.")
-
-    def _validate_answer(self, answer, parse = True):
-        if ('correct' not in answer):
-            raise QuizValidationError(f"Answer has no 'correct' field (base_dir: '{self.base_dir}'.")
-
-        if ('text' not in answer):
-            raise QuizValidationError(f"Answer has no 'text' field (base_dir: '{self.base_dir}'.")
-
-        if (parse):
-            answer['document'] = quizgen.parser.parse_text(answer['text'], base_dir = self.base_dir)
+    def _validate_answer_list(self, min_correct = 0, max_correct = math.inf):
+        self.answers_documents = _validate_answer_list(self.answers, self.base_dir,
+                min_correct = min_correct, max_correct = max_correct)
 
     def to_dict(self):
         value = self.__dict__.copy()
 
         value['prompt_document'] = self.prompt_document.to_pod()
         value['answers'] = self._answers_to_dict(self.answers)
+        value['answers_documents'] = self._answers_to_dict(self.answers_documents)
 
         return value
 
@@ -442,49 +423,35 @@ def _check_type(value, expected_type, label):
     if (not isinstance(value, expected_type)):
         raise QuizValidationError(f"{label} must be a {expected_type}, found '{value}' ({type(value)}).")
 
+def _validate_answer_list(answers, base_dir, min_correct = 0, max_correct = math.inf):
+    _check_type(answers, list, "'answers'")
+
+    if (len(answers) == 0):
+        raise QuizValidationError(f"No answers provided, at least one answer required.")
+
+    num_correct = 0
+    for answer in answers:
+        if ('correct' not in answer):
+            raise QuizValidationError(f"Answer has no 'correct' field (base_dir: '{base_dir}'.")
+
+        if ('text' not in answer):
+            raise QuizValidationError(f"Answer has no 'text' field (base_dir: '{base_dir}'.")
+
+        if (answer['correct']):
+            num_correct += 1
+
+    if (num_correct < min_correct):
+        raise QuizValidationError(f"Did not find enough correct answers. Expected at least {min_correct}, found {num_correct} (base_dir: '{base_dir}'.")
+
+    if (num_correct > max_correct):
+        raise QuizValidationError(f"Found too many correct answers. Expected at most {max_correct}, found {num_correct} (base_dir: '{base_dir}'.")
+
+    answers_documents = []
+    for answer in answers:
+        doc = quizgen.parser.parse_text(answer['text'], base_dir = base_dir)
+        answers_documents.append(doc)
+
+    return answers_documents
+
 class QuizValidationError(ValueError):
     pass
-
-LATEX_QUIZ_TEMPLATE = r"""
-    \documentclass{exam}
-
-    \title{%%title%%}
-
-    \begin{document}
-
-        \maketitle
-
-        \begin{center}
-            \fbox{\fbox{\parbox{5.5in}{\centering
-                Answer the questions in the spaces provided.
-                If you run out of room for an answer, continue on the back of the page.
-            }}}
-        \end{center}
-
-        \vspace{5mm}
-        \makebox[0.75\textwidth]{Name:\enspace\hrulefill}
-
-        \vspace{5mm}
-        \makebox[0.75\textwidth]{CruzID:\enspace\hrulefill}
-
-        \begin{questions}
-
-            %%groups%%
-
-        \end{questions}
-    \end{document}
-"""
-
-LATEX_GROUP_TEMPLATE = r"""
-    \question
-    %%name%%
-
-    %%question%%
-
-"""
-
-LATEX_QUESTION_TEMPLATE = r"""
-    %%prompt%%
-    \\
-    %%answers%%
-"""

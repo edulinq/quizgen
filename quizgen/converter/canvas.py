@@ -211,35 +211,35 @@ def _serialize_answers(data, question, instance):
         # Essay questions have no answers.
         pass
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_FIMB):
-        _serialize_fimb_answers(data, question.answers, instance)
+        _serialize_fimb_answers(data, question, instance)
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
-        _serialize_matching_answers(data, question.answers, instance)
+        _serialize_matching_answers(data, question, instance)
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_NUMERICAL):
         _serialize_numeric_answers(data, question.answers, instance)
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_SA):
-        _serialize_fimb_answers(data, question.answers, instance)
+        _serialize_fimb_answers(data, question, instance)
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_TEXT_ONLY):
         # Text-Only questions have no answers.
         pass
     elif (isinstance(question.answers, list)):
         use_text = (question.question_type == quizgen.constants.QUESTION_TYPE_TF)
-        _serialize_answer_list(data, question.answers, instance, use_text = use_text)
+        _serialize_answer_list(data, question.answers, question.answers_documents, instance, use_text = use_text)
     elif (isinstance(question.answers, dict)):
         count = 0
         for key, value in question.answers.items():
-            _serialize_answer_list(data, value, instance,
+            _serialize_answer_list(data, value, question.answers_documents[key], instance,
                     start_index = count, blank_id = key, use_text = True)
             count += len(value)
     else:
         raise ValueError(f"Unknown answers type '{type(question.answers)}'.")
 
-def _serialize_answer_list(data, answers, instance,
+def _serialize_answer_list(data, answers, answers_documents, instance,
         start_index = 0, blank_id = None, use_text = False):
     for i in range(len(answers)):
-        _serialize_answer(data, answers[i], start_index + i, instance,
+        _serialize_answer(data, answers[i], answers_documents[i], start_index + i, instance,
             blank_id = blank_id, use_text = use_text)
 
-def _serialize_answer(data, answer, index, instance, blank_id = None, use_text = False):
+def _serialize_answer(data, answer, answer_document, index, instance, blank_id = None, use_text = False):
     weight = 0
     if (answer['correct']):
         weight = 100
@@ -247,42 +247,39 @@ def _serialize_answer(data, answer, index, instance, blank_id = None, use_text =
     data["question[answers][%d][answer_weight]" % (index)] = weight
 
     if (use_text):
-        text = answer['text']
+        text = answer_document.to_text()
         data["question[answers][%d][answer_text]" % (index)] = text
     else:
-        html = answer['document'].to_html(canvas_instance = instance)
+        html = answer_document.to_html(canvas_instance = instance)
         data["question[answers][%d][answer_html]" % (index)] = html
 
     if (blank_id is not None):
         data["question[answers][%d][blank_id]" % (index)] = blank_id
 
-def _serialize_matching_answers(data, answers, instance):
-    right_contents = []
-
-    for (_, right_text) in answers['matches']:
-        right_contents.append(right_text)
-
-    for right_text in answers['distractors']:
-        right_contents.append(right_text)
-
-    for i in range(len(answers['matches'])):
-        left_content = answers['matches'][i][0]
-        right_content = answers['matches'][i][1]
+def _serialize_matching_answers(data, question, instance):
+    for i in range(len(question.answers_documents['matches'])):
+        left_content = question.answers_documents['matches'][i][0].to_text()
+        right_content = question.answers_documents['matches'][i][1].to_text()
 
         data["question[answers][%d][answer_match_left]" % (i)] = left_content
         data["question[answers][%d][answer_match_right]" % (i)] = right_content
 
-    if (len(answers['distractors']) > 0):
-        data["question[matching_answer_incorrect_matches]"] = "\n".join(answers['distractors'])
+    if (len(question.answers_documents['distractors']) > 0):
+        distractors = [distractor.to_text() for distractor in question.answers_documents['distractors']]
+        data["question[matching_answer_incorrect_matches]"] = "\n".join(distractors)
 
-def _serialize_fimb_answers(data, answers, instance):
+def _serialize_fimb_answers(data, question, instance):
     index = 0
 
-    for (key, values) in answers.items():
-        for value in values:
-            data[f"question[answers][{index}][blank_id]"] = key
+    for (key, values) in question.answers.items():
+        key_text = question.answers_documents[key]['key'].to_text()
+
+        for i in range(len(values)):
+            value_text = question.answers_documents[key]['values'][i].to_text()
+
+            data[f"question[answers][{index}][blank_id]"] = key_text
             data[f"question[answers][{index}][answer_weight]"] = 100
-            data[f"question[answers][{index}][answer_text]"] = value
+            data[f"question[answers][{index}][answer_text]"] = value_text
 
             index += 1
 
