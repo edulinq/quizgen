@@ -1,5 +1,7 @@
 %%% BEGIN Question {{{{QUESTION_NUMBER}}} -- {{{QUESTION_NAME}}}} %%%
 
+\vspace{1cm}
+
 \question[{{{QUESTION_POINTS}}}]
 
 {{{QUESTION_BODY}}}

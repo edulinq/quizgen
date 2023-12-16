@@ -65,6 +65,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
         # Signatuire: func(self, base_template (for an answer of this type), question)
         self.answer_functions = {
             quizgen.constants.QUESTION_TYPE_MATCHING: 'create_answers_matching',
+            quizgen.constants.QUESTION_TYPE_MA: 'create_answers_list',
             quizgen.constants.QUESTION_TYPE_MCQ: 'create_answers_list',
             quizgen.constants.QUESTION_TYPE_TF: 'create_answers_noop',
         }
