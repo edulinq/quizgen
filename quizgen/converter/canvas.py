@@ -85,7 +85,7 @@ def upload_canvas_files(quiz, instance):
             quizgen.util.hash.sha256(path) + os.path.splitext(path)[-1]
         ])
 
-        file_id = quizgen.canvas.upload_file(path, canvas_path, instance)
+        file_id = upload_file(path, canvas_path, instance)
         file_ids[path] = file_id
 
 
@@ -138,9 +138,11 @@ def create_quiz(quiz, instance):
     if (quiz.practice):
         quiz_type = quizgen.constants.QUIZ_TYPE_PRACTICE
 
+    description = quiz.description_document.to_html(canvas_instance = instance)
+
     data = {
         'quiz[title]': quiz.title,
-        'quiz[description]': f"<p>{quiz.description}</p><br /><hr /><p>Version: {quiz.version}</p>",
+        'quiz[description]': f"<p>{description}</p><br /><hr /><p>Version: {quiz.version}</p>",
         'quiz[quiz_type]': quiz_type,
         'quiz[published]': quiz.published,
         'quiz[assignment_group_id]': assignment_group_id,
