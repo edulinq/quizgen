@@ -40,7 +40,7 @@ class QuizQuestionsTest(tests.base.BaseTest):
         QuizQuestionsTest._num_paths = len(good_paths)
 
     def testNumQuestions(self):
-        self.assertEquals(QuizQuestionsTest._num_paths, QuizQuestionsTest._quiz.num_questions())
+        self.assertEqual(QuizQuestionsTest._num_paths, QuizQuestionsTest._quiz.num_questions())
 
     def testToJSON(self):
         content = QuizQuestionsTest._quiz.to_json()
