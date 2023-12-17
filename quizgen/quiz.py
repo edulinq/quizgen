@@ -90,8 +90,11 @@ class Quiz(object):
 
         base_dir = os.path.dirname(path)
 
-        quiz_info['groups'] = [Group.from_dict(group_info, base_dir) for group_info in quiz_info.get('groups', [])]
+        return Quiz.from_dict(quiz_info, base_dir)
 
+    @staticmethod
+    def from_dict(quiz_info, base_dir):
+        quiz_info['groups'] = [Group.from_dict(group_info, base_dir) for group_info in quiz_info.get('groups', [])]
         return Quiz(base_dir = base_dir, **quiz_info)
 
     def to_json(self, indent = 4):

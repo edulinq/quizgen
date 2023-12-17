@@ -16,11 +16,13 @@ def run(args):
 
     quiz = quizgen.quiz.Quiz.from_path(args.path)
 
-    if (args.format == quizgen.constants.DOC_FORMAT_TEX):
+    if (args.format == quizgen.constants.DOC_FORMAT_JSON):
+        content = quiz.to_json()
+    elif (args.format == quizgen.constants.DOC_FORMAT_TEX):
         converter = quizgen.converter.textemplate.TexTemplateConverter()
         content = converter.convert_quiz(quiz)
     else:
-        content = quiz.to_format(args.format)
+        raise NotImplementedError("Quiz output format '%s' is not currently supported." % (args.format))
 
     print(content)
 
