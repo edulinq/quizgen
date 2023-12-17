@@ -228,9 +228,15 @@ class Question(object):
             raise QuizValidationError("No answers provided, at least one answer required.")
 
         self.answers_documents = {}
+
         for (key, answers) in self.answers.items():
-            docs = _validate_answer_list(answers, self.base_dir, min_correct = 1, max_correct = 1)
-            self.answers_documents[key] = docs
+            key_doc = quizgen.parser.parse_text(key, base_dir = self.base_dir)
+            values_docs = _validate_answer_list(answers, self.base_dir, min_correct = 1, max_correct = 1)
+
+            self.answers_documents[key] = {
+                'key': key_doc,
+                'values': values_docs,
+            }
 
     def _validate_numerical_answers(self):
         _check_type(self.answers, list, "'answers' for a numerical question")

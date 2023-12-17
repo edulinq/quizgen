@@ -17,6 +17,8 @@ import quizgen.util.file
 # TEST -- Generate Seed as part of footer.
 
 # Template variabes.
+TEMPLATE_VAR_ANSWER_CHOICE_TEXT = '{{{ANSWER_CHOICE_TEXT}}}'
+TEMPLATE_VAR_ANSWER_CHOICES = '{{{ANSWER_CHOICES}}}'
 TEMPLATE_VAR_ANSWER_LEFT = '{{{ANSWER_LEFT}}}'
 TEMPLATE_VAR_ANSWER_LEFT_ID = '{{{ANSWER_LEFT_ID}}}'
 TEMPLATE_VAR_ANSWER_RIGHT = '{{{ANSWER_RIGHT}}}'
@@ -41,6 +43,7 @@ TEMPLATE_VAR_VERSION = '{{{VERSION}}}'
 # Template filenames.
 TEMPLATE_FILENAME_ANSWER = 'answer.template'
 TEMPLATE_FILENAME_BODY = 'body.template'
+TEMPLATE_FILENAME_CHOICE = 'choice.template'
 TEMPLATE_FILENAME_QUESTION = 'question.template'
 TEMPLATE_FILENAME_QUIZ = 'quiz.template'
 TEMPLATE_QUESTION_TYPES_DIR = 'question-types'
@@ -69,6 +72,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
             quizgen.constants.QUESTION_TYPE_MATCHING: 'create_answers_matching',
             quizgen.constants.QUESTION_TYPE_MA: 'create_answers_list',
             quizgen.constants.QUESTION_TYPE_MCQ: 'create_answers_list',
+            quizgen.constants.QUESTION_TYPE_MDD: 'create_answers_mdd',
             quizgen.constants.QUESTION_TYPE_SA: 'create_answers_noop',
             quizgen.constants.QUESTION_TYPE_TF: 'create_answers_noop',
         }
@@ -165,6 +169,45 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
 
     def create_answers_noop(self, base_template, question):
         return base_template
+
+    def create_answers_mdd(self, base_template, question):
+        answers_text = []
+
+        for (key, values) in question.answers.items():
+            template = base_template
+            key_document = question.answers_documents[key]['key']
+
+            choices_text = self.create_choices_mdd(question, key)
+
+            template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_TEXT,
+                    key_document.to_format(self.format))
+
+            template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_CHOICES, choices_text)
+
+            answers_text.append(template)
+
+        return "\n\n".join(answers_text)
+
+    def create_choices_mdd(self, question, key):
+        # TODO - Shuffle
+
+        question_type = self.check_variable(question, 'question_type', label = 'Question')
+
+        filename = "%s_%s" % (question_type, TEMPLATE_FILENAME_CHOICE)
+        base_template = quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_QUESTION_TYPES_DIR, filename))
+
+        choices_text = []
+
+        for i in range(len(question.answers[key])):
+            template = base_template
+            choice_document = question.answers_documents[key]['values'][i]
+
+            template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_CHOICE_TEXT,
+                    choice_document.to_format(self.format))
+
+            choices_text.append(template)
+
+        return "\n\n".join(choices_text)
 
     def create_answers_fimb(self, base_template, question):
         # TODO - Shuffle

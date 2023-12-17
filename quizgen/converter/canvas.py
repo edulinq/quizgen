@@ -227,7 +227,7 @@ def _serialize_answers(data, question, instance):
     elif (isinstance(question.answers, dict)):
         count = 0
         for key, value in question.answers.items():
-            _serialize_answer_list(data, value, question.answers_documents[key], instance,
+            _serialize_answer_list(data, value, question.answers_documents[key]['values'], instance,
                     start_index = count, blank_id = key, use_text = True)
             count += len(value)
     else:
