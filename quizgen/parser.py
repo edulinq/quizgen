@@ -754,7 +754,7 @@ class AnswerReferenceNode(BaseTextNode):
     def to_tex(self, **kwargs):
         # TODO(eriq): We do not have a convention for this.
         text = tex_escape(self._text)
-        return rf"\textsc{{{text}}}"
+        return rf"\textsc{{<{text}>}}"
 
     def to_html(self, **kwargs):
         text = html.escape(self._text)

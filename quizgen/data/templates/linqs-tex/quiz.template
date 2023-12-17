@@ -8,6 +8,7 @@
 \usepackage{multicol}
 \usepackage{upquote}
 
+% PDF metadata.
 \usepackage[
     pdftex,
     hidelinks,
@@ -15,6 +16,21 @@
     pdfcreator={Quiz Generator},
     pdfkeywords={Version: {{{VERSION}}}}
 ]{hyperref}
+
+% Code display settings.
+\lstset{
+    basicstyle=\ttfamily\small,
+    columns=fixed,
+    fontadjust=true,
+    basewidth=0.5em,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    frame=single,
+    tabsize=4,
+    breaklines=true,
+    breakatwhitespace=false,
+}
 
 % Headers and footers.
 \pagestyle{headandfoot}

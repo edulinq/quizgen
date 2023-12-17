@@ -65,6 +65,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
         # Signatuire: func(self, base_template (for an answer of this type), question)
         self.answer_functions = {
             quizgen.constants.QUESTION_TYPE_ESSAY: 'create_answers_noop',
+            quizgen.constants.QUESTION_TYPE_FIMB: 'create_answers_fimb',
             quizgen.constants.QUESTION_TYPE_MATCHING: 'create_answers_matching',
             quizgen.constants.QUESTION_TYPE_MA: 'create_answers_list',
             quizgen.constants.QUESTION_TYPE_MCQ: 'create_answers_list',
@@ -117,6 +118,8 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
 
     def create_question_body(self, question):
         question_type = self.check_variable(question, 'question_type', label = 'Question')
+        if (question_type not in self.answer_functions):
+            raise ValueError("Unsupported question type: '%s'." % (question_type))
 
         filename = "%s_%s" % (question_type, TEMPLATE_FILENAME_BODY)
         path = os.path.join(self.template_dir, TEMPLATE_QUESTION_TYPES_DIR, filename)
@@ -162,6 +165,22 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
 
     def create_answers_noop(self, base_template, question):
         return base_template
+
+    def create_answers_fimb(self, base_template, question):
+        # TODO - Shuffle
+
+        answers_text = []
+
+        for key in question.answers:
+            template = base_template
+            key_document = question.answers_documents[key]['key']
+
+            template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_TEXT,
+                    key_document.to_format(self.format))
+
+            answers_text.append(template)
+
+        return "\n\n".join(answers_text)
 
     def create_answers_matching(self, base_template, question):
         left_ids = self.get_left_ids()
