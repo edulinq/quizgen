@@ -67,6 +67,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
             quizgen.constants.QUESTION_TYPE_MATCHING: 'create_answers_matching',
             quizgen.constants.QUESTION_TYPE_MA: 'create_answers_list',
             quizgen.constants.QUESTION_TYPE_MCQ: 'create_answers_list',
+            quizgen.constants.QUESTION_TYPE_SA: 'create_answers_noop',
             quizgen.constants.QUESTION_TYPE_TF: 'create_answers_noop',
         }
 

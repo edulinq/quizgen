@@ -853,11 +853,15 @@ class CodeNode(BaseTextNode):
 
         return f"```\n{self._text}\n```"
 
-    def to_text(self, **kwargs):
-        if (self._inline):
+    def to_text(self, bare = False, **kwargs):
+        if (bare and self._inline):
+            return f"{self._text}"
+        elif (bare and (not self._inline)):
+            return f"\n{self._text}\n"
+        elif ((not bare) and self._inline):
             return f"`{self._text}`"
-
-        return f"```\n{self._text}\n```"
+        else:
+            return f"```\n{self._text}\n```"
 
     def to_tex(self, **kwargs):
         if (not self._inline):
@@ -901,11 +905,15 @@ class EquationNode(BaseTextNode):
 
         return f"$$\n{self._text}\n$$"
 
-    def to_text(self, **kwargs):
-        if (self._inline):
+    def to_text(self, bare = False, **kwargs):
+        if (bare and self._inline):
+            return f"{self._text}"
+        elif (bare and (not self._inline)):
+            return f"\n{self._text}\n"
+        elif ((not bare) and self._inline):
             return f"$ {self._text} $"
-
-        return f"$$\n{self._text}\n$$"
+        else:
+            return f"$$\n{self._text}\n$$"
 
     def to_tex(self, **kwargs):
         if (self._inline):

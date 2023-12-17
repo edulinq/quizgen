@@ -1,13 +1,13 @@
 %%% BEGIN Question {{{{QUESTION_NUMBER}}} -- {{{QUESTION_NAME}}}} %%%
 
-\begin{samepage}
-
 \vspace{1cm}
+
+\begin{minipage}{\textwidth}
 
 \question[{{{QUESTION_POINTS}}}]
 
 {{{QUESTION_BODY}}}
 
-\end{samepage}
+\end{minipage}
 
 %%% END Question {{{{QUESTION_NUMBER}}} -- {{{QUESTION_NAME}}}} %%%
