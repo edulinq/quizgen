@@ -12,7 +12,6 @@ import quizgen.constants
 import quizgen.converter.base
 import quizgen.util.file
 
-# TEST -- Question TOC
 # TEST -- Answer Shuffling
 # TEST -- Generate Seed as part of footer.
 
@@ -74,6 +73,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
             quizgen.constants.QUESTION_TYPE_MCQ: 'create_answers_list',
             quizgen.constants.QUESTION_TYPE_MDD: 'create_answers_mdd',
             quizgen.constants.QUESTION_TYPE_SA: 'create_answers_noop',
+            quizgen.constants.QUESTION_TYPE_TEXT_ONLY: 'create_answers_noop',
             quizgen.constants.QUESTION_TYPE_TF: 'create_answers_noop',
         }
 
