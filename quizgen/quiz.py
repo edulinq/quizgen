@@ -249,7 +249,10 @@ class Question(object):
                 raise QuizValidationError(f"Missing key ('type') for {label}.")
 
             if (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_EXACT):
-                required_keys = ['value', 'margin']
+                required_keys = ['value']
+
+                if ('margin' not in answer):
+                    answer['margin'] = 0
             elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_RANGE):
                 required_keys = ['min', 'max']
             elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_PRECISION):
