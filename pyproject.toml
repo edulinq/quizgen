@@ -7,7 +7,7 @@ requires = [
 
 [project]
 name = "eq-quizgen"
-version = "0.0.3"
+version = "0.0.4"
 description = "A tool that can generate both Canvas quizzes and LaTeX files from a common configuration."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -35,8 +35,13 @@ dependencies = [
 Homepage = "https://github.com/eriq-augustine/quizgen"
 Repository = "https://github.com/eriq-augustine/quizgen"
 
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"*" = ["*.template"]
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["quizgen*"]
 exclude = ["node_modules"]
-namespaces = false
