@@ -50,7 +50,7 @@ All executable modules have their own help/usage accessible with the `-h` / `--h
 To upload a quiz to Canvas, the `quizgen.cli.upload-quiz` module can be used.
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.upload-quiz <path to quiz json file> --course <canvas course id> --token <canvas access token>
+python3 -m quizgen.cli.upload-quiz <path to quiz JSON file> --course <canvas course id> --token <canvas access token>
 ```
 
 Where the format (shown as `html`) can be one of: `json`, `html`, `md`, and `tex`.
@@ -61,7 +61,16 @@ To parse an entire specific quiz, you can use the `quizgen.cli.parse-quiz` modul
 This is useful if you want to check if a quiz properly parses.
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.parse-quiz <path to quiz file>
+python3 -m quizgen.cli.parse-quiz <path to quiz JSON file>
+```
+
+### Parsing a Specific Question
+
+To parse a specific quiz question, you can use the `quizgen.cli.parse-question` module.
+This is useful if you want to check if a question properly parses.
+The basic usage is as follows:
+```
+python3 -m quizgen.cli.parse-question <path to question JSON file>
 ```
 
 ### Parsing a Specific File
