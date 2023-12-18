@@ -1,6 +1,7 @@
 import glob
 import os
 
+import quizgen.converter.htmltemplate
 import quizgen.converter.textemplate
 import quizgen.quiz
 import tests.base
@@ -48,5 +49,10 @@ class QuizQuestionsTest(tests.base.BaseTest):
 
     def testToTex(self):
         converter = quizgen.converter.textemplate.TexTemplateConverter()
+        content = converter.convert_quiz(QuizQuestionsTest._quiz)
+        self.assertTrue(len(content) > 10)
+
+    def testToHTML(self):
+        converter = quizgen.converter.htmltemplate.HTMLTemplateConverter()
         content = converter.convert_quiz(QuizQuestionsTest._quiz)
         self.assertTrue(len(content) > 10)

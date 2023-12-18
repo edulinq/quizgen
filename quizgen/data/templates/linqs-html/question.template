@@ -1,0 +1,7 @@
+<div class='qg-quiz-question' data-number='{{{{QUESTION_NUMBER}}}' data-name='{{{QUESTION_NAME}}}}' data-points='{{{QUESTION_POINTS}}}'>
+    <h2 class='qg-quiz-question-name'>Question {{{QUESTION_NUMBER}}} ({{{QUESTION_POINTS}}} Points)</h2>
+
+    <div class='qg-quiz-question-body'>
+        {{{QUESTION_BODY}}}
+    </div>
+</div>

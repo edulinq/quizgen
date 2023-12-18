@@ -2,6 +2,7 @@ import argparse
 import os
 import sys
 
+import quizgen.converter.htmltemplate
 import quizgen.converter.textemplate
 import quizgen.constants
 import quizgen.parser
@@ -18,6 +19,9 @@ def run(args):
 
     if (args.format == quizgen.constants.DOC_FORMAT_JSON):
         content = quiz.to_json()
+    elif (args.format == quizgen.constants.DOC_FORMAT_HTML):
+        converter = quizgen.converter.htmltemplate.HTMLTemplateConverter()
+        content = converter.convert_quiz(quiz)
     elif (args.format == quizgen.constants.DOC_FORMAT_TEX):
         converter = quizgen.converter.textemplate.TexTemplateConverter()
         content = converter.convert_quiz(quiz)

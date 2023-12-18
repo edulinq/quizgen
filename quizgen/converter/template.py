@@ -16,8 +16,10 @@ import quizgen.util.file
 # TEST -- Generate Seed as part of footer.
 
 # Template variabes.
+TEMPLATE_VAR_ANSWER_CHOICE_INDEX = '{{{ANSWER_CHOICE_INDEX}}}'
 TEMPLATE_VAR_ANSWER_CHOICE_TEXT = '{{{ANSWER_CHOICE_TEXT}}}'
 TEMPLATE_VAR_ANSWER_CHOICES = '{{{ANSWER_CHOICES}}}'
+TEMPLATE_VAR_ANSWER_ID = '{{{ANSWER_ID}}}'
 TEMPLATE_VAR_ANSWER_LEFT = '{{{ANSWER_LEFT}}}'
 TEMPLATE_VAR_ANSWER_LEFT_ID = '{{{ANSWER_LEFT_ID}}}'
 TEMPLATE_VAR_ANSWER_RIGHT = '{{{ANSWER_RIGHT}}}'
@@ -31,6 +33,7 @@ TEMPLATE_VAR_NUM_QUESTIONS = '{{{NUM_QUESTIONS}}}'
 TEMPLATE_VAR_NUM_QUESTIONS_DIV_EIGHT_CEIL = '{{{NUM_QUESTIONS_DIV_EIGHT_CEIL}}}'
 TEMPLATE_VAR_QUESTION_ANSWERS = '{{{QUESTION_ANSWERS}}}'
 TEMPLATE_VAR_QUESTION_BODY = '{{{QUESTION_BODY}}}'
+TEMPLATE_VAR_QUESTION_ID = '{{{QUESTION_ID}}}'
 TEMPLATE_VAR_QUESTION_NAME = '{{{QUESTION_NAME}}}'
 TEMPLATE_VAR_QUESTION_NUMBER = '{{{QUESTION_NUMBER}}}'
 TEMPLATE_VAR_QUESTION_POINTS = '{{{QUESTION_POINTS}}}'
@@ -44,6 +47,7 @@ TEMPLATE_FILENAME_ANSWER = 'answer.template'
 TEMPLATE_FILENAME_BODY = 'body.template'
 TEMPLATE_FILENAME_CHOICE = 'choice.template'
 TEMPLATE_FILENAME_QUESTION = 'question.template'
+TEMPLATE_FILENAME_QUESTION_SEPARATOR = 'question-separator.template'
 TEMPLATE_FILENAME_QUIZ = 'quiz.template'
 TEMPLATE_QUESTION_TYPES_DIR = 'question-types'
 
@@ -64,7 +68,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
         self.template_dir = template_dir
 
         # Methods to generate answers.
-        # Signatuire: func(self, base_template (for an answer of this type), question)
+        # Signatuire: func(self, base_template (for an answer of this type), question_number, question)
         self.answer_functions = {
             quizgen.constants.QUESTION_TYPE_ESSAY: 'create_answers_noop',
             quizgen.constants.QUESTION_TYPE_FIMB: 'create_answers_fimb',
@@ -96,6 +100,9 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
         groups = []
 
         for i in range(len(quiz.groups)):
+            if (i != 0):
+                groups.append(self.create_question_separator())
+
             group = quiz.groups[i]
 
             # TEST - Note the question chosen.
@@ -116,12 +123,15 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
 
         template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_NUMBER, str(number))
 
-        body = self.create_question_body(question)
+        body = self.create_question_body(number, question)
         template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_BODY, body)
 
         return template
 
-    def create_question_body(self, question):
+    def create_question_separator(self):
+        return quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_FILENAME_QUESTION_SEPARATOR))
+
+    def create_question_body(self, question_number, question):
         question_type = self.check_variable(question, 'question_type', label = 'Question')
         if (question_type not in self.answer_functions):
             raise ValueError("Unsupported question type: '%s'." % (question_type))
@@ -138,12 +148,12 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
                 question.prompt_document.to_format(self.format))
 
         answers = self.check_variable(question, 'answers', label = 'Question')
-        answers_text = self.create_answers(question, answers)
+        answers_text = self.create_answers(question_number, question, answers)
         template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ANSWERS, answers_text)
 
         return template
 
-    def create_answers(self, question, answers):
+    def create_answers(self, question_number, question, answers):
         question_type = self.check_variable(question, 'question_type', label = 'Question')
 
         filename = "%s_%s" % (question_type, TEMPLATE_FILENAME_ANSWER)
@@ -153,13 +163,18 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
             raise ValueError("Cannot create question answers, unsupported question type: '%s'." % (question_type))
 
         method = self.check_variable(self, self.answer_functions[question_type], label = 'Converter')
-        return method(base_template, question)
+        return method(base_template, question_number, question)
 
-    def create_answers_list(self, base_template, question):
+    def create_answers_list(self, base_template, question_number, question):
         answers_text = []
 
-        for answer_document in question.answers_documents:
+        for i in range(len(question.answers_documents)):
             template = base_template
+            answer_document = question.answers_documents[i]
+            answer_id = "%d.%d" % (question_number, i)
+
+            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_number))
+            template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_ID, answer_id)
 
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_TEXT,
                     answer_document.to_format(self.format))
@@ -168,17 +183,27 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
 
         return "\n\n".join(answers_text)
 
-    def create_answers_noop(self, base_template, question):
-        return base_template
+    def create_answers_noop(self, base_template, question_number, question):
+        template = base_template
 
-    def create_answers_mdd(self, base_template, question):
+        template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_number))
+        template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_ID, str(question_number))
+
+        return template
+
+    def create_answers_mdd(self, base_template, question_number, question):
         answers_text = []
+        i = 0
 
         for (key, values) in question.answers.items():
             template = base_template
             key_document = question.answers_documents[key]['key']
+            answer_id = "%d.%d" % (question_number, i)
 
             choices_text = self.create_choices_mdd(question, key)
+
+            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_number))
+            template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_ID, answer_id)
 
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_TEXT,
                     key_document.to_format(self.format))
@@ -186,6 +211,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_CHOICES, choices_text)
 
             answers_text.append(template)
+            i += 1
 
         return "\n\n".join(answers_text)
 
@@ -203,6 +229,8 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
             template = base_template
             choice_document = question.answers_documents[key]['values'][i]
 
+            template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_CHOICE_INDEX, str(i))
+
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_CHOICE_TEXT,
                     choice_document.to_format(self.format))
 
@@ -210,26 +238,29 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
 
         return "\n\n".join(choices_text)
 
-    def create_answers_fimb(self, base_template, question):
+    def create_answers_fimb(self, base_template, question_number, question):
         # TODO - Shuffle
 
         answers_text = []
+        i = 0
 
         for key in question.answers:
             template = base_template
             key_document = question.answers_documents[key]['key']
+            answer_id = "%d.%d" % (question_number, i)
+
+            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_number))
+            template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_ID, answer_id)
 
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_TEXT,
                     key_document.to_format(self.format))
 
             answers_text.append(template)
+            i += 1
 
         return "\n\n".join(answers_text)
 
-    def create_answers_matching(self, base_template, question):
-        left_ids = self.get_left_ids()
-        right_ids = self.get_right_ids()
-
+    def create_answers_matching(self, base_template, question_number, question):
         lefts = []
         rights = []
 
@@ -240,17 +271,24 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
         for right in question.answers_documents['distractors']:
             rights.append(right.to_format(self.format))
 
+        return self.create_choices_matching(base_template, question_number, lefts, rights)
+
+    def create_choices_matching(self, base_template, question_number, lefts, rights):
+        # TODO -- Shuffle
+
+        left_ids = self.get_left_ids()
+        right_ids = self.get_right_ids()
+
         if (len(lefts) > len(left_ids)):
             raise ValueError("Too many matching values. Max allowed: '%d'." % (len(left_ids)))
 
         if (len(rights) > len(right_ids)):
             raise ValueError("Too many distractors. Max allowed: '%d'." % (len(right_ids)))
 
-        # TODO -- Shuffle
-
         answers_text = []
         for i in range(max(len(lefts), len(rights))):
             template = base_template
+            answer_id = "%d.%d" % (question_number, i)
 
             left = ''
             left_id = ''
@@ -263,6 +301,9 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
             if (i < len(rights)):
                 right = rights[i]
                 right_id = right_ids[i]
+
+            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_number))
+            template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_ID, answer_id)
 
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_LEFT, left);
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_LEFT_ID, left_id);

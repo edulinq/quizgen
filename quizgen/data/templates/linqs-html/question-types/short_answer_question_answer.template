@@ -1,0 +1,2 @@
+<textarea id='answer-{{{ANSWER_ID}}}' name='question-{{{QUESTION_ID}}}'>
+</textarea>

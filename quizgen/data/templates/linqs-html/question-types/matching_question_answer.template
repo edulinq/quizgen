@@ -1,0 +1,6 @@
+<div class='qg-quiz-question-answer-choices'>
+    <label for='answer-{{{ANSWER_ID}}}'>{{{ANSWER_TEXT}}}</label>
+    <select id='answer-{{{ANSWER_ID}}}' name='question-{{{QUESTION_ID}}}'>
+        {{{ANSWER_CHOICES}}}
+    </select> 
+</div>

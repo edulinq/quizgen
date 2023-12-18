@@ -1,0 +1,4 @@
+<div>
+    <input type='checkbox' for='answer-{{{ANSWER_ID}}}' name='question-{{{QUESTION_ID}}}' />
+    <label id='answer-{{{ANSWER_ID}}}' >{{{ANSWER_TEXT}}}</label>
+</div>

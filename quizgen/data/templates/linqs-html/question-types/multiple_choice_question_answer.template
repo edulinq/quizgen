@@ -1,0 +1,4 @@
+<div>
+    <input type='radio' id='answer-{{{ANSWER_ID}}}' name='question-{{{QUESTION_ID}}}' />
+    <label for='answer-{{{ANSWER_ID}}}'>{{{ANSWER_TEXT}}}</label>
+</div>

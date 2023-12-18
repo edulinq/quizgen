@@ -1,0 +1,7 @@
+<div class='qg-quiz-question-prompt'>
+    {{{QUESTION_PROMPT}}}
+<div>
+
+<div class='qg-quiz-question-answers'>
+    {{{QUESTION_ANSWERS}}}
+</div>
