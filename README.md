@@ -53,7 +53,7 @@ The basic usage is as follows:
 python3 -m quizgen.cli.upload-quiz <path to quiz JSON file> --course <canvas course id> --token <canvas access token>
 ```
 
-Where the format (shown as `html`) can be one of: `json`, `html`, `md`, and `tex`.
+If an existing quiz with the same name is found, then nothing will be uploaded unless the `--force` flag is given..
 
 ### Parsing a Specific Quiz
 
@@ -64,6 +64,10 @@ The basic usage is as follows:
 python3 -m quizgen.cli.parse-quiz <path to quiz JSON file>
 ```
 
+This command will output the fully parsed quiz in for format controlled by the `--format` option,
+and will exit with a non-zero status if the parse failed.
+Parsing a quiz is particularly useful in CI to ensure that all course quizzes are properly maintained.
+
 ### Parsing a Specific Question
 
 To parse a specific quiz question, you can use the `quizgen.cli.parse-question` module.
@@ -72,6 +76,9 @@ The basic usage is as follows:
 ```
 python3 -m quizgen.cli.parse-question <path to question JSON file>
 ```
+
+This command will output the fully parsed question in the JSON format,
+and will exit with a non-zero status if the parse failed.
 
 ### Parsing a Specific File
 
@@ -82,7 +89,9 @@ The basic usage is as follows:
 python3 -m quizgen.cli.parse-file <path to file> --format html
 ```
 
-Where the format (shown as `html`) can be one of: `json`, `html`, `md`, and `tex`.
+This command will output the fully parsed file in for format controlled by the `--format` option,
+and will exit with a non-zero status if the parse failed.
+This can be used to parse prompt markdown files.
 
 ## Syntax
 
