@@ -205,15 +205,15 @@ When converting a document to HTML, KaTeX will be used to convert the equation t
 
 ### Equation Blocks
 
-Equation blocks are similar to code blocks, but with three dollar sign characters `$$$`.
+Equation blocks are similar to code blocks, but with two dollar sign characters `$$`.
 Like code blocks, the dollar signs should generally be one their own line.
 
 ```
 The below equation is in its own block.
 
-$$$
+$$
     \text{some_func}(a, b) = a + b
-$$$
+$$
 
 Where $ a $ and $ b $ should be positive.
 ```
