@@ -467,6 +467,70 @@ GOOD_TEST_CASES = [
 
     [
         '''
+|---|
+        ''',
+        _wrap_block([
+            {
+                'type': 'table',
+                'rows': [
+                    {
+                        'type': 'table-sep'
+                    },
+                ],
+            }
+        ])
+    ],
+
+    [
+        '''
+|---|---|
+        ''',
+        _wrap_block([
+            {
+                'type': 'table',
+                'rows': [
+                    {
+                        'type': 'table-sep'
+                    },
+                ],
+            }
+        ])
+    ],
+
+    [
+        '''
+|---| |
+        ''',
+        _wrap_block([
+            {
+                'type': 'table',
+                'rows': [
+                    {
+                        'type': 'table-sep'
+                    },
+                ],
+            }
+        ])
+    ],
+
+    [
+        '''
+|--- | |
+        ''',
+        _wrap_block([
+            {
+                'type': 'table',
+                'rows': [
+                    {
+                        'type': 'table-sep'
+                    },
+                ],
+            }
+        ])
+    ],
+
+    [
+        '''
 |- 1  | \-2   |         3^        |
 |-----|-------|-------------------|
 | *a* | **b** | `c()` and $ d() $ |

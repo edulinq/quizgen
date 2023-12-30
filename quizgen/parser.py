@@ -27,7 +27,7 @@ GRAMMAR = r'''
     ?equation_block_internal: /.+?(?=\$\$)/s
 
     table_block: ( ( table_head | table_row | table_sep ) NEWLINE )+
-    table_sep: /\|-{3,}\|.*/
+    table_sep: /\|-{3}[-\s]*\|.*/
     table_row: "|" table_cell+
     table_head: "|-" table_cell+
     table_cell: text_line "|"
