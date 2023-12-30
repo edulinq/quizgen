@@ -25,6 +25,9 @@ def is_available(cwd = '.'):
 def to_html(text, cwd = '.'):
     result = subprocess.run(["npx", "katex", "--format", "mathml"], cwd = cwd,
         input = text, encoding = ENCODING,
-        capture_output = True, check = True)
+        capture_output = True)
+
+    if (result.returncode != 0):
+        raise ValueError("KaTeX did not exit cleanly. Stdout: '%s', Stderr: '%s'" % (result.stdout, result.stderr))
 
     return result.stdout
