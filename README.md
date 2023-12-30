@@ -266,6 +266,23 @@ Nested lists are not supported.
  - A `third()` item.
 ```
 
+### Answer References
+
+Answer references are used in questions that can have multiple parts (like multiple drop-downs).
+To make an answer reference, just surround a key in double square brackets.
+For example:
+
+```
+[[key]]
+[[answer_reference]]
+[[part1]]
+[[a]]
+[[A]]
+```
+
+Because of Canvas limitations, the key for an answer reference must match the following regular expression:
+`^[a-zA-Z][a-zA-Z0-9_]*$`
+
 ### Quirks
 
 Markdown is an [inherently ambiguous language](https://roopc.net/posts/2014/markdown-cfg/),

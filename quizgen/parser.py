@@ -68,7 +68,7 @@ GRAMMAR = r'''
     INLINE_LINK_TEXT: "[" _ESCAPE_INTERNAL "]"
     INLINE_LINK_LINK: "(" _ESCAPE_INTERNAL ")"
 
-    REFERENCE_WORD: /[a-zA-Z][a-zA-Z0-9]*/
+    REFERENCE_WORD: /[a-zA-Z][a-zA-Z0-9_]*/
 
     NON_ESC_TEXT: NON_ESC_CHAR+
     NON_ESC_CHAR: /[^\n\\`|\*\$\-\[!\/]/x

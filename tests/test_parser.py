@@ -2,15 +2,27 @@ import quizgen.parser
 import tests.base
 
 class TestParser(tests.base.BaseTest):
-    def test_cases(self):
-        for i in range(len(TEST_CASES)):
-            text, expected = TEST_CASES[i]
+    def test_good_cases(self):
+        for i in range(len(GOOD_TEST_CASES)):
+            text, expected = GOOD_TEST_CASES[i]
 
             with self.subTest(index = i, text = text):
                 document = quizgen.parser.parse_text(text)
                 result = document.to_pod(include_metadata = False)
 
                 self.assertJSONDictEqual(expected, result)
+
+    def test_bad_cases(self):
+        for i in range(len(BAD_TEST_CASES)):
+            text = BAD_TEST_CASES[i]
+
+            with self.subTest(index = i, text = text):
+                try:
+                    quizgen.parser.parse_text(text)
+                    self.fail("Failed to raise an exception.")
+                except Exception:
+                    # Expected.
+                    pass
 
 # Wrap a pod parser node in a block.
 def _wrap_block(nodes):
@@ -31,7 +43,7 @@ def _wrap_text_nodes(nodes):
         'nodes': nodes,
     }])
 
-TEST_CASES = [
+GOOD_TEST_CASES = [
     ['Text', _wrap_text_nodes([
         {
             'type': 'normal_text',
@@ -368,6 +380,20 @@ TEST_CASES = [
         },
     ])],
 
+    ['[[answer_reference]]', _wrap_text_nodes([
+        {
+            'type': 'answer-reference',
+            'text': 'answer_reference',
+        },
+    ])],
+
+    ['[[A]]', _wrap_text_nodes([
+        {
+            'type': 'answer-reference',
+            'text': 'A',
+        },
+    ])],
+
     ['// Some comment.', _wrap_text_nodes([
         {
             'type': 'comment',
@@ -532,4 +558,12 @@ TEST_CASES = [
             }
         ])
     ],
+]
+
+BAD_TEST_CASES = [
+    '[[_]]',
+    '[[1]]',
+    '[[_a]]',
+    '[[1a]]',
+    '[[%a]]',
 ]
