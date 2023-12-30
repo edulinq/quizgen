@@ -15,7 +15,7 @@ def run(args):
     if (not os.path.isfile(args.path)):
         raise ValueError(f"Provided path '{args.path}' is not a file.")
 
-    quiz = quizgen.quiz.Quiz.from_path(args.path)
+    quiz = quizgen.quiz.Quiz.from_path(args.path, flatten_groups = args.flatten_groups)
 
     if (args.format == quizgen.constants.DOC_FORMAT_JSON):
         content = quiz.to_json()
@@ -44,6 +44,10 @@ def _get_parser():
         action = 'store', type = str, default = quizgen.constants.DOC_FORMAT_JSON,
         choices = quizgen.constants.DOC_FORMATS,
         help = 'Output the parsed document in this format (default: %(default)s).')
+
+    parser.add_argument('--flatten_groups', dest = 'flatten_groups',
+        action = 'store_true', default = False,
+        help = 'Flatten question groups with multiple questions to multiple groups with a single question (default: %(default)s).')
 
     return parser
 

@@ -72,29 +72,48 @@ class Quiz(object):
         else:
             self.date = datetime.date.fromisoformat(self.date)
 
-    def to_dict(self):
+    def to_dict(self, flatten_groups = False):
         value = self.__dict__.copy()
 
         if ('date' in value):
             value['date'] = value['date'].isoformat()
 
         value['description_document'] = self.description_document.to_pod()
-
         value['groups'] = [group.to_dict() for group in self.groups]
+
         return value
 
     @staticmethod
-    def from_path(path):
+    def from_path(path, flatten_groups = False):
         with open(path, 'r') as file:
             quiz_info = json5.load(file)
 
         base_dir = os.path.dirname(path)
 
-        return Quiz.from_dict(quiz_info, base_dir)
+        return Quiz.from_dict(quiz_info, base_dir, flatten_groups = flatten_groups)
 
     @staticmethod
-    def from_dict(quiz_info, base_dir):
-        quiz_info['groups'] = [Group.from_dict(group_info, base_dir) for group_info in quiz_info.get('groups', [])]
+    def from_dict(quiz_info, base_dir, flatten_groups = False):
+        groups = [Group.from_dict(group_info, base_dir) for group_info in quiz_info.get('groups', [])]
+
+        if (flatten_groups):
+            new_groups = []
+
+            for old_group in groups:
+                for i in range(len(old_group.questions)):
+                    info = {
+                        'name': old_group.name,
+                        'pick_count': 1,
+                        'points': old_group.points,
+                        'questions': [old_group.questions[i]],
+                    }
+
+                    new_groups.append(Group(**info))
+
+            groups = new_groups
+
+        quiz_info['groups'] = groups
+
         return Quiz(base_dir = base_dir, **quiz_info)
 
     def to_json(self, indent = 4):
