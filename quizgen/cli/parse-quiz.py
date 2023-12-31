@@ -45,7 +45,7 @@ def _get_parser():
         choices = quizgen.constants.DOC_FORMATS,
         help = 'Output the parsed document in this format (default: %(default)s).')
 
-    parser.add_argument('--flatten_groups', dest = 'flatten_groups',
+    parser.add_argument('--flatten-groups', dest = 'flatten_groups',
         action = 'store_true', default = False,
         help = 'Flatten question groups with multiple questions to multiple groups with a single question (default: %(default)s).')
 
