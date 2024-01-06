@@ -1,0 +1,4 @@
+    \begin{tabular}{ m{10mm} l }
+        \mcqCheckbox{{{{QUESTION_ID}}}}{0}{0} & True \\
+        \mcqCheckbox{{{{QUESTION_ID}}}}{0}{1} & False \\
+    \end{tabular}

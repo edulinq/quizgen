@@ -1,0 +1,11 @@
+%%% BEGIN Question {{{{QUESTION_NUMBER}}} -- {{{QUESTION_NAME}}}} %%%
+
+\begin{minipage}{\textwidth}
+    \noindent
+    Question {{{QUESTION_NUMBER}}} ({{{QUESTION_POINTS}}} Points)
+    \vspace{0.5cm}
+
+{{{QUESTION_BODY}}}
+\end{minipage}
+
+%%% END Question {{{{QUESTION_NUMBER}}} -- {{{QUESTION_NAME}}}} %%%

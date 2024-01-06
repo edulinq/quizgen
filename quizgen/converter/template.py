@@ -83,7 +83,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
         }
 
     def convert_quiz(self, quiz, **kwargs):
-        template = quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_FILENAME_QUIZ))
+        template = quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_FILENAME_QUIZ), strip = False)
 
         template = self.fill_metadata(template, quiz);
 
@@ -113,7 +113,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
         return "\n\n".join(groups)
 
     def create_question(self, number, group, question):
-        template = quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_FILENAME_QUESTION))
+        template = quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_FILENAME_QUESTION), strip = False)
 
         name = self.check_variable(group, 'name', label = 'Group')
         template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_NAME, group.name)
@@ -129,7 +129,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
         return template
 
     def create_question_separator(self):
-        return quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_FILENAME_QUESTION_SEPARATOR))
+        return quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_FILENAME_QUESTION_SEPARATOR), strip = False)
 
     def create_question_body(self, question_number, question):
         question_type = self.check_variable(question, 'question_type', label = 'Question')
@@ -141,7 +141,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
         if (not os.path.isfile(path)):
             raise ValueError("Question template does not exist or is not a file: '%s'." % (path))
 
-        template = quizgen.util.file.read(path)
+        template = quizgen.util.file.read(path, strip = False)
 
         prompt_document = self.check_variable(question, 'prompt_document', label = 'Question')
         template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_PROMPT,
@@ -157,7 +157,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
         question_type = self.check_variable(question, 'question_type', label = 'Question')
 
         filename = "%s_%s" % (question_type, TEMPLATE_FILENAME_ANSWER)
-        base_template = quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_QUESTION_TYPES_DIR, filename))
+        base_template = quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_QUESTION_TYPES_DIR, filename), strip = False)
 
         if (question_type not in self.answer_functions):
             raise ValueError("Cannot create question answers, unsupported question type: '%s'." % (question_type))
@@ -181,7 +181,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
 
             answers_text.append(template)
 
-        return "\n\n".join(answers_text)
+        return "\n".join(answers_text)
 
     def create_answers_noop(self, base_template, question_number, question):
         template = base_template
@@ -200,7 +200,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
             key_document = question.answers_documents[key]['key']
             answer_id = "%d.%d" % (question_number, i)
 
-            choices_text = self.create_choices_mdd(question, key)
+            choices_text = self.create_choices_mdd(question_number, question, answer_id, key)
 
             template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_number))
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_ID, answer_id)
@@ -215,19 +215,22 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
 
         return "\n\n".join(answers_text)
 
-    def create_choices_mdd(self, question, key):
+    def create_choices_mdd(self, question_number, question, answer_id, key):
         # TODO - Shuffle
 
         question_type = self.check_variable(question, 'question_type', label = 'Question')
 
         filename = "%s_%s" % (question_type, TEMPLATE_FILENAME_CHOICE)
-        base_template = quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_QUESTION_TYPES_DIR, filename))
+        base_template = quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_QUESTION_TYPES_DIR, filename), strip = False)
 
         choices_text = []
 
         for i in range(len(question.answers[key])):
             template = base_template
             choice_document = question.answers_documents[key]['values'][i]
+
+            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_number))
+            template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_ID, answer_id)
 
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_CHOICE_INDEX, str(i))
 
@@ -236,7 +239,7 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
 
             choices_text.append(template)
 
-        return "\n\n".join(choices_text)
+        return "\n".join(choices_text)
 
     def create_answers_fimb(self, base_template, question_number, question):
         # TODO - Shuffle

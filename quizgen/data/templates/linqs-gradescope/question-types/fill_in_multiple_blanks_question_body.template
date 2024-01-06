@@ -1,0 +1,8 @@
+    \noindent
+    {{{QUESTION_PROMPT}}}
+
+    \vspace{0.25cm}
+    For each part (denoted by angle brackets), place you answer in the associated box.
+    \vspace{0.25cm}
+
+{{{QUESTION_ANSWERS}}}

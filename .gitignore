@@ -12,6 +12,7 @@ __pycache__/
 test/
 /test.*
 
+/quiz.*
 *.gz
 
 /node_modules

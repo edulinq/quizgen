@@ -1,0 +1,3 @@
+    \begin{tabular}{ m{10mm} p{25mm} }
+{{{ANSWER_CHOICES}}}
+    \end{tabular}

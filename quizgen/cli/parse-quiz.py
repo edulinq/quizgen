@@ -2,6 +2,7 @@ import argparse
 import os
 import sys
 
+import quizgen.converter.gstemplate
 import quizgen.converter.htmltemplate
 import quizgen.converter.textemplate
 import quizgen.constants
@@ -24,6 +25,9 @@ def run(args):
         content = converter.convert_quiz(quiz)
     elif (args.format == quizgen.constants.DOC_FORMAT_TEX):
         converter = quizgen.converter.textemplate.TexTemplateConverter()
+        content = converter.convert_quiz(quiz)
+    elif (args.format == quizgen.constants.DOC_FORMAT_GRADESCOPE):
+        converter = quizgen.converter.gstemplate.GradeScopeTemplateConverter()
         content = converter.convert_quiz(quiz)
     else:
         raise NotImplementedError("Quiz output format '%s' is not currently supported." % (args.format))

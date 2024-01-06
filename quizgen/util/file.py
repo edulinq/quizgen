@@ -4,12 +4,15 @@ import shutil
 import tempfile
 import uuid
 
-def read(path, strip = True):
+def read(path, strip = True, rstrip = True):
     with open(path, 'r') as file:
         contents = file.read()
 
     if (strip):
         contents = contents.strip()
+
+    if (rstrip):
+        contents = contents.rstrip()
 
     return contents
 

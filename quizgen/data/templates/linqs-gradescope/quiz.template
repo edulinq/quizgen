@@ -1,0 +1,188 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{tikz}
+\usepackage{upquote}
+\usepackage{xparse}
+\usepackage{zref-abspage}
+\usepackage{zref-savepos}
+\usepackage{zref-user}
+
+% PDF metadata.
+\usepackage[
+    pdftex,
+    hidelinks,
+    pdftitle={{{{TITLE}}} - {{{COURSE_TITLE}}} {{{TERM_TITLE}}}},
+    pdfcreator={Quiz Generator},
+    pdfkeywords={Version: {{{VERSION}}}}
+]{hyperref}
+
+\usetikzlibrary{calc}
+
+% Make a checkbox for multiple choice questions and record the bounding boxes to the positions file.
+% Args: {type identifier}[question id][part id][answer id]
+\newcommand{\mcqCheckbox}[4][mcq]{%
+    \begin{tikzpicture}[color=black, line width=0.4mm]
+        \fill[transparent] (0mm,0mm)
+            node {\zsavepos{#2-#3-#4-ll}}
+            rectangle (6mm,6mm)
+            node {\zsavepos{#2-#3-#4-ur}};
+        \draw (3mm,3mm)
+            circle (2.5mm);
+    \end{tikzpicture} %
+    \write\positionOutput{%
+        #2,#3,#4,%
+        #1,%
+        \arabic{abspage},%
+        \zposx{#2-#3-#4-ll}sp,\zposy{#2-#3-#4-ll}sp,%
+        \zposx{#2-#3-#4-ur}sp,\zposy{#2-#3-#4-ur}sp,%
+        \the\paperwidth,\the\paperheight,%
+        bottom-left%
+    } \relax %
+}
+
+% Make a checkbox for multiple answer questions and record the bounding boxes to the positions file.
+% Args: {type identifier}[question id][part id][answer id]
+\newcommand{\maCheckbox}[4][ma]{%
+    \begin{tikzpicture}[color=black, line width=0.4mm]
+        \fill[transparent] (0mm,0mm)
+            node {\zsavepos{#2-#3-#4-ll}}
+            rectangle (6mm,6mm)
+            node {\zsavepos{#2-#3-#4-ur}};
+        \draw (0.5mm,0.5mm)
+            rectangle (5.5mm,5.5mm);
+    \end{tikzpicture} %
+    \write\positionOutput{%
+        #2,#3,#4,%
+        #1,%
+        \arabic{abspage},%
+        \zposx{#2-#3-#4-ll}sp,\zposy{#2-#3-#4-ll}sp,%
+        \zposx{#2-#3-#4-ur}sp,\zposy{#2-#3-#4-ur}sp,%
+        \the\paperwidth,\the\paperheight,%
+        bottom-left%
+    } \relax %
+}
+
+% Make a general large answer box and record the bounding boxes to the positions file.
+% Args: {height}{length modifier (modifies \textwidth)}[type identifier][question id][part id][answer id]
+\NewDocumentCommand{\bigAnswerBox} { O{2cm} O{1.0} m m m m }{%
+    \begin{tikzpicture}[color=black, line width=0.4mm]
+        \fill[transparent] (0mm, 0mm)
+            node {\zsavepos{#4-#5-#6-ll}}
+            rectangle (#2 \textwidth, #1)
+            node {\zsavepos{#4-#5-#6-ur}};
+        \draw (0.5mm,0.5mm)
+            rectangle (#2 \textwidth - 0.5mm, #1 - 0.5mm);
+    \end{tikzpicture} %
+    \write\positionOutput{%
+        #4,#5,#6,%
+        #3,%
+        \arabic{abspage},%
+        \zposx{#4-#5-#6-ll}sp,\zposy{#4-#5-#6-ll}sp,%
+        \zposx{#4-#5-#6-ur}sp,\zposy{#4-#5-#6-ur}sp,%
+        \the\paperwidth,\the\paperheight,%
+        bottom-left%
+    } \relax %
+}
+
+% Make a general answer box and record the bounding boxes to the positions file.
+% Args: {height}{length}[type identifier][question id][part id][answer id]
+\NewDocumentCommand{\smallAnswerBox} { O{1cm} O{1cm} m m m m }{%
+    \begin{tikzpicture}[color=black, line width=0.4mm]
+        \fill[transparent] (0mm, 0mm)
+            node {\zsavepos{#4-#5-#6-ll}}
+            rectangle (#2, #1)
+            node {\zsavepos{#4-#5-#6-ur}};
+        \draw (0.5mm,0.5mm)
+            rectangle (#2 - 0.5mm, #1 - 0.5mm);
+    \end{tikzpicture} %
+    \write\positionOutput{%
+        #4,#5,#6,%
+        #3,%
+        \arabic{abspage},%
+        \zposx{#4-#5-#6-ll}sp,\zposy{#4-#5-#6-ll}sp,%
+        \zposx{#4-#5-#6-ur}sp,\zposy{#4-#5-#6-ur}sp,%
+        \the\paperwidth,\the\paperheight,%
+        bottom-left%
+    } \relax %
+}
+
+\newdimen\remainingheight
+\newcommand*{\calcremainingheight}{%
+    \ifdim\pagegoal=\maxdimen
+        \remainingheight\dimexpr\textheight-0.4pt\relax
+    \else
+        \remainingheight\dimexpr\pagegoal-\pagetotal-\lineskip-0.4pt\relax
+    \fi
+}
+
+% Write positions to <job>.pos .
+\newwrite\positionOutput
+\openout\positionOutput=\jobname.pos\relax
+
+% Code display settings.
+\lstset{
+    basicstyle=\ttfamily\small,
+    columns=fixed,
+    fontadjust=true,
+    basewidth=0.5em,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    frame=single,
+    tabsize=4,
+    breaklines=true,
+    breakatwhitespace=false,
+}
+
+\begin{document}
+
+\centerline{\Large {{{TITLE}}}}
+\vspace{0.2cm}
+
+\centerline{\large {{{COURSE_TITLE}}} -- {{{TERM_TITLE}}}}
+\centerline{\large {{{DATE}}}}
+\vspace{1.0cm}
+
+{{{DESCRIPTION}}}
+
+\vspace{1.0cm}
+
+\begin{tabular}{ m{1.5cm} m{4cm} }
+    Name: & \bigAnswerBox[4em][0.70]{name}{name}{0}{0} \\
+\end{tabular}
+
+\begin{tabular}{ m{1.5cm} m{4cm} }
+    Email: & \bigAnswerBox[4em][0.70]{id}{email}{0}{0} \\
+\end{tabular}
+
+\vspace{0.5cm}
+
+\begin{quote}
+I acknowledge that I have neither given nor received inappropriate help on this exam, and have abided by the letter and spirit of the University of California, Santa Cruz Code of Academic Integrity  while taking this exam.
+\end{quote}
+
+\vspace{1.0cm}
+
+\begin{tabular}{ m{1.5cm} m{4cm} }
+    Signature: & \bigAnswerBox[4em][0.70]{signature}{signature}{0}{0} \\
+\end{tabular}
+
+Fill in the box below if you believe your exam requires manual grading,
+e.g., you crossed out answers or needed space outside a designated answer box. \\
+\begin{tabular}{ m{10mm} l }
+    \maCheckbox[manual_grading]{manual_grading}{0}{0} & My exam requires manual grading. \\
+\end{tabular}
+
+\newpage
+
+{{{GROUPS}}}
+
+\end{document}

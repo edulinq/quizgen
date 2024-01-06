@@ -1,0 +1,5 @@
+    \noindent
+    {{{ANSWER_TEXT}}}: \newline
+    \begin{tabular}{ m{10mm} l }
+{{{ANSWER_CHOICES}}}
+    \end{tabular}

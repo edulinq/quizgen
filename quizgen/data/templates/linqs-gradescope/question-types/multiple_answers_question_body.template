@@ -1,0 +1,10 @@
+    \noindent
+    {{{QUESTION_PROMPT}}}
+
+    \vspace{0.25cm}
+    Fill in all boxes that corresponds to your answers.
+    \vspace{0.25cm}
+
+    \begin{tabular}{ m{10mm} l }
+{{{QUESTION_ANSWERS}}}
+    \end{tabular}
