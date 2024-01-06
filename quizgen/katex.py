@@ -1,3 +1,4 @@
+import shutil
 import subprocess
 import sys
 
@@ -12,7 +13,7 @@ def _has_package(package, cwd = '.'):
     return (result.returncode == 0)
 
 def is_available(cwd = '.'):
-    if (not _has_command('npx', cwd = cwd)):
+    if (shutil.which('npx') is None):
         print("WARN: Could not find `npx` (usually installed with `npm`), cannot use katex equations.", file = sys.stderr)
         return False
 

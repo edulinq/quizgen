@@ -16,9 +16,14 @@ def read(path, strip = True, rstrip = True):
 
     return contents
 
-def get_temp_path(prefix = '', suffix = '', rm = True):
+def write(path, contents):
+    with open(path, 'w') as file:
+        file.write(contents)
+
+def get_temp_path(prefix = '', suffix = '', rm = True, mkdir = True):
     """
-    Get a path to a valid (but not currently existing) temp dirent.
+    Get a path to a valid temp dirent.
+    mkdir will determine of this directory will exist on return.
     If rm is True, then the dirent will be attempted to be deleted on exit
     (no error will occur if the path is not there).
     """
@@ -26,6 +31,9 @@ def get_temp_path(prefix = '', suffix = '', rm = True):
     path = None
     while ((path is None) or os.path.exists(path)):
         path = os.path.join(tempfile.gettempdir(), prefix + str(uuid.uuid4()) + suffix)
+
+    if (mkdir):
+        os.makedirs(path, exist_ok = True)
 
     if (rm):
         atexit.register(remove_dirent, path)
