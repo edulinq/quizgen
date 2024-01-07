@@ -3,7 +3,7 @@ import json
 import os
 import sys
 
-import quizgen.quiz
+import quizgen.question
 
 def run(args):
     if (not os.path.exists(args.path)):
@@ -12,7 +12,7 @@ def run(args):
     if (not os.path.isfile(args.path)):
         raise ValueError(f"Provided path '{args.path}' is not a file.")
 
-    question = quizgen.quiz.Question.from_path(args.path)
+    question = quizgen.question.Question.from_path(args.path)
     print(json.dumps(question.to_dict(), indent = 4))
 
     return 0

@@ -1,0 +1,2 @@
+class QuizValidationError(ValueError):
+    pass

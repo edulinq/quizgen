@@ -30,9 +30,7 @@ def main(pattern = None):
 
     for testCase in testCases:
         if (isinstance(testCase, unittest.loader._FailedTest)):
-            print('Failed to load test: %s' % (testCase.id()))
-            print(testCase._exception)
-            continue
+            raise ValueError('Failed to load test: %s' % (testCase.id())) from testCase._exception
 
         if (pattern is None or re.search(pattern, testCase.id())):
             tests.addTest(testCase)

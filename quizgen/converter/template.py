@@ -8,8 +8,8 @@ import string
 import random
 import re
 
+import quizgen.variant
 import quizgen.constants
-import quizgen.converter.base
 import quizgen.util.file
 
 # TEST -- Answer Shuffling
@@ -28,7 +28,6 @@ TEMPLATE_VAR_ANSWER_TEXT = '{{{ANSWER_TEXT}}}'
 TEMPLATE_VAR_COURSE_TITLE = '{{{COURSE_TITLE}}}'
 TEMPLATE_VAR_DATE = '{{{DATE}}}'
 TEMPLATE_VAR_DESCRIPTION = '{{{DESCRIPTION}}}'
-TEMPLATE_VAR_GROUPS = '{{{GROUPS}}}'
 TEMPLATE_VAR_NUM_QUESTIONS = '{{{NUM_QUESTIONS}}}'
 TEMPLATE_VAR_NUM_QUESTIONS_DIV_EIGHT_CEIL = '{{{NUM_QUESTIONS_DIV_EIGHT_CEIL}}}'
 TEMPLATE_VAR_QUESTION_ANSWERS = '{{{QUESTION_ANSWERS}}}'
@@ -38,6 +37,7 @@ TEMPLATE_VAR_QUESTION_NAME = '{{{QUESTION_NAME}}}'
 TEMPLATE_VAR_QUESTION_NUMBER = '{{{QUESTION_NUMBER}}}'
 TEMPLATE_VAR_QUESTION_POINTS = '{{{QUESTION_POINTS}}}'
 TEMPLATE_VAR_QUESTION_PROMPT = '{{{QUESTION_PROMPT}}}'
+TEMPLATE_VAR_QUESTIONS = '{{{QUESTIONS}}}'
 TEMPLATE_VAR_TERM_TITLE = '{{{TERM_TITLE}}}'
 TEMPLATE_VAR_TITLE = '{{{TITLE}}}'
 TEMPLATE_VAR_VERSION = '{{{VERSION}}}'
@@ -56,7 +56,7 @@ DATE_FORMAT = '%B %d, %Y'
 RIGHT_IDS = string.ascii_uppercase
 LEFT_IDS = [str(i + 1) for i in range(len(RIGHT_IDS))]
 
-class TemplateConverter(quizgen.converter.base.QuizConverter):
+class TemplateConverter(object):
     def __init__(self, format, template_dir, **kwargs):
         super().__init__(**kwargs)
 
@@ -83,12 +83,15 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
         }
 
     def convert_quiz(self, quiz, **kwargs):
+        if (not isinstance(quiz, quizgen.variant.Variant)):
+            raise ValueError("Template quiz converter requires a quizgen.quiz.Variant type, found %s." % (type(quiz)))
+
         template = quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_FILENAME_QUIZ), strip = False)
 
         template = self.fill_metadata(template, quiz);
 
-        groups = self.create_groups(quiz)
-        template = self.fill_variable(template, TEMPLATE_VAR_GROUPS, groups)
+        questions = self.create_questions(quiz)
+        template = self.fill_variable(template, TEMPLATE_VAR_QUESTIONS, questions)
 
         match = re.search(r'\{\{\{\w+\}\}\}', template)
         if (match is not None):
@@ -96,30 +99,25 @@ class TemplateConverter(quizgen.converter.base.QuizConverter):
 
         return template
 
-    def create_groups(self, quiz):
-        groups = []
+    def create_questions(self, quiz):
+        questions = []
 
-        for i in range(len(quiz.groups)):
+        for i in range(len(quiz.questions)):
             if (i != 0):
-                groups.append(self.create_question_separator())
+                questions.append(self.create_question_separator())
 
-            group = quiz.groups[i]
+            questions.append(self.create_question(i + 1, quiz.questions[i]))
 
-            # TEST - Note the question chosen.
-            question = random.choice(group.questions)
+        return "\n\n".join(questions)
 
-            groups.append(self.create_question(i + 1, group, question))
-
-        return "\n\n".join(groups)
-
-    def create_question(self, number, group, question):
+    def create_question(self, number, question):
         template = quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_FILENAME_QUESTION), strip = False)
 
-        name = self.check_variable(group, 'name', label = 'Group')
-        template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_NAME, group.name)
+        name = self.check_variable(question, 'base_name', label = 'Question')
+        template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_NAME, question.base_name)
 
-        points = self.check_variable(group, 'points', label = 'Group')
-        template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_POINTS, str(group.points))
+        points = self.check_variable(question, 'points', label = 'Question')
+        template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_POINTS, str(question.points))
 
         template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_NUMBER, str(number))
 

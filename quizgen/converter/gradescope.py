@@ -10,9 +10,9 @@ import time
 import bs4
 import requests
 
-import quizgen.converter.base
 import quizgen.converter.gstemplate
 import quizgen.latex
+import quizgen.quiz
 import quizgen.util.file
 
 URL_HOMEPAGE = 'https://www.gradescope.com'
@@ -60,7 +60,7 @@ BOX_TYPES = EXTEND_BOX_QUESTION_TYPES + STANDARD_BOX_QUESTION_TYPES + SPECIAL_QU
 SP_PER_PT = 65536
 GRADESCOPE_SLEEP_TIME_SEC = 0.75
 
-class GradeScopeUploader(quizgen.converter.base.QuizConverter):
+class GradeScopeUploader(object):
     def __init__(self, course_id, user, password, force = False, **kwargs):
         super().__init__(**kwargs)
 
@@ -70,21 +70,25 @@ class GradeScopeUploader(quizgen.converter.base.QuizConverter):
         self.force = force
 
     def convert_quiz(self, quiz, **kwargs):
+        if (not isinstance(quiz, quizgen.quiz.Quiz)):
+            raise ValueError("GradeScope quiz uploader requires a quizgen.quiz.Quiz type, found %s." % (type(quiz)))
+
         temp_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-gradescope-')
 
         # TEST - We need an "instance" (variant) of a quiz.
         #    When generating pdfs and boxes, we have a question id that we use to identify a box.
         #    We need a version of the quiz that has only flat groups (after random choices have already happened).
+        variant = quiz.create_variant()
 
-        self.write_quiz(quiz, temp_dir)
+        self.write_quiz(variant, temp_dir)
         self.compile_tex(temp_dir)
 
         boxes, special_boxes = self.get_bounding_boxes(temp_dir)
-        self.upload(quiz, temp_dir, boxes, special_boxes)
+        self.upload(variant, temp_dir, boxes, special_boxes)
 
-    def write_quiz(self, quiz, temp_dir):
+    def write_quiz(self, variant, temp_dir):
         converter = quizgen.converter.gstemplate.GradeScopeTemplateConverter()
-        tex = converter.convert_quiz(quiz)
+        tex = converter.convert_quiz(variant)
 
         path = os.path.join(temp_dir, QUIZ_TEX_FILENAME)
         quizgen.util.file.write(path, tex)
@@ -201,16 +205,16 @@ class GradeScopeUploader(quizgen.converter.base.QuizConverter):
 
         return (x1, y1), (x2, y2)
 
-    def create_outline(self, quiz, bounding_boxes, special_boxes):
+    def create_outline(self, variant, bounding_boxes, special_boxes):
         question_data = []
         for (question_id, parts) in bounding_boxes.items():
-            group_index = int(question_id) - 1
+            question_index = int(question_id) - 1
 
             if (len(parts) == 1):
                 # Single-part question.
                 question_data.append({
-                    'title': quiz.groups[group_index].name,
-                    'weight': quiz.groups[group_index].points,
+                    'title': variant.questions[question_index].base_name,
+                    'weight': variant.questions[question_index].points,
                     'crop_rect_list': list(parts.values()),
                 })
             else:
@@ -218,14 +222,14 @@ class GradeScopeUploader(quizgen.converter.base.QuizConverter):
                 children = []
                 for (part_id, box) in parts.items():
                     children.append({
-                        'title': "%s - %s" % (quiz.groups[group_index].name, part_id),
-                        'weight': round(quiz.groups[group_index].points / len(parts), 2),
+                        'title': "%s - %s" % (variant.questions[question_index].base_name, part_id),
+                        'weight': round(variant.questions[question_index].points / len(parts), 2),
                         'crop_rect_list': [box],
                     })
 
                 question_data.append({
-                    'title': quiz.groups[group_index].name,
-                    'weight': quiz.groups[group_index].points,
+                    'title': variant.questions[question_index].base_name,
+                    'weight': variant.questions[question_index].points,
                     # The top-level question just needs one of the bounding boxes.
                     'crop_rect_list': [list(parts.values())[0]],
                     'children': children,
@@ -258,8 +262,8 @@ class GradeScopeUploader(quizgen.converter.base.QuizConverter):
 
         return outline
 
-    def upload(self, quiz, temp_dir,  bounding_boxes, special_boxes):
-        outline = self.create_outline(quiz, bounding_boxes, special_boxes)
+    def upload(self, variant, temp_dir,  bounding_boxes, special_boxes):
+        outline = self.create_outline(variant, bounding_boxes, special_boxes)
         print(json.dumps(outline, indent = 4))
 
         session = requests.Session()
@@ -267,16 +271,16 @@ class GradeScopeUploader(quizgen.converter.base.QuizConverter):
         self.login(session)
         print('Logged in.')
 
-        assignment_id = self.get_assignment_id(session, quiz)
+        assignment_id = self.get_assignment_id(session, variant)
         if (assignment_id is not None):
             if (not self.force):
-                print("Assignment '%s' (%s) already exists. Skipping upload." % (quiz.title, assignment_id))
+                print("Assignment '%s' (%s) already exists. Skipping upload." % (variant.title, assignment_id))
                 return
 
             self.delete_assignment(session, assignment_id)
             print('Deleted assignment: ', assignment_id)
 
-        assignment_id = self.create_assignment(session, quiz, temp_dir)
+        assignment_id = self.create_assignment(session, variant, temp_dir)
         print('Created assignment: ', assignment_id)
 
         self.submit_outline(session, assignment_id, outline)
@@ -333,7 +337,7 @@ class GradeScopeUploader(quizgen.converter.base.QuizConverter):
 
         return meta_tag.get('content')
 
-    def get_assignment_id(self, session, quiz):
+    def get_assignment_id(self, session, variant):
         url = URL_ASSIGNMENTS % (self.course_id)
 
         response = session.get(url)
@@ -354,7 +358,7 @@ class GradeScopeUploader(quizgen.converter.base.QuizConverter):
             id = row['id'].strip().removeprefix('assignment_')
             name = row['title'].strip()
 
-            if (name == quiz.title):
+            if (name == variant.title):
                 return id
 
         return None
@@ -374,7 +378,7 @@ class GradeScopeUploader(quizgen.converter.base.QuizConverter):
         response.raise_for_status()
         time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
 
-    def create_assignment(self, session, quiz, temp_dir):
+    def create_assignment(self, session, variant, temp_dir):
         form_url = URL_NEW_ASSIGNMENT_FORM % (self.course_id)
         create_url = URL_ASSIGNMENTS % (self.course_id)
 
@@ -382,7 +386,7 @@ class GradeScopeUploader(quizgen.converter.base.QuizConverter):
 
         data = {
             'authenticity_token': token,
-            'assignment[title]': quiz.title,
+            'assignment[title]': variant.title,
             'assignment[submissions_anonymized]': 0,
             'assignment[student_submission]': "false",
             'assignment[when_to_create_rubric]': 'while_grading',
@@ -401,7 +405,7 @@ class GradeScopeUploader(quizgen.converter.base.QuizConverter):
         time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
 
         if (len(response.history) == 0):
-            raise ValueError("Failed to create assignment. Is the name ('%s') unique?" % (quiz.title))
+            raise ValueError("Failed to create assignment. Is the name ('%s') unique?" % (variant.title))
 
         match = re.search(r'/assignments/(\d+)/outline/edit', response.history[0].text)
         if (match is None):

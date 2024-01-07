@@ -22,7 +22,7 @@
 
             <div class='qg-quiz-body'>
                 <form class='qg-quiz-form'>
-                    {{{GROUPS}}}
+                    {{{QUESTIONS}}}
 
                     <hr>
 

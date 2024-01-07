@@ -49,10 +49,10 @@ class QuizQuestionsTest(tests.base.BaseTest):
 
     def testToTex(self):
         converter = quizgen.converter.textemplate.TexTemplateConverter()
-        content = converter.convert_quiz(QuizQuestionsTest._quiz)
+        content = converter.convert_quiz(QuizQuestionsTest._quiz.create_variant(all_questions = True))
         self.assertTrue(len(content) > 10)
 
     def testToHTML(self):
         converter = quizgen.converter.htmltemplate.HTMLTemplateConverter()
-        content = converter.convert_quiz(QuizQuestionsTest._quiz)
+        content = converter.convert_quiz(QuizQuestionsTest._quiz.create_variant(all_questions = True))
         self.assertTrue(len(content) > 10)

@@ -9,7 +9,7 @@ import re
 
 import requests
 
-import quizgen.converter.base
+import quizgen.quiz
 import quizgen.util.hash
 
 # TODO(eriq): This code assumes there will never be more than a page of items returned.
@@ -32,7 +32,7 @@ class InstanceInfo(object):
             "Accept": "application/json+canvas-string-ids",
         }
 
-class CanvasUploader(quizgen.converter.base.QuizConverter):
+class CanvasUploader(object):
     def __init__(self, instance, force = False, **kwargs):
         super().__init__(**kwargs)
 
@@ -49,6 +49,9 @@ def upload_quiz(quiz, instance, force = False):
     """
     Data may be written into the instance context.
     """
+
+    if (not isinstance(quiz, quizgen.quiz.Quiz)):
+        raise ValueError("Canvas quiz uploader requires a quizgen.quiz.Quiz type, found %s." % (type(quiz)))
 
     existing_ids = get_matching_quiz_ids(quiz.title, instance)
     if ((len(existing_ids) > 0) and (not force)):
