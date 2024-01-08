@@ -5,6 +5,7 @@
 \usepackage{array}
 \usepackage{enumitem}
 \usepackage{epsfig}
+\usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{multicol}
@@ -23,6 +24,9 @@
     pdfcreator={Quiz Generator},
     pdfkeywords={Version: {{{VERSION}}}}
 ]{hyperref}
+
+% Remove paragraph indentation.
+\setlength{\parindent}{0pt}
 
 \usetikzlibrary{calc}
 
@@ -142,6 +146,13 @@
     breakatwhitespace=false,
 }
 
+% Clear headers and footers for the first page.
+\pagestyle{fancy}
+\fancyhead{}
+\renewcommand{\headrulewidth}{0mm}
+\fancyfoot{}
+\renewcommand{\footrulewidth}{0mm}
+
 \begin{document}
 
 \centerline{\Large {{{TITLE}}}}
@@ -182,6 +193,18 @@ e.g., you crossed out answers or needed space outside a designated answer box. \
 \end{tabular}
 
 \newpage
+
+% Set headers and footers.
+\pagestyle{fancy}
+\fancyhead{}
+\fancyhead[L]{{{{COURSE_TITLE}}}}
+\fancyhead[C]{{{{TITLE}}}}
+\fancyhead[R]{{{{TERM_TITLE}}}}
+\renewcommand{\headrulewidth}{0.1mm}
+\fancyfoot{}
+\fancyfoot[R]{\thepage}
+\fancyfoot[L]{Version: {{{VERSION}}}}
+\renewcommand{\footrulewidth}{0.1mm}
 
 {{{QUESTIONS}}}
 
