@@ -9,6 +9,7 @@ import sys
 
 import quizgen.converter.gradescope
 import quizgen.converter.gstemplate
+import quizgen.latex
 import quizgen.util.file
 import quizgen.quiz
 
@@ -51,6 +52,10 @@ def run(args):
 
             out_path = os.path.join(out_dir, "%s.tex" % (variant.title))
             quizgen.util.file.write(out_path, content)
+
+            # Need to compile twice to get positioning.
+            quizgen.latex.compile(out_path)
+            quizgen.latex.compile(out_path)
 
         print("Completed variant: '%s'." % (variant.title))
 
