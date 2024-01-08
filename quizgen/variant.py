@@ -40,19 +40,23 @@ class Variant(object):
             if (value is None):
                 raise quizgen.common.QuizValidationError("Empty variant value: '%s'." % (key))
 
-    def to_dict(self):
+    def to_dict(self, include_docs = True):
         value = self.__dict__.copy()
 
         if ('date' in value):
             value['date'] = value['date'].isoformat()
 
-        value['description_document'] = self.description_document.to_pod()
-        value['questions'] = [question.to_dict() for question in self.questions]
+        value['questions'] = [question.to_dict(include_docs = include_docs) for question in self.questions]
+
+        if (include_docs):
+            value['description_document'] = self.description_document.to_pod()
+        else:
+            del value['description_document']
 
         return value
 
-    def to_json(self, indent = 4):
-        return json.dumps(self.to_dict(), indent = indent)
+    def to_json(self, indent = 4, include_docs = True):
+        return json.dumps(self.to_dict(include_docs = include_docs), indent = indent)
 
     def num_questions(self):
         return len(self.questions)

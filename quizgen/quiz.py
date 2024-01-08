@@ -66,14 +66,18 @@ class Quiz(object):
         else:
             self.date = datetime.date.fromisoformat(self.date)
 
-    def to_dict(self, flatten_groups = False):
+    def to_dict(self, include_docs = True, flatten_groups = False):
         value = self.__dict__.copy()
 
         if ('date' in value):
             value['date'] = value['date'].isoformat()
 
-        value['description_document'] = self.description_document.to_pod()
-        value['groups'] = [group.to_dict() for group in self.groups]
+        value['groups'] = [group.to_dict(include_docs = include_docs) for group in self.groups]
+
+        if (include_docs):
+            value['description_document'] = self.description_document.to_pod()
+        else:
+            del value['description_document']
 
         return value
 
@@ -110,8 +114,8 @@ class Quiz(object):
 
         return Quiz(base_dir = base_dir, **quiz_info)
 
-    def to_json(self, indent = 4):
-        return json.dumps(self.to_dict(), indent = indent)
+    def to_json(self, indent = 4, include_docs = True):
+        return json.dumps(self.to_dict(include_docs = include_docs), indent = indent)
 
     def num_questions(self):
         count = 0
@@ -121,7 +125,7 @@ class Quiz(object):
 
         return count
 
-    def create_variant(self, seed = None, all_questions = False):
+    def create_variant(self, identifier = None, seed = None, all_questions = False):
         if (seed is None):
             seed = random.randint(0, 2**64)
 
@@ -134,10 +138,17 @@ class Quiz(object):
             else:
                 questions += group.choose_questions(rng)
 
+        title = self.title
+        version = self.version
+
+        if (identifier is not None):
+            title = "%s - %s" % (title, identifier)
+            version = "%s, Variant: %s" % (version, identifier)
+
         return quizgen.variant.Variant(
-            title = self.title,
+            title = title,
             course_title = self.course_title, term_title = self.term_title,
             description = self.description, description_document = self.description_document,
             date = self.date,
             questions = questions,
-            version = self.version, seed = seed)
+            version = version, seed = seed)

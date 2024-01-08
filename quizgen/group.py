@@ -29,9 +29,9 @@ class Group(object):
             question.points = self.points
             question.base_name = self.name
 
-    def to_dict(self):
+    def to_dict(self, include_docs = True):
         value = self.__dict__.copy()
-        value['questions'] = [question.to_dict() for question in self.questions]
+        value['questions'] = [question.to_dict(include_docs = include_docs) for question in self.questions]
         return value
 
     def collect_file_paths(self):

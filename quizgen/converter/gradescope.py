@@ -12,7 +12,7 @@ import requests
 
 import quizgen.converter.gstemplate
 import quizgen.latex
-import quizgen.quiz
+import quizgen.variant
 import quizgen.util.file
 
 URL_HOMEPAGE = 'https://www.gradescope.com'
@@ -23,11 +23,6 @@ URL_ASSIGNMENT_EDIT = 'https://www.gradescope.com/courses/%s/assignments/%s/edit
 URL_NEW_ASSIGNMENT_FORM = 'https://www.gradescope.com/courses/%s/assignments/new'
 URL_EDIT_OUTLINE = 'https://www.gradescope.com/courses/%s/assignments/%s/outline/edit'
 URL_PATCH_OUTLINE = 'https://www.gradescope.com/courses/%s/assignments/%s/outline'
-
-QUIZ_BASE_NAME = 'quiz'
-QUIZ_TEX_FILENAME = QUIZ_BASE_NAME + '.tex'
-QUIZ_PDF_FILENAME = QUIZ_BASE_NAME + '.pdf'
-QUIZ_POS_FILENAME = QUIZ_BASE_NAME + '.pos'
 
 NAME_BOX_ID = 'name'
 ID_BOX_ID = 'id'
@@ -69,45 +64,48 @@ class GradeScopeUploader(object):
         self.password = password
         self.force = force
 
-    def convert_quiz(self, quiz, **kwargs):
-        if (not isinstance(quiz, quizgen.quiz.Quiz)):
-            raise ValueError("GradeScope quiz uploader requires a quizgen.quiz.Quiz type, found %s." % (type(quiz)))
+    def convert_quiz(self, variant, base_dir = None, **kwargs):
+        """
+        Compile a quiz and upload it to GradeScope.
 
-        temp_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-gradescope-')
+        If base_dir is left None, then a temp dir will be created which will be destroyed on exit.
+        If supplied, the base_dir will be left alone when finished.
+        """
 
-        # TEST - We need an "instance" (variant) of a quiz.
-        #    When generating pdfs and boxes, we have a question id that we use to identify a box.
-        #    We need a version of the quiz that has only flat groups (after random choices have already happened).
-        variant = quiz.create_variant()
+        if (not isinstance(variant, quizgen.variant.Variant)):
+            raise ValueError("GradeScope quiz uploader requires a quizgen.variant.Variant type, found %s." % (type(variant)))
 
-        self.write_quiz(variant, temp_dir)
-        self.compile_tex(temp_dir)
+        if (base_dir is None):
+            base_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-gradescope-')
 
-        boxes, special_boxes = self.get_bounding_boxes(temp_dir)
-        self.upload(variant, temp_dir, boxes, special_boxes)
+        self.write_quiz(variant, base_dir)
+        self.compile_tex(variant, base_dir)
 
-    def write_quiz(self, variant, temp_dir):
+        boxes, special_boxes = self.get_bounding_boxes(variant, base_dir)
+        self.upload(variant, base_dir, boxes, special_boxes)
+
+    def write_quiz(self, variant, base_dir):
         converter = quizgen.converter.gstemplate.GradeScopeTemplateConverter()
         tex = converter.convert_quiz(variant)
 
-        path = os.path.join(temp_dir, QUIZ_TEX_FILENAME)
+        path = os.path.join(base_dir, "%s.tex" % (variant.title))
         quizgen.util.file.write(path, tex)
 
-    def compile_tex(self, temp_dir):
-        path = os.path.join(temp_dir, QUIZ_TEX_FILENAME)
+    def compile_tex(self, variant, base_dir):
+        path = os.path.join(base_dir, "%s.tex" % (variant.title))
 
         quizgen.latex.compile(path)
 
         # Need to compile twice to get positioning.
         quizgen.latex.compile(path)
 
-    def get_bounding_boxes(self, temp_dir):
+    def get_bounding_boxes(self, variant, base_dir):
         # {<quetion id>: {<part id>: box, ...}, ...}
         boxes = {}
         # {NAME_BOX_ID: box, ID_BOX_ID: box, SIGNATURE_BOX_ID: box}
         special_boxes = {}
 
-        path = os.path.join(temp_dir, QUIZ_POS_FILENAME)
+        path = os.path.join(base_dir, "%s.pos" % (variant.title))
         with open(path, 'r') as file:
             for line in file:
                 line = line.strip()
@@ -262,9 +260,8 @@ class GradeScopeUploader(object):
 
         return outline
 
-    def upload(self, variant, temp_dir,  bounding_boxes, special_boxes):
+    def upload(self, variant, base_dir,  bounding_boxes, special_boxes):
         outline = self.create_outline(variant, bounding_boxes, special_boxes)
-        print(json.dumps(outline, indent = 4))
 
         session = requests.Session()
 
@@ -280,7 +277,7 @@ class GradeScopeUploader(object):
             self.delete_assignment(session, assignment_id)
             print('Deleted assignment: ', assignment_id)
 
-        assignment_id = self.create_assignment(session, variant, temp_dir)
+        assignment_id = self.create_assignment(session, variant, base_dir)
         print('Created assignment: ', assignment_id)
 
         self.submit_outline(session, assignment_id, outline)
@@ -378,7 +375,7 @@ class GradeScopeUploader(object):
         response.raise_for_status()
         time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
 
-    def create_assignment(self, session, variant, temp_dir):
+    def create_assignment(self, session, variant, base_dir):
         form_url = URL_NEW_ASSIGNMENT_FORM % (self.course_id)
         create_url = URL_ASSIGNMENTS % (self.course_id)
 
@@ -392,7 +389,7 @@ class GradeScopeUploader(object):
             'assignment[when_to_create_rubric]': 'while_grading',
         }
 
-        path = os.path.join(temp_dir, QUIZ_PDF_FILENAME)
+        path = os.path.join(base_dir, "%s.pdf" % (variant.title))
         files = {
             'template_pdf': (
                 os.path.basename(path),

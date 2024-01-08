@@ -13,7 +13,6 @@ import quizgen.constants
 import quizgen.util.file
 
 # TEST -- Answer Shuffling
-# TEST -- Generate Seed as part of footer.
 
 # Template variabes.
 TEMPLATE_VAR_ANSWER_CHOICE_INDEX = '{{{ANSWER_CHOICE_INDEX}}}'
@@ -332,7 +331,6 @@ class TemplateConverter(object):
         template = self.fill_variable(template, TEMPLATE_VAR_DESCRIPTION,
                 quiz.description_document.to_format(self.format))
 
-        # TEST - Variant Information
         version = self.check_variable(quiz, 'version', label = 'Quiz')
         template = self.fill_variable(template, TEMPLATE_VAR_VERSION, version)
 

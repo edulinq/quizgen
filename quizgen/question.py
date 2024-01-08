@@ -217,12 +217,17 @@ class Question(object):
         self.answers_documents = _validate_answer_list(self.answers, self.base_dir,
                 min_correct = min_correct, max_correct = max_correct)
 
-    def to_dict(self):
+    def to_dict(self, include_docs = True):
         value = self.__dict__.copy()
 
-        value['prompt_document'] = self.prompt_document.to_pod()
         value['answers'] = self._answers_to_dict(self.answers)
-        value['answers_documents'] = self._answers_to_dict(self.answers_documents)
+
+        if (include_docs):
+            value['prompt_document'] = self.prompt_document.to_pod()
+            value['answers_documents'] = self._answers_to_dict(self.answers_documents)
+        else:
+            del value['prompt_document']
+            del value['answers_documents']
 
         return value
 
