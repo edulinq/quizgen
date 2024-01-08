@@ -1,1 +1,1 @@
-        \mcqCheckbox[mdd]{{{{QUESTION_ID}}}}{{{{ANSWER_ID}}}}{{{{ANSWER_CHOICE_INDEX}}}} & {{{ANSWER_CHOICE_TEXT}}} \\
+        \radio{mdd}{{{{QUESTION_ID}}}}{{{{ANSWER_ID}}}}{{{{ANSWER_CHOICE_INDEX}}}} & {{{ANSWER_CHOICE_TEXT}}} \\

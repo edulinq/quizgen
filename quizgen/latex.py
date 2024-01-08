@@ -11,7 +11,7 @@ def is_available():
     return True
 
 def compile(path):
-    result = subprocess.run(["pdflatex", os.path.basename(path)], cwd = os.path.dirname(path),
+    result = subprocess.run(['pdflatex', '-interaction=nonstopmode', os.path.basename(path)], cwd = os.path.dirname(path),
         capture_output = True)
 
     if (result.returncode != 0):

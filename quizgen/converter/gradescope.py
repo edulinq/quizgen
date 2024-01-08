@@ -33,6 +33,7 @@ EXTEND_BOX_QUESTION_TYPES = [
     'ma',
     'mcq',
     'mdd',
+    'tf',
 ]
 
 STANDARD_BOX_QUESTION_TYPES = [

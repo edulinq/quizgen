@@ -1,4 +1,4 @@
     \begin{tabular}{ m{10mm} l }
-        \mcqCheckbox{{{{QUESTION_ID}}}}{0}{0} & True \\
-        \mcqCheckbox{{{{QUESTION_ID}}}}{0}{1} & False \\
+        \radio{tf}{{{{QUESTION_ID}}}}{0}{0} & True \\
+        \radio{tf}{{{{QUESTION_ID}}}}{0}{1} & False \\
     \end{tabular}
