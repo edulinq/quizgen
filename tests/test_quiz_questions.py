@@ -1,6 +1,7 @@
 import glob
 import os
 
+import quizgen.converter.gstemplate
 import quizgen.converter.htmltemplate
 import quizgen.converter.textemplate
 import quizgen.quiz
@@ -54,5 +55,10 @@ class QuizQuestionsTest(tests.base.BaseTest):
 
     def testToHTML(self):
         converter = quizgen.converter.htmltemplate.HTMLTemplateConverter()
+        content = converter.convert_quiz(QuizQuestionsTest._quiz.create_variant(all_questions = True))
+        self.assertTrue(len(content) > 10)
+
+    def testToGS(self):
+        converter = quizgen.converter.gstemplate.GradeScopeTemplateConverter()
         content = converter.convert_quiz(QuizQuestionsTest._quiz.create_variant(all_questions = True))
         self.assertTrue(len(content) > 10)
