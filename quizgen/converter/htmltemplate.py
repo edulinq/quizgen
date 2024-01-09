@@ -15,14 +15,18 @@ class HTMLTemplateConverter(quizgen.converter.template.TemplateConverter):
         super().__init__(quizgen.constants.DOC_FORMAT_HTML, template_dir, **kwargs)
 
     # Override matching choice generation.
-    def create_choices_matching(self, base_template, question_number, lefts, rights):
+    def create_choices_matching(self, base_template, key_template, question_number, lefts, rights, matches):
         # The choices are the same for all answers.
         choices_text = self.create_matching_rights(rights)
 
         answers_text = []
 
         for i in range(len(lefts)):
-            template = base_template
+            if (self.answer_key and (key_template is not None)):
+                template = key_template
+            else:
+                template = base_template
+
             left = lefts[i]
             answer_id = "%d.%d" % (question_number, i)
 
@@ -30,6 +34,8 @@ class HTMLTemplateConverter(quizgen.converter.template.TemplateConverter):
             template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_ANSWER_ID, answer_id)
             template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_ANSWER_TEXT, left)
             template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_ANSWER_CHOICES, choices_text)
+
+            template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_ANSWER_SOLUTION, rights[i])
 
             answers_text.append(template)
 

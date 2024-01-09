@@ -5,4 +5,6 @@
     Fill in the one circle that corresponds to your answer.
     \vspace{0.25cm}
 
-    {{{QUESTION_ANSWERS}}}
+    \begin{tabular}{ m{10mm} l }
+{{{QUESTION_ANSWERS}}}
+    \end{tabular}

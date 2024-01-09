@@ -62,3 +62,18 @@ class QuizQuestionsTest(tests.base.BaseTest):
         converter = quizgen.converter.gstemplate.GradeScopeTemplateConverter()
         content = converter.convert_quiz(QuizQuestionsTest._quiz.create_variant(all_questions = True))
         self.assertTrue(len(content) > 10)
+
+    def testToTexKey(self):
+        converter = quizgen.converter.textemplate.TexTemplateConverter(answer_key = True)
+        content = converter.convert_quiz(QuizQuestionsTest._quiz.create_variant(all_questions = True))
+        self.assertTrue(len(content) > 10)
+
+    def testToHTMLKey(self):
+        converter = quizgen.converter.htmltemplate.HTMLTemplateConverter(answer_key = True)
+        content = converter.convert_quiz(QuizQuestionsTest._quiz.create_variant(all_questions = True))
+        self.assertTrue(len(content) > 10)
+
+    def testToGSKey(self):
+        converter = quizgen.converter.gstemplate.GradeScopeTemplateConverter(answer_key = True)
+        content = converter.convert_quiz(QuizQuestionsTest._quiz.create_variant(all_questions = True))
+        self.assertTrue(len(content) > 10)

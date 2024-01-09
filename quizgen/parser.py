@@ -265,7 +265,7 @@ class ParseNode(abc.ABC):
         elif (format == quizgen.constants.DOC_FORMAT_TEX):
             return self.to_tex(**kwargs)
         elif (format == quizgen.constants.DOC_FORMAT_TEXT):
-            return self.to_tex(**kwargs)
+            return self.to_text(**kwargs)
         else:
             raise ValueError(f"Unknown format '{format}'.")
 

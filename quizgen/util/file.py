@@ -4,6 +4,16 @@ import shutil
 import tempfile
 import uuid
 
+def read_if_exists(path, **kwargs):
+    """
+    Read the file if it exists, otherwise return None.
+    """
+
+    if (os.path.exists(path)):
+        return read(path, **kwargs)
+
+    return None
+
 def read(path, strip = True, rstrip = True):
     with open(path, 'r') as file:
         contents = file.read()

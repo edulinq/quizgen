@@ -1,10 +1,4 @@
-<fieldset>
-    <div>
-        <input type='radio' id='answer-{{{QUESTION_ID}}}-true' name='question-{{{QUESTION_ID}}}' />
-        <label for='answer-{{{QUESTION_ID}}}-true'>True</label>
-    </div>
-    <div>
-        <input type='radio' id='answer-{{{QUESTION_ID}}}-false' name='question-{{{QUESTION_ID}}}' />
-        <label for='answer-{{{QUESTION_ID}}}-false'>False</label>
-    </div>
-</fieldset>
+<div>
+    <input type='radio' id='answer-{{{ANSWER_ID}}}' name='question-{{{QUESTION_ID}}}' />
+    <label for='answer-{{{ANSWER_ID}}}'>{{{ANSWER_TEXT}}}</label>
+</div>

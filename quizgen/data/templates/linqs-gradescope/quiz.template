@@ -169,11 +169,11 @@
 \vspace{1.0cm}
 
 \begin{tabular}{ m{1.5cm} m{4cm} }
-    Name: & \bigAnswerBox{4em}{0.70}{name}{name}{0}{0} \\
+    Name: & \bigAnswerBox[{{{ANSWER_KEY}}}]{4em}{0.70}{name}{name}{0}{0} \\
 \end{tabular}
 
 \begin{tabular}{ m{1.5cm} m{4cm} }
-    Email: & \bigAnswerBox{4em}{0.70}{id}{email}{0}{0} \\
+    Email: & \bigAnswerBox[{{{ANSWER_KEY}}}]{4em}{0.70}{id}{email}{0}{0} \\
 \end{tabular}
 
 \vspace{0.5cm}
@@ -185,7 +185,7 @@ I acknowledge that I have neither given nor received inappropriate help on this 
 \vspace{1.0cm}
 
 \begin{tabular}{ m{1.5cm} m{4cm} }
-    Signature: & \bigAnswerBox{4em}{0.70}{signature}{signature}{0}{0} \\
+    Signature: & \bigAnswerBox[{{{ANSWER_KEY}}}]{4em}{0.70}{signature}{signature}{0}{0} \\
 \end{tabular}
 
 Fill in the box below if you believe your exam requires manual grading,

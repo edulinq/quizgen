@@ -47,19 +47,28 @@ def run(args):
             converter = quizgen.converter.gradescope.GradeScopeUploader(args.course_id, args.user, args.password, force = args.force)
             converter.convert_quiz(variant, base_dir = out_dir)
         else:
-            converter = quizgen.converter.gstemplate.GradeScopeTemplateConverter()
-            content = converter.convert_quiz(variant)
+            _make_pdf(variant, out_dir, False)
 
-            out_path = os.path.join(out_dir, "%s.tex" % (variant.title))
-            quizgen.util.file.write(out_path, content)
+        title = variant.title
 
-            # Need to compile twice to get positioning.
-            quizgen.latex.compile(out_path)
-            quizgen.latex.compile(out_path)
+        # Always create an answer key.
+        variant.title = "%s -- Answer Key" % (variant.title)
+        _make_pdf(variant, out_dir, True)
 
-        print("Completed variant: '%s'." % (variant.title))
+        print("Completed variant: '%s'." % (title))
 
     return 0
+
+def _make_pdf(variant, out_dir, is_key):
+    converter = quizgen.converter.gstemplate.GradeScopeTemplateConverter(answer_key = is_key)
+    content = converter.convert_quiz(variant)
+
+    out_path = os.path.join(out_dir, "%s.tex" % (variant.title))
+    quizgen.util.file.write(out_path, content)
+
+    # Need to compile twice to get positioning.
+    quizgen.latex.compile(out_path)
+    quizgen.latex.compile(out_path)
 
 def _get_parser():
     parser = argparse.ArgumentParser(description =

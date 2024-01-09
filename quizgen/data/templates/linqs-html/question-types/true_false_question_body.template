@@ -3,5 +3,7 @@
 <div>
 
 <div class='qg-quiz-question-answers'>
-    {{{QUESTION_ANSWERS}}}
+    <fieldset>
+        {{{QUESTION_ANSWERS}}}
+    </fieldset>
 </div>

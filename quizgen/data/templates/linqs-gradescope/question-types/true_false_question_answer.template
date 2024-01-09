@@ -1,4 +1,1 @@
-    \begin{tabular}{ m{10mm} l }
-        \radio{tf}{{{{QUESTION_ID}}}}{0}{0} & True \\
-        \radio{tf}{{{{QUESTION_ID}}}}{0}{1} & False \\
-    \end{tabular}
+        \radio{tf}{{{{QUESTION_ID}}}}{0}{{{{ANSWER_ID}}}} & {{{ANSWER_TEXT}}} \\

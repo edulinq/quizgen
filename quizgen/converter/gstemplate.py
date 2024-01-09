@@ -15,6 +15,7 @@ TEMPLATE_VAR_RIGHT_TABLE = '{{{RIGHT_MATCHING_TABLE}}}'
 
 TEMPLATE_FILENAME_LEFT_TABLE = 'matching_question_left_table.template'
 TEMPLATE_FILENAME_LEFT_TABLE_ROW = 'matching_question_left_table_row.template'
+TEMPLATE_FILENAME_LEFT_TABLE_ROW_KEY = 'matching_question_left_table_row_key.template'
 TEMPLATE_FILENAME_RIGHT_TABLE = 'matching_question_right_table.template'
 TEMPLATE_FILENAME_RIGHT_TABLE_ROW = 'matching_question_right_table_row.template'
 
@@ -22,14 +23,24 @@ class GradeScopeTemplateConverter(quizgen.converter.template.TemplateConverter):
     def __init__(self, template_dir = DEFAULT_TEMPLATE_DIR, **kwargs):
         super().__init__(quizgen.constants.DOC_FORMAT_TEX, template_dir, **kwargs)
 
+    def clean_solution_content(self, document):
+        tex = document.to_format(quizgen.constants.DOC_FORMAT_TEX)
+        if ('\\' not in tex):
+            return tex
+
+        content = document.to_format(quizgen.constants.DOC_FORMAT_TEXT)
+        content = content.replace('\\', '\\textbackslash{}')
+
+        return content
+
     # Override matching choice generation.
-    def create_choices_matching(self, base_template, question_number, lefts, rights):
+    def create_choices_matching(self, base_template, key_template, question_number, lefts, rights, matches):
         right_ids = self.get_right_ids()
         if (len(rights) > len(right_ids)):
             raise ValueError("Too many distractors. Max allowed: '%d'." % (len(right_ids)))
 
         # The left and rights will be generated in different tables.
-        left_table = self._create_matching_left_table(question_number, lefts)
+        left_table = self._create_matching_left_table(question_number, lefts, right_ids)
         right_table = self._create_matching_right_table(question_number, rights, right_ids)
 
         template = base_template
@@ -38,18 +49,29 @@ class GradeScopeTemplateConverter(quizgen.converter.template.TemplateConverter):
 
         return template
 
-    def _create_matching_left_table(self, question_number, lefts):
-        table_template = quizgen.util.file.read(os.path.join(self.template_dir, quizgen.converter.template.TEMPLATE_QUESTION_TYPES_DIR, TEMPLATE_FILENAME_LEFT_TABLE), strip = False)
-        base_row_template = quizgen.util.file.read(os.path.join(self.template_dir, quizgen.converter.template.TEMPLATE_QUESTION_TYPES_DIR, TEMPLATE_FILENAME_LEFT_TABLE_ROW), strip = False)
+    def _create_matching_left_table(self, question_number, lefts, right_ids):
+        path = os.path.join(self.template_dir, quizgen.converter.template.TEMPLATE_QUESTION_TYPES_DIR, TEMPLATE_FILENAME_LEFT_TABLE)
+        table_template = quizgen.util.file.read(path, strip = False)
+
+        path = os.path.join(self.template_dir, quizgen.converter.template.TEMPLATE_QUESTION_TYPES_DIR, TEMPLATE_FILENAME_LEFT_TABLE_ROW)
+        base_row_template = quizgen.util.file.read(path, strip = False)
+
+        path = os.path.join(self.template_dir, quizgen.converter.template.TEMPLATE_QUESTION_TYPES_DIR, TEMPLATE_FILENAME_LEFT_TABLE_ROW_KEY)
+        key_row_template = quizgen.util.file.read_if_exists(path, strip = False)
 
         choices = []
 
         for i in range(len(lefts)):
-            template = base_row_template
+            if (self.answer_key and (key_row_template is not None)):
+                template = key_row_template
+            else:
+                template = base_row_template
 
             template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_QUESTION_NUMBER, str(question_number))
             template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_ANSWER_LEFT, lefts[i])
             template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_ANSWER_LEFT_ID, str(i))
+
+            template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_ANSWER_SOLUTION, right_ids[i])
 
             choices.append(template)
 
@@ -58,8 +80,11 @@ class GradeScopeTemplateConverter(quizgen.converter.template.TemplateConverter):
         return table_template
 
     def _create_matching_right_table(self, question_number, rights, right_ids):
-        table_template = quizgen.util.file.read(os.path.join(self.template_dir, quizgen.converter.template.TEMPLATE_QUESTION_TYPES_DIR, TEMPLATE_FILENAME_RIGHT_TABLE), strip = False)
-        base_row_template = quizgen.util.file.read(os.path.join(self.template_dir, quizgen.converter.template.TEMPLATE_QUESTION_TYPES_DIR, TEMPLATE_FILENAME_RIGHT_TABLE_ROW), strip = False)
+        path = os.path.join(self.template_dir, quizgen.converter.template.TEMPLATE_QUESTION_TYPES_DIR, TEMPLATE_FILENAME_RIGHT_TABLE)
+        table_template = quizgen.util.file.read(path, strip = False)
+
+        path = os.path.join(self.template_dir, quizgen.converter.template.TEMPLATE_QUESTION_TYPES_DIR, TEMPLATE_FILENAME_RIGHT_TABLE_ROW)
+        base_row_template = quizgen.util.file.read(path, strip = False)
 
         choices = []
 
