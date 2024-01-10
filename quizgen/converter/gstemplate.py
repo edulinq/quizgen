@@ -40,7 +40,7 @@ class GradeScopeTemplateConverter(quizgen.converter.template.TemplateConverter):
             raise ValueError("Too many distractors. Max allowed: '%d'." % (len(right_ids)))
 
         # The left and rights will be generated in different tables.
-        left_table = self._create_matching_left_table(question_number, lefts, right_ids)
+        left_table = self._create_matching_left_table(question_number, lefts, right_ids, matches)
         right_table = self._create_matching_right_table(question_number, rights, right_ids)
 
         template = base_template
@@ -49,7 +49,7 @@ class GradeScopeTemplateConverter(quizgen.converter.template.TemplateConverter):
 
         return template
 
-    def _create_matching_left_table(self, question_number, lefts, right_ids):
+    def _create_matching_left_table(self, question_number, lefts, right_ids, matches):
         path = os.path.join(self.template_dir, quizgen.converter.template.TEMPLATE_QUESTION_TYPES_DIR, TEMPLATE_FILENAME_LEFT_TABLE)
         table_template = quizgen.util.file.read(path, strip = False)
 
@@ -71,7 +71,7 @@ class GradeScopeTemplateConverter(quizgen.converter.template.TemplateConverter):
             template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_ANSWER_LEFT, lefts[i])
             template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_ANSWER_LEFT_ID, str(i))
 
-            template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_ANSWER_SOLUTION, right_ids[i])
+            template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_ANSWER_SOLUTION, right_ids[matches[i]])
 
             choices.append(template)
 

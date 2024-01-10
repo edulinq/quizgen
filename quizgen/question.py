@@ -2,6 +2,7 @@ import copy
 import json5
 import math
 import os
+import random
 
 import quizgen.common
 import quizgen.constants
@@ -280,6 +281,51 @@ class Question(object):
 
     def copy(self):
         return copy.deepcopy(self)
+
+    def shuffle_answers(self, rng = None):
+        if (rng is None):
+            rng = random.Random()
+
+        # Nothing to be done for these types.
+        skip_types = [
+            quizgen.constants.QUESTION_TYPE_ESSAY,
+            quizgen.constants.QUESTION_TYPE_FIMB,
+            quizgen.constants.QUESTION_TYPE_NUMERICAL,
+            quizgen.constants.QUESTION_TYPE_SA,
+            quizgen.constants.QUESTION_TYPE_TEXT_ONLY,
+        ]
+
+        if (self.question_type in skip_types):
+            return
+
+        # List types that just need a simple shuffle.
+        list_types = [
+            quizgen.constants.QUESTION_TYPE_MA,
+            quizgen.constants.QUESTION_TYPE_MCQ,
+            quizgen.constants.QUESTION_TYPE_TF,
+        ]
+
+        if (self.question_type in list_types):
+            collection = list(zip(self.answers, self.answers_documents))
+            rng.shuffle(collection)
+            self.answers, self.answers_documents = zip(*collection)
+            return
+
+        if (self.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
+            # Matching is special because it requires additional shuffling support at the converter level.
+            self.answers['shuffle'] = True
+            self.answers['shuffle_seed'] = rng.randint(0, 2 ** 64)
+            return
+
+        if (self.question_type == quizgen.constants.QUESTION_TYPE_MDD):
+            for key in self.answers:
+                collection = list(zip(self.answers[key], self.answers_documents[key]['values']))
+                rng.shuffle(collection)
+                self.answers[key], self.answers_documents[key]['values'] = zip(*collection)
+
+            return
+
+        raise ValueError("Unknown question type: '%s'." % (self.question_type))
 
 def _check_type(value, expected_type, label):
     if (not isinstance(value, expected_type)):

@@ -12,8 +12,6 @@ import quizgen.variant
 import quizgen.constants
 import quizgen.util.file
 
-# TEST -- Answer Shuffling
-
 # Template variabes.
 TEMPLATE_VAR_ANSWER_CHOICE_INDEX = '{{{ANSWER_CHOICE_INDEX}}}'
 TEMPLATE_VAR_ANSWER_CHOICE_TEXT = '{{{ANSWER_CHOICE_TEXT}}}'
@@ -263,8 +261,6 @@ class TemplateConverter(object):
         return "\n\n".join(answers_text)
 
     def create_choices_mdd(self, question_number, question, answer_id, key):
-        # TODO - Shuffle
-
         question_type = self.check_variable(question, 'question_type', label = 'Question')
 
         filename = "%s_%s" % (question_type, TEMPLATE_FILENAME_CHOICE)
@@ -298,8 +294,6 @@ class TemplateConverter(object):
         return "\n".join(choices_text)
 
     def create_answers_fimb(self, base_template, key_template, question_number, question):
-        # TODO - Shuffle
-
         answers_text = []
         i = 0
 
@@ -328,14 +322,14 @@ class TemplateConverter(object):
         return "\n\n".join(answers_text)
 
     def create_answers_matching(self, base_template, key_template, question_number, question):
-        # TODO -- Shuffle
-
         lefts = []
         rights = []
-        matches = []
+
+        # {left_index: right_index, ...}
+        matches = {}
 
         for (left, right) in question.answers_documents['matches']:
-            matches.append((len(lefts), len(rights)))
+            matches[len(lefts)] = len(rights)
 
             lefts.append(left.to_format(self.format))
             rights.append(right.to_format(self.format))
@@ -343,11 +337,29 @@ class TemplateConverter(object):
         for right in question.answers_documents['distractors']:
             rights.append(right.to_format(self.format))
 
+        if (question.answers.get('shuffle', False)):
+            seed = question.answers.get('shuffle_seed', None)
+            rng = random.Random(seed)
+
+            # Shuffle the left and right options while maintining the match mapping.
+            left_indexes = list(range(len(lefts)))
+            right_indexes = list(range(len(rights)))
+
+            rng.shuffle(left_indexes)
+            rng.shuffle(right_indexes)
+
+            new_lefts = [lefts[index] for index in left_indexes]
+            lefts = new_lefts
+
+            new_rights = [rights[index] for index in right_indexes]
+            rights = new_rights
+
+            new_matches = {left_indexes.index(old_left_index): right_indexes.index(old_right_index) for (old_left_index, old_right_index) in matches.items()}
+            matches = new_matches
+
         return self.create_choices_matching(base_template, key_template, question_number, lefts, rights, matches)
 
     def create_choices_matching(self, base_template, key_template, question_number, lefts, rights, matches):
-        # TODO -- Shuffle
-
         left_ids = self.get_left_ids()
         right_ids = self.get_right_ids()
 
@@ -368,8 +380,10 @@ class TemplateConverter(object):
                 left = lefts[i]
                 left_id = left_ids[i]
 
+                solution = ''
                 if (self.answer_key and (key_template is not None)):
                     template = key_template
+                    solution = right_ids[matches[i]]
 
             right = ''
             right_id = ''

@@ -35,7 +35,7 @@ class HTMLTemplateConverter(quizgen.converter.template.TemplateConverter):
             template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_ANSWER_TEXT, left)
             template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_ANSWER_CHOICES, choices_text)
 
-            template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_ANSWER_SOLUTION, rights[i])
+            template = self.fill_variable(template, quizgen.converter.template.TEMPLATE_VAR_ANSWER_SOLUTION, rights[matches[i]])
 
             answers_text.append(template)
 

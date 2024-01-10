@@ -138,6 +138,10 @@ class Quiz(object):
             else:
                 questions += group.choose_questions(rng)
 
+        if (self.shuffle_answers):
+            for question in questions:
+                question.shuffle_answers(rng)
+
         title = self.title
         version = self.version
 
