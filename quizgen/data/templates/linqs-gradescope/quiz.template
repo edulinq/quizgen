@@ -173,7 +173,7 @@
 \end{tabular}
 
 \begin{tabular}{ m{1.5cm} m{4cm} }
-    Email: & \bigAnswerBox[{{{ANSWER_KEY}}}]{4em}{0.70}{id}{email}{0}{0} \\
+    Student ID: & \bigAnswerBox[{{{ANSWER_KEY}}}]{4em}{0.70}{id}{email}{0}{0} \\
 \end{tabular}
 
 \vspace{0.5cm}
