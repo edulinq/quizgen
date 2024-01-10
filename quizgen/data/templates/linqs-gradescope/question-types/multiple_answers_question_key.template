@@ -1,1 +1,1 @@
-        \checkbox[red]{ma}{{{{QUESTION_ID}}}}{0}{{{{ANSWER_ID}}}} & {{{ANSWER_TEXT}}} \\
+        \checkbox[red]{ma}{{{{QUESTION_ID}}}}{{{{ANSWER_ID}}}}{0} & {{{ANSWER_TEXT}}} \\
