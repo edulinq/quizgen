@@ -19,6 +19,7 @@ URL_HOMEPAGE = 'https://www.gradescope.com'
 URL_LOGIN = 'https://www.gradescope.com/login'
 URL_ASSIGNMENTS = 'https://www.gradescope.com/courses/%s/assignments'
 URL_ASSIGNMENT = 'https://www.gradescope.com/courses/%s/assignments/%s'
+URL_ASSIGNMENT_GROUP = 'https://www.gradescope.com/courses/%s/assignment_containers'
 URL_ASSIGNMENT_EDIT = 'https://www.gradescope.com/courses/%s/assignments/%s/edit'
 URL_NEW_ASSIGNMENT_FORM = 'https://www.gradescope.com/courses/%s/assignments/new'
 URL_EDIT_OUTLINE = 'https://www.gradescope.com/courses/%s/assignments/%s/outline/edit'
@@ -83,7 +84,7 @@ class GradeScopeUploader(object):
         self.compile_tex(variant, base_dir)
 
         boxes, special_boxes = self.get_bounding_boxes(variant, base_dir)
-        self.upload(variant, base_dir, boxes, special_boxes)
+        return self.upload(variant, base_dir, boxes, special_boxes)
 
     def write_quiz(self, variant, base_dir):
         converter = quizgen.converter.gstemplate.GradeScopeTemplateConverter()
@@ -91,6 +92,28 @@ class GradeScopeUploader(object):
 
         path = os.path.join(base_dir, "%s.tex" % (variant.title))
         quizgen.util.file.write(path, tex)
+
+    def create_assignment_group(self, title, gradescope_ids):
+        session = requests.Session()
+
+        self.login(session)
+
+        assignments_url = URL_ASSIGNMENTS % (self.course_id)
+        csrf_token = self.get_csrf_token(session, assignments_url)
+
+        headers = {
+            'x-csrf-token': csrf_token,
+        }
+
+        post_url = URL_ASSIGNMENT_GROUP % (self. course_id)
+        data = {
+            'title': title,
+            'assignment_ids[]': gradescope_ids,
+        }
+
+        response = session.post(post_url, params = data, headers = headers)
+        response.raise_for_status()
+        time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
 
     def compile_tex(self, variant, base_dir):
         path = os.path.join(base_dir, "%s.tex" % (variant.title))
@@ -284,6 +307,8 @@ class GradeScopeUploader(object):
         self.submit_outline(session, assignment_id, outline)
         print('Submitted outline.')
 
+        return assignment_id
+
     def login(self, session):
         token = self.get_authenticity_token(session, URL_HOMEPAGE, action = '/login')
 
@@ -349,8 +374,9 @@ class GradeScopeUploader(object):
             raise ValueError("Did not find exactly one assignments table, found %d." % (len(nodes)))
 
         assignment_data = json.loads(nodes[0].get('data-react-props'))
+
         for row in assignment_data['table_data']:
-            if (row['className'] != 'js-assignmentTableAssignmentRow'):
+            if (row['type'] != 'assignment'):
                 continue
 
             id = row['id'].strip().removeprefix('assignment_')
