@@ -64,16 +64,6 @@ To upload quizzes to GradeScope, you will need three things:
 This project has executable modules in the `quizgen.cli` package.
 All executable modules have their own help/usage accessible with the `-h` / `--help` option.
 
-### Uploading a Quiz to Canvas
-
-To upload a quiz to Canvas, the `quizgen.cli.upload-canvas-quiz` module can be used.
-The basic usage is as follows:
-```
-python3 -m quizgen.cli.upload-canvas-quiz <path to quiz JSON file> --course <canvas course id> --token <canvas access token>
-```
-
-If an existing quiz with the same name is found, then nothing will be uploaded unless the `--force` flag is given..
-
 ### Parsing a Specific Quiz
 
 To parse an entire specific quiz, you can use the `quizgen.cli.parse-quiz` module.
@@ -147,6 +137,33 @@ python3 -m quizgen.cli.parse-file <path to file> --format html
 This command will output the fully parsed file in for format controlled by the `--format` option,
 and will exit with a non-zero status if the parse failed.
 This can be used to parse prompt markdown files.
+
+### Uploading a Quiz to Canvas
+
+To upload a quiz to Canvas, the `quizgen.cli.upload-canvas-quiz` module can be used.
+The basic usage is as follows:
+```
+python3 -m quizgen.cli.upload-canvas-quiz <path to quiz JSON file> --course <canvas course id> --token <canvas access token>
+```
+
+If an existing quiz with the same name is found, then nothing will be uploaded unless the `--force` flag is given..
+
+### Uploading a Quiz to GradeScope
+
+To upload a quiz to GradeScope, the `quizgen.cli.create-gradescope-quiz` module can be used.
+The basic usage is as follows:
+```
+python3 -m quizgen.cli.create-gradescope-quiz <path to quiz JSON file> --course <course id> --user <username> --pass <password> --upload
+```
+
+Since GradeScope uses passwords instead of tokens, take extra caution about your password appearing in config files or command histories.
+
+Some additional options that may be useful:
+ - `--force` -- Use if you want to replace existing GradeScope assignments (otherwise existing assignments will be skipped).
+ - `--outdir <dir>` -- Choose where the output (TeX, PDF, etc) will be written to.
+ - `--variants <X>` -- Create X variants (alternate versions) if the quiz. X may be in [1, 26].
+
+You can also not use the `--upload` flag to just create TeX/PDF versions of your quizzes that you can tweak and upload manually.
 
 ## Quiz Format
 
