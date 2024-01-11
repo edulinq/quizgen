@@ -3,11 +3,19 @@ import os
 
 import quizgen.converter.gstemplate
 import quizgen.converter.htmltemplate
+import quizgen.converter.json
 import quizgen.converter.textemplate
 import quizgen.quiz
 import tests.base
 
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+
+CONVERTERS = [
+    quizgen.converter.json.JSONConverter,
+    quizgen.converter.textemplate.TexTemplateConverter,
+    quizgen.converter.htmltemplate.HTMLTemplateConverter,
+    quizgen.converter.gstemplate.GradeScopeTemplateConverter,
+]
 
 class QuizQuestionsTest(tests.base.BaseTest):
     """
@@ -44,36 +52,23 @@ class QuizQuestionsTest(tests.base.BaseTest):
     def testNumQuestions(self):
         self.assertEqual(QuizQuestionsTest._num_paths, QuizQuestionsTest._quiz.num_questions())
 
-    def testToJSON(self):
-        content = QuizQuestionsTest._quiz.to_json()
+def _add_converter_tests():
+    for converter in CONVERTERS:
+        for key in [True, False]:
+            for shuffle in [True, False]:
+                test_name = 'test_converter__%s__key_%s__shuffle_%s' % (converter.__name__, str(key), str(shuffle))
+                setattr(QuizQuestionsTest, test_name, _get_template_test(converter, key, shuffle))
+
+def _get_template_test(converter_class, key, shuffle):
+    def __method(self):
+        converter = converter_class(answer_key = key)
+
+        variant = QuizQuestionsTest._quiz.create_variant(all_questions = True)
+        variant.shuffle_answers = shuffle
+
+        content = converter.convert_quiz(variant)
         self.assertTrue(len(content) > 10)
 
-    def testToTex(self):
-        converter = quizgen.converter.textemplate.TexTemplateConverter()
-        content = converter.convert_quiz(QuizQuestionsTest._quiz.create_variant(all_questions = True))
-        self.assertTrue(len(content) > 10)
+    return __method
 
-    def testToHTML(self):
-        converter = quizgen.converter.htmltemplate.HTMLTemplateConverter()
-        content = converter.convert_quiz(QuizQuestionsTest._quiz.create_variant(all_questions = True))
-        self.assertTrue(len(content) > 10)
-
-    def testToGS(self):
-        converter = quizgen.converter.gstemplate.GradeScopeTemplateConverter()
-        content = converter.convert_quiz(QuizQuestionsTest._quiz.create_variant(all_questions = True))
-        self.assertTrue(len(content) > 10)
-
-    def testToTexKey(self):
-        converter = quizgen.converter.textemplate.TexTemplateConverter(answer_key = True)
-        content = converter.convert_quiz(QuizQuestionsTest._quiz.create_variant(all_questions = True))
-        self.assertTrue(len(content) > 10)
-
-    def testToHTMLKey(self):
-        converter = quizgen.converter.htmltemplate.HTMLTemplateConverter(answer_key = True)
-        content = converter.convert_quiz(QuizQuestionsTest._quiz.create_variant(all_questions = True))
-        self.assertTrue(len(content) > 10)
-
-    def testToGSKey(self):
-        converter = quizgen.converter.gstemplate.GradeScopeTemplateConverter(answer_key = True)
-        content = converter.convert_quiz(QuizQuestionsTest._quiz.create_variant(all_questions = True))
-        self.assertTrue(len(content) > 10)
+_add_converter_tests()

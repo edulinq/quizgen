@@ -308,7 +308,7 @@ class Question(object):
         if (self.question_type in list_types):
             collection = list(zip(self.answers, self.answers_documents))
             rng.shuffle(collection)
-            self.answers, self.answers_documents = zip(*collection)
+            self.answers, self.answers_documents = map(list, zip(*collection))
             return
 
         if (self.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
@@ -321,7 +321,7 @@ class Question(object):
             for key in self.answers:
                 collection = list(zip(self.answers[key], self.answers_documents[key]['values']))
                 rng.shuffle(collection)
-                self.answers[key], self.answers_documents[key]['values'] = zip(*collection)
+                self.answers[key], self.answers_documents[key]['values'] = map(list, zip(*collection))
 
             return
 
