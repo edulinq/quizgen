@@ -1,6 +1,15 @@
 # Quiz Generator
 
-A tool for generating quizzes from a standard definition into either Canvas quizzes (which will be automatically uploaded) or TeX files.
+A tool for generating quizzes from a standard, text-based definition.
+Quizzes can be taken from the standard definition and converted into:
+ - PDFs
+ - Canvas Quizzes (Uploaded to Canvas)
+ - GradeScope Quizzes
+   - Both GradeScope-Compatible PDFs and Uploaded to GradeScope
+ - HTML Forms
+
+Sample quizzes that demonstrate all question types are available [in the CSE Cracks course](https://github.com/eriq-augustine/cse-cracks-course/tree/main/quizzes).
+Additionally, you can see examples of good questions by looking at the [test cases for this project](tests/questions/good).
 
 ## Installation / Requirements
 
@@ -19,8 +28,8 @@ pip3 install .
 
 ### KaTeX (NodeJS)
 
-Additionally, to output equations in HTML documents, [KaTeX](https://katex.org) is required.
-KaTeX is distributed as a NodeJS package, and this project requires that is is accessible via `npx` (which typically requires it to be installed via `npm`).
+To output equations in HTML documents (which includes Canvas), [KaTeX](https://katex.org) is required.
+KaTeX is distributed as a NodeJS package, and this project requires that KaTeX is accessible via `npx` (which typically requires it to be installed via `npm`).
 Once NodeJS and NPM are installed, you can just install KaTeX normally:
 ```
 npm install katex
@@ -39,6 +48,16 @@ To upload quizzes to Canvas, you will need three things:
  - A Canvas Access Token
    - A token is specific for each user, and that user should the have ability to make quizzes for your specific course.
    - To get a new token, go to your account settings ("Account" -> "Settings"), and under "Approved Integrations" click "+ New Access Token".
+
+### GradeScope Uploading
+
+To upload quizzes to GradeScope, you will need three things:
+ - A GradeScope Instructor Account
+   - Technically, any account capable of creating assignments should be sufficient.
+ - A GradeScope Account Password
+   - If you normally log into GradeScope through an organization account (like via a university email), then you will just need to create a GradeScope password.
+     This can be done via the [password reset page](https://www.gradescope.com/reset_password), which in this case will allow you to create a new password.
+ - A GradeScope Course ID
 
 ## Usage
 
@@ -68,6 +87,42 @@ This command will output the fully parsed quiz in for format controlled by the `
 and will exit with a non-zero status if the parse failed.
 Parsing a quiz is particularly useful in CI to ensure that all course quizzes are properly maintained.
 
+The `--key` flag can be used to generate an answer key instead of a normal quiz.
+Not all formats support answer keys.
+
+#### Outputting a JSON Quiz
+
+To output a JSON quiz to a file called `quiz.json`, you can use the following command:
+```
+python3 -m quizgen.cli.parse-quiz <path to quiz JSON file> --format json > quiz.json
+```
+
+A JSON representation of a parsed quiz (which is different from a standard quiz definition) can be useful for debugging.
+If debugging, the `--flatten-groups` flag can be useful (which will include all questions from all groups in the output quiz.
+
+#### Outputting a TeX Quiz
+
+To output a TeX quiz to a file called `quiz.tex`, you can use the following command:
+```
+python3 -m quizgen.cli.parse-quiz <path to quiz JSON file> --format tex > quiz.tex
+```
+
+You can then compile or edit the TeX file as you see fit.
+
+To generate TeX that is GradeScope-compatible, use the `gradescope` format instead:
+```
+python3 -m quizgen.cli.parse-quiz <path to quiz JSON file> --format gradescope > quiz.tex
+```
+
+#### Outputting an HTML Quiz
+
+To output a HTML quiz to a file called `quiz.html`, you can use the following command:
+```
+python3 -m quizgen.cli.parse-quiz <path to quiz JSON file> --format html > quiz.html
+```
+
+HTML quizzes are grouped together into a single form.
+
 ### Parsing a Specific Question
 
 To parse a specific quiz question, you can use the `quizgen.cli.parse-question` module.
@@ -92,6 +147,32 @@ python3 -m quizgen.cli.parse-file <path to file> --format html
 This command will output the fully parsed file in for format controlled by the `--format` option,
 and will exit with a non-zero status if the parse failed.
 This can be used to parse prompt markdown files.
+
+## Quiz Format
+
+### Question Prompts
+
+Question prompts can be provided in two ways:
+ - In a "prompt" field in the `question.json`.
+ - In a file adjacent to the `question.json` file called `prompt.md`.
+
+ Putting the prompt directly in the JSON can be convenient for questions with short or simple prompts.
+ But for larger prompts that may involve things like tables and images,
+ having a whole file just for the prompt is generally recommended.
+
+ **WARNING**: Remember that in JSON backslashes will need to be escaped.
+ So prompts written in JSON will need to escape backslashes
+ (which then in-turn may be used to escape characters in QuizGen markdown).
+
+ For example, in markdown you may have a prompt like:
+ ```
+ This is a cool\-ish question.
+ ```
+
+In JSON this would need to be:
+ ```
+"prompt": "This is a cool\\-ish question."
+ ```
 
 ## Syntax
 

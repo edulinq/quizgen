@@ -9,6 +9,13 @@ import quizgen.constants
 import quizgen.parser
 import quizgen.quiz
 
+SUPPORTED_FORMATS = [
+    quizgen.constants.DOC_FORMAT_GRADESCOPE,
+    quizgen.constants.DOC_FORMAT_HTML,
+    quizgen.constants.DOC_FORMAT_JSON,
+    quizgen.constants.DOC_FORMAT_TEX,
+]
+
 def run(args):
     if (not os.path.exists(args.path)):
         raise ValueError(f"Provided path '{args.path}' does not exist.")
@@ -47,7 +54,7 @@ def _get_parser():
 
     parser.add_argument('--format',
         action = 'store', type = str, default = quizgen.constants.DOC_FORMAT_JSON,
-        choices = quizgen.constants.DOC_FORMATS,
+        choices = SUPPORTED_FORMATS,
         help = 'Output the parsed document in this format (default: %(default)s).')
 
     parser.add_argument('--key', dest = 'answer_key',

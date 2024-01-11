@@ -19,6 +19,3 @@ test/
 /.secrets
 
 /node_modules
-/quizes
-
-_sample_quiz
