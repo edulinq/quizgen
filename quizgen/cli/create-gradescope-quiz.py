@@ -55,8 +55,11 @@ def run(args):
         title = variant.title
 
         # Always create an answer key.
-        variant.title = "%s -- Answer Key" % (variant.title)
-        _make_pdf(variant, out_dir, True)
+        try:
+            variant.title = "%s -- Answer Key" % (variant.title)
+            _make_pdf(variant, out_dir, True)
+        except Exception as ex:
+            print("WARN: Failed to generate answer key for '%s'." % (title))
 
         print("Completed variant: '%s'." % (title))
 

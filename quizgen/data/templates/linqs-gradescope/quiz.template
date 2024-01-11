@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage[a4paper]{geometry}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -27,6 +28,9 @@
 
 % Remove paragraph indentation.
 \setlength{\parindent}{0pt}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
 
 \usetikzlibrary{calc}
 

@@ -17,6 +17,9 @@
     pdfkeywords={Version: {{{VERSION}}}}
 ]{hyperref}
 
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
 % Code display settings.
 \lstset{
     basicstyle=\ttfamily\small,
