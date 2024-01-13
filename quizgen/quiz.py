@@ -3,6 +3,7 @@ import json
 import json5
 import os
 import random
+import sys
 
 import quizgen.common
 import quizgen.group
@@ -59,7 +60,9 @@ class Quiz(object):
                 base_dir = self.base_dir)
 
         if (self.version is None):
-            self.version = quizgen.util.git.get_version(self.base_dir, throw = True)
+            self.version = quizgen.util.git.get_version(self.base_dir, throw = False)
+            if (self.version == quizgen.util.git.UNKNOWN_VERSION):
+                print("WARN: Could not get a version for the quiz (is it in a git repo?).", file = sys.stderr)
 
         if (self.date == ''):
             self.date = datetime.date.today()
@@ -83,6 +86,8 @@ class Quiz(object):
 
     @staticmethod
     def from_path(path, flatten_groups = False):
+        path = os.path.abspath(path)
+
         with open(path, 'r') as file:
             quiz_info = json5.load(file)
 

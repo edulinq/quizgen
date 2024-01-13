@@ -6,7 +6,7 @@ UNKNOWN_VERSION = 'UNKNOWN'
 VERSION_LEN = 8
 DIRTY_SIFFIX = '-d'
 
-def get_version(path, throw = False):
+def get_version(path = '.', throw = False):
     """
     Get a version string from the git repo.
     This is just a commit hash with some dressup.
