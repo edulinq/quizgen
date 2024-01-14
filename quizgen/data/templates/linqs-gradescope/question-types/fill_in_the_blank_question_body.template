@@ -1,0 +1,8 @@
+    \noindent
+    {{{QUESTION_PROMPT}}}
+
+    \vspace{0.25cm}
+    Place your answer within the boxed region below.
+    \vspace{0.25cm}
+
+{{{QUESTION_ANSWERS}}}

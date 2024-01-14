@@ -1,5 +1,5 @@
 {
     "prompt": "Bad Fill in The Blank: Bool Value",
-    "question_type": "short_answer_question",
+    "question_type": "fill_in_the_blank_question",
     "answers": [true]
 }

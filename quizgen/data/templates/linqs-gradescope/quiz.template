@@ -1,5 +1,5 @@
 \documentclass{article}
-\usepackage[a4paper]{geometry}
+\usepackage[a4paper,left=3cm,right=3cm,top=3cm,bottom=3cm]{geometry}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -172,11 +172,11 @@
 
 \vspace{1.0cm}
 
-\begin{tabular}{ m{1.5cm} m{4cm} }
+\begin{tabular}{ m{2.0cm} m{5cm} }
     Name: & \bigAnswerBox[{{{ANSWER_KEY}}}]{4em}{0.70}{name}{name}{0}{0} \\
 \end{tabular}
 
-\begin{tabular}{ m{1.5cm} m{4cm} }
+\begin{tabular}{ m{2.0cm} m{5cm} }
     Student ID: & \bigAnswerBox[{{{ANSWER_KEY}}}]{4em}{0.70}{id}{email}{0}{0} \\
 \end{tabular}
 
@@ -188,7 +188,7 @@ I acknowledge that I have neither given nor received inappropriate help on this 
 
 \vspace{1.0cm}
 
-\begin{tabular}{ m{1.5cm} m{4cm} }
+\begin{tabular}{ m{2.0cm} m{5cm} }
     Signature: & \bigAnswerBox[{{{ANSWER_KEY}}}]{4em}{0.70}{signature}{signature}{0}{0} \\
 \end{tabular}
 

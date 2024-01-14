@@ -75,12 +75,13 @@ class TemplateConverter(object):
         self.answer_functions = {
             quizgen.constants.QUESTION_TYPE_ESSAY: 'create_answers_textbox',
             quizgen.constants.QUESTION_TYPE_FIMB: 'create_answers_fimb',
+            quizgen.constants.QUESTION_TYPE_FITB: 'create_answers_fitb',
             quizgen.constants.QUESTION_TYPE_MATCHING: 'create_answers_matching',
             quizgen.constants.QUESTION_TYPE_MA: 'create_answers_list',
             quizgen.constants.QUESTION_TYPE_MCQ: 'create_answers_list',
             quizgen.constants.QUESTION_TYPE_MDD: 'create_answers_mdd',
             quizgen.constants.QUESTION_TYPE_NUMERICAL: 'create_answers_numerical',
-            quizgen.constants.QUESTION_TYPE_SA: 'create_answers_sa',
+            quizgen.constants.QUESTION_TYPE_SA: 'create_answers_textbox',
             quizgen.constants.QUESTION_TYPE_TEXT_ONLY: 'create_answers_textbox',
             quizgen.constants.QUESTION_TYPE_TF: 'create_answers_list',
         }
@@ -214,7 +215,7 @@ class TemplateConverter(object):
 
         return self.create_answers_textbox(base_template, key_template, question_number, question, answer_content = content)
 
-    def create_answers_sa(self, base_template, key_template, question_number, question):
+    def create_answers_fitb(self, base_template, key_template, question_number, question):
         document = question.answers_documents['']['values'][0]
         return self.create_answers_textbox(base_template, key_template, question_number, question, answer_document = document)
 

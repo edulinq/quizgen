@@ -9,6 +9,7 @@ import re
 
 import requests
 
+import quizgen.constants
 import quizgen.quiz
 import quizgen.util.hash
 
@@ -17,6 +18,24 @@ PAGE_SIZE = 75
 
 CANVAS_QUIZGEN_BASEDIR = '/quiz-generator'
 CANVAS_QUIZGEN_QUIZ_DIRNAME = 'quiz'
+
+QUESTION_TYPE_MAP = {
+    # Direct Mappings
+    quizgen.constants.QUESTION_TYPE_CALCULATED: quizgen.constants.QUESTION_TYPE_CALCULATED,
+    quizgen.constants.QUESTION_TYPE_ESSAY: quizgen.constants.QUESTION_TYPE_ESSAY,
+    quizgen.constants.QUESTION_TYPE_FILE_UPLOAD: quizgen.constants.QUESTION_TYPE_FILE_UPLOAD,
+    quizgen.constants.QUESTION_TYPE_FIMB: quizgen.constants.QUESTION_TYPE_FIMB,
+    quizgen.constants.QUESTION_TYPE_MATCHING: quizgen.constants.QUESTION_TYPE_MATCHING,
+    quizgen.constants.QUESTION_TYPE_MA: quizgen.constants.QUESTION_TYPE_MA,
+    quizgen.constants.QUESTION_TYPE_MCQ: quizgen.constants.QUESTION_TYPE_MCQ,
+    quizgen.constants.QUESTION_TYPE_MDD: quizgen.constants.QUESTION_TYPE_MDD,
+    quizgen.constants.QUESTION_TYPE_NUMERICAL: quizgen.constants.QUESTION_TYPE_NUMERICAL,
+    quizgen.constants.QUESTION_TYPE_TEXT_ONLY: quizgen.constants.QUESTION_TYPE_TEXT_ONLY,
+    quizgen.constants.QUESTION_TYPE_TF: quizgen.constants.QUESTION_TYPE_TF,
+    # Indirect Mappings
+    quizgen.constants.QUESTION_TYPE_FITB: quizgen.constants.QUESTION_TYPE_SA,
+    quizgen.constants.QUESTION_TYPE_SA: quizgen.constants.QUESTION_TYPE_ESSAY,
+}
 
 class InstanceInfo(object):
     def __init__(self, base_url, course_id, token):
@@ -197,8 +216,10 @@ def create_question(quiz_id, group_id, question, index, instance):
     response.raise_for_status()
 
 def _create_question_json(group_id, question, index, instance = None):
+    question_type = QUESTION_TYPE_MAP[question.question_type]
+
     data = {
-        'question[question_type]': question.question_type,
+        'question[question_type]': question_type,
         'question[quiz_group_id]': group_id,
         # The actual points is taken from the group,
         # but put in a one here so people don't get scared when they see a zero.
@@ -212,17 +233,18 @@ def _create_question_json(group_id, question, index, instance = None):
     return data
 
 def _serialize_answers(data, question, instance):
-    if (question.question_type == quizgen.constants.QUESTION_TYPE_ESSAY):
+    # In Canvas, short answer questions also get mapped to the essay Canvas type.
+    if (question.question_type in [quizgen.constants.QUESTION_TYPE_ESSAY, quizgen.constants.QUESTION_TYPE_SA]):
         # Essay questions have no answers.
         pass
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_FIMB):
+        _serialize_fimb_answers(data, question, instance)
+    elif (question.question_type == quizgen.constants.QUESTION_TYPE_FITB):
         _serialize_fimb_answers(data, question, instance)
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
         _serialize_matching_answers(data, question, instance)
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_NUMERICAL):
         _serialize_numeric_answers(data, question.answers, instance)
-    elif (question.question_type == quizgen.constants.QUESTION_TYPE_SA):
-        _serialize_fimb_answers(data, question, instance)
     elif (question.question_type == quizgen.constants.QUESTION_TYPE_TEXT_ONLY):
         # Text-Only questions have no answers.
         pass

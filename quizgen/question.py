@@ -45,7 +45,7 @@ class Question(object):
         self._validate_answers()
 
     def _validate_answers(self):
-        if (self.question_type in [quizgen.constants.QUESTION_TYPE_ESSAY, quizgen.constants.QUESTION_TYPE_TEXT_ONLY]):
+        if (self.question_type in [quizgen.constants.QUESTION_TYPE_ESSAY, quizgen.constants.QUESTION_TYPE_SA, quizgen.constants.QUESTION_TYPE_TEXT_ONLY]):
             if (not isinstance(self.answers, list)):
                 raise quizgen.common.QuizValidationError("Question type '%s' cannot have answers." % (self.question_type))
 
@@ -53,6 +53,8 @@ class Question(object):
                 raise quizgen.common.QuizValidationError("Question type '%s' cannot have answers." % (self.question_type))
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_FIMB):
             self._validate_fimb_answers()
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_FITB):
+            self._validate_fitb_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MATCHING):
             self._validate_matching_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_MA):
@@ -63,8 +65,6 @@ class Question(object):
             self._validate_mdd_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_NUMERICAL):
             self._validate_numerical_answers()
-        elif (self.question_type == quizgen.constants.QUESTION_TYPE_SA):
-            self._validate_fitb_answers()
         elif (self.question_type == quizgen.constants.QUESTION_TYPE_TF):
             self._validate_tf_answers()
         else:
@@ -125,11 +125,10 @@ class Question(object):
 
     def _validate_fitb_answers(self):
         """
-        "Short Answer" questions are actually fill in the blank questions.
         Just set up the answers to look like fill in multiple blanks with an empty key.
         """
 
-        label = "short answer (fill in the blank)"
+        label = "fill in the blank"
 
         _check_type(self.answers, list, f"{label} answers")
 
@@ -290,6 +289,7 @@ class Question(object):
         skip_types = [
             quizgen.constants.QUESTION_TYPE_ESSAY,
             quizgen.constants.QUESTION_TYPE_FIMB,
+            quizgen.constants.QUESTION_TYPE_FITB,
             quizgen.constants.QUESTION_TYPE_NUMERICAL,
             quizgen.constants.QUESTION_TYPE_SA,
             quizgen.constants.QUESTION_TYPE_TEXT_ONLY,

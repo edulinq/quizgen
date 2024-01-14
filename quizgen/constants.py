@@ -27,14 +27,23 @@ QUESTION_TYPE_MA = 'multiple_answers_question'
 QUESTION_TYPE_MCQ = 'multiple_choice_question'
 QUESTION_TYPE_MDD = 'multiple_dropdowns_question'
 QUESTION_TYPE_NUMERICAL = 'numerical_question'
-QUESTION_TYPE_SA = 'short_answer_question'
 QUESTION_TYPE_TEXT_ONLY = 'text_only_question'
 QUESTION_TYPE_TF = 'true_false_question'
+
+# QuizGen Special Question Types
+
+# Canvas has a type of question that uses a single text box at the end which is matches against a text answer.
+# They cann this question type both "Fill in the Blank" and "Short Answer".
+# In QuizGen, we cann this type "Fill in the Blank",
+# whereas "Short Answer" will be a type with an undefined answer but less reserved space than "Essay" questions.
+QUESTION_TYPE_FITB = 'fill_in_the_blank_question'
+QUESTION_TYPE_SA = 'short_answer_question'
 
 # Supported question types.
 QUESTION_TYPES = [
     QUESTION_TYPE_ESSAY,
     QUESTION_TYPE_FIMB,
+    QUESTION_TYPE_FITB,
     QUESTION_TYPE_MATCHING,
     QUESTION_TYPE_MA,
     QUESTION_TYPE_MCQ,
