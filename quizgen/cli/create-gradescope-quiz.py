@@ -46,7 +46,8 @@ def run(args):
         quizgen.util.file.write(out_path, variant.to_json(include_docs = False))
 
         if (args.upload):
-            converter = quizgen.converter.gradescope.GradeScopeUploader(args.course_id, args.user, args.password, force = args.force)
+            converter = quizgen.converter.gradescope.GradeScopeUploader(args.course_id, args.user, args.password,
+                    force = args.force, rubric = args.rubric)
             gradescope_id = converter.convert_quiz(variant, base_dir = out_dir)
             gradescope_ids.append(gradescope_id)
         else:
@@ -99,7 +100,11 @@ def _get_parser():
 
     parser.add_argument('--upload', dest = 'upload',
         action = 'store_true', default = False,
-        help = 'Upload the quiz(zes) to GradeScope, requires --course, --user, and --pass.')
+        help = 'Upload the quiz(zes) to GradeScope, requires --course, --user, and --pass (default: %(default)s).')
+
+    parser.add_argument('--rubric', dest = 'rubric',
+        action = 'store_true', default = False,
+        help = 'Create an initial rubric for this assignment in GradeScope (default: %(default)s).')
 
     parser.add_argument('--course', dest = 'course_id',
         action = 'store', type = str,

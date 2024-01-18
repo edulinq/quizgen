@@ -21,6 +21,8 @@ URL_ASSIGNMENTS = 'https://www.gradescope.com/courses/%s/assignments'
 URL_ASSIGNMENT = 'https://www.gradescope.com/courses/%s/assignments/%s'
 URL_ASSIGNMENT_GROUP = 'https://www.gradescope.com/courses/%s/assignment_containers'
 URL_ASSIGNMENT_EDIT = 'https://www.gradescope.com/courses/%s/assignments/%s/edit'
+URL_ASSIGNMENT_RUBRIC = 'https://www.gradescope.com/courses/%s/assignments/%s/rubric/edit'
+URL_ASSIGNMENT_ADD_RUBRIC_ITEM = 'https://www.gradescope.com/courses/%s/questions/%s/rubric_items'
 URL_NEW_ASSIGNMENT_FORM = 'https://www.gradescope.com/courses/%s/assignments/new'
 URL_EDIT_OUTLINE = 'https://www.gradescope.com/courses/%s/assignments/%s/outline/edit'
 URL_PATCH_OUTLINE = 'https://www.gradescope.com/courses/%s/assignments/%s/outline'
@@ -55,16 +57,19 @@ SPECIAL_QUESTION_TYPES = [
 BOX_TYPES = EXTEND_BOX_QUESTION_TYPES + STANDARD_BOX_QUESTION_TYPES + SPECIAL_QUESTION_TYPES
 
 SP_PER_PT = 65536
-GRADESCOPE_SLEEP_TIME_SEC = 0.75
+GRADESCOPE_SLEEP_TIME_SEC = 0.50
+
+# TODO: Sleep smarter, before request not after.
 
 class GradeScopeUploader(object):
-    def __init__(self, course_id, user, password, force = False, **kwargs):
+    def __init__(self, course_id, user, password, force = False, rubric = False, **kwargs):
         super().__init__(**kwargs)
 
         self.course_id = course_id
         self.user = user
         self.password = password
         self.force = force
+        self.rubric = rubric
 
     def convert_quiz(self, variant, base_dir = None, **kwargs):
         """
@@ -307,6 +312,10 @@ class GradeScopeUploader(object):
         self.submit_outline(session, assignment_id, outline)
         print('Submitted outline.')
 
+        if (self.rubric):
+            self.create_rubric(session, assignment_id, variant)
+            print('Created assignment ribric.')
+
         return assignment_id
 
     def login(self, session):
@@ -352,7 +361,9 @@ class GradeScopeUploader(object):
         time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
 
         document = bs4.BeautifulSoup(response.text, 'html.parser')
+        return self.parse_csrf_token(document)
 
+    def parse_csrf_token(self, document):
         meta_tag = document.select('meta[name="csrf-token"]')
         if (len(meta_tag) != 1):
             raise ValueError("Did not find exactly one CSRF meta tag, found %d." % (len(meta_tag)))
@@ -414,6 +425,7 @@ class GradeScopeUploader(object):
             'assignment[submissions_anonymized]': 0,
             'assignment[student_submission]': "false",
             'assignment[when_to_create_rubric]': 'while_grading',
+            'assignment[scoring_type]': 'negative',
         }
 
         path = os.path.join(base_dir, "%s.pdf" % (variant.title))
@@ -454,3 +466,76 @@ class GradeScopeUploader(object):
             headers = headers,
         )
         response.raise_for_status()
+        time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
+
+    def create_rubric(self, session, assignment_id, variant):
+        questions_ids, csrf_token = self.fetch_question_ids(session, assignment_id)
+
+        for question in variant.questions:
+            if (question.base_name not in questions_ids):
+                continue
+
+            question_ids = questions_ids[question.base_name]
+            score = round(question.points / len(question_ids), 2)
+
+            for question_id in question_ids:
+                self.add_rubric_item(session, csrf_token, question_id, "Incorrect", score)
+
+    def add_rubric_item(self, session, csrf_token, question_id, description, score):
+        url = URL_ASSIGNMENT_ADD_RUBRIC_ITEM % (self.course_id, question_id)
+
+        headers = {
+            'Content-Type': 'application/json',
+            'x-csrf-token': csrf_token,
+        }
+
+        data = {
+            "rubric_item":{
+                "description": description,
+                "weight": str(score),
+                "group_id": None,
+            },
+        }
+
+        response = session.post(url, json = data, headers = headers)
+        response.raise_for_status()
+        time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
+
+    def fetch_question_ids(self, session, assignment_id):
+        """
+        Get the GradeScope id of all questions/subquestions.
+
+        Returns: {<question base name>: [question id, ...], ...}
+        """
+
+        url = URL_ASSIGNMENT_RUBRIC % (self.course_id, assignment_id)
+
+        response = session.get(url)
+        response.raise_for_status()
+        time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
+
+        document = bs4.BeautifulSoup(response.text, 'html.parser')
+
+        csrf_token = self.parse_csrf_token(document)
+
+        data_tag = document.select('div[data-react-class="AssignmentRubric"]')
+        if (len(data_tag) != 1):
+            raise ValueError("Did not find exactly one rubric data tag, found %d." % (len(data_tag)))
+        data_tag = data_tag[0]
+
+        data = json.loads(data_tag.get('data-react-props'))
+
+        ids = {}
+
+        for question in data['questions']:
+            question_ids = []
+
+            children = question.get('children', None)
+            if (children is None):
+                question_ids.append(str(question['id']))
+            else:
+                question_ids = [str(child['id']) for child in children]
+
+            ids[question['title']] = question_ids
+
+        return ids, csrf_token
