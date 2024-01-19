@@ -526,7 +526,6 @@ class GradeScopeUploader(object):
         data = json.loads(data_tag.get('data-react-props'))
 
         ids = {}
-
         for question in data['questions']:
             question_ids = []
 
