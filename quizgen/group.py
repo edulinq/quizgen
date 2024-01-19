@@ -69,7 +69,7 @@ class Group(object):
         return [question.copy() for question in self.questions]
 
     def choose_questions(self, rng):
-        return [question.copy() for question in rng.choices(self.questions, k = self.pick_count)]
+        return [question.copy() for question in rng.sample(self.questions, k = self.pick_count)]
 
 def _parse_questions(path):
     if (not os.path.exists(path)):
