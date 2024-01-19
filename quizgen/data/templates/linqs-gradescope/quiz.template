@@ -1,5 +1,5 @@
 \documentclass{article}
-\usepackage[a4paper,left=3cm,right=3cm,top=3cm,bottom=3cm]{geometry}
+\usepackage[a4paper,left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -21,7 +21,7 @@
 \usepackage[
     pdftex,
     hidelinks,
-    pdftitle={{{{TITLE}}} - {{{COURSE_TITLE}}} {{{TERM_TITLE}}}},
+    pdftitle={{{{COURSE_TITLE}}} {{{TERM_TITLE}}} - {{{TITLE}}}},
     pdfcreator={Quiz Generator},
     pdfkeywords={Version: {{{VERSION}}}}
 ]{hyperref}
@@ -161,41 +161,43 @@
 
 \begin{document}
 
-\centerline{\Large {{{TITLE}}}}
+\centerline{\Large {{{COURSE_TITLE}}} \hfill {{{TITLE}}} \hfill {{{TERM_TITLE}}}}
 \vspace{0.2cm}
 
-\centerline{\large {{{COURSE_TITLE}}} -- {{{TERM_TITLE}}}}
-\centerline{\large {{{DATE}}}}
+\hrule
+
+\vspace{0.5cm}
+
+\begin{tabular}{ m{2.0cm} m{5cm} }
+    Name: & \bigAnswerBox[{{{ANSWER_KEY}}}]{4em}{0.80}{name}{name}{0}{0} \\
+\end{tabular}
+
+\begin{tabular}{ m{2.0cm} m{5cm} }
+    Student ID: & \bigAnswerBox[{{{ANSWER_KEY}}}]{4em}{0.80}{id}{email}{0}{0} \\
+\end{tabular}
+
+\hrule
+
 \vspace{1.0cm}
 
 {{{DESCRIPTION}}}
 
 \vspace{1.0cm}
 
-\begin{tabular}{ m{2.0cm} m{5cm} }
-    Name: & \bigAnswerBox[{{{ANSWER_KEY}}}]{4em}{0.70}{name}{name}{0}{0} \\
-\end{tabular}
+By signing below, I acknowledge that I have neither given nor received inappropriate help on this exam, and have abided by the letter and spirit of the University of California, Santa Cruz Code of Academic Integrity while taking this exam.
+
+\vspace{0.25cm}
 
 \begin{tabular}{ m{2.0cm} m{5cm} }
-    Student ID: & \bigAnswerBox[{{{ANSWER_KEY}}}]{4em}{0.70}{id}{email}{0}{0} \\
+    Signature: & \bigAnswerBox[{{{ANSWER_KEY}}}]{4em}{0.80}{signature}{signature}{0}{0} \\
 \end{tabular}
 
-\vspace{0.5cm}
+\vspace{0.25cm}
 
-\begin{quote}
-I acknowledge that I have neither given nor received inappropriate help on this exam, and have abided by the letter and spirit of the University of California, Santa Cruz Code of Academic Integrity  while taking this exam.
-\end{quote}
-
-\vspace{1.0cm}
-
-\begin{tabular}{ m{2.0cm} m{5cm} }
-    Signature: & \bigAnswerBox[{{{ANSWER_KEY}}}]{4em}{0.70}{signature}{signature}{0}{0} \\
-\end{tabular}
-
-Fill in the box below if you believe your exam requires manual grading,
+Fill in the box below if you believe your exam may require manual grading,
 e.g., you crossed out answers or needed space outside a designated answer box. \\
 \begin{tabular}{ m{10mm} l }
-    \checkbox{manual_grading}{manual_grading}{0}{0} & My exam requires manual grading. \\
+    \checkbox{manual_grading}{manual_grading}{0}{0} & My exam may require manual grading. \\
 \end{tabular}
 
 \newpage
