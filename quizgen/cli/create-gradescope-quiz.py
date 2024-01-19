@@ -56,8 +56,10 @@ def run(args):
         if (args.upload):
             converter = quizgen.converter.gradescope.GradeScopeUploader(args.course_id, args.user, args.password,
                     force = args.force, rubric = args.rubric)
-            gradescope_id = converter.convert_quiz(variant, base_dir = out_dir)
-            gradescope_ids.append(gradescope_id)
+            gradescope_id, created = converter.convert_quiz(variant, base_dir = out_dir)
+
+            if (created):
+                gradescope_ids.append(gradescope_id)
         else:
             _make_pdf(variant, out_dir, False)
 
@@ -72,7 +74,8 @@ def run(args):
 
         print("Completed variant: '%s'." % (title))
 
-    if (len(gradescope_ids) > 1):
+    # If there are multiple variants and all variants were created (non were skipped).
+    if ((args.variants > 1) and (len(gradescope_ids) == args.variants)):
         converter = quizgen.converter.gradescope.GradeScopeUploader(args.course_id, args.user, args.password)
         converter.create_assignment_group(quiz.title, gradescope_ids)
         print("Created GradeScope Assignment Group: '%s'." % (quiz.title))

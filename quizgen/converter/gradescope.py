@@ -301,7 +301,7 @@ class GradeScopeUploader(object):
         if (assignment_id is not None):
             if (not self.force):
                 print("Assignment '%s' (%s) already exists. Skipping upload." % (variant.title, assignment_id))
-                return
+                return assignment_id, False
 
             self.delete_assignment(session, assignment_id)
             print('Deleted assignment: ', assignment_id)
@@ -316,7 +316,7 @@ class GradeScopeUploader(object):
             self.create_rubric(session, assignment_id, variant)
             print('Created assignment rubric.')
 
-        return assignment_id
+        return assignment_id, True
 
     def login(self, session):
         token = self.get_authenticity_token(session, URL_HOMEPAGE, action = '/login')
