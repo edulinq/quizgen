@@ -1,8 +1,8 @@
 import datetime
 import json
+import logging
 import os
 import random
-import sys
 
 import json5
 
@@ -64,7 +64,7 @@ class Quiz(object):
         if (self.version is None):
             self.version = quizgen.util.git.get_version(self.base_dir, throw = False)
             if (self.version == quizgen.util.git.UNKNOWN_VERSION):
-                print("WARN: Could not get a version for the quiz (is it in a git repo?).", file = sys.stderr)
+                logging.warning("Could not get a version for the quiz (is it in a git repo?).")
 
         if (self.date == ''):
             self.date = datetime.date.today()
@@ -97,8 +97,8 @@ class Quiz(object):
         description_filename = os.path.splitext(os.path.basename(path))[0]
         description_path = os.path.join(os.path.dirname(path), description_filename + '.md')
         if (os.path.exists(description_path)):
-            # TODO: Debug Log this
             quiz_info['description'] = quizgen.util.file.read(description_path)
+            log.debug("Loading quiz description from '%s'.", description_path)
 
         base_dir = os.path.dirname(path)
 

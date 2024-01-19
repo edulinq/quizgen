@@ -3,6 +3,7 @@ Upload a gradescope quiz that has already been created via create-gradescope-qui
 """
 
 import argparse
+import logging
 import os
 import string
 import sys
@@ -10,6 +11,7 @@ import sys
 import quizgen.converter.gradescope
 import quizgen.converter.gstemplate
 import quizgen.latex
+import quizgen.log
 import quizgen.util.file
 import quizgen.variant
 
@@ -25,7 +27,7 @@ def run(args):
 
     variant = quizgen.variant.Variant.from_path(variant_path)
 
-    print("Writing generated output to '%s'." % (base_dir))
+    logging.info("Writing generated output to '%s'.", base_dir)
 
     converter = quizgen.converter.gradescope.GradeScopeUploader(args.course_id, args.user, args.password,
             force = args.force, rubric = args.rubric)
@@ -37,9 +39,9 @@ def run(args):
         variant.title = "%s -- Answer Key" % (variant.title)
         _make_pdf(variant, base_dir, True)
     except Exception as ex:
-        print("WARN: Failed to generate answer key for '%s'." % (title))
+        logging.warning("Failed to generate answer key for '%s'.", title)
 
-    print("Completed variant: '%s'." % (title))
+    logging.info("Completed variant: '%s'.", title)
 
     return 0
 
@@ -83,10 +85,14 @@ def _get_parser():
         action = 'store_true', default = False,
         help = 'Override (delete) any exiting quiz with the same name.')
 
+    quizgen.log.set_cli_args(parser)
+
     return parser
 
 def main():
-    return run(_get_parser().parse_args())
+    args = _get_parser().parse_args()
+    quizgen.log.init_from_args(args)
+    return run(args)
 
 if (__name__ == '__main__'):
     sys.exit(main())

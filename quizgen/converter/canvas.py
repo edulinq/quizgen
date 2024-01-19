@@ -3,6 +3,7 @@ Upload quizes to Canvas.
 The "conversion" here is to Canvas-style HTML.
 """
 
+import logging
 import os
 import urllib.parse
 import re
@@ -74,11 +75,11 @@ def upload_quiz(quiz, instance, force = False):
 
     existing_ids = get_matching_quiz_ids(quiz.title, instance)
     if ((len(existing_ids) > 0) and (not force)):
-        print("Found a quiz with a matching name '%s', skipping upload." % (quiz.title))
+        logging.info("Found a quiz with a matching name '%s', skipping upload.", quiz.title)
         return False
 
     for existing_id in existing_ids:
-        print("Deleting existing quiz '%s' (%s)." % (quiz.title, existing_id))
+        logging.debug("Deleting existing quiz '%s' (%s).", quiz.title, existing_id)
         delete_quiz(existing_id, instance)
 
     create_quiz(quiz, instance)

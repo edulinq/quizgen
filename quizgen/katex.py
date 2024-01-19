@@ -1,6 +1,6 @@
+import logging
 import shutil
 import subprocess
-import sys
 
 ENCODING = 'utf-8'
 
@@ -14,11 +14,11 @@ def _has_package(package, cwd = '.'):
 
 def is_available(cwd = '.'):
     if (shutil.which('npx') is None):
-        print("WARN: Could not find `npx` (usually installed with `npm`), cannot use katex equations.", file = sys.stderr)
+        logging.warning("Could not find `npx` (usually installed with `npm`), cannot use katex equations.")
         return False
 
     if (not _has_package('katex', cwd = cwd)):
-        print("WARN: Could not find the `katex` package, cannot use katex equations.", file = sys.stderr)
+        logging.warning("Could not find the `katex` package, cannot use katex equations.")
         return False
 
     return True

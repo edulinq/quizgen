@@ -7,6 +7,7 @@ import quizgen.converter.gstemplate
 import quizgen.converter.htmltemplate
 import quizgen.converter.textemplate
 import quizgen.constants
+import quizgen.log
 import quizgen.parser
 import quizgen.quiz
 
@@ -74,10 +75,14 @@ def _get_parser():
         action = 'store', type = int, default = None,
         help = 'The random seed to use (defaults to a random seed).')
 
+    quizgen.log.set_cli_args(parser)
+
     return parser
 
 def main():
-    return run(_get_parser().parse_args())
+    args = _get_parser().parse_args()
+    quizgen.log.init_from_args(args)
+    return run(args)
 
 if (__name__ == '__main__'):
     sys.exit(main())

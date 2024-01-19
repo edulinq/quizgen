@@ -2,6 +2,7 @@ import argparse
 import sys
 
 import quizgen.constants
+import quizgen.log
 import quizgen.parser
 
 def run(args):
@@ -29,10 +30,14 @@ def _get_parser():
         action = 'store_true', default = False,
         help = 'Treat the output as a fill document instead of just a snippet, e.g. TeX will output a full document (default: %(default)s)')
 
+    quizgen.log.set_cli_args(parser)
+
     return parser
 
 def main():
-    return run(_get_parser().parse_args())
+    args = _get_parser().parse_args()
+    quizgen.log.init_from_args(args)
+    return run(args)
 
 if (__name__ == '__main__'):
     sys.exit(main())

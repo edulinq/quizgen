@@ -1,11 +1,11 @@
+import logging
 import os
 import shutil
 import subprocess
-import sys
 
 def is_available():
     if (shutil.which('pdflatex') is None):
-        print("WARN: Could not find `pdxlatex`, cannot compile PDFs", file = sys.stderr)
+        logging.warning("Could not find `pdxlatex`, cannot compile PDFs")
         return False
 
     return True

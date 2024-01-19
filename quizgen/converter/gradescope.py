@@ -3,6 +3,7 @@ Upload quizes to GradeScope.
 """
 
 import json
+import logging
 import os
 import re
 import time
@@ -295,26 +296,26 @@ class GradeScopeUploader(object):
         session = requests.Session()
 
         self.login(session)
-        print('Logged in.')
+        logging.debug("Logged in as '%s'.", self.user)
 
         assignment_id = self.get_assignment_id(session, variant)
         if (assignment_id is not None):
             if (not self.force):
-                print("Assignment '%s' (%s) already exists. Skipping upload." % (variant.title, assignment_id))
+                logging.info("Assignment '%s' (%s) already exists. Skipping upload.", variant.title, assignment_id)
                 return assignment_id, False
 
             self.delete_assignment(session, assignment_id)
-            print('Deleted assignment: ', assignment_id)
+            logging.debug("Deleted assignment: '%s'", assignment_id)
 
         assignment_id = self.create_assignment(session, variant, base_dir)
-        print('Created assignment: ', assignment_id)
+        logging.debug("Created assignment: '%s'", assignment_id)
 
         self.submit_outline(session, assignment_id, outline)
-        print('Submitted outline.')
+        logging.debug('Submitted outline.')
 
         if (self.rubric):
             self.create_rubric(session, assignment_id, variant)
-            print('Created assignment rubric.')
+            logging.debug('Created assignment rubric.')
 
         return assignment_id, True
 
@@ -445,7 +446,7 @@ class GradeScopeUploader(object):
 
         match = re.search(r'/assignments/(\d+)/outline/edit', response.history[0].text)
         if (match is None):
-            print("--- Create Body ---\n%s\n------" % response.history[0].text)
+            logging.error("--- Create Body ---\n%s\n------" % response.history[0].text)
             raise ValueError("Could not parse assignment ID from response body.")
 
         return match.group(1)

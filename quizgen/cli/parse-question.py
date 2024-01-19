@@ -3,6 +3,7 @@ import json
 import os
 import sys
 
+import quizgen.log
 import quizgen.question
 
 def run(args):
@@ -25,10 +26,14 @@ def _get_parser():
         type = str,
         help = 'The path to a quiz question json file.')
 
+    quizgen.log.set_cli_args(parser)
+
     return parser
 
 def main():
-    return run(_get_parser().parse_args())
+    args = _get_parser().parse_args()
+    quizgen.log.init_from_args(args)
+    return run(args)
 
 if (__name__ == '__main__'):
     sys.exit(main())
