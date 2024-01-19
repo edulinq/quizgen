@@ -173,23 +173,38 @@ Question prompts can be provided in two ways:
  - In a "prompt" field in the `question.json`.
  - In a file adjacent to the `question.json` file called `prompt.md`.
 
- Putting the prompt directly in the JSON can be convenient for questions with short or simple prompts.
- But for larger prompts that may involve things like tables and images,
- having a whole file just for the prompt is generally recommended.
+Putting the prompt directly in the JSON can be convenient for questions with short or simple prompts.
+But for larger prompts that may involve things like tables and images,
+having a whole file just for the prompt is generally recommended.
 
- **WARNING**: Remember that in JSON backslashes will need to be escaped.
- So prompts written in JSON will need to escape backslashes
- (which then in-turn may be used to escape characters in QuizGen markdown).
+**WARNING**: Remember that in JSON backslashes will need to be escaped.
+So prompts written in JSON will need to escape backslashes
+(which then in-turn may be used to escape characters in QuizGen markdown).
 
- For example, in markdown you may have a prompt like:
- ```
- This is a cool\-ish question.
- ```
+For example, in markdown you may have a prompt like:
+```
+This is a cool\-ish question.
+```
 
 In JSON this would need to be:
- ```
+```
 "prompt": "This is a cool\\-ish question."
- ```
+```
+
+### Quiz Descriptions
+
+Like question prompts, quiz descriptions can either be specified in the quiz's JSON file,
+or in an adjacent file with the same base filename as the quiz's JSON file but with the `md` extension.
+
+For example, the description could be in the `my_quiz.json` file:
+```
+"description": "Look at my awesome quiz\\!"
+```
+
+Or, it can be in the `my_quiz.md` file in the same directory as `my_quiz.json`:
+```
+Look at my awesome quiz\!
+```
 
 ## Syntax
 

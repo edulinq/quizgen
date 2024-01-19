@@ -309,6 +309,7 @@ class Question(object):
         # Check for a prompt file.
         prompt_path = os.path.join(os.path.dirname(path), PROMPT_FILENAME)
         if (os.path.exists(prompt_path)):
+            # TODO: Debug Log this
             question_info['prompt'] = quizgen.util.file.read(prompt_path)
 
         base_dir = os.path.dirname(path)

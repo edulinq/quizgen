@@ -9,6 +9,7 @@ import json5
 import quizgen.common
 import quizgen.group
 import quizgen.parser
+import quizgen.util.file
 import quizgen.util.git
 
 class Quiz(object):
@@ -49,7 +50,7 @@ class Quiz(object):
         try:
             self.validate()
         except Exception as ex:
-            raise quizgen.common.QuizValidationError(f"Error while validating quiz.") from ex
+            raise quizgen.common.QuizValidationError("Error while validating quiz '%s'." % self.title) from ex
 
     def validate(self):
         if ((self.title is None) or (self.title == "")):
@@ -91,6 +92,13 @@ class Quiz(object):
 
         with open(path, 'r') as file:
             quiz_info = json5.load(file)
+
+        # Check for a description file.
+        description_filename = os.path.splitext(os.path.basename(path))[0]
+        description_path = os.path.join(os.path.dirname(path), description_filename + '.md')
+        if (os.path.exists(description_path)):
+            # TODO: Debug Log this
+            quiz_info['description'] = quizgen.util.file.read(description_path)
 
         base_dir = os.path.dirname(path)
 
