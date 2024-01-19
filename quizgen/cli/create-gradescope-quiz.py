@@ -4,6 +4,7 @@ Create (and possibly upload) a quiz in the GradeScope format.
 
 import argparse
 import os
+import random
 import string
 import sys
 
@@ -34,6 +35,13 @@ def run(args):
 
     print("Writing generated output to '%s'." % (out_dir))
 
+    seed = args.seed
+    if (seed is None):
+        seed = random.randint(0, 2**64)
+
+    print("Using seed %d." % (seed))
+    rng = random.Random(seed)
+
     gradescope_ids = []
 
     for i in range(args.variants):
@@ -41,7 +49,7 @@ def run(args):
         if (args.variants > 1):
             variant_id = string.ascii_uppercase[i]
 
-        variant = quiz.create_variant(identifier = variant_id)
+        variant = quiz.create_variant(identifier = variant_id, seed = rng.randint(0, 2**64))
         out_path = os.path.join(out_dir, "%s.json" % (variant.title))
         quizgen.util.file.write(out_path, variant.to_json(include_docs = False))
 
@@ -121,6 +129,10 @@ def _get_parser():
     parser.add_argument('--force', dest = 'force',
         action = 'store_true', default = False,
         help = 'Override (delete) any exiting quiz with the same name.')
+
+    parser.add_argument('--seed', dest = 'seed',
+        action = 'store', type = int, default = None,
+        help = 'The random seed to use (defaults to a random seed).')
 
     return parser
 

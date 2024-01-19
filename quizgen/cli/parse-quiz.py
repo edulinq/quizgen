@@ -1,5 +1,6 @@
 import argparse
 import os
+import random
 import sys
 
 import quizgen.converter.gstemplate
@@ -23,8 +24,12 @@ def run(args):
     if (not os.path.isfile(args.path)):
         raise ValueError(f"Provided path '{args.path}' is not a file.")
 
+    seed = args.seed
+    if (seed is None):
+        seed = random.randint(0, 2**64)
+
     quiz = quizgen.quiz.Quiz.from_path(args.path, flatten_groups = args.flatten_groups)
-    variant = quiz.create_variant(all_questions = args.flatten_groups)
+    variant = quiz.create_variant(all_questions = args.flatten_groups, seed = seed)
 
     if (args.format == quizgen.constants.DOC_FORMAT_JSON):
         content = variant.to_json()
@@ -64,6 +69,10 @@ def _get_parser():
     parser.add_argument('--flatten-groups', dest = 'flatten_groups',
         action = 'store_true', default = False,
         help = 'Flatten question groups with multiple questions to multiple groups with a single question (default: %(default)s).')
+
+    parser.add_argument('--seed', dest = 'seed',
+        action = 'store', type = int, default = None,
+        help = 'The random seed to use (defaults to a random seed).')
 
     return parser
 
