@@ -71,16 +71,27 @@ class Question(object):
             raise quizgen.common.QuizValidationError(f"Unknown question type: '{self.question_type}'.")
 
     def _validate_tf_answers(self):
-        if (not isinstance(self.answers, bool)):
+        if (isinstance(self.answers, bool)):
+            # Change answers to look like multiple choice.
+            self.answers = [
+                {"correct": self.answers, "text": 'True'},
+                {"correct": (not self.answers), "text": 'False'},
+            ]
+        elif (isinstance(self.answers, list)):
+            pass
+        else:
             raise quizgen.common.QuizValidationError(f"'answers' for a T/F question must be a boolean, found '{self.answers}' ({type(self.answers)}).")
 
-        # Change answers to look like multiple choice.
-        self.answers = [
-            {"correct": self.answers, "text": 'True'},
-            {"correct": (not self.answers), "text": 'False'},
-        ]
-
         self._validate_answer_list()
+
+        if (len(self.answers) != 2):
+            raise quizgen.common.QuizValidationError("Expecting exactly two answer for T/F question, found %d." % (len(self.answers)))
+
+        labels = list(sorted([answer['text'] for answer in self.answers]))
+
+        expected = ['False', 'True']
+        if (labels != expected):
+            raise quizgen.common.QuizValidationError("T/F labels (text) not as expected. Expected: '%s', Actual: '%s'." % (expected, labels))
 
     def _validate_mdd_answers(self):
         if (len(self.answers) == 0):
@@ -129,6 +140,18 @@ class Question(object):
         """
 
         label = "fill in the blank"
+
+        # Standardize an alternate format.
+        # Note that this is the format we will eventually output,
+        # but we want to validate the user-facing format so errors are more clear.
+        if (isinstance(self.answers, dict)):
+            if (len(self.answers) != 1):
+                raise quizgen.common.QuizValidationError("Dict format should have exactly one entry (''), found %d entries." % (len(self.answers)))
+
+            if ('' not in self.answers):
+                raise quizgen.common.QuizValidationError("Dict format does not have required key '' (empty string).")
+
+            self.answers = self.answers['']
 
         _check_type(self.answers, list, f"{label} answers")
 
@@ -226,10 +249,24 @@ class Question(object):
             value['prompt_document'] = self.prompt_document.to_pod()
             value['answers_documents'] = self._answers_to_dict(self.answers_documents)
         else:
-            del value['prompt_document']
-            del value['answers_documents']
+            value.pop('prompt_document', None)
+            value.pop('answers_documents', None)
 
         return value
+
+    @staticmethod
+    def from_dict(data, base_dir = None):
+        data = data.copy()
+
+        if (base_dir is not None):
+            data['base_dir'] = base_dir
+        elif ('base_dir' not in data):
+            data['base_dir'] = '.'
+
+        data.pop('prompt_document', None)
+        data.pop('answers_documents', None)
+
+        return Question(**data)
 
     def _answers_to_dict(self, target):
         if (isinstance(target, dict)):

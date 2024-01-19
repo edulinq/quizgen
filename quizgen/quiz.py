@@ -1,9 +1,10 @@
 import datetime
 import json
-import json5
 import os
 import random
 import sys
+
+import json5
 
 import quizgen.common
 import quizgen.group
@@ -96,7 +97,7 @@ class Quiz(object):
         return Quiz.from_dict(quiz_info, base_dir, flatten_groups = flatten_groups)
 
     @staticmethod
-    def from_dict(quiz_info, base_dir, flatten_groups = False):
+    def from_dict(quiz_info, base_dir = None, flatten_groups = False):
         groups = [quizgen.group.Group.from_dict(group_info, base_dir) for group_info in quiz_info.get('groups', [])]
 
         if (flatten_groups):
@@ -117,7 +118,12 @@ class Quiz(object):
 
         quiz_info['groups'] = groups
 
-        return Quiz(base_dir = base_dir, **quiz_info)
+        if (base_dir is not None):
+            quiz_info['base_dir'] = base_dir
+        elif ('base_dir' not in quiz_info):
+            quiz_info['base_dir'] = '.'
+
+        return Quiz(**quiz_info)
 
     def to_json(self, indent = 4, include_docs = True):
         return json.dumps(self.to_dict(include_docs = include_docs), indent = indent)

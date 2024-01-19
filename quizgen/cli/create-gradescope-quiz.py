@@ -84,7 +84,7 @@ def _make_pdf(variant, out_dir, is_key):
 
 def _get_parser():
     parser = argparse.ArgumentParser(description =
-        "Parse a quiz and upload the quiz to Canvas.")
+        "Parse a quiz and potentially upload it to GradeScope.")
 
     parser.add_argument('path',
         type = str,

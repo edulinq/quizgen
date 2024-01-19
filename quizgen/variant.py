@@ -1,6 +1,12 @@
+import datetime
 import json
+import os
 
+import json5
+
+import quizgen.question
 import quizgen.common
+import quizgen.parser
 
 class Variant(object):
     """
@@ -54,6 +60,36 @@ class Variant(object):
             del value['description_document']
 
         return value
+
+    @staticmethod
+    def from_path(path, override_base_dir = False):
+        path = os.path.abspath(path)
+
+        with open(path, 'r') as file:
+            data = json5.load(file)
+
+        base_dir = None
+        if (override_base_dir):
+            base_dir = os.path.dirname(path)
+
+        return Variant.from_dict(data, base_dir = base_dir)
+
+    @staticmethod
+    def from_dict(data, base_dir = None):
+        data = data.copy()
+
+        if (base_dir is not None):
+            data['base_dir'] = base_dir
+        elif ('base_dir' not in data):
+            data['base_dir'] = '.'
+
+        if ('date' in data):
+            data['date'] = datetime.datetime.fromisoformat(data['date'])
+
+        data['description_document'] = quizgen.parser.parse_text(data['description'], base_dir = base_dir)
+        data['questions'] = [quizgen.question.Question.from_dict(question, base_dir = base_dir) for question in data['questions']]
+
+        return Variant(**data)
 
     def to_json(self, indent = 4, include_docs = True):
         return json.dumps(self.to_dict(include_docs = include_docs), indent = indent)
