@@ -314,7 +314,7 @@ class GradeScopeUploader(object):
 
         if (self.rubric):
             self.create_rubric(session, assignment_id, variant)
-            print('Created assignment ribric.')
+            print('Created assignment rubric.')
 
         return assignment_id
 
