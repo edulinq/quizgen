@@ -32,7 +32,7 @@ class Question(object):
         try:
             self.validate()
         except Exception as ex:
-            raise quizgen.common.QuizValidationError(f"Error while validating question.") from ex
+            raise quizgen.common.QuizValidationError(f"Error while validating question (%s)." % (self.base_dir)) from ex
 
     def validate(self):
         if ((self.prompt is None) or (self.prompt == "")):

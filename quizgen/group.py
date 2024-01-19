@@ -19,11 +19,14 @@ class Group(object):
         try:
             self.validate()
         except Exception as ex:
-            raise quizgen.common.QuizValidationError(f"Error while validating group.") from ex
+            raise quizgen.common.QuizValidationError(f"Error while validating group (%s)." % (self.name)) from ex
 
     def validate(self):
         if ((self.name is None) or (self.name == "")):
             raise quizgen.common.QuizValidationError("Name cannot be empty.")
+
+        if (self.pick_count < 0):
+            raise quizgen.common.QuizValidationError("Pick count cannot be negative.")
 
         for question in self.questions:
             question.points = self.points
