@@ -75,7 +75,7 @@ class TemplateConverter(object):
         self.answer_key = answer_key
 
         # Methods to generate answers.
-        # Signatuire: func(self, base_template (for an answer of this type), key_template (if exists) question_number, question)
+        # Signatuire: func(self, base_template (for an answer of this type), key_template (if exists) question_index, question)
         self.answer_functions = {
             quizgen.constants.QUESTION_TYPE_ESSAY: 'create_answers_textbox',
             quizgen.constants.QUESTION_TYPE_FIMB: 'create_answers_fimb',
@@ -118,15 +118,21 @@ class TemplateConverter(object):
     def create_questions(self, quiz):
         questions = []
 
-        for i in range(len(quiz.questions)):
-            if (i != 0):
+        question_number = 1
+        for question_index in range(len(quiz.questions)):
+            question = quiz.questions[question_index]
+
+            if (question_index != 0):
                 questions.append(self.create_question_separator())
 
-            questions.append(self.create_question(i + 1, quiz.questions[i]))
+            questions.append(self.create_question(question_index, question_number, question))
+
+            if (not question.should_skip_numbering()):
+                question_number += 1
 
         return "\n\n".join(questions)
 
-    def create_question(self, number, question):
+    def create_question(self, question_index, question_number, question):
         template = quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_FILENAME_QUESTION), strip = False)
 
         header = self.create_question_header(question)
@@ -141,9 +147,9 @@ class TemplateConverter(object):
         points = self.check_variable(question, 'points', label = 'Question')
         template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_POINTS, str(question.points))
 
-        template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_NUMBER, str(number))
+        template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_NUMBER, str(question_number))
 
-        body = self.create_question_body(number, question)
+        body = self.create_question_body(question_index, question)
         template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_BODY, body)
 
         return template
@@ -158,7 +164,7 @@ class TemplateConverter(object):
     def create_question_separator(self):
         return quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_FILENAME_QUESTION_SEPARATOR), strip = False)
 
-    def create_question_body(self, question_number, question):
+    def create_question_body(self, question_index, question):
         question_type = self.check_variable(question, 'question_type', label = 'Question')
         if (question_type not in self.answer_functions):
             raise ValueError("Unsupported question type: '%s'." % (question_type))
@@ -175,12 +181,12 @@ class TemplateConverter(object):
                 question.prompt_document.to_format(self.format))
 
         answers = self.check_variable(question, 'answers', label = 'Question')
-        answers_text = self.create_answers(question_number, question, answers)
+        answers_text = self.create_answers(question_index, question, answers)
         template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ANSWERS, answers_text)
 
         return template
 
-    def create_answers(self, question_number, question, answers):
+    def create_answers(self, question_index, question, answers):
         question_type = self.check_variable(question, 'question_type', label = 'Question')
 
         filename = "%s_%s" % (question_type, TEMPLATE_FILENAME_ANSWER)
@@ -195,9 +201,9 @@ class TemplateConverter(object):
             raise ValueError("Cannot create question answers, unsupported question type: '%s'." % (question_type))
 
         method = self.check_variable(self, self.answer_functions[question_type], label = 'Converter')
-        return method(base_template, key_template, question_number, question)
+        return method(base_template, key_template, question_index, question)
 
-    def create_answers_list(self, base_template, key_template, question_number, question):
+    def create_answers_list(self, base_template, key_template, question_index, question):
         answers_text = []
 
         for i in range(len(question.answers_documents)):
@@ -207,9 +213,9 @@ class TemplateConverter(object):
                 template = base_template
 
             answer_document = question.answers_documents[i]
-            answer_id = "%d.%d" % (question_number, i)
+            answer_id = "%d.%d" % (question_index, i)
 
-            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_number))
+            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_index))
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_ID, answer_id)
 
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_TEXT,
@@ -219,7 +225,7 @@ class TemplateConverter(object):
 
         return "\n".join(answers_text)
 
-    def create_answers_numerical(self, base_template, key_template, question_number, question):
+    def create_answers_numerical(self, base_template, key_template, question_index, question):
         content = None
 
         answer = question.answers[0]
@@ -230,21 +236,21 @@ class TemplateConverter(object):
         elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_RANGE):
             content = "%f (precision: %f)" % (answer['value'], answer['precision'])
 
-        return self.create_answers_textbox(base_template, key_template, question_number, question, answer_content = content)
+        return self.create_answers_textbox(base_template, key_template, question_index, question, answer_content = content)
 
-    def create_answers_fitb(self, base_template, key_template, question_number, question):
+    def create_answers_fitb(self, base_template, key_template, question_index, question):
         document = question.answers_documents['']['values'][0]
-        return self.create_answers_textbox(base_template, key_template, question_number, question, answer_document = document)
+        return self.create_answers_textbox(base_template, key_template, question_index, question, answer_document = document)
 
-    def create_answers_textbox(self, base_template, key_template, question_number, question,
+    def create_answers_textbox(self, base_template, key_template, question_index, question,
             answer_document = None, answer_content = None):
         if (self.answer_key and (key_template is not None)):
             template = key_template
         else:
             template = base_template
 
-        template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_number))
-        template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_ID, str(question_number))
+        template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_index))
+        template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_ID, str(question_index))
 
         if (answer_document is not None):
             answer_content = self.clean_solution_content(answer_document)
@@ -254,18 +260,18 @@ class TemplateConverter(object):
 
         return template
 
-    def create_answers_mdd(self, base_template, key_template, question_number, question):
+    def create_answers_mdd(self, base_template, key_template, question_index, question):
         answers_text = []
         i = 0
 
         for (key, values) in question.answers.items():
             template = base_template
             key_document = question.answers_documents[key]['key']
-            answer_id = "%d.%d" % (question_number, i)
+            answer_id = "%d.%d" % (question_index, i)
 
-            choices_text = self.create_choices_mdd(question_number, question, answer_id, key)
+            choices_text = self.create_choices_mdd(question_index, question, answer_id, key)
 
-            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_number))
+            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_index))
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_ID, answer_id)
 
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_TEXT,
@@ -278,7 +284,7 @@ class TemplateConverter(object):
 
         return "\n\n".join(answers_text)
 
-    def create_choices_mdd(self, question_number, question, answer_id, key):
+    def create_choices_mdd(self, question_index, question, answer_id, key):
         question_type = self.check_variable(question, 'question_type', label = 'Question')
 
         filename = "%s_%s" % (question_type, TEMPLATE_FILENAME_CHOICE)
@@ -299,7 +305,7 @@ class TemplateConverter(object):
 
             choice_document = question.answers_documents[key]['values'][i]
 
-            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_number))
+            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_index))
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_ID, answer_id)
 
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_CHOICE_INDEX, str(i))
@@ -311,7 +317,7 @@ class TemplateConverter(object):
 
         return "\n".join(choices_text)
 
-    def create_answers_fimb(self, base_template, key_template, question_number, question):
+    def create_answers_fimb(self, base_template, key_template, question_index, question):
         answers_text = []
         i = 0
 
@@ -322,11 +328,11 @@ class TemplateConverter(object):
                 template = base_template
 
             key_document = question.answers_documents[key]['key']
-            answer_id = "%d.%d" % (question_number, i)
+            answer_id = "%d.%d" % (question_index, i)
 
             solution_document = question.answers_documents[key]['values'][0]
 
-            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_number))
+            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_index))
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_ID, answer_id)
 
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_SOLUTION, self.clean_solution_content(solution_document))
@@ -339,7 +345,7 @@ class TemplateConverter(object):
 
         return "\n\n".join(answers_text)
 
-    def create_answers_matching(self, base_template, key_template, question_number, question):
+    def create_answers_matching(self, base_template, key_template, question_index, question):
         lefts = []
         rights = []
 
@@ -375,9 +381,9 @@ class TemplateConverter(object):
             new_matches = {left_indexes.index(old_left_index): right_indexes.index(old_right_index) for (old_left_index, old_right_index) in matches.items()}
             matches = new_matches
 
-        return self.create_choices_matching(base_template, key_template, question_number, lefts, rights, matches)
+        return self.create_choices_matching(base_template, key_template, question_index, lefts, rights, matches)
 
-    def create_choices_matching(self, base_template, key_template, question_number, lefts, rights, matches):
+    def create_choices_matching(self, base_template, key_template, question_index, lefts, rights, matches):
         left_ids = self.get_left_ids()
         right_ids = self.get_right_ids()
 
@@ -390,7 +396,7 @@ class TemplateConverter(object):
         answers_text = []
         for i in range(max(len(lefts), len(rights))):
             template = base_template
-            answer_id = "%d.%d" % (question_number, i)
+            answer_id = "%d.%d" % (question_index, i)
 
             left = ''
             left_id = ''
@@ -409,7 +415,7 @@ class TemplateConverter(object):
                 right = rights[i]
                 right_id = right_ids[i]
 
-            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_number))
+            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_ID, str(question_index))
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_ID, answer_id)
 
             template = self.fill_variable(template, TEMPLATE_VAR_ANSWER_LEFT, left)

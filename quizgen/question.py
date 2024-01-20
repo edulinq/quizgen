@@ -17,7 +17,7 @@ class Question(object):
     def __init__(self, prompt = '', question_type = '', answers = [],
             base_dir = '.',
             points = 0, base_name = '',
-            custom_header = None,
+            custom_header = None, skip_numbering = None,
             **kwargs):
         self.base_dir = base_dir
 
@@ -31,7 +31,9 @@ class Question(object):
 
         self.points = points
         self.base_name = base_name
+
         self.custom_header = custom_header
+        self.skip_numbering = skip_numbering
 
         try:
             self.validate()
@@ -48,6 +50,9 @@ class Question(object):
 
         if (group.custom_header is not None):
             self.custom_header = group.custom_header
+
+        if (group.skip_numbering is not None):
+            self.skip_numbering = group.skip_numbering
 
     def validate(self):
         if ((self.prompt is None) or (self.prompt == "")):
@@ -315,6 +320,9 @@ class Question(object):
             return [target]
         else:
             return []
+
+    def should_skip_numbering(self):
+        return ((self.skip_numbering is not None) and (self.skip_numbering))
 
     @staticmethod
     def from_path(path):
