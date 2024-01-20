@@ -98,7 +98,7 @@ class Quiz(object):
         description_path = os.path.join(os.path.dirname(path), description_filename + '.md')
         if (os.path.exists(description_path)):
             quiz_info['description'] = quizgen.util.file.read(description_path)
-            log.debug("Loading quiz description from '%s'.", description_path)
+            logging.debug("Loading quiz description from '%s'.", description_path)
 
         base_dir = os.path.dirname(path)
 
@@ -148,6 +148,7 @@ class Quiz(object):
         if (seed is None):
             seed = random.randint(0, 2**64)
 
+        logging.debug("Creating variant with seed %s.", str(seed))
         rng = random.Random(seed)
 
         questions = []
