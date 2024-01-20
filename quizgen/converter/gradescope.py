@@ -63,7 +63,10 @@ GRADESCOPE_SLEEP_TIME_SEC = 0.50
 # TODO: Sleep smarter, before request not after.
 
 class GradeScopeUploader(object):
-    def __init__(self, course_id, user, password, force = False, rubric = False, **kwargs):
+    def __init__(self, course_id, user, password,
+            force = False, rubric = False,
+            skip_tex_write = False, skip_compile = False,
+            **kwargs):
         super().__init__(**kwargs)
 
         self.course_id = course_id
@@ -71,6 +74,8 @@ class GradeScopeUploader(object):
         self.password = password
         self.force = force
         self.rubric = rubric
+        self.skip_tex_write = skip_tex_write
+        self.skip_compile = skip_compile
 
     def convert_quiz(self, variant, base_dir = None, **kwargs):
         """
@@ -86,8 +91,11 @@ class GradeScopeUploader(object):
         if (base_dir is None):
             base_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-gradescope-')
 
-        self.write_quiz(variant, base_dir)
-        self.compile_tex(variant, base_dir)
+        if (not self.skip_tex_write):
+            self.write_quiz(variant, base_dir)
+
+        if (not self.skip_compile):
+            self.compile_tex(variant, base_dir)
 
         boxes, special_boxes = self.get_bounding_boxes(variant, base_dir)
         return self.upload(variant, base_dir, boxes, special_boxes)
@@ -123,6 +131,8 @@ class GradeScopeUploader(object):
 
     def compile_tex(self, variant, base_dir):
         path = os.path.join(base_dir, "%s.tex" % (variant.title))
+        if (not os.path.exists(path)):
+            raise ValueError("Could not find path for quiz tex: '%s'." % (path))
 
         quizgen.latex.compile(path)
 
@@ -136,6 +146,9 @@ class GradeScopeUploader(object):
         special_boxes = {}
 
         path = os.path.join(base_dir, "%s.pos" % (variant.title))
+        if (not os.path.exists(path)):
+            raise ValueError("Could not find path for quiz bounding boxes: '%s'." % (path))
+
         with open(path, 'r') as file:
             for line in file:
                 line = line.strip()
@@ -291,6 +304,10 @@ class GradeScopeUploader(object):
         return outline
 
     def upload(self, variant, base_dir,  bounding_boxes, special_boxes):
+        path = os.path.join(base_dir, "%s.pdf" % (variant.title))
+        if (not os.path.exists(path)):
+            raise ValueError("Could not find path for quiz pdf: '%s'." % (path))
+
         outline = self.create_outline(variant, bounding_boxes, special_boxes)
 
         session = requests.Session()
