@@ -2,7 +2,7 @@
 
 \begin{minipage}{\textwidth}
     \noindent
-    Question {{{QUESTION_NUMBER}}} [{{{QUESTION_NAME}}}] ({{{QUESTION_POINTS}}} Points)
+{{{QUESTION_HEADER}}}
     \vspace{0.5cm}
 
 {{{QUESTION_BODY}}}

@@ -219,9 +219,13 @@ def create_question(quiz_id, group_id, question, index, instance):
 def _create_question_json(group_id, question, index, instance = None):
     question_type = QUESTION_TYPE_MAP[question.question_type]
 
+    name = question.base_name
+    if (question.custom_header is not None):
+        name = question.custom_header
+
     data = {
         'question[question_type]': question_type,
-        'question[question_name]': question.base_name,
+        'question[question_name]': name,
         'question[quiz_group_id]': group_id,
         # The actual points is taken from the group,
         # but put in a one here so people don't get scared when they see a zero.

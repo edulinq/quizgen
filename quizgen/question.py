@@ -17,6 +17,7 @@ class Question(object):
     def __init__(self, prompt = '', question_type = '', answers = [],
             base_dir = '.',
             points = 0, base_name = '',
+            custom_header = None,
             **kwargs):
         self.base_dir = base_dir
 
@@ -30,11 +31,23 @@ class Question(object):
 
         self.points = points
         self.base_name = base_name
+        self.custom_header = custom_header
 
         try:
             self.validate()
         except Exception as ex:
             raise quizgen.common.QuizValidationError(f"Error while validating question (%s)." % (self.base_dir)) from ex
+
+    def inherit_from_group(self, group):
+        """
+        Inherit attributes from a group.
+        """
+
+        self.points = group.points
+        self.base_name = group.name
+
+        if (group.custom_header is not None):
+            self.custom_header = group.custom_header
 
     def validate(self):
         if ((self.prompt is None) or (self.prompt == "")):

@@ -9,10 +9,12 @@ QUESTION_FILENAME = 'question.json'
 class Group(object):
     def __init__(self, name = '',
             pick_count = 1, points = 10,
+            custom_header = None,
             questions = [], **kwargs):
         self.name = name
         self.pick_count = pick_count
         self.points = points
+        self.custom_header = custom_header
 
         self.questions = questions
 
@@ -29,8 +31,7 @@ class Group(object):
             raise quizgen.common.QuizValidationError("Pick count cannot be negative.")
 
         for question in self.questions:
-            question.points = self.points
-            question.base_name = self.name
+            question.inherit_from_group(self)
 
     def to_dict(self, include_docs = True):
         value = self.__dict__.copy()

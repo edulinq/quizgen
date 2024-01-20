@@ -30,7 +30,9 @@ TEMPLATE_VAR_DESCRIPTION = '{{{DESCRIPTION}}}'
 TEMPLATE_VAR_NUM_QUESTIONS = '{{{NUM_QUESTIONS}}}'
 TEMPLATE_VAR_NUM_QUESTIONS_DIV_EIGHT_CEIL = '{{{NUM_QUESTIONS_DIV_EIGHT_CEIL}}}'
 TEMPLATE_VAR_QUESTION_ANSWERS = '{{{QUESTION_ANSWERS}}}'
+TEMPLATE_VAR_QUESTION_CUSTOM_HEADER = '{{{QUESTION_CUSTOM_HEADER}}}'
 TEMPLATE_VAR_QUESTION_BODY = '{{{QUESTION_BODY}}}'
+TEMPLATE_VAR_QUESTION_HEADER = '{{{QUESTION_HEADER}}}'
 TEMPLATE_VAR_QUESTION_ID = '{{{QUESTION_ID}}}'
 TEMPLATE_VAR_QUESTION_NAME = '{{{QUESTION_NAME}}}'
 TEMPLATE_VAR_QUESTION_NUMBER = '{{{QUESTION_NUMBER}}}'
@@ -47,6 +49,8 @@ TEMPLATE_FILENAME_BODY = 'body.template'
 TEMPLATE_FILENAME_CHOICE = 'choice.template'
 TEMPLATE_FILENAME_KEY = 'key.template'
 TEMPLATE_FILENAME_QUESTION = 'question.template'
+TEMPLATE_FILENAME_QUESTION_HEADER = 'question-header.template'
+TEMPLATE_FILENAME_QUESTION_HEADER_CUSTOM = 'question-header-custom.template'
 TEMPLATE_FILENAME_QUESTION_SEPARATOR = 'question-separator.template'
 TEMPLATE_FILENAME_QUIZ = 'quiz.template'
 TEMPLATE_QUESTION_TYPES_DIR = 'question-types'
@@ -125,6 +129,12 @@ class TemplateConverter(object):
     def create_question(self, number, question):
         template = quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_FILENAME_QUESTION), strip = False)
 
+        header = self.create_question_header(question)
+        template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_HEADER, header)
+
+        if (question.custom_header is not None):
+            template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_CUSTOM_HEADER, question.custom_header)
+
         name = self.check_variable(question, 'base_name', label = 'Question')
         template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_NAME, question.base_name)
 
@@ -137,6 +147,13 @@ class TemplateConverter(object):
         template = self.fill_variable(template, TEMPLATE_VAR_QUESTION_BODY, body)
 
         return template
+
+    def create_question_header(self, question):
+        filename = TEMPLATE_FILENAME_QUESTION_HEADER
+        if (question.custom_header is not None):
+            filename = TEMPLATE_FILENAME_QUESTION_HEADER_CUSTOM
+
+        return quizgen.util.file.read(os.path.join(self.template_dir, filename), strip = False)
 
     def create_question_separator(self):
         return quizgen.util.file.read(os.path.join(self.template_dir, TEMPLATE_FILENAME_QUESTION_SEPARATOR), strip = False)
