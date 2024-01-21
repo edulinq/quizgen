@@ -6,7 +6,7 @@
     \vspace{0.25cm}
 
     \begin{center}
-        \begin{tabular}{ m{10mm} p{12cm} }
+        \begin{tabular}{ >{\centering\arraybackslash}m{0.06\textwidth} m{0.80\textwidth} }
 {{{QUESTION_ANSWERS}}}
         \end{tabular}
     \end{center}

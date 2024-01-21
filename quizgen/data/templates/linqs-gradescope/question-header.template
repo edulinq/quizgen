@@ -1,1 +1,1 @@
-    Question {{{QUESTION_NUMBER}}} [{{{QUESTION_NAME}}}] ({{{QUESTION_POINTS}}} Points)
+    \textbf{Question {{{QUESTION_NUMBER}}}} [{{{QUESTION_NAME}}}] ({{{QUESTION_POINTS}}} Points)

@@ -1,9 +1,11 @@
 \end{minipage}
 \begin{minipage}{\textwidth}
     \noindent
-    {{{ANSWER_TEXT}}}: \newline
+    {{{ANSWER_TEXT}}}:
     \begin{center}
-        \begin{tabular}{ m{10mm} p{12cm} }
+        \begin{tabular}{ >{\centering\arraybackslash}m{0.06\textwidth} m{0.80\textwidth} }
 {{{ANSWER_CHOICES}}}
         \end{tabular}
     \end{center}
+
+    \vspace{0.25cm}
