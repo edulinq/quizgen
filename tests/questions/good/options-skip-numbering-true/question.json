@@ -1,6 +1,6 @@
 {
-    "prompt": "Custom Header",
-    "custom_header": "Custom Name",
+    "prompt": "Skip Numbering: True",
+    "skip_numbering": true,
     "question_type": "multiple_choice_question",
     "answers": [
         {"correct": true,  "text": "A"},
