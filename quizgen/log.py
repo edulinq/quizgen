@@ -1,7 +1,15 @@
 import logging
 
-DEFAULT_LOGGING_LEVEL = logging.INFO
+DEFAULT_LOGGING_LEVEL = logging.getLevelName(logging.INFO)
 DEFAULT_LOGGING_FORMAT = '%(asctime)s [%(levelname)-8s] - %(filename)s:%(lineno)s -- %(message)s'
+
+LEVELS = [
+    logging.getLevelName(logging.DEBUG),
+    logging.getLevelName(logging.INFO),
+    logging.getLevelName(logging.WARNING),
+    logging.getLevelName(logging.ERROR),
+    logging.getLevelName(logging.CRITICAL),
+]
 
 def init(level = DEFAULT_LOGGING_LEVEL, format = DEFAULT_LOGGING_FORMAT, **kwargs):
     """
@@ -21,7 +29,7 @@ def set_cli_args(parser):
 
     parser.add_argument('--log-level', dest = 'log_level',
         action = 'store', type = str, default = logging.getLevelName(logging.INFO),
-        choices = logging.getLevelNamesMapping().keys(),
+        choices = LEVELS,
         help = 'The logging level (default: %(default)s).')
 
     return parser

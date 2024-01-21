@@ -2,8 +2,8 @@ import hashlib
 
 ENCODING = 'utf-8'
 
-def sha256(data, security = False):
+def sha256(data):
     if (isinstance(data, str)):
         data = data.encode(ENCODING)
 
-    return hashlib.sha256(data, usedforsecurity = security).hexdigest()
+    return hashlib.sha256(data).hexdigest()
