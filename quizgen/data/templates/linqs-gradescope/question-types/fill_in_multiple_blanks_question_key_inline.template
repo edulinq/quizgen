@@ -1,0 +1,4 @@
+    \begin{tabular}{ >{\centering\arraybackslash}m{0.05\textwidth} >{\centering\arraybackslash}m{0.14\textwidth} }
+        {{{ANSWER_TEXT}}}: &
+        \bigAnswerBox[{{{ANSWER_SOLUTION}}}]{4em}{0.13}{fimb}{{{{QUESTION_ID}}}}{{{{ANSWER_ID}}}}{0} \\
+    \end{tabular}

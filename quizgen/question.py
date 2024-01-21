@@ -18,6 +18,7 @@ class Question(object):
             base_dir = '.',
             points = 0, base_name = '',
             custom_header = None, skip_numbering = None,
+            hints = None,
             **kwargs):
         self.base_dir = base_dir
 
@@ -31,6 +32,8 @@ class Question(object):
 
         self.points = points
         self.base_name = base_name
+
+        self.hints = hints
 
         self.custom_header = custom_header
         self.skip_numbering = skip_numbering
@@ -54,6 +57,11 @@ class Question(object):
         if (group.skip_numbering is not None):
             self.skip_numbering = group.skip_numbering
 
+        for (key, value) in group.hints.items():
+            # Only take hints not already set in the question.
+            if (key not in self.hints):
+                self.hints[key] = value
+
     def validate(self):
         if ((self.prompt is None) or (self.prompt == "")):
             raise quizgen.common.QuizValidationError("Prompt cannot be empty.")
@@ -61,6 +69,9 @@ class Question(object):
 
         if (self.question_type not in quizgen.constants.QUESTION_TYPES):
             raise quizgen.common.QuizValidationError(f"Unknown question type: '{self.question_type}'.")
+
+        if (self.hints is None):
+            self.hints = {}
 
         self._validate_answers()
 

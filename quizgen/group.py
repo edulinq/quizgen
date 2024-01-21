@@ -10,6 +10,7 @@ class Group(object):
     def __init__(self, name = '',
             pick_count = 1, points = 10,
             custom_header = None, skip_numbering = None,
+            hints = None,
             questions = [], **kwargs):
         self.name = name
         self.pick_count = pick_count
@@ -17,6 +18,8 @@ class Group(object):
 
         self.custom_header = custom_header
         self.skip_numbering = skip_numbering
+
+        self.hints = hints
 
         self.questions = questions
 
@@ -31,6 +34,9 @@ class Group(object):
 
         if (self.pick_count < 0):
             raise quizgen.common.QuizValidationError("Pick count cannot be negative.")
+
+        if (self.hints is None):
+            self.hints = {}
 
         for question in self.questions:
             question.inherit_from_group(self)

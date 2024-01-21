@@ -45,9 +45,11 @@ TEMPLATE_VAR_VERSION = '{{{VERSION}}}'
 
 # Template filenames.
 TEMPLATE_FILENAME_ANSWER = 'answer.template'
+TEMPLATE_FILENAME_ANSWER_INLINE = 'answer_inline.template'
 TEMPLATE_FILENAME_BODY = 'body.template'
 TEMPLATE_FILENAME_CHOICE = 'choice.template'
 TEMPLATE_FILENAME_KEY = 'key.template'
+TEMPLATE_FILENAME_KEY_INLINE = 'key_inline.template'
 TEMPLATE_FILENAME_QUESTION = 'question.template'
 TEMPLATE_FILENAME_QUESTION_HEADER = 'question-header.template'
 TEMPLATE_FILENAME_QUESTION_HEADER_CUSTOM = 'question-header-custom.template'
@@ -321,6 +323,17 @@ class TemplateConverter(object):
         answers_text = []
         i = 0
 
+        if (question.hints.get('inline', False)):
+            filename = "%s_%s" % (question.question_type, TEMPLATE_FILENAME_ANSWER_INLINE)
+            path = os.path.join(self.template_dir, TEMPLATE_QUESTION_TYPES_DIR, filename)
+            if (os.path.exists(path)):
+                base_template = quizgen.util.file.read(path, strip = False)
+
+            filename = "%s_%s" % (question.question_type, TEMPLATE_FILENAME_KEY_INLINE)
+            path = os.path.join(self.template_dir, TEMPLATE_QUESTION_TYPES_DIR, filename)
+            if (os.path.exists(path)):
+                key_template = quizgen.util.file.read(path, strip = False)
+
         for key in question.answers:
             if (self.answer_key and (key_template is not None)):
                 template = key_template
@@ -343,7 +356,7 @@ class TemplateConverter(object):
             answers_text.append(template)
             i += 1
 
-        return "\n\n".join(answers_text)
+        return "\n".join(answers_text)
 
     def create_answers_matching(self, base_template, key_template, question_index, question):
         lefts = []
