@@ -20,7 +20,7 @@ Documentation Table of Contents:
  - [Usage](#usage)
    - [Parsing a Specific Quiz](#parsing-a-specific-quiz)
      - [Outputting a JSON Quiz](#outputting-a-json-quiz)
-     - [Outputting a TeX Quiz](#outputting-a-tex quiz)
+     - [Outputting a TeX Quiz](#outputting-a-tex-quiz)
      - [Outputting an HTML Quiz](#outputting-an-html-quiz)
    - [Parsing a Specific Question](#parsing-a-specific-question)
    - [Parsing a Specific File](#parsing-a-specific-file)
