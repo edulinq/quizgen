@@ -7,7 +7,8 @@ class TestGit(tests.base.BaseTest):
     def test_base_levels(self):
         quizgen.log.init()
 
-        logging.debug("debug")
-        logging.info("info")
-        logging.warning("warning")
-        logging.error("error")
+        print()
+        logging.debug("log test: debug")
+        logging.info("log test: info")
+        logging.warning("log test: warning")
+        logging.error("log test: error")
