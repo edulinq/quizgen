@@ -7,7 +7,7 @@ requires = [
 
 [project]
 name = "eq-quizgen"
-version = "0.1.9"
+version = "0.1.10"
 description = "A tool that can generate multiple types of quizzes from a common configuration."
 readme = "README.md"
 requires-python = ">=3.8"
