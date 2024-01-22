@@ -1,5 +1,5 @@
 {
-    "prompt": "Multiple Drop Downs: One",
+    "prompt": "Multiple Drop Downs: One [[part1]]",
     "question_type": "multiple_dropdowns_question",
     "answers": {
         "part1": [
