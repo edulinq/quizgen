@@ -54,7 +54,7 @@ if not set explicitly.
 | `answers`         | -             | false      | The definition of the answer or possible answers for a question. Because of the diverse nature of questions, the answers value will look different for different question types. |
 | `custom_header`   | Plain String  | true       | An alternate header for a question. An empty string for no header. |
 | `skip_numbering`  | Boolean       | true       | Whether this question should skip incrementing the question number. |
-| `shuffle_answers` | Boolean       | true       | Whether to shuffle the order of the choices for this question. |
+| `shuffle_answers` | Boolean       | true       | Whether to shuffle the order of the choices for this question. The final value is the conjunction of values from the quiz, group, and question. |
 | `hints`           | Object        | true       | Formatting hints passed the converter about this question. We will note any question type that specifically looks for hints. |
 
 ## Question Types

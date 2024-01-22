@@ -17,6 +17,7 @@ class Question(object):
     def __init__(self, prompt = '', question_type = '', answers = [],
             base_dir = '.',
             points = 0, base_name = '',
+            shuffle_answers = True,
             custom_header = None, skip_numbering = None,
             hints = None,
             **kwargs):
@@ -34,6 +35,8 @@ class Question(object):
         self.base_name = base_name
 
         self.hints = hints
+
+        self.shuffle_answers = shuffle_answers
 
         self.custom_header = custom_header
         self.skip_numbering = skip_numbering
@@ -56,6 +59,8 @@ class Question(object):
 
         if (group.skip_numbering is not None):
             self.skip_numbering = group.skip_numbering
+
+        self.shuffle_answers = (self.shuffle_answers and group.shuffle_answers)
 
         for (key, value) in group.hints.items():
             # Only take hints not already set in the question.
@@ -353,7 +358,10 @@ class Question(object):
     def copy(self):
         return copy.deepcopy(self)
 
-    def shuffle_answers(self, rng = None):
+    def shuffle(self, rng = None):
+        if (not self.shuffle_answers):
+            return
+
         if (rng is None):
             rng = random.Random()
 

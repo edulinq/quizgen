@@ -9,12 +9,15 @@ QUESTION_FILENAME = 'question.json'
 class Group(object):
     def __init__(self, name = '',
             pick_count = 1, points = 10,
+            shuffle_answers = True,
             custom_header = None, skip_numbering = None,
             hints = None,
             questions = [], **kwargs):
         self.name = name
         self.pick_count = pick_count
         self.points = points
+
+        self.shuffle_answers = shuffle_answers
 
         self.custom_header = custom_header
         self.skip_numbering = skip_numbering

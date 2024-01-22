@@ -168,7 +168,7 @@ class Quiz(object):
 
         if (self.shuffle_answers):
             for question in questions:
-                question.shuffle_answers(rng)
+                question.shuffle(rng)
 
         title = self.title
         version = self.version
