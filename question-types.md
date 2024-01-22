@@ -3,21 +3,21 @@
 The Quiz Generator (QuizGen) supports several different types of questions
 
 Table of Contents:
- -  [Data Types](#data-types)
- -  [Common Fields](#common-fields)
- -  [Question Types](#question-types)
-   -  [Multiple Choice (MC)](#multiple-choice-mc)
-   -  [True-False (TF)](#true-false-tf)
-   -  [Multiple Drop-Downs (MDD)](#multiple-drop-downs-mdd)
-   -  [Multiple Answers (MA)](#multiple-answers-ma)
-   -  [Matching](#matching)
-   -  [Fill in the Blank (FITB)](#fill-in-the-blank-fitb)
-   -  [Fill in Multiple Blanks (FIMB)](#fill-in-multiple-blanks-fimb)
-   -  [Numeric](#numeric)
-   -  [Short Answer (SA)](#short-answer-sa)
-   -  [Essay Questions](#essay-questions)
-   -  [Text-Only](#text-only)
- -  [Differences with Canvas](#differences-with-canvas)
+ - [Data Types](#data-types)
+ - [Common Fields](#common-fields)
+ - [Question Types](#question-types)
+   - [Multiple Choice (MC)](#multiple-choice-mc)
+   - [True-False (TF)](#true-false-tf)
+   - [Multiple Drop-Downs (MDD)](#multiple-drop-downs-mdd)
+   - [Multiple Answers (MA)](#multiple-answers-ma)
+   - [Matching](#matching)
+   - [Fill in the Blank (FITB)](#fill-in-the-blank-fitb)
+   - [Fill in Multiple Blanks (FIMB)](#fill-in-multiple-blanks-fimb)
+   - [Numeric](#numeric)
+   - [Short Answer (SA)](#short-answer-sa)
+   - [Essay Questions](#essay-questions)
+   - [Text-Only](#text-only)
+ - [Differences with Canvas](#differences-with-canvas)
 
 ## Data Types
 
