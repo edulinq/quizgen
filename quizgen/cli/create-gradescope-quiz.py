@@ -3,6 +3,8 @@ Create (and possibly upload) a quiz in the GradeScope format.
 """
 
 import argparse
+import datetime
+import json
 import logging
 import os
 import random
@@ -15,6 +17,8 @@ import quizgen.latex
 import quizgen.log
 import quizgen.util.file
 import quizgen.quiz
+
+OPTIONS_FILENAME = 'options.json'
 
 def run(args):
     if (not os.path.exists(args.path)):
@@ -41,6 +45,28 @@ def run(args):
     if (seed is None):
         seed = random.randint(0, 2**64)
 
+    options = {
+        'create_time': datetime.datetime.now().isoformat(),
+        'seed': seed,
+        'out_dir': out_dir,
+        'quiz': {
+            'path': args.path,
+            'title': quiz.title,
+            'version': quiz.version,
+        },
+        'gradescope': {
+            'upload': args.upload,
+            'course': args.course_id,
+            'rubric': args.rubric,
+            'user': args.user,
+        },
+        'variants': {
+            'count': args.variants,
+            'titles': [],
+            'ids': [],
+        },
+    }
+
     logging.info("Using seed %d.", seed)
     rng = random.Random(seed)
 
@@ -55,6 +81,8 @@ def run(args):
         out_path = os.path.join(out_dir, "%s.json" % (variant.title))
         quizgen.util.file.write(out_path, variant.to_json(include_docs = False))
 
+        options['variants']['titles'].append(variant.title)
+
         if (args.upload):
             converter = quizgen.converter.gradescope.GradeScopeUploader(args.course_id, args.user, args.password,
                     force = args.force, rubric = args.rubric)
@@ -62,8 +90,11 @@ def run(args):
 
             if (created):
                 gradescope_ids.append(gradescope_id)
+
+            options['variants']['ids'].append(gradescope_id)
         else:
             _make_pdf(variant, out_dir, False)
+            options['variants']['ids'].append(None)
 
         title = variant.title
 
@@ -81,6 +112,10 @@ def run(args):
         converter = quizgen.converter.gradescope.GradeScopeUploader(args.course_id, args.user, args.password)
         converter.create_assignment_group(quiz.title, gradescope_ids)
         logging.info("Created GradeScope Assignment Group: '%s'.", quiz.title)
+
+    path = os.path.join(out_dir, OPTIONS_FILENAME)
+    with open(path, 'w') as file:
+        json.dump(options, file, indent = 4)
 
     return 0
 
