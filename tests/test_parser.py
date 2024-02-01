@@ -341,6 +341,14 @@ GOOD_TEST_CASES = [
         },
     ])],
 
+    ['![alt text](url)', _wrap_text_nodes([
+        {
+            'type': 'image',
+            'text': 'alt text',
+            'link': 'url',
+        },
+    ])],
+
     ['[text]( )', _wrap_text_nodes([
         {
             'type': 'link',
