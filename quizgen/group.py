@@ -41,6 +41,12 @@ class Group(object):
         if (self.hints is None):
             self.hints = {}
 
+        if (not isinstance(self.questions, list)):
+            raise quizgen.common.QuizValidationError("Questions must be a non-empty list, found: '%s'." % (str(self.questions)))
+
+        if (len(self.questions) == 0):
+            raise quizgen.common.QuizValidationError("Questions must be non-empty.")
+
         for question in self.questions:
             question.inherit_from_group(self)
 
