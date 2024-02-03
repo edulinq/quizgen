@@ -170,9 +170,11 @@ def create_quiz(quiz, instance):
         'quiz[published]': quiz.published,
         'quiz[assignment_group_id]': assignment_group_id,
         'quiz[time_limit]': quiz.time_limit,
-        'quiz[shuffle_answers]': quiz.shuffle_answers,
-        'quiz[hide_results]': quiz.hide_results,
+        'quiz[allowed_attempts]': quiz.allowed_attempts,
         'quiz[show_correct_answers]': quiz.show_correct_answers,
+        'quiz[hide_results]': quiz.hide_results,
+        'quiz[shuffle_answers]': quiz.shuffle_answers,
+        'quiz[scoring_policy]': quiz.scoring_policy,
     }
 
     response = requests.request(
