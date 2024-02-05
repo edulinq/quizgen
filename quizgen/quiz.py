@@ -12,14 +12,19 @@ import quizgen.parser
 import quizgen.util.file
 import quizgen.util.git
 
+SCORING_POLICIES = ['keep_highest', 'keep_latest']
+HIDE_RESULTS = [None, 'always', 'until_after_last_attempt']
+
 class Quiz(object):
     def __init__(self,
             title = '',
             course_title = '', term_title = '',
             description = '', date = '',
             practice = True, published = False,
-            time_limit = 30, shuffle_answers = True,
+            time_limit = None, shuffle_answers = True,
             hide_results = None, show_correct_answers = True,
+            allowed_attempts = 1,
+            scoring_policy = 'keep_highest',
             assignment_group_name = "Quizzes",
             groups = [],
             base_dir = '.',
@@ -40,6 +45,9 @@ class Quiz(object):
         self.shuffle_answers = shuffle_answers
         self.hide_results = hide_results
         self.show_correct_answers = show_correct_answers
+        self.allowed_attempts = allowed_attempts
+        self.scoring_policy = scoring_policy
+
         self.assignment_group_name = assignment_group_name
 
         self.groups = groups
@@ -66,10 +74,50 @@ class Quiz(object):
             if (self.version == quizgen.util.git.UNKNOWN_VERSION):
                 logging.warning("Could not get a version for the quiz (is it in a git repo?).")
 
+        self._validate_time_limit()
+
+        self._validate_allowed_attempts()
+
+        if (self.scoring_policy not in SCORING_POLICIES):
+            raise quizgen.common.QuizValidationError("Scoring policy must be one of %s, found '%s'." % (SCORING_POLICIES, str(self.scoring_policy)))
+
+        if (self.hide_results not in HIDE_RESULTS):
+            raise quizgen.common.QuizValidationError("Hide results must be one of %s, found '%s'." % (HIDE_RESULTS, str(self.hide_results)))
+
         if (self.date == ''):
             self.date = datetime.date.today()
         else:
             self.date = datetime.date.fromisoformat(self.date)
+
+    def _validate_allowed_attempts(self):
+        if (not isinstance(self.allowed_attempts, (str, int))):
+            raise quizgen.common.QuizValidationError("Allowed attempts must be a positive int (or -1), found '%s'." % (str(self.allowed_attempts)))
+
+        try:
+            self.allowed_attempts = int(self.allowed_attempts)
+        except:
+            raise quizgen.common.QuizValidationError("Allowed attempts must be a positive int (or -1), found '%s'." % (str(self.allowed_attempts)))
+
+        if ((self.allowed_attempts < -1) or (self.allowed_attempts == 0)):
+            raise quizgen.common.QuizValidationError("Allowed attempts must be a positive int (or -1), found '%s'." % (str(self.allowed_attempts)))
+
+    def _validate_time_limit(self):
+        if (self.time_limit is None):
+            return
+
+        if (not isinstance(self.time_limit, (str, int))):
+            raise quizgen.common.QuizValidationError("Time limit must be a positive int, found '%s'." % (str(self.time_limit)))
+
+        try:
+            self.time_limit = int(self.time_limit)
+        except:
+            raise quizgen.common.QuizValidationError("Time limit must be a positive int, found '%s'." % (str(self.time_limit)))
+
+        if (self.time_limit < 0):
+            raise quizgen.common.QuizValidationError("Time limit must be a positive int, found '%s'." % (str(self.time_limit)))
+
+        if (self.time_limit == 0):
+            self.time_limit = None
 
     def to_dict(self, include_docs = True, flatten_groups = False):
         value = self.__dict__.copy()

@@ -17,6 +17,7 @@ Table of Contents:
    - [Text Style](#text-style)
    - [Line Break](#line-break)
    - [Links](#links)
+   - [Images](#images)
    - [Inline Code](#inline-code)
  - [Code Blocks](#code-blocks)
    - [Inline Equations](#inline-equations)
@@ -87,6 +88,21 @@ Links are done the same as in markdown: `[text](url)`.
 // A link with no text (the url will be used as the text).
 [ ](https://some.link/with/no.text
 ```
+
+## Images
+
+Images can be include using the standard markdown syntax: `![alt text](url/path)`.
+
+```
+// An image with normal link.
+![Banana Slugs](https://upload.wikimedia.org/wikipedia/commons/4/46/Two_Banana_Slugs.jpg)
+
+// An image using a path.
+![Great Dane](tests/data/great-dane.jpg)
+```
+
+Images will generally be placed in-line,
+but can be put in their own block or even inside a table.
 
 ### Inline Code
 
