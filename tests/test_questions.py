@@ -2,8 +2,8 @@ import json
 import os
 
 import quizgen.common
-import quizgen.converter.canvas
 import quizgen.question
+import quizgen.uploader.canvas
 import tests.base
 
 CANVAS_FILENAME = 'canvas.json'
@@ -59,7 +59,7 @@ def _get_question_parse_test_method(path):
 def _get_question_canvas_test_method(path, canvas_path):
     def __method(self):
         question = quizgen.question.Question.from_path(path)
-        canvas_info = quizgen.converter.canvas._create_question_json(CANVAS_TEST_GROUP_ID, question, CANVAS_TEST_INDEX)
+        canvas_info = quizgen.uploader.canvas._create_question_json(CANVAS_TEST_GROUP_ID, question, CANVAS_TEST_INDEX)
 
         with open(canvas_path, 'r') as file:
             expected_canvas_info = json.load(file)

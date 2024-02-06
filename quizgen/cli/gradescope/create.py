@@ -11,10 +11,10 @@ import random
 import string
 import sys
 
-import quizgen.converter.gradescope
 import quizgen.converter.gstemplate
 import quizgen.latex
 import quizgen.log
+import quizgen.uploader.gradescope
 import quizgen.util.file
 import quizgen.quiz
 
@@ -84,9 +84,9 @@ def run(args):
         options['variants']['titles'].append(variant.title)
 
         if (args.upload):
-            converter = quizgen.converter.gradescope.GradeScopeUploader(args.course_id, args.user, args.password,
+            uploader = quizgen.uploader.gradescope.GradeScopeUploader(args.course_id, args.user, args.password,
                     force = args.force, rubric = args.rubric)
-            gradescope_id, created = converter.convert_quiz(variant, base_dir = out_dir)
+            gradescope_id, created = uploader.upload_quiz(variant, base_dir = out_dir)
 
             if (created):
                 gradescope_ids.append(gradescope_id)
@@ -109,8 +109,8 @@ def run(args):
 
     # If there are multiple variants and all variants were created (non were skipped).
     if ((args.variants > 1) and (len(gradescope_ids) == args.variants)):
-        converter = quizgen.converter.gradescope.GradeScopeUploader(args.course_id, args.user, args.password)
-        converter.create_assignment_group(quiz.title, gradescope_ids)
+        uploader = quizgen.uploader.gradescope.GradeScopeUploader(args.course_id, args.user, args.password)
+        uploader.create_assignment_group(quiz.title, gradescope_ids)
         logging.info("Created GradeScope Assignment Group: '%s'.", quiz.title)
 
     path = os.path.join(out_dir, OPTIONS_FILENAME)

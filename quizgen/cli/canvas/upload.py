@@ -2,7 +2,7 @@ import argparse
 import os
 import sys
 
-import quizgen.converter.canvas
+import quizgen.uploader.canvas
 import quizgen.log
 import quizgen.quiz
 
@@ -16,10 +16,10 @@ def run(args):
         raise ValueError(f"Provided path '{args.path}' is not a file.")
 
     quiz = quizgen.quiz.Quiz.from_path(args.path)
-    canvas_instance = quizgen.converter.canvas.InstanceInfo(args.base_url, args.course_id, args.token)
+    canvas_instance = quizgen.uploader.canvas.InstanceInfo(args.base_url, args.course_id, args.token)
 
-    converter = quizgen.converter.canvas.CanvasUploader(canvas_instance, force = args.force)
-    converter.convert_quiz(quiz)
+    uploader = quizgen.uploader.canvas.CanvasUploader(canvas_instance, force = args.force)
+    uploader.upload_quiz(quiz)
 
     return 0
 

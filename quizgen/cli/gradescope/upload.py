@@ -8,10 +8,10 @@ import os
 import string
 import sys
 
-import quizgen.converter.gradescope
 import quizgen.converter.gstemplate
 import quizgen.latex
 import quizgen.log
+import quizgen.uploader.gradescope
 import quizgen.util.file
 import quizgen.variant
 
@@ -29,10 +29,10 @@ def run(args):
 
     logging.info("Writing generated output to '%s'.", base_dir)
 
-    converter = quizgen.converter.gradescope.GradeScopeUploader(args.course_id, args.user, args.password,
+    uploader = quizgen.uploader.gradescope.GradeScopeUploader(args.course_id, args.user, args.password,
             force = args.force, rubric = args.rubric,
             skip_tex_write = args.skip_tex_write, skip_compile = args.skip_compile)
-    gradescope_id = converter.convert_quiz(variant, base_dir = base_dir)
+    gradescope_id = uploader.upload_quiz(variant, base_dir = base_dir)
 
     title = variant.title
 

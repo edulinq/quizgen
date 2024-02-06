@@ -1,6 +1,5 @@
 """
 Upload quizes to Canvas.
-The "conversion" here is to Canvas-style HTML.
 """
 
 import logging
@@ -62,7 +61,7 @@ class CanvasUploader(object):
         self.instance = instance
         self.force = force
 
-    def convert_quiz(self, quiz, **kwargs):
+    def upload_quiz(self, quiz, **kwargs):
         upload_quiz(quiz, self.instance, force = self.force);
 
 def upload_quiz(quiz, instance, force = False):

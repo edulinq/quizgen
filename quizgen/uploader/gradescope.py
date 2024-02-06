@@ -77,7 +77,7 @@ class GradeScopeUploader(object):
         self.skip_tex_write = skip_tex_write
         self.skip_compile = skip_compile
 
-    def convert_quiz(self, variant, base_dir = None, **kwargs):
+    def upload_quiz(self, variant, base_dir = None, **kwargs):
         """
         Compile a quiz and upload it to GradeScope.
 
