@@ -3,8 +3,9 @@ import os
 import random
 import sys
 
-import quizgen.converter.gstemplate
-import quizgen.converter.htmltemplate
+# TEST
+# import quizgen.converter.gstemplate
+# import quizgen.converter.htmltemplate
 import quizgen.converter.textemplate
 import quizgen.constants
 import quizgen.log

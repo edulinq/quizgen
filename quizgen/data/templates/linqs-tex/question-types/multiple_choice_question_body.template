@@ -1,9 +1,0 @@
-{{{QUESTION_PROMPT}}}
-
-\vspace{0.2cm}
-
-\begin{choices}
-
-{{{QUESTION_ANSWERS}}}
-
-\end{choices}

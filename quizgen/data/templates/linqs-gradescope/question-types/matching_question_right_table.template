@@ -1,3 +1,0 @@
-    \begin{tabular}{ >{\centering\arraybackslash}m{0.05\textwidth} m{0.60\textwidth} }
-{{{ANSWER_CHOICES}}}
-    \end{tabular}

@@ -1,0 +1,12 @@
+<% extends "partials/question.template" %>
+
+<% block body %>
+    \noindent
+    << question.prompt_text >>
+
+    \vspace{0.25cm}
+    Place your answer within the boxed region below.
+    \vspace{0.25cm}
+
+    \bigAnswerBox{2cm}{1.0}{sa}{<< question.id >>}{0}{0}
+<% endblock %>

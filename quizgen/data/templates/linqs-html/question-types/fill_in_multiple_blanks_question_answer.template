@@ -1,4 +1,0 @@
-<div>
-    <label for='answer-{{{ANSWER_ID}}}' >{{{ANSWER_TEXT}}}</label>
-    <input type='text' name='answer-{{{ANSWER_ID}}}' id='answer-{{{ANSWER_ID}}}' />
-</div>

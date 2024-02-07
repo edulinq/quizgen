@@ -1,0 +1,18 @@
+%%% BEGIN Question {<< question.number >> -- << question.base_name >>} %%%
+
+\begin{minipage}{\textwidth}
+    \noindent
+    <% if question.custom_header is none %>
+        \textbf{Question << question.number >>} [<< question.base_name >>] (<< question.points >> Points)
+    <% elif question.custom_header != '' %>
+        << question.custom_header >>
+    <% else %>
+        % No Header.
+    <% endif %>
+    \vspace{0.25cm}
+
+    <% block body required %>
+    <% endblock %>
+\end{minipage}
+
+%%% END Question {<< question.number >> -- << question.base_name >>} %%%
