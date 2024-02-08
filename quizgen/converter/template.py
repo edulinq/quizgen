@@ -37,22 +37,20 @@ class TemplateConverter(object):
             **self.jinja_options,
         )
 
-        # TEST
         # Methods to generate answers.
         # Signatuire: func(self, question_index, question_number, question, variant)
         self.answer_functions = {
-            quizgen.constants.QUESTION_TYPE_SA: 'create_answers_sa',
-            quizgen.constants.QUESTION_TYPE_TF: 'create_answers_tf',
-            quizgen.constants.QUESTION_TYPE_MATCHING: 'create_answers_matching',
-
-            quizgen.constants.QUESTION_TYPE_ESSAY: 'create_answers_textbox',
+            quizgen.constants.QUESTION_TYPE_ESSAY: 'create_answers_essay',
             quizgen.constants.QUESTION_TYPE_FIMB: 'create_answers_fimb',
             quizgen.constants.QUESTION_TYPE_FITB: 'create_answers_fitb',
-            quizgen.constants.QUESTION_TYPE_MA: 'create_answers_list',
-            quizgen.constants.QUESTION_TYPE_MCQ: 'create_answers_list',
+            quizgen.constants.QUESTION_TYPE_MA: 'create_answers_ma',
+            quizgen.constants.QUESTION_TYPE_MATCHING: 'create_answers_matching',
+            quizgen.constants.QUESTION_TYPE_MCQ: 'create_answers_mcq',
             quizgen.constants.QUESTION_TYPE_MDD: 'create_answers_mdd',
             quizgen.constants.QUESTION_TYPE_NUMERICAL: 'create_answers_numerical',
-            quizgen.constants.QUESTION_TYPE_TEXT_ONLY: 'create_answers_textbox',
+            quizgen.constants.QUESTION_TYPE_SA: 'create_answers_sa',
+            quizgen.constants.QUESTION_TYPE_TEXT_ONLY: 'create_answers_text_only',
+            quizgen.constants.QUESTION_TYPE_TF: 'create_answers_tf',
         }
 
     def convert_quiz(self, variant, **kwargs):
@@ -94,7 +92,7 @@ class TemplateConverter(object):
                 question_number += 1
 
             # TEST
-            if (question_index >= 2):
+            if (question_index >= 3):
                 break
 
         return "\n\n".join(questions)
@@ -168,8 +166,8 @@ class TemplateConverter(object):
         for right in question.answers_documents['distractors']:
             rights.append(right.to_format(self.format))
 
-        left_ids = self.get_left_ids()
-        right_ids = self.get_right_ids()
+        left_ids = self.get_matching_left_ids()
+        right_ids = self.get_matching_right_ids()
 
         if (len(lefts) > len(left_ids)):
             raise ValueError("Too many left-hand values for a matching question. Found: %d, Max %d." % (len(lefts) > len(left_ids)))
@@ -221,8 +219,19 @@ class TemplateConverter(object):
             'matches': matches,
         }
 
-    def get_left_ids(self):
+    def get_matching_left_ids(self):
         return LEFT_IDS
 
-    def get_right_ids(self):
+    def get_matching_right_ids(self):
         return RIGHT_IDS
+
+    def create_answers_mcq(self, question_index, question_number, question, variant):
+        answers = []
+
+        for i in range(len(question.answers)):
+            answers.append({
+                'correct': question.answers[i]['correct'],
+                'text': question.answers_documents[i].to_format(self.format),
+            })
+
+        return answers

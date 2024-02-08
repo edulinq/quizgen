@@ -9,9 +9,9 @@
         \begin{tabular}{ >{\centering\arraybackslash}m{0.06\textwidth} m{0.80\textwidth} }
             <% for answer in question.answers %>
                 <% if answer_key and answer.correct %>
-                    \radio[red]{tf}{<< question.id >>}{0}{<< question.id >>.<< loop.index0 >>} & << answer.text >> \\
+                    \radio[red]{mcq}{<< question.id >>}{0}{<< question.id >>.<< loop.index0 >>} & << answer.text >> \\
                 <% else %>
-                    \radio{tf}{<< question.id >>}{0}{<< question.id >>.<< loop.index0 >>} & << answer.text >> \\
+                    \radio{mcq}{<< question.id >>}{0}{<< question.id >>.<< loop.index0 >>} & << answer.text >> \\
                 <% endif %>
             <% endfor %>
         \end{tabular}
