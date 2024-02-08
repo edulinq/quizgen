@@ -93,10 +93,6 @@ class TemplateConverter(object):
             if (not question.should_skip_numbering()):
                 question_number += 1
 
-            # TEST
-            if (question_index >= 9):
-                break
-
         return "\n\n".join(questions)
 
     def create_question(self, question_index, question_number, question, variant):
@@ -120,18 +116,9 @@ class TemplateConverter(object):
             'question': data,
         }
 
-        # TEST
-        try:
-            template_name = "%s.template" % (question_type)
-            template = self.env.get_template(template_name)
-            text = template.render(**context)
-        except Exception as ex:
-            import json
-            print('---')
-            print(json.dumps(data, indent = 4))
-            print('---')
-
-            raise ex
+        template_name = "%s.template" % (question_type)
+        template = self.env.get_template(template_name)
+        text = template.render(**context)
 
         return text
 
@@ -305,3 +292,6 @@ class TemplateConverter(object):
         return {
             'solution': solution,
         }
+
+    def create_answers_essay(self, question_index, question_number, question, variant):
+        return None

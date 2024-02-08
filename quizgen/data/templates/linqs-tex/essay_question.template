@@ -1,0 +1,14 @@
+<% extends "partials/question.template" %>
+
+<% block directions_text %>
+    Place your answer within the boxed region on the next page.
+<% endblock %>
+
+<% block body %>
+    \end{minipage}
+    \newpage
+    \begin{minipage}{\textwidth}
+
+    \calcremainingheight
+    \bigAnswerBox{\remainingheight}{1.0}{essay}{<< question.id >>}{0}{0}
+<% endblock %>
