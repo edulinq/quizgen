@@ -94,7 +94,7 @@ class TemplateConverter(object):
                 question_number += 1
 
             # TEST
-            if (question_index >= 5):
+            if (question_index >= 6):
                 break
 
         return "\n\n".join(questions)
@@ -147,7 +147,7 @@ class TemplateConverter(object):
         return text
 
     def create_answers_sa(self, question_index, question_number, question, variant):
-        return question.answers
+        return None
 
     def create_answers_tf(self, question_index, question_number, question, variant):
         return question.answers
@@ -228,15 +228,18 @@ class TemplateConverter(object):
         return RIGHT_IDS
 
     def create_answers_mcq(self, question_index, question_number, question, variant):
-        answers = []
+        return self._create_answers_mcq_list(question.answers, question.answers_documents)
 
-        for i in range(len(question.answers)):
-            answers.append({
-                'correct': question.answers[i]['correct'],
-                'text': question.answers_documents[i].to_format(self.format),
+    def _create_answers_mcq_list(self, answers, documents):
+        choices = []
+
+        for i in range(len(answers)):
+            choices.append({
+                'correct': answers[i]['correct'],
+                'text': documents[i].to_format(self.format),
             })
 
-        return answers
+        return choices
 
     def create_answers_text_only(self, question_index, question_number, question, variant):
         return None
@@ -260,3 +263,14 @@ class TemplateConverter(object):
         return {
             'solution': text,
         }
+
+    def create_answers_mdd(self, question_index, question_number, question, variant):
+        answers = []
+
+        for key, values in question.answers.items():
+            answers.append({
+                'label': question.answers_documents[key]['key'].to_format(self.format),
+                'choices': self._create_answers_mcq_list(values, question.answers_documents[key]['values']),
+            })
+
+        return answers

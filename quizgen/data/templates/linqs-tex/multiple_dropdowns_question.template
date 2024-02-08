@@ -1,0 +1,32 @@
+<% extends "partials/question.template" %>
+
+<% block directions_text %>
+    For each part (denoted by angle brackets), fill in the circle that corresponds to your answer.
+<% endblock %>
+
+<% block body %>
+    <% for part in question.answers %>
+        \end{minipage}
+
+        <% if not loop.first %>
+            \vspace{0.25cm}
+        <% endif %>
+
+        \begin{minipage}{\textwidth}
+
+        \noindent
+        << part.label >>:
+
+        \begin{center}
+            \begin{tabular}{ >{\centering\arraybackslash}m{0.06\textwidth} m{0.80\textwidth} }
+                <% for answer in part.choices %>
+                    <% if answer_key and answer.correct %>
+                        \radio[red]{mdd}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{<< loop.index0 >>} & << answer.text >> \\
+                    <% else %>
+                        \radio{mdd}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{<< loop.index0 >>} & << answer.text >> \\
+                    <% endif %>
+                <% endfor %>
+            \end{tabular}
+        \end{center}
+    <% endfor %>
+<% endblock %>
