@@ -11,6 +11,14 @@
     <% endif %>
     \vspace{0.25cm}
 
+    \noindent
+    << question.prompt_text >>
+
+    \vspace{0.25cm}
+    <% block directions required %>
+    <% endblock %>
+    \vspace{0.25cm}
+
     <% block body required %>
     <% endblock %>
 \end{minipage}
