@@ -1,0 +1,19 @@
+<% extends "partials/question.template" %>
+
+<% block directions_text %>
+    Fill in all boxes that corresponds to your answers.
+<% endblock %>
+
+<% block body %>
+    \begin{center}
+        \begin{tabular}{ >{\centering\arraybackslash}m{0.06\textwidth} m{0.80\textwidth} }
+            <% for answer in question.answers %>
+                <% if answer_key and answer.correct %>
+                    \checkbox[red]{ma}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} & << answer.text >> \\
+                <% else %>
+                    \checkbox{ma}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} & << answer.text >> \\
+                <% endif %>
+            <% endfor %>
+        \end{tabular}
+    \end{center}
+<% endblock %>

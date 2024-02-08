@@ -94,7 +94,7 @@ class TemplateConverter(object):
                 question_number += 1
 
             # TEST
-            if (question_index >= 6):
+            if (question_index >= 7):
                 break
 
         return "\n\n".join(questions)
@@ -274,3 +274,6 @@ class TemplateConverter(object):
             })
 
         return answers
+
+    def create_answers_ma(self, question_index, question_number, question, variant):
+        return self._create_answers_mcq_list(question.answers, question.answers_documents)
