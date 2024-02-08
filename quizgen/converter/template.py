@@ -94,7 +94,7 @@ class TemplateConverter(object):
                 question_number += 1
 
             # TEST
-            if (question_index >= 7):
+            if (question_index >= 8):
                 break
 
         return "\n\n".join(questions)
@@ -277,3 +277,16 @@ class TemplateConverter(object):
 
     def create_answers_ma(self, question_index, question_number, question, variant):
         return self._create_answers_mcq_list(question.answers, question.answers_documents)
+
+    def create_answers_fimb(self, question_index, question_number, question, variant):
+        answers = []
+
+        for key, values in question.answers.items():
+            solution = question.answers_documents[key]['values'][0].to_format(self.format)
+
+            answers.append({
+                'label': question.answers_documents[key]['key'].to_format(self.format),
+                'solution': solution,
+            })
+
+        return answers

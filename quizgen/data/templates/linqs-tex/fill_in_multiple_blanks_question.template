@@ -1,0 +1,27 @@
+<% extends "partials/question.template" %>
+
+<% block directions_text %>
+    For each part (denoted by angle brackets), place your answer in the associated box.
+<% endblock %>
+
+<% block body %>
+    <% for part in question.answers %>
+        <% if question.hints.inline %>
+            \begin{tabular}{ >{\centering\arraybackslash}m{0.05\textwidth} >{\centering\arraybackslash}m{0.14\textwidth} }
+                << part.label >>: &
+                <% if answer_key %>
+                    \bigAnswerBox[<< part.solution >>]{4em}{0.13}{fimb}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
+                <% else %>
+                    \bigAnswerBox{4em}{0.13}{fimb}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
+                <% endif %>
+            \end{tabular}
+        <% else %>
+            << part.label >>: \\
+            <% if answer_key %>
+                \bigAnswerBox[<< part.solution >>]{4em}{0.95}{fimb}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
+            <% else %>
+                \bigAnswerBox{4em}{0.95}{fimb}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
+            <% endif %>
+        <% endif %>
+    <% endfor %>
+<% endblock %>
