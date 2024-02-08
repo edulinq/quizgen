@@ -11,7 +11,7 @@ import random
 import string
 import sys
 
-import quizgen.converter.gstemplate
+import quizgen.converter.textemplate
 import quizgen.latex
 import quizgen.log
 import quizgen.uploader.gradescope
@@ -120,7 +120,7 @@ def run(args):
     return 0
 
 def _make_pdf(variant, out_dir, is_key):
-    converter = quizgen.converter.gstemplate.GradeScopeTemplateConverter(answer_key = is_key)
+    converter = quizgen.converter.textemplate.TexTemplateConverter(answer_key = is_key)
     content = converter.convert_quiz(variant)
 
     out_path = os.path.join(out_dir, "%s.tex" % (variant.title))

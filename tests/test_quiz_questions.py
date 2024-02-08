@@ -1,7 +1,6 @@
 import glob
 import os
 
-import quizgen.converter.gstemplate
 import quizgen.converter.htmltemplate
 import quizgen.converter.json
 import quizgen.converter.textemplate
@@ -14,7 +13,6 @@ CONVERTERS = [
     quizgen.converter.json.JSONConverter,
     quizgen.converter.textemplate.TexTemplateConverter,
     quizgen.converter.htmltemplate.HTMLTemplateConverter,
-    quizgen.converter.gstemplate.GradeScopeTemplateConverter,
 ]
 
 class QuizQuestionsTest(tests.base.BaseTest):

@@ -11,7 +11,7 @@ import time
 import bs4
 import requests
 
-import quizgen.converter.gstemplate
+import quizgen.converter.textemplate
 import quizgen.latex
 import quizgen.variant
 import quizgen.util.file
@@ -102,7 +102,7 @@ class GradeScopeUploader(object):
         return self.upload(variant, base_dir, boxes, special_boxes)
 
     def write_quiz(self, variant, base_dir):
-        converter = quizgen.converter.gstemplate.GradeScopeTemplateConverter()
+        converter = quizgen.converter.textemplate.TexTemplateConverter()
         tex = converter.convert_quiz(variant)
 
         path = os.path.join(base_dir, "%s.tex" % (variant.title))

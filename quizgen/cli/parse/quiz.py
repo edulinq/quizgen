@@ -4,7 +4,6 @@ import random
 import sys
 
 # TEST
-# import quizgen.converter.gstemplate
 # import quizgen.converter.htmltemplate
 import quizgen.converter.textemplate
 import quizgen.constants
@@ -13,7 +12,6 @@ import quizgen.parser
 import quizgen.quiz
 
 SUPPORTED_FORMATS = [
-    quizgen.constants.DOC_FORMAT_GRADESCOPE,
     quizgen.constants.DOC_FORMAT_HTML,
     quizgen.constants.DOC_FORMAT_JSON,
     quizgen.constants.DOC_FORMAT_TEX,
@@ -40,9 +38,6 @@ def run(args):
         content = converter.convert_quiz(variant)
     elif (args.format == quizgen.constants.DOC_FORMAT_TEX):
         converter = quizgen.converter.textemplate.TexTemplateConverter(answer_key = args.answer_key)
-        content = converter.convert_quiz(variant)
-    elif (args.format == quizgen.constants.DOC_FORMAT_GRADESCOPE):
-        converter = quizgen.converter.gstemplate.GradeScopeTemplateConverter(answer_key = args.answer_key)
         content = converter.convert_quiz(variant)
     else:
         raise NotImplementedError("Quiz output format '%s' is not currently supported." % (args.format))
