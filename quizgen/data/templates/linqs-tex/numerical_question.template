@@ -1,0 +1,13 @@
+<% extends "partials/question.template" %>
+
+<% block directions_text %>
+    Place your answer within the boxed region below.
+<% endblock %>
+
+<% block body %>
+    <% if answer_key %>
+        \bigAnswerBox[<< question.answers.solution >>]{2cm}{1.0}{numerical}{<< question.id >>}{0}{0}
+    <% else %>
+        \bigAnswerBox{2cm}{1.0}{numerical}{<< question.id >>}{0}{0}
+    <% endif %>
+<% endblock %>

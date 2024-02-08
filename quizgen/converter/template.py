@@ -1,9 +1,11 @@
+import math
 import os
 import random
 import string
 
-import quizgen.variant
 import quizgen.constants
+import quizgen.parser
+import quizgen.variant
 
 import jinja2
 
@@ -92,7 +94,7 @@ class TemplateConverter(object):
                 question_number += 1
 
             # TEST
-            if (question_index >= 4):
+            if (question_index >= 5):
                 break
 
         return "\n\n".join(questions)
@@ -238,3 +240,23 @@ class TemplateConverter(object):
 
     def create_answers_text_only(self, question_index, question_number, question, variant):
         return None
+
+    def create_answers_numerical(self, question_index, question_number, question, variant):
+        answer = question.answers[0]
+
+        if (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_EXACT):
+            if (math.isclose(answer['margin'], 0.0)):
+                content = "%s" % (str(answer['value']))
+            else:
+                content = "%s ± %f" % (str(answer['value']), answer['margin'])
+        elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_PRECISION):
+            content = "[%s, %s]" % (str(answer['min']), str(answer['max']))
+        elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_RANGE):
+            content = "%s (precision: %s)" % (str(answer['value']), str(answer['precision']))
+            raise ValueError(f"Unknown numerical answer type: '{answer['type']}'.")
+
+        text = quizgen.parser.parse_text(content).to_format(self.format)
+
+        return {
+            'solution': text,
+        }
