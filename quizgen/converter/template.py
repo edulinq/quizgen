@@ -94,7 +94,7 @@ class TemplateConverter(object):
                 question_number += 1
 
             # TEST
-            if (question_index >= 8):
+            if (question_index >= 9):
                 break
 
         return "\n\n".join(questions)
@@ -134,6 +134,14 @@ class TemplateConverter(object):
             raise ex
 
         return text
+
+    def clean_solution_content(self, document):
+        """
+        An opportunity for children to clean the text of a solution before it is entered into a key.
+        For example, tex solutions are hacky and cannot use certain functions.
+        """
+
+        return document.to_format(self.format)
 
     def create_question_separator(self, variant):
         context = {
@@ -282,7 +290,7 @@ class TemplateConverter(object):
         answers = []
 
         for key, values in question.answers.items():
-            solution = question.answers_documents[key]['values'][0].to_format(self.format)
+            solution = self.clean_solution_content(question.answers_documents[key]['values'][0])
 
             answers.append({
                 'label': question.answers_documents[key]['key'].to_format(self.format),
@@ -290,3 +298,10 @@ class TemplateConverter(object):
             })
 
         return answers
+
+    def create_answers_fitb(self, question_index, question_number, question, variant):
+        solution = self.clean_solution_content(question.answers_documents[""]["values"][0])
+
+        return {
+            'solution': solution,
+        }

@@ -43,6 +43,7 @@ EXTEND_BOX_QUESTION_TYPES = [
 STANDARD_BOX_QUESTION_TYPES = [
     'essay',
     'fimb',
+    'fitb',
     'matching',
     'numerical',
     'sa',
