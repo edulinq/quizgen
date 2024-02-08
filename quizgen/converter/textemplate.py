@@ -8,7 +8,7 @@ import quizgen.constants
 import quizgen.converter.template
 
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
-DEFAULT_TEMPLATE_DIR = os.path.join(THIS_DIR, '..', 'data', 'templates', 'linqs-tex')
+DEFAULT_TEMPLATE_DIR = os.path.join(THIS_DIR, '..', 'data', 'templates', 'edq-tex')
 
 JINJA_OPTIONS = {
     'block_start_string': '<%',
