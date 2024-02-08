@@ -92,7 +92,7 @@ class TemplateConverter(object):
                 question_number += 1
 
             # TEST
-            if (question_index >= 3):
+            if (question_index >= 4):
                 break
 
         return "\n\n".join(questions)
@@ -235,3 +235,6 @@ class TemplateConverter(object):
             })
 
         return answers
+
+    def create_answers_text_only(self, question_index, question_number, question, variant):
+        return None

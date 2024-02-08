@@ -1,6 +1,6 @@
 <% extends "partials/question.template" %>
 
-<% block directions %>
+<% block directions_text %>
     Fill in the circle that corresponds to your answer.
 <% endblock %>
 

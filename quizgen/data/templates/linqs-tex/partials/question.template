@@ -15,9 +15,13 @@
     << question.prompt_text >>
 
     \vspace{0.25cm}
-    <% block directions required %>
+
+    <% block directions %>
+        <% block directions_text %>
+        <% endblock %>
+
+        \vspace{0.25cm}
     <% endblock %>
-    \vspace{0.25cm}
 
     <% block body required %>
     <% endblock %>

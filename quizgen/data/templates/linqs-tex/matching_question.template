@@ -1,6 +1,6 @@
 <% extends "partials/question.template" %>
 
-<% block directions %>
+<% block directions_text %>
     Fill in the each box on the left with a letter from the right.
 <% endblock %>
 

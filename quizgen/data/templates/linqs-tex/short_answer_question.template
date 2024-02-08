@@ -1,6 +1,6 @@
 <% extends "partials/question.template" %>
 
-<% block directions %>
+<% block directions_text %>
     Place your answer within the boxed region below.
 <% endblock %>
 
