@@ -103,7 +103,7 @@ class GradeScopeUploader(object):
 
     def write_quiz(self, variant, base_dir):
         converter = quizgen.converter.textemplate.TexTemplateConverter()
-        tex = converter.convert_quiz(variant)
+        tex = converter.convert_variant(variant)
 
         path = os.path.join(base_dir, "%s.tex" % (variant.title))
         quizgen.util.file.write(path, tex)

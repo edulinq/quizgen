@@ -64,7 +64,7 @@ def _get_template_test(converter_class, key, shuffle):
         variant = QuizQuestionsTest._quiz.create_variant(all_questions = True)
         variant.shuffle_answers = shuffle
 
-        content = converter.convert_quiz(variant)
+        content = converter.convert_variant(variant)
         self.assertTrue(len(content) > 10)
 
     return __method

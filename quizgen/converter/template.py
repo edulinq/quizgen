@@ -4,6 +4,7 @@ import random
 import string
 
 import quizgen.constants
+import quizgen.converter.converter
 import quizgen.parser
 import quizgen.variant
 
@@ -21,9 +22,9 @@ DEFAULT_JINJA_OPTIONS = {
     'autoescape': jinja2.select_autoescape(),
 }
 
-class TemplateConverter(object):
-    def __init__(self, format, template_dir, answer_key = False, jinja_options = {}, **kwargs):
-        super().__init__()
+class TemplateConverter(quizgen.converter.converter.Converter):
+    def __init__(self, format, template_dir, jinja_options = {}, **kwargs):
+        super().__init__(**kwargs)
 
         if (not os.path.isdir(template_dir)):
             raise ValueError("Provided template dir ('%s') does not exist or is not a dir." % (
@@ -31,7 +32,6 @@ class TemplateConverter(object):
 
         self.format = format
         self.template_dir = template_dir
-        self.answer_key = answer_key
         self.jinja_options = DEFAULT_JINJA_OPTIONS | jinja_options
 
         self.env = jinja2.Environment(
@@ -55,9 +55,9 @@ class TemplateConverter(object):
             quizgen.constants.QUESTION_TYPE_TF: 'create_answers_tf',
         }
 
-    def convert_quiz(self, variant, **kwargs):
+    def convert_variant(self, variant, **kwargs):
         if (not isinstance(variant, quizgen.variant.Variant)):
-            raise ValueError("Template quiz converter requires a quizgen.quiz.Variant type, found %s." % (type(variant)))
+            raise ValueError("Template quiz converter requires a quizgen.variant.Variant type, found %s." % (type(variant)))
 
         questions_text = self.create_questions(variant)
 

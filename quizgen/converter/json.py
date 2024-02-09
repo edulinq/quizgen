@@ -2,9 +2,11 @@
 Convert a quiz to JSON.
 """
 
-class JSONConverter(object):
-    def __init__(self, **kwargs):
-        super().__init__()
+import quizgen.converter.converter
 
-    def convert_quiz(self, quiz, **kwargs):
-        return quiz.to_json()
+class JSONConverter(quizgen.converter.converter.Converter):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def convert_variant(self, variant, **kwargs):
+        return variant.to_json()

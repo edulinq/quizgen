@@ -3,18 +3,10 @@ import os
 import random
 import sys
 
-import quizgen.converter.htmltemplate
-import quizgen.converter.textemplate
+import quizgen.converter.convert
 import quizgen.constants
 import quizgen.log
-import quizgen.parser
 import quizgen.quiz
-
-SUPPORTED_FORMATS = [
-    quizgen.constants.DOC_FORMAT_HTML,
-    quizgen.constants.DOC_FORMAT_JSON,
-    quizgen.constants.DOC_FORMAT_TEX,
-]
 
 def run(args):
     if (not os.path.exists(args.path)):
@@ -29,17 +21,7 @@ def run(args):
 
     quiz = quizgen.quiz.Quiz.from_path(args.path, flatten_groups = args.flatten_groups)
     variant = quiz.create_variant(all_questions = args.flatten_groups, seed = seed)
-
-    if (args.format == quizgen.constants.DOC_FORMAT_JSON):
-        content = variant.to_json()
-    elif (args.format == quizgen.constants.DOC_FORMAT_HTML):
-        converter = quizgen.converter.htmltemplate.HTMLTemplateConverter(answer_key = args.answer_key)
-        content = converter.convert_quiz(variant)
-    elif (args.format == quizgen.constants.DOC_FORMAT_TEX):
-        converter = quizgen.converter.textemplate.TexTemplateConverter(answer_key = args.answer_key)
-        content = converter.convert_quiz(variant)
-    else:
-        raise NotImplementedError("Quiz output format '%s' is not currently supported." % (args.format))
+    content = quizgen.converter.convert.convert_variant(variant, format = args.format, constructor_args = {'answer_key': args.answer_key})
 
     print(content)
 
@@ -55,7 +37,7 @@ def _get_parser():
 
     parser.add_argument('--format',
         action = 'store', type = str, default = quizgen.constants.DOC_FORMAT_JSON,
-        choices = SUPPORTED_FORMATS,
+        choices = quizgen.converter.convert.SUPPORTED_FORMATS,
         help = 'Output the parsed document in this format (default: %(default)s).')
 
     parser.add_argument('--key', dest = 'answer_key',

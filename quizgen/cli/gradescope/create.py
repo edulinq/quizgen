@@ -121,7 +121,7 @@ def run(args):
 
 def _make_pdf(variant, out_dir, is_key):
     converter = quizgen.converter.textemplate.TexTemplateConverter(answer_key = is_key)
-    content = converter.convert_quiz(variant)
+    content = converter.convert_variant(variant)
 
     out_path = os.path.join(out_dir, "%s.tex" % (variant.title))
     quizgen.util.file.write(out_path, content)
