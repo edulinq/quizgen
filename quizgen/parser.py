@@ -98,24 +98,6 @@ TEX_REPLACEMENTS = {
     '}': '\\}',
 }
 
-TEX_HEADER = r'''\documentclass[12pt]{article}
-
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{amsthm}
-\usepackage{booktabs}
-\usepackage{courier}
-\usepackage{graphicx}
-\usepackage{hyperref}
-\usepackage{times}
-\usepackage{listings}
-
-\begin{document}
-'''
-
-TEX_FOOTER = r'''
-\end{document}'''
-
 HTML_TABLE_STYLE = [
     'border-collapse: collapse',
     'text-align: center',
@@ -299,26 +281,19 @@ class DocumentNode(ParseNode):
 
         return "\n\n".join([node.to_text(**context) for node in self._nodes])
 
-    def to_tex(self, full_doc = False, **kwargs):
+    def to_tex(self, **kwargs):
         context = copy.deepcopy(self._context)
         context.update(kwargs)
 
         content = "\n\n".join([node.to_tex(**context) for node in self._nodes])
-
-        if (full_doc):
-            content = TEX_HEADER + "\n" + content + "\n" + TEX_FOOTER
-
         return content
 
-    def to_html(self, full_doc = False, **kwargs):
+    def to_html(self, **kwargs):
         context = copy.deepcopy(self._context)
         context.update(kwargs)
 
         content = "\n\n".join([node.to_html(level = 1, **context) for node in self._nodes])
         content = f"<div class='document'>\n{content}\n</div>"
-
-        if (full_doc):
-            content = f"<html><body>{content}</body></html>"
 
         return content
 

@@ -8,7 +8,7 @@ import quizgen.parser
 def run(args):
     document = quizgen.parser.parse_file(args.path)
 
-    content = document.to_format(args.format, full_doc = args.full_doc)
+    content = document.to_format(args.format)
     print(content)
 
     return 0
@@ -25,10 +25,6 @@ def _get_parser():
         action = 'store', type = str, default = quizgen.constants.DOC_FORMAT_JSON,
         choices = quizgen.constants.DOC_FORMATS,
         help = 'Output the parsed document in this format (default: %(default)s).')
-
-    parser.add_argument('--full', dest = 'full_doc',
-        action = 'store_true', default = False,
-        help = 'Treat the output as a fill document instead of just a snippet, e.g. TeX will output a full document (default: %(default)s)')
 
     quizgen.log.set_cli_args(parser)
 
