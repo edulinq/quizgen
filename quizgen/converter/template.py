@@ -32,7 +32,9 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
         self.format = format
         self.template_dir = template_dir
-        self.jinja_options = DEFAULT_JINJA_OPTIONS | jinja_options
+
+        self.jinja_options = DEFAULT_JINJA_OPTIONS.copy()
+        self.jinja_options.update(jinja_options)
 
         self.env = jinja2.Environment(
             loader = jinja2.FileSystemLoader(self.template_dir, followlinks = True),
