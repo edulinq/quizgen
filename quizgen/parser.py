@@ -94,6 +94,8 @@ TEX_REPLACEMENTS = {
     '_': '\\_',
     'π': '$\\pi$',
     '`': '\\`{}',
+    '{': '\\{',
+    '}': '\\}',
 }
 
 TEX_HEADER = r'''\documentclass[12pt]{article}
