@@ -9,6 +9,7 @@ import re
 
 import requests
 
+import quizgen.common
 import quizgen.constants
 import quizgen.quiz
 import quizgen.util.hash
@@ -18,6 +19,9 @@ PAGE_SIZE = 75
 
 CANVAS_QUIZGEN_BASEDIR = '/quiz-generator'
 CANVAS_QUIZGEN_QUIZ_DIRNAME = 'quiz'
+
+QUIZ_TYPE_ASSIGNMENT = 'assignment'
+QUIZ_TYPE_PRACTICE = 'practice_quiz'
 
 QUESTION_TYPE_MAP = {
     # Direct Mappings
@@ -33,6 +37,24 @@ QUESTION_TYPE_MAP = {
     # Indirect Mappings
     quizgen.constants.QUESTION_TYPE_FITB: 'short_answer_question',
     quizgen.constants.QUESTION_TYPE_SA: 'essay_question',
+}
+
+DEFAULT_CANVAS_OPTIONS = {
+    'practice': True,
+    'published': False,
+    'hide_results': None,
+    'show_correct_answers': True,
+    'allowed_attempts': 1,
+    'scoring_policy': 'keep_highest',
+    'assignment_group_name': 'Quizzes',
+}
+
+ALLOWED_VALUES = {
+    'practice': [True, False],
+    'published': [True, False],
+    'hide_results': [None, 'always', 'until_after_last_attempt'],
+    'show_correct_answers': [True, False],
+    'scoring_policy': ['keep_highest', 'keep_latest'],
 }
 
 class InstanceInfo(object):
@@ -61,6 +83,39 @@ class CanvasUploader(object):
 
     def upload_quiz(self, quiz, **kwargs):
         upload_quiz(quiz, self.instance, force = self.force);
+
+def validate_options(old_options):
+    options = DEFAULT_CANVAS_OPTIONS.copy()
+    options.update(old_options)
+
+    for (key, value) in options.items():
+        if (key not in DEFAULT_CANVAS_OPTIONS):
+            logging.warning("Unknown canvas options: '%s'." % (key))
+            continue
+
+        if (key in ALLOWED_VALUES):
+            if (value not in ALLOWED_VALUES[key]):
+                raise quizgen.common.QuizValidationError("Canvas option '%s' has value '%s' not in allowed values: %s." % (key, value, ALLOWED_VALUES[key]))
+
+        if (key == 'allowed_attempts'):
+            options['allowed_attempts'] = _validate_allowed_attempts(value)
+
+    return options
+
+def _validate_allowed_attempts(allowed_attempts):
+    if (not isinstance(allowed_attempts, (str, int))):
+        raise quizgen.common.QuizValidationError("Allowed attempts must be a positive int (or -1), found '%s'." % (str(allowed_attempts)))
+
+    try:
+        allowed_attempts = int(allowed_attempts)
+    except:
+        raise quizgen.common.QuizValidationError("Allowed attempts must be a positive int (or -1), found '%s'." % (str(allowed_attempts)))
+
+    if ((allowed_attempts < -1) or (allowed_attempts == 0)):
+        raise quizgen.common.QuizValidationError("Allowed attempts must be a positive int (or -1), found '%s'." % (str(allowed_attempts)))
+
+    return allowed_attempts
+
 
 def upload_quiz(quiz, instance, force = False):
     """
@@ -152,11 +207,11 @@ def create_quiz(quiz, instance):
     file_ids = upload_canvas_files(quiz, instance)
     instance.context['file_ids'] = file_ids
 
-    assignment_group_id = fetch_assignment_group(quiz.assignment_group_name, instance)
+    assignment_group_id = fetch_assignment_group(quiz.canvas['assignment_group_name'], instance)
 
-    quiz_type = quizgen.constants.QUIZ_TYPE_ASSIGNMENT
-    if (quiz.practice):
-        quiz_type = quizgen.constants.QUIZ_TYPE_PRACTICE
+    quiz_type = QUIZ_TYPE_ASSIGNMENT
+    if (quiz.canvas['practice']):
+        quiz_type = QUIZ_TYPE_PRACTICE
 
     description = quiz.description_document.to_html(canvas_instance = instance)
 
@@ -164,14 +219,14 @@ def create_quiz(quiz, instance):
         'quiz[title]': quiz.title,
         'quiz[description]': f"<p>{description}</p><br /><hr /><p>Version: {quiz.version}</p>",
         'quiz[quiz_type]': quiz_type,
-        'quiz[published]': quiz.published,
+        'quiz[published]': quiz.canvas['published'],
         'quiz[assignment_group_id]': assignment_group_id,
         'quiz[time_limit]': quiz.time_limit,
-        'quiz[allowed_attempts]': quiz.allowed_attempts,
-        'quiz[show_correct_answers]': quiz.show_correct_answers,
-        'quiz[hide_results]': quiz.hide_results,
+        'quiz[allowed_attempts]': quiz.canvas['allowed_attempts'],
+        'quiz[show_correct_answers]': quiz.canvas['show_correct_answers'],
+        'quiz[hide_results]': quiz.canvas['hide_results'],
         'quiz[shuffle_answers]': quiz.shuffle_answers,
-        'quiz[scoring_policy]': quiz.scoring_policy,
+        'quiz[scoring_policy]': quiz.canvas['scoring_policy'],
     }
 
     response = requests.request(

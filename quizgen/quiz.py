@@ -9,26 +9,20 @@ import json5
 import quizgen.common
 import quizgen.group
 import quizgen.parser
+import quizgen.uploader.canvas
 import quizgen.util.file
 import quizgen.util.git
-
-SCORING_POLICIES = ['keep_highest', 'keep_latest']
-HIDE_RESULTS = [None, 'always', 'until_after_last_attempt']
 
 class Quiz(object):
     def __init__(self,
             title = '',
             course_title = '', term_title = '',
             description = '', date = '',
-            practice = True, published = False,
-            time_limit = None, shuffle_answers = True,
-            hide_results = None, show_correct_answers = True,
-            allowed_attempts = 1,
-            scoring_policy = 'keep_highest',
-            assignment_group_name = "Quizzes",
+            time_limit_mins = None, shuffle_answers = True,
             groups = [],
             base_dir = '.',
             version = None,
+            canvas = {},
             **kwargs):
         self.title = title
         self.course_title = course_title
@@ -38,29 +32,22 @@ class Quiz(object):
         self.description = description
         self.description_document = None
 
-        self.practice = practice
-        self.published = published
-
-        self.time_limit = time_limit
+        self.time_limit_mins = time_limit_mins
         self.shuffle_answers = shuffle_answers
-        self.hide_results = hide_results
-        self.show_correct_answers = show_correct_answers
-        self.allowed_attempts = allowed_attempts
-        self.scoring_policy = scoring_policy
-
-        self.assignment_group_name = assignment_group_name
 
         self.groups = groups
 
         self.version = version
         self.base_dir = base_dir
 
+        self.canvas = canvas.copy()
+
         try:
-            self.validate()
+            self.validate(kwargs)
         except Exception as ex:
             raise quizgen.common.QuizValidationError("Error while validating quiz '%s'." % self.title) from ex
 
-    def validate(self):
+    def validate(self, kwargs):
         if ((self.title is None) or (self.title == "")):
             raise quizgen.common.QuizValidationError("Title cannot be empty.")
 
@@ -74,50 +61,35 @@ class Quiz(object):
             if (self.version == quizgen.util.git.UNKNOWN_VERSION):
                 logging.warning("Could not get a version for the quiz (is it in a git repo?).")
 
+        self.canvas = quizgen.uploader.canvas.validate_options(self.canvas)
+
         self._validate_time_limit()
-
-        self._validate_allowed_attempts()
-
-        if (self.scoring_policy not in SCORING_POLICIES):
-            raise quizgen.common.QuizValidationError("Scoring policy must be one of %s, found '%s'." % (SCORING_POLICIES, str(self.scoring_policy)))
-
-        if (self.hide_results not in HIDE_RESULTS):
-            raise quizgen.common.QuizValidationError("Hide results must be one of %s, found '%s'." % (HIDE_RESULTS, str(self.hide_results)))
 
         if (self.date == ''):
             self.date = datetime.date.today()
         else:
             self.date = datetime.date.fromisoformat(self.date)
 
-    def _validate_allowed_attempts(self):
-        if (not isinstance(self.allowed_attempts, (str, int))):
-            raise quizgen.common.QuizValidationError("Allowed attempts must be a positive int (or -1), found '%s'." % (str(self.allowed_attempts)))
-
-        try:
-            self.allowed_attempts = int(self.allowed_attempts)
-        except:
-            raise quizgen.common.QuizValidationError("Allowed attempts must be a positive int (or -1), found '%s'." % (str(self.allowed_attempts)))
-
-        if ((self.allowed_attempts < -1) or (self.allowed_attempts == 0)):
-            raise quizgen.common.QuizValidationError("Allowed attempts must be a positive int (or -1), found '%s'." % (str(self.allowed_attempts)))
+        for key in kwargs:
+            logging.warning("Unknown quiz option: '%s'." % (key))
 
     def _validate_time_limit(self):
-        if (self.time_limit is None):
+        if (self.time_limit_mins is None):
             return
 
-        if (not isinstance(self.time_limit, (str, int))):
-            raise quizgen.common.QuizValidationError("Time limit must be a positive int, found '%s'." % (str(self.time_limit)))
+        if (not isinstance(self.time_limit_mins, (str, int))):
+            raise quizgen.common.QuizValidationError("Time limit must be a positive int, found '%s'." % (str(self.time_limit_mins)))
 
         try:
-            self.time_limit = int(self.time_limit)
+            self.time_limit_mins = int(self.time_limit_mins)
         except:
-            raise quizgen.common.QuizValidationError("Time limit must be a positive int, found '%s'." % (str(self.time_limit)))
+            raise quizgen.common.QuizValidationError("Time limit must be a positive int, found '%s'." % (str(self.time_limit_mins)))
 
-        if (self.time_limit < 0):
-            raise quizgen.common.QuizValidationError("Time limit must be a positive int, found '%s'." % (str(self.time_limit)))
+        if (self.time_limit_mins < 0):
+            raise quizgen.common.QuizValidationError("Time limit must be a positive int, found '%s'." % (str(self.time_limit_mins)))
 
-        if (self.time_limit == 0):
-            self.time_limit = None
+        if (self.time_limit_mins == 0):
+            self.time_limit_mins = None
 
     def to_dict(self, include_docs = True, flatten_groups = False):
         value = self.__dict__.copy()
