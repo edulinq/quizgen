@@ -21,7 +21,8 @@ def run(args):
 
     quiz = quizgen.quiz.Quiz.from_path(args.path, flatten_groups = args.flatten_groups)
     variant = quiz.create_variant(all_questions = args.flatten_groups, seed = seed)
-    content = quizgen.converter.convert.convert_variant(variant, format = args.format, constructor_args = {'answer_key': args.answer_key})
+    content = quizgen.converter.convert.convert_variant(variant, format = args.format,
+            constructor_args = {'answer_key': args.answer_key})
 
     print(content)
 

@@ -1,8 +1,9 @@
 import argparse
-import json
 import os
 import sys
 
+import quizgen.converter.convert
+import quizgen.constants
 import quizgen.log
 import quizgen.question
 
@@ -14,17 +15,29 @@ def run(args):
         raise ValueError(f"Provided path '{args.path}' is not a file.")
 
     question = quizgen.question.Question.from_path(args.path)
-    print(json.dumps(question.to_dict(), indent = 4))
+    content = quizgen.converter.convert.convert_question(question, format = args.format,
+            constructor_args = {'answer_key': args.answer_key})
+
+    print(content)
 
     return 0
 
 def _get_parser():
     parser = argparse.ArgumentParser(description =
-        "Parse a single quiz question (JSON file) and output the result as JSON.")
+        "Parse a single quiz question (JSON file) and output the result in the specified format.")
 
     parser.add_argument('path',
         type = str,
         help = 'The path to a quiz question json file.')
+
+    parser.add_argument('--format',
+        action = 'store', type = str, default = quizgen.constants.DOC_FORMAT_JSON,
+        choices = quizgen.converter.convert.SUPPORTED_FORMATS,
+        help = 'Output the parsed document in this format (default: %(default)s).')
+
+    parser.add_argument('--key', dest = 'answer_key',
+        action = 'store_true', default = False,
+        help = 'Generate an answer key instead of a blank quiz (default: %(default)s).')
 
     quizgen.log.set_cli_args(parser)
 

@@ -1,4 +1,5 @@
 import copy
+import json
 import logging
 import math
 import os
@@ -275,6 +276,9 @@ class Question(object):
     def _validate_answer_list(self, min_correct = 0, max_correct = math.inf):
         self.answers_documents = _validate_answer_list(self.answers, self.base_dir,
                 min_correct = min_correct, max_correct = max_correct)
+
+    def to_json(self, indent = 4, include_docs = True):
+        return json.dumps(self.to_dict(include_docs = include_docs), indent = indent)
 
     def to_dict(self, include_docs = True):
         value = self.__dict__.copy()

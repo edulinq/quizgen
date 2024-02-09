@@ -31,3 +31,8 @@ def convert_variant(variant, format = quizgen.constants.DOC_FORMAT_JSON,
 
     converter = get_converter(format = format, **constructor_args)
     return converter.convert_variant(variant, **converter_args)
+
+def convert_question(question, format = quizgen.constants.DOC_FORMAT_JSON,
+        constructor_args = {}, converter_args = {}):
+    converter = get_converter(format = format, **constructor_args)
+    return converter.convert_question(question, **converter_args)

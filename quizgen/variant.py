@@ -7,6 +7,15 @@ import json5
 import quizgen.question
 import quizgen.common
 import quizgen.parser
+import quizgen.quiz
+
+DUMMY_DATA = {
+    'title': 'Dummy Title',
+    'description': 'Dummy description.',
+    'course_title': 'Dummy Course',
+    'term_title': 'Dummy Term',
+    'version': '0.0.0',
+}
 
 class Variant(object):
     """
@@ -96,3 +105,11 @@ class Variant(object):
 
     def num_questions(self):
         return len(self.questions)
+
+    @staticmethod
+    def get_dummy():
+        """
+        Get a "dummy" variant that has no real information.
+        """
+
+        return quizgen.quiz.Quiz(**DUMMY_DATA).create_variant()
