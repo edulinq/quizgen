@@ -1,0 +1,15 @@
+{% extends "partials/question.template" %}
+
+{% block directions_text %}
+    For each part, place your answer in the associated textbox.
+{% endblock %}
+
+{% block body %}
+    {% for part in question.answers %}
+        {% set id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
+        {% set solution = question.answers.solution if answer_key else '' %}
+
+        <label for='{{ id }}' >{{ part.label }}</label>
+        <input type='text' name='{{ id }}' id='{{ id }}' value='{{ solution }}' />
+    {% endfor %}
+{% endblock %}

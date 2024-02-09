@@ -1,0 +1,24 @@
+<div class='qg-quiz-question' data-type='{{ question.question_type }}' data-number='{{ question.number }}' data-name='{{ question.base_name }}' data-points='{{ question.points }}'>
+
+    {% if question.custom_header is none %}
+        <h2 class='qg-quiz-question-name'>Question {{ question.number }} ({{ question.points }} Points)</h2>
+    {% elif question.custom_header != '' %}
+        <h2 class='qg-quiz-question-name'>{{ question.custom_header }}</h2>
+    {% else %}
+        <!-- No Header. -->
+    {% endif %}
+
+    <div class='qg-quiz-question-prompt'>
+        {{ question.prompt_text }}
+    <div>
+
+    {% block directions %}
+        {% block directions_text %}
+        {% endblock %}
+    {% endblock %}
+
+    <div class='qg-quiz-question-body'>
+        {% block body required %}
+        {% endblock %}
+    </div>
+</div>

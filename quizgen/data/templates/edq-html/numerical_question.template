@@ -1,0 +1,10 @@
+{% extends "partials/question.template" %}
+
+{% block directions_text %}
+    Place your answer within the textbox below.
+{% endblock %}
+
+{% block body %}
+    {% set solution = question.answers.solution if answer_key else '' %}
+    <input type='text' name='answer-{{ question.id }}' id='answer-{{ question.id }}' value='{{ solution }}' />
+{% endblock %}

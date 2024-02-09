@@ -1,0 +1,9 @@
+{% extends "partials/question.template" %}
+
+{% block directions %}
+    <!-- Empty -->
+{% endblock %}
+
+{% block body %}
+    <!-- Empty -->
+{% endblock %}

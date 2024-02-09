@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>{{ quiz.title }}</title>
+    </head>
+    <body>
+        <div class='qg-quiz'>
+            <div class='qg-quiz-header'>
+                <h1>{{ quiz.title }}</h1>
+                <p>{{ quiz.course_title }} -- {{ quiz.term_title }}</p>
+                <p>{{ quiz.date }}</p>
+            </div>
+
+            <div class='qg-quiz-description'>
+                {{ quiz.description_text }}
+            </div>
+
+            <hr>
+            <hr>
+
+            <div class='qg-quiz-body'>
+                <form class='qg-quiz-form'>
+                    {{ questions_text }}
+
+                    <hr>
+
+                    <input type='submit' value='Submit Quiz' />
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

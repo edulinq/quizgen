@@ -253,10 +253,11 @@ class TemplateConverter(object):
             content = "%s (precision: %s)" % (str(answer['value']), str(answer['precision']))
             raise ValueError(f"Unknown numerical answer type: '{answer['type']}'.")
 
-        text = quizgen.parser.parse_text(content).to_format(self.format)
+        document = quizgen.parser.parse_text(content)
 
         return {
-            'solution': text,
+            'solution': self.clean_solution_content(document),
+            'dirty_solution': document.to_format(self.format),
         }
 
     def create_answers_mdd(self, question_index, question_number, question, variant):
@@ -277,20 +278,22 @@ class TemplateConverter(object):
         answers = []
 
         for key, values in question.answers.items():
-            solution = self.clean_solution_content(question.answers_documents[key]['values'][0])
+            document = question.answers_documents[key]['values'][0]
 
             answers.append({
                 'label': question.answers_documents[key]['key'].to_format(self.format),
-                'solution': solution,
+                'solution': self.clean_solution_content(document),
+                'dirty_solution': document.to_format(self.format),
             })
 
         return answers
 
     def create_answers_fitb(self, question_index, question_number, question, variant):
-        solution = self.clean_solution_content(question.answers_documents[""]["values"][0])
+        document = question.answers_documents[""]["values"][0]
 
         return {
-            'solution': solution,
+            'solution': self.clean_solution_content(document),
+            'dirty_solution': document.to_format(self.format),
         }
 
     def create_answers_essay(self, question_index, question_number, question, variant):

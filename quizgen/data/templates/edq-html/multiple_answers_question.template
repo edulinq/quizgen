@@ -1,0 +1,18 @@
+{% extends "partials/question.template" %}
+
+{% block directions_text %}
+    Click all boxes that corresponds to your answer.
+{% endblock %}
+
+{% block body %}
+    <fieldset>
+        {% for answer in question.answers %}
+            <div>
+                {% set id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
+                {% set checked = 'checked' if (answer_key and answer.correct) else '' %}
+                <input type='checkbox' id='{{ id }}' name='question-{{ question.id }}' {{ checked }} />
+                <label for='{{ id }}'>{{ answer.text }}</label>
+            </div>
+        {% endfor %}
+    </fieldset>
+{% endblock %}

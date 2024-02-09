@@ -1,0 +1,20 @@
+{% extends "partials/question.template" %}
+
+{% block directions_text %}
+    Select an answer from the dropdown the best matches each item.
+{% endblock %}
+
+{% block body %}
+    {% for left in question.answers.lefts %}
+        <div class='qg-quiz-question-answer-choices'>
+            <label for='{{ left.id }}'>{{ left.text }}</label>
+            <select id='{{ left.id }}' name='question-{{ question.id }}'>
+                {% for right in question.answers.rights %}
+                    {% set selected = 'selected' if (answer_key and (left.solution_id == right.id)) else '' %}
+                    <option value='{{ right.id }}' {{ selected }} >{{ right.text }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    {% endfor %}
+{% endblock %}
+
