@@ -1,6 +1,6 @@
 {
     "prompt": "Multiple Answers: All False",
-    "question_type": "multiple_answers_question",
+    "question_type": "multiple_answers",
     "answers": [
         {"correct": false, "text": "A"},
         {"correct": false, "text": "B"},

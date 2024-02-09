@@ -1,6 +1,6 @@
 {
     "prompt": "Bad Fill in Multiple Blanks: No Options",
-    "question_type": "fill_in_multiple_blanks_question",
+    "question_type": "fill_in_multiple_blanks",
     "answers": {
         "A": []
     }

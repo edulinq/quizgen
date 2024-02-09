@@ -1,6 +1,6 @@
 {
     "prompt": "Bad Essay: Answers List",
-    "question_type": "essay_question",
+    "question_type": "essay",
     "answers": [
         {"correct": true,  "text": "A"},
         {"correct": false, "text": "B"},

@@ -1,5 +1,5 @@
 {
     "prompt": "Bad Fill in The Blank: Dict Value",
-    "question_type": "fill_in_the_blank_question",
+    "question_type": "fill_in_the_blank",
     "answers": [{}]
 }

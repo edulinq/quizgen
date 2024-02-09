@@ -1,6 +1,6 @@
 {
     "prompt": "Multiple Drop Downs: Basic [[part1]] and [[part2]]",
-    "question_type": "multiple_dropdowns_question",
+    "question_type": "multiple_dropdowns",
     "answers": {
         "part1": [
             {"correct": true,  "text": "a"},

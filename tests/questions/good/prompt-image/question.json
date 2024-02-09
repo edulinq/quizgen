@@ -1,5 +1,5 @@
 {
-    "question_type": "multiple_choice_question",
+    "question_type": "multiple_choice",
     "answers": [
         {"correct": true,  "text": "A"},
         {"correct": false, "text": "B"},

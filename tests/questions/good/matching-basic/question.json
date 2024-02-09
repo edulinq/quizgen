@@ -1,6 +1,6 @@
 {
     "prompt": "Matching: Basic",
-    "question_type": "matching_question",
+    "question_type": "matching",
     "answers": {
         "matches": [
             ["A", "1"],

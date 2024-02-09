@@ -21,20 +21,18 @@ CANVAS_QUIZGEN_QUIZ_DIRNAME = 'quiz'
 
 QUESTION_TYPE_MAP = {
     # Direct Mappings
-    quizgen.constants.QUESTION_TYPE_CALCULATED: quizgen.constants.QUESTION_TYPE_CALCULATED,
-    quizgen.constants.QUESTION_TYPE_ESSAY: quizgen.constants.QUESTION_TYPE_ESSAY,
-    quizgen.constants.QUESTION_TYPE_FILE_UPLOAD: quizgen.constants.QUESTION_TYPE_FILE_UPLOAD,
-    quizgen.constants.QUESTION_TYPE_FIMB: quizgen.constants.QUESTION_TYPE_FIMB,
-    quizgen.constants.QUESTION_TYPE_MATCHING: quizgen.constants.QUESTION_TYPE_MATCHING,
-    quizgen.constants.QUESTION_TYPE_MA: quizgen.constants.QUESTION_TYPE_MA,
-    quizgen.constants.QUESTION_TYPE_MCQ: quizgen.constants.QUESTION_TYPE_MCQ,
-    quizgen.constants.QUESTION_TYPE_MDD: quizgen.constants.QUESTION_TYPE_MDD,
-    quizgen.constants.QUESTION_TYPE_NUMERICAL: quizgen.constants.QUESTION_TYPE_NUMERICAL,
-    quizgen.constants.QUESTION_TYPE_TEXT_ONLY: quizgen.constants.QUESTION_TYPE_TEXT_ONLY,
-    quizgen.constants.QUESTION_TYPE_TF: quizgen.constants.QUESTION_TYPE_TF,
+    quizgen.constants.QUESTION_TYPE_ESSAY: 'essay_question',
+    quizgen.constants.QUESTION_TYPE_FIMB: 'fill_in_multiple_blanks_question',
+    quizgen.constants.QUESTION_TYPE_MATCHING: 'matching_question',
+    quizgen.constants.QUESTION_TYPE_MA: 'multiple_answers_question',
+    quizgen.constants.QUESTION_TYPE_MCQ: 'multiple_choice_question',
+    quizgen.constants.QUESTION_TYPE_MDD: 'multiple_dropdowns_question',
+    quizgen.constants.QUESTION_TYPE_NUMERICAL: 'numerical_question',
+    quizgen.constants.QUESTION_TYPE_TEXT_ONLY: 'text_only_question',
+    quizgen.constants.QUESTION_TYPE_TF: 'true_false_question',
     # Indirect Mappings
-    quizgen.constants.QUESTION_TYPE_FITB: quizgen.constants.QUESTION_TYPE_SA,
-    quizgen.constants.QUESTION_TYPE_SA: quizgen.constants.QUESTION_TYPE_ESSAY,
+    quizgen.constants.QUESTION_TYPE_FITB: 'short_answer_question',
+    quizgen.constants.QUESTION_TYPE_SA: 'essay_question',
 }
 
 class InstanceInfo(object):

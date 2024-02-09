@@ -1,6 +1,6 @@
 {
     "prompt": "Bad Multiple Choice: All False",
-    "question_type": "multiple_choice_question",
+    "question_type": "multiple_choice",
     "answers": [
         {"correct": false, "text": "A"},
         {"correct": false, "text": "B"},

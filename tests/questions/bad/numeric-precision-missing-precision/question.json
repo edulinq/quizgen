@@ -1,6 +1,6 @@
 {
     "prompt": "Bad Precision: Missing precision",
-    "question_type": "numerical_question",
+    "question_type": "numerical",
     "answers": [
         {"type": "precision", "value": 0.08}
     ]

@@ -1,6 +1,6 @@
 {
     "prompt": "Bad Text\\-Only: Answers List",
-    "question_type": "text_only_question",
+    "question_type": "text_only",
     "answers": [
         {"correct": true,  "text": "A"},
         {"correct": false, "text": "B"},

@@ -1,5 +1,5 @@
 {
     "prompt": "Bad Essay: Answers Bool",
-    "question_type": "essay_question",
+    "question_type": "essay",
     "answers": false
 }

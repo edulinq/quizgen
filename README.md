@@ -91,7 +91,7 @@ To parse an entire specific quiz, you can use the `quizgen.cli.parse-quiz` modul
 This is useful if you want to check if a quiz properly parses.
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.parse-quiz <path to quiz JSON file>
+python3 -m quizgen.cli.parse.quiz <path to quiz JSON file>
 ```
 
 This command will output the fully parsed quiz in for format controlled by the `--format` option,
@@ -105,7 +105,7 @@ Not all formats support answer keys.
 
 To output a JSON quiz to a file called `quiz.json`, you can use the following command:
 ```
-python3 -m quizgen.cli.parse-quiz <path to quiz JSON file> --format json > quiz.json
+python3 -m quizgen.cli.parse.quiz <path to quiz JSON file> --format json > quiz.json
 ```
 
 A JSON representation of a parsed quiz (which is different from a standard quiz definition) can be useful for debugging.
@@ -115,44 +115,42 @@ If debugging, the `--flatten-groups` flag can be useful (which will include all 
 
 To output a TeX quiz to a file called `quiz.tex`, you can use the following command:
 ```
-python3 -m quizgen.cli.parse-quiz <path to quiz JSON file> --format tex > quiz.tex
+python3 -m quizgen.cli.parse.quiz <path to quiz JSON file> --format tex > quiz.tex
 ```
 
 You can then compile or edit the TeX file as you see fit.
-
-To generate TeX that is GradeScope-compatible, use the `gradescope` format instead:
-```
-python3 -m quizgen.cli.parse-quiz <path to quiz JSON file> --format gradescope > quiz.tex
-```
 
 #### Outputting an HTML Quiz
 
 To output a HTML quiz to a file called `quiz.html`, you can use the following command:
 ```
-python3 -m quizgen.cli.parse-quiz <path to quiz JSON file> --format html > quiz.html
+python3 -m quizgen.cli.parse.quiz <path to quiz JSON file> --format html > quiz.html
 ```
 
-HTML quizzes are grouped together into a single form.
+All question in an HTML quiz are grouped together into a single HTML form.
 
 ### Parsing a Specific Question
 
-To parse a specific quiz question, you can use the `quizgen.cli.parse-question` module.
+To parse a specific quiz question, you can use the `quizgen.cli.parse.question` module.
 This is useful if you want to check if a question properly parses.
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.parse-question <path to question JSON file>
+python3 -m quizgen.cli.parse.question <path to question JSON file>
 ```
 
 This command will output the fully parsed question in the JSON format,
 and will exit with a non-zero status if the parse failed.
 
+You can use the same `--format` options used in `quizgen.cli.parse.quiz` to change the output format of the question.
+The question will be placed in a "dummy" quiz, so the output should be fully stand-alone.
+
 ### Parsing a Specific File
 
-To parse a specific file, you can use the `quizgen.cli.parse-file` module.
+To parse a specific file, you can use the `quizgen.cli.parse.file` module.
 This is useful if you want to check if/how a specific document parses.
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.parse-file <path to file> --format html
+python3 -m quizgen.cli.parse.file <path to file> --format html
 ```
 
 This command will output the fully parsed file in for format controlled by the `--format` option,
@@ -161,20 +159,20 @@ This can be used to parse prompt markdown files.
 
 ### Uploading a Quiz to Canvas
 
-To upload a quiz to Canvas, the `quizgen.cli.upload-canvas-quiz` module can be used.
+To upload a quiz to Canvas, the `quizgen.cli.canvas.upload` module can be used.
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.upload-canvas-quiz <path to quiz JSON file> --course <canvas course id> --token <canvas access token>
+python3 -m quizgen.cli.canvas.upload <path to quiz JSON file> --course <canvas course id> --token <canvas access token>
 ```
 
 If an existing quiz with the same name is found, then nothing will be uploaded unless the `--force` flag is given..
 
 ### Uploading a Quiz to GradeScope
 
-To upload a quiz to GradeScope, the `quizgen.cli.create-gradescope-quiz` module can be used.
+To upload a quiz to GradeScope, the `quizgen.cli.gradescope.create` module can be used.
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.create-gradescope-quiz <path to quiz JSON file> --course <course id> --user <username> --pass <password> --upload
+python3 -m quizgen.cli.gradescope.gradescope <path to quiz JSON file> --course <course id> --user <username> --pass <password> --upload
 ```
 
 Since GradeScope uses passwords instead of tokens, take extra caution about your password appearing in config files or command histories.

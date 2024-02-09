@@ -63,7 +63,7 @@ Below are details on all the QuizGen's supported question types.
 
 ### Multiple Choice (MC)
 
-Question Type: `multiple_choice_question`
+Question Type: `multiple_choice`
 
 Multiple choice questions provide several different options (called distractors)
 with a **single** correct option.
@@ -87,7 +87,7 @@ Example Answers Definition:
 
 ### True-False (TF)
 
-Question Type: `true_false_question`
+Question Type: `true_false`
 
 True-False questions are like multiple choice questions that are limited to only two choices: "True" and "False".
 The answers definition is just a single boolean indicating the correct answer.
@@ -99,7 +99,7 @@ Example Answers Definition:
 
 ### Multiple Drop-Downs (MDD)
 
-Question Type: `multiple_dropdowns_question`
+Question Type: `multiple_dropdowns`
 
 Multiple Drop-Down questions are questions that contain one or more parts,
 where each part is a multiple choice question.
@@ -126,7 +126,7 @@ For example, a question may have the following prompt and answers definition:
 
 ### Multiple Answers (MA)
 
-Question Type: `multiple_answers_question`
+Question Type: `multiple_answers`
 
 Multiple answer questions are questions where multiple (or no) choices can be selected.
 They are specified the same as multiple choice questions,
@@ -148,7 +148,7 @@ Example Answers Definition:
 
 ### Matching
 
-Question Type: `matching_question`
+Question Type: `matching`
 
 Matching questions provide two lists: left and right.
 Users are tasked with matching an item from the left list to an item from the right list.
@@ -178,7 +178,7 @@ Example Answers Definition:
 
 ### Fill in the Blank (FITB)
 
-Question Type: `fill_in_the_blank_question`
+Question Type: `fill_in_the_blank`
 
 Fill in the blank questions provide a single blank at the end of the question that the users is tasked with filling out.
 These questions expect a finite textual answer.
@@ -197,7 +197,7 @@ Example Answers Definition:
 
 ### Fill in Multiple Blanks (FIMB)
 
-Question Type: `fill_in_multiple_blanks_question`
+Question Type: `fill_in_multiple_blanks`
 
 Fill in multiple blank questions are an extension of FITB questions that allows for multiple blanks to occur anywhere in the prompt.
 Like MDD questions, the question prompt should include an answer reference for each blank.
@@ -222,7 +222,7 @@ This hint indicates that the output medium should attempt to reduce the reserved
 
 ### Numeric
 
-Question Type: `numerical_question`
+Question Type: `numerical`
 
 Numeric questions are similar to FITB question,
 but expect a single numerical answer.
@@ -243,7 +243,7 @@ Example Answers Definition:
 
 ### Short Answer (SA)
 
-Question Type: `short_answer_question`
+Question Type: `short_answer`
 
 Short answer questions provide a text area for users to enter answers.
 Answers are expected to be anywhere between a few words to a few sentences.
@@ -252,7 +252,7 @@ As such, no `answers` key should be present in the question definition.
 
 ### Essay Questions
 
-Question Type: `essay_question`
+Question Type: `essay`
 
 Essay questions are like short answer questions,
 but allocate a much larger area for answers.
@@ -261,7 +261,7 @@ Like SA questions, no `answers` key should be present in the question definition
 
 ### Text-Only
 
-Question Type: `text_only_question`
+Question Type: `text_only`
 
 Text-only questions provide a means of communicating information to the user in a structured manner.
 The most common use for text-only questions is to provide a common description or information that can be used

@@ -1,5 +1,5 @@
 {
     "prompt": "Bad True\\/False: Dict",
-    "question_type": "true_false_question",
+    "question_type": "true_false",
     "answers": {"true": true}
 }

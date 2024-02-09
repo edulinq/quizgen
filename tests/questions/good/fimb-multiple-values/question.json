@@ -1,6 +1,6 @@
 {
     "prompt": "Fill in Multiple Blanks: Multiple Values",
-    "question_type": "fill_in_multiple_blanks_question",
+    "question_type": "fill_in_multiple_blanks",
     "answers": {
         "A": "1",
         "B": ["2"],

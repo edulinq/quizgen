@@ -1,6 +1,6 @@
 {
     "prompt": "Matching: No Distractors",
-    "question_type": "matching_question",
+    "question_type": "matching",
     "answers": {
         "matches": [
             ["A", "1"],

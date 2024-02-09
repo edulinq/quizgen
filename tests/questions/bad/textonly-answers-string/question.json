@@ -1,5 +1,5 @@
 {
     "prompt": "Bad Text\\-Only: Answers String",
-    "question_type": "text_only_question",
+    "question_type": "text_only",
     "answers": "[]"
 }

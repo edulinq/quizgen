@@ -1,6 +1,6 @@
 {
     "prompt": "Bad Range: Missing max",
-    "question_type": "numerical_question",
+    "question_type": "numerical",
     "answers": [
         {"type": "range", "min": 0.07}
     ]
