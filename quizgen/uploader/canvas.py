@@ -221,7 +221,7 @@ def create_quiz(quiz, instance):
         'quiz[quiz_type]': quiz_type,
         'quiz[published]': quiz.canvas['published'],
         'quiz[assignment_group_id]': assignment_group_id,
-        'quiz[time_limit]': quiz.time_limit,
+        'quiz[time_limit]': quiz.time_limit_mins,
         'quiz[allowed_attempts]': quiz.canvas['allowed_attempts'],
         'quiz[show_correct_answers]': quiz.canvas['show_correct_answers'],
         'quiz[hide_results]': quiz.canvas['hide_results'],
