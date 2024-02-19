@@ -23,7 +23,9 @@ DEFAULT_JINJA_OPTIONS = {
 }
 
 class TemplateConverter(quizgen.converter.converter.Converter):
-    def __init__(self, format, template_dir, jinja_options = {}, **kwargs):
+    def __init__(self, format, template_dir,
+            jinja_options = {}, jinja_filters = {},
+            **kwargs):
         super().__init__(**kwargs)
 
         if (not os.path.isdir(template_dir)):
@@ -40,6 +42,9 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             loader = jinja2.FileSystemLoader(self.template_dir, followlinks = True),
             **self.jinja_options,
         )
+
+        for (name, function) in jinja_filters.items():
+            self.env.filters[name] = function
 
         # Methods to generate answers.
         # Signatuire: func(self, question_index, question_number, question, variant)
