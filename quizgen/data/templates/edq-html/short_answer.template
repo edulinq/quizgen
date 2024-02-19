@@ -1,8 +1,8 @@
 {% extends "partials/question.template" %}
 
-<% block directions_text %>
+{% block directions %}
     Place your answer within the textbox below.
-<% endblock %>
+{% endblock %}
 
 {% block body %}
     <textarea id='answer-{{ question.id }}' name='question-{{ question.id }}'>

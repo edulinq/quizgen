@@ -1,6 +1,6 @@
 {% extends "partials/question.template" %}
 
-{% block directions_text %}
+{% block directions %}
     Place your answer within the text area below.
 {% endblock %}
 

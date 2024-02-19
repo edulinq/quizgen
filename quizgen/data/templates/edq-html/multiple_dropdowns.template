@@ -1,6 +1,6 @@
 {% extends "partials/question.template" %}
 
-{% block directions_text %}
+{% block directions %}
     For each part, select an answer from the dropdown menu.
 {% endblock %}
 

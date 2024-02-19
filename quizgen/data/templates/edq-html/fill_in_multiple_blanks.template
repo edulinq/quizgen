@@ -1,6 +1,6 @@
 {% extends "partials/question.template" %}
 
-{% block directions_text %}
+{% block directions %}
     For each part, place your answer in the associated textbox.
 {% endblock %}
 

@@ -1,6 +1,6 @@
 {% extends "partials/question.template" %}
 
-{% block directions_text %}
+{% block directions %}
     Click all boxes that corresponds to your answer.
 {% endblock %}
 
