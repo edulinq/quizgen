@@ -21,14 +21,14 @@ JINJA_OPTIONS = {
 
 class TexTemplateConverter(quizgen.converter.template.TemplateConverter):
     def __init__(self, template_dir = DEFAULT_TEMPLATE_DIR, **kwargs):
-        super().__init__(quizgen.constants.DOC_FORMAT_TEX, template_dir, jinja_options = JINJA_OPTIONS, **kwargs)
+        super().__init__(quizgen.constants.FORMAT_TEX, template_dir, jinja_options = JINJA_OPTIONS, **kwargs)
 
     def clean_solution_content(self, document):
-        tex = document.to_format(quizgen.constants.DOC_FORMAT_TEX)
+        tex = document.to_format(quizgen.constants.FORMAT_TEX)
         if ('\\' not in tex):
             return tex
 
-        content = document.to_format(quizgen.constants.DOC_FORMAT_TEXT)
+        content = document.to_format(quizgen.constants.FORMAT_TEXT)
         content = content.replace('\\', '\\textbackslash{}')
 
         return content

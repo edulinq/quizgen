@@ -12,7 +12,7 @@ DEFAULT_TEMPLATE_DIR = os.path.join(THIS_DIR, '..', 'data', 'templates', 'edq-ht
 
 class HTMLTemplateConverter(quizgen.converter.template.TemplateConverter):
     def __init__(self, template_dir = DEFAULT_TEMPLATE_DIR, **kwargs):
-        super().__init__(quizgen.constants.DOC_FORMAT_HTML, template_dir, **kwargs)
+        super().__init__(quizgen.constants.FORMAT_HTML, template_dir, **kwargs)
 
     def clean_solution_content(self, document):
         """

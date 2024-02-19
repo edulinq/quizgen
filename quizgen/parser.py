@@ -245,15 +245,15 @@ class ParseNode(abc.ABC):
         return json.dumps(self.to_pod(**kwargs), indent = indent)
 
     def to_format(self, format, **kwargs):
-        if (format == quizgen.constants.DOC_FORMAT_HTML):
+        if (format == quizgen.constants.FORMAT_HTML):
             return self.to_html(**kwargs)
-        elif (format == quizgen.constants.DOC_FORMAT_JSON):
+        elif (format == quizgen.constants.FORMAT_JSON):
             return self.to_json(**kwargs)
-        elif (format == quizgen.constants.DOC_FORMAT_MD):
+        elif (format == quizgen.constants.FORMAT_MD):
             return self.to_markdown(**kwargs)
-        elif (format == quizgen.constants.DOC_FORMAT_TEX):
+        elif (format == quizgen.constants.FORMAT_TEX):
             return self.to_tex(**kwargs)
-        elif (format == quizgen.constants.DOC_FORMAT_TEXT):
+        elif (format == quizgen.constants.FORMAT_TEXT):
             return self.to_text(**kwargs)
         else:
             raise ValueError(f"Unknown format '{format}'.")
