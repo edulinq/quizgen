@@ -1,20 +1,24 @@
 import quizgen.constants
+import quizgen.converter.gifttemplate
 import quizgen.converter.htmltemplate
 import quizgen.converter.json
 import quizgen.converter.textemplate
 import quizgen.variant
 
 SUPPORTED_FORMATS = [
+    quizgen.constants.FORMAT_GIFT,
     quizgen.constants.FORMAT_HTML,
     quizgen.constants.FORMAT_JSON,
     quizgen.constants.FORMAT_TEX,
 ]
 
 def get_converter_class(format = quizgen.constants.FORMAT_JSON):
-    if (format == quizgen.constants.FORMAT_JSON):
-        return quizgen.converter.json.JSONConverter
+    if (format == quizgen.constants.FORMAT_GIFT):
+        return quizgen.converter.gifttemplate.GIFTTemplateConverter
     elif (format == quizgen.constants.FORMAT_HTML):
         return quizgen.converter.htmltemplate.HTMLTemplateConverter
+    elif (format == quizgen.constants.FORMAT_JSON):
+        return quizgen.converter.json.JSONConverter
     elif (format == quizgen.constants.FORMAT_TEX):
         return quizgen.converter.textemplate.TexTemplateConverter
     else:

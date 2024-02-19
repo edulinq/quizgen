@@ -100,6 +100,10 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             if (not question.should_skip_numbering()):
                 question_number += 1
 
+            # TEST
+            if (question_index >= 0):
+                break
+
         return "\n\n".join(questions)
 
     def create_question(self, question_index, question_number, question, variant):
@@ -123,9 +127,17 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             'question': data,
         }
 
-        template_name = "%s.template" % (question_type)
-        template = self.env.get_template(template_name)
-        text = template.render(**context)
+        # TEST
+        try:
+            template_name = "%s.template" % (question_type)
+            template = self.env.get_template(template_name)
+            text = template.render(**context)
+        except Exception as ex:
+            print('---')
+            import json
+            print(json.dumps(data, indent = 4))
+            print('---')
+            raise ex
 
         return text
 

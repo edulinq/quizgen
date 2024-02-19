@@ -1,0 +1,8 @@
+// {{ quiz.title }}
+// {{ quiz.course_title }} -- {{ quiz.term_title }}
+// {{ quiz.date }}
+
+[markdown]
+{{ quiz.description_text }}
+
+{{ questions_text }}
