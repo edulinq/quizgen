@@ -82,7 +82,9 @@ class Question(object):
         self._validate_answers()
 
     def _validate_answers(self):
-        if (self.question_type in [quizgen.constants.QUESTION_TYPE_ESSAY, quizgen.constants.QUESTION_TYPE_SA, quizgen.constants.QUESTION_TYPE_TEXT_ONLY]):
+        if (self.question_type in [quizgen.constants.QUESTION_TYPE_ESSAY, quizgen.constants.QUESTION_TYPE_SA]):
+            self._validate_text_answers()
+        elif (self.question_type == quizgen.constants.QUESTION_TYPE_TEXT_ONLY):
             if (not isinstance(self.answers, list)):
                 raise quizgen.common.QuizValidationError("Question type '%s' cannot have answers." % (self.question_type))
 
@@ -106,6 +108,30 @@ class Question(object):
             self._validate_tf_answers()
         else:
             raise quizgen.common.QuizValidationError(f"Unknown question type: '{self.question_type}'.")
+
+    def _validate_text_answers(self):
+        if (self.answers is None):
+            self.answers = ['']
+        elif (isinstance(self.answers, str)):
+            self.answers = [self.answers]
+
+        if (not isinstance(self.answers, list)):
+            possible_answers = 'null/None, string, empty list, or list of strings'
+            raise quizgen.common.QuizValidationError("Question type '%s' must an answer that is %s, found: '%s'." % (
+                    self.question_type, possible_answers, str(self.answers)))
+
+        if (len(self.answers) == 0):
+            self.answers = ['']
+
+        for i in range(len(self.answers)):
+            answer = self.answers[i]
+            if (not isinstance(answer, str)):
+                raise quizgen.common.QuizValidationError("Question type '%s' answers must be a list of strings, element %d is '%s' (%s)." % (
+                        self.question_type, i, answer, str(type(answer))))
+
+        self.answers_documents = []
+        for answer in self.answers:
+            self.answers_documents.append(quizgen.parser.parse_text(answer, base_dir = self.base_dir))
 
     def _validate_tf_answers(self):
         if (isinstance(self.answers, bool)):

@@ -1,0 +1,5 @@
+{
+    "prompt": "Essay: String List",
+    "question_type": "essay",
+    "answers": ["a", "b", "c"]
+}

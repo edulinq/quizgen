@@ -1,5 +1,5 @@
 {
-    "prompt": "Bad Essay: Answers Empty String",
+    "prompt": "Short Answer: String Empty",
     "question_type": "short_answer",
     "answers": ""
 }

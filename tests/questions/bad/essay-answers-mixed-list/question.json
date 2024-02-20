@@ -1,0 +1,5 @@
+{
+    "prompt": "Bad Essay: Mixed List",
+    "question_type": "essay",
+    "answers": ["a", 1, null]
+}

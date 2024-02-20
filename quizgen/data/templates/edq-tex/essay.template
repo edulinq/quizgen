@@ -5,10 +5,12 @@
 <% endblock %>
 
 <% block body %>
+    <% set solution = question.answers.solution if answer_key else '' %>
+
     \end{minipage}
     \newpage
     \begin{minipage}{\textwidth}
 
     \calcremainingheight
-    \bigAnswerBox{\remainingheight}{1.0}{essay}{<< question.id >>}{0}{0}
+    \bigAnswerBox[<< solution >>]{\remainingheight}{1.0}{essay}{<< question.id >>}{0}{0}
 <% endblock %>

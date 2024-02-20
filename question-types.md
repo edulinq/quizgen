@@ -247,8 +247,16 @@ Question Type: `short_answer`
 
 Short answer questions provide a text area for users to enter answers.
 Answers are expected to be anywhere between a few words to a few sentences.
-There is no finite answer to short answer questions, they are intended to be manually graded.
-As such, no `answers` key should be present in the question definition.
+
+For most output formats, the answers definition will probably serve as rubric for manual graders.
+The answers value can be any of the following:
+ - `null`
+ - empty string
+ - string
+ - empty list
+ - list of strings
+
+Any strings should be typed as parsed strings.
 
 ### Essay Questions
 
@@ -257,7 +265,7 @@ Question Type: `essay`
 Essay questions are like short answer questions,
 but allocate a much larger area for answers.
 In a paper-based medium, an entire page should be reserved for an answer area.
-Like SA questions, no `answers` key should be present in the question definition.
+See the documentation for [Short Answer (SA) questions](#short-answer-sa) for a description of the answers key.
 
 ### Text-Only
 

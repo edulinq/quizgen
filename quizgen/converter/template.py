@@ -148,9 +148,6 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
         return text
 
-    def create_answers_sa(self, question_index, question_number, question, variant):
-        return None
-
     def create_answers_tf(self, question_index, question_number, question, variant):
         return question.answers
 
@@ -303,5 +300,17 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             'dirty_solution': document.to_format(self.format),
         }
 
+    def create_answers_sa(self, question_index, question_number, question, variant):
+        return self._create_answers_text(question_index, question_number, question, variant)
+
     def create_answers_essay(self, question_index, question_number, question, variant):
-        return None
+        return self._create_answers_text(question_index, question_number, question, variant)
+
+    def _create_answers_text(self, question_index, question_number, question, variant):
+        document = question.answers_documents[0]
+
+        return {
+            'raw_solutions': question.answers,
+            'solution': self.clean_solution_content(document),
+            'dirty_solution': document.to_format(self.format),
+        }

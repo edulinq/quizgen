@@ -7,7 +7,7 @@
 {% block body %}
     {% for part in question.answers %}
         {% set id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
-        {% set solution = question.answers.solution if answer_key else '' %}
+        {% set solution = part.solution if answer_key else '' %}
 
         <label for='{{ id }}' >{{ part.label }}</label>
         <input type='text' name='{{ id }}' id='{{ id }}' value='{{ solution }}' />
