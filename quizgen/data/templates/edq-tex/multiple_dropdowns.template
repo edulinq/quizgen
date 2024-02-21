@@ -6,6 +6,7 @@
 
 <% block body %>
     <% for part in question.answers %>
+        <% set part_id = loop.index0 %>
         \end{minipage}
 
         <% if not loop.first %>
@@ -21,9 +22,9 @@
             \begin{tabular}{ >{\centering\arraybackslash}m{0.06\textwidth} m{0.80\textwidth} }
                 <% for answer in part.choices %>
                     <% if answer_key and answer.correct %>
-                        \radio[red]{mdd}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{<< loop.index0 >>} & << answer.text >> \\
+                        \radio[red]{mdd}{<< question.id >>}{<< question.id >>.<< part_id >>}{<< loop.index0 >>} & << answer.text >> \\
                     <% else %>
-                        \radio{mdd}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{<< loop.index0 >>} & << answer.text >> \\
+                        \radio{mdd}{<< question.id >>}{<< question.id >>.<< part_id >>}{<< loop.index0 >>} & << answer.text >> \\
                     <% endif %>
                 <% endfor %>
             \end{tabular}
