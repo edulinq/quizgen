@@ -5,6 +5,7 @@ The Quiz Generator (QuizGen) supports several different types of questions
 Table of Contents:
  - [Data Types](#data-types)
  - [Common Fields](#common-fields)
+   - [Question Feedback](#question-feedback)
  - [Question Types](#question-types)
    - [Multiple Choice (MC)](#multiple-choice-mc)
    - [True-False (TF)](#true-false-tf)
@@ -56,10 +57,67 @@ if not set explicitly.
 | `skip_numbering`  | Boolean       | true       | Whether this question should skip incrementing the question number. |
 | `shuffle_answers` | Boolean       | true       | Whether to shuffle the order of the choices for this question. The final value is the conjunction of values from the quiz, group, and question. |
 | `hints`           | Object        | true       | Formatting hints passed the converter about this question. We will note any question type that specifically looks for hints. |
+| `feedback`        | Object        | false      | Feedback to be given to the student upon completion of the question/quiz. Feedback can be on the question and answer level. Support for feedback can greatly vary between output modes. |
+
+### Question Feedback
+
+Many quiz platforms (like Canvas) allows feedback to be attached to questions and/or individual answers in a question.
+There are five types of feedback that can be used:
+ - Question-Level, General Feedback -- Attached to the question object. This feedback should be provided to the student after completion of the question, regardless of the outcome.
+ - Question-Level, Correct Feedback -- Attached to the question object. This feedback should be provided to the student after **correctly** answering the question.
+ - Question-Level, Incorrect Feedback -- Attached to the question object. This feedback should be provided to the student after **incorrectly** answering the question.
+ - Answer-Level, General Feedback -- Attached to an answer object. This feedback should be provided to the student after choosing this answer.
+
+Not all platforms support all types of feedback (or implement feedback as you may expect).
+It is suggested that you explore how feedback is used in your desired platform before administering a quiz.
+
+The text for all feedback should be a parsed string.
+
+Question-level feedback should be either an object specifying each desired type of feedback ('general', 'correct', 'incorrect'),
+or a string that will be interpreted as general feedback.
+
+Answer-level feedback should always be a string.
+
+The following example shows how all types of feedback can be attached to a multiple choice question:
+```json
+    "question_type": "multiple_choice",
+    "prompt": "Pick the correct answer.",
+    "feedback": {
+        "general": "The student will always see this feedback.",
+        "correct": "The student will see this feedback if they answer correctly.",
+        "incorrect": "The student will see this feedback if they answer incorrectly."
+    }
+    "answers": [
+        {
+            "correct": true,
+            "text": "Alice",
+            "feedback": "You got the correct answer\\!"
+        },
+        {
+            "correct": false,
+            "text": "Bob",
+            "feedback": "Sorry, it was not Bob."
+        },
+        {
+            "correct": true,
+            "text": "Claire",
+            "feedback": "Sorry, Claire is not the correct answer."
+        },
+        {
+            "correct": false,
+            "text": "Doug"
+        }
+    ]
+```
 
 ## Question Types
 
 Below are details on all the QuizGen's supported question types.
+
+The form of the `answers` value will change depending on the question type.
+Question types will often have a "short" answer form for simple/common cases,
+and a more "extended" form where any available options can be specified.
+Internally, "short" forms will always be expanded to "extended" forms.
 
 ### Multiple Choice (MC)
 
@@ -73,7 +131,7 @@ Specific output formats may limit the maximum number of distractors.
 
 Answers are formatted as an array of objects with the `correct` and `text` fields.
 The value of the `correct` field must be a boolean indicating if this option is the correct answer.
-The value of the `text` field is a Parsed String.
+The value of the `text` field is a parsed string.
 
 Example Answers Definition:
 ```json

@@ -1,0 +1,37 @@
+{
+    "prompt": "Feedback: Question Key",
+    "question_type": "multiple_choice",
+    "feedback": {
+        "ZZZ": "X",
+        "correct": "Y",
+        "incorrect": "Z"
+    },
+    "answers": [
+        {
+            "correct": true,
+            "text": "A",
+            "feedback": {
+                "correct": "1",
+                "incorrect": "2"
+            }
+        },
+        {
+            "correct": false,
+            "text": "B",
+            "feedback": {
+                "correct": "3"
+            }
+        },
+        {
+            "correct": false,
+            "text": "C",
+            "feedback": {
+                "incorrect": "4"
+            }
+        },
+        {
+            "correct": false,
+            "text": "D"
+        }
+    ]
+}

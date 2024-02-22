@@ -40,7 +40,7 @@ class Question(abc.ABC):
             points = 0, base_name = '',
             shuffle_answers = True,
             custom_header = None, skip_numbering = None,
-            hints = None,
+            hints = None, feedback = None,
             **kwargs):
         self.base_dir = base_dir
 
@@ -56,6 +56,7 @@ class Question(abc.ABC):
         self.base_name = base_name
 
         self.hints = hints
+        self.feedback = feedback
 
         self.shuffle_answers = shuffle_answers
 
@@ -74,6 +75,10 @@ class Question(abc.ABC):
 
         if (self.hints is None):
             self.hints = {}
+        else:
+            self._check_type(self.hints, dict, "'hints'")
+
+        self._validate_question_feedback()
 
         self.validate_answers()
 
@@ -108,24 +113,27 @@ class Question(abc.ABC):
     def to_dict(self, include_docs = True):
         value = self.__dict__.copy()
 
-        value['answers'] = self._answers_to_dict(self.answers)
+        value['answers'] = self._object_to_dict(self.answers, include_docs = include_docs)
+        value['feedback'] = self._object_to_dict(self.feedback, include_docs = include_docs)
 
         if (include_docs):
             value['prompt_document'] = self.prompt_document.to_pod()
-            value['answers_documents'] = self._answers_to_dict(self.answers_documents)
+            value['answers_documents'] = self._object_to_dict(self.answers_documents, include_docs = include_docs)
         else:
             value.pop('prompt_document', None)
             value.pop('answers_documents', None)
 
         return value
 
-    def _answers_to_dict(self, target):
+    def _object_to_dict(self, target, include_docs = True):
         if (isinstance(target, dict)):
-            return {key: self._answers_to_dict(value) for (key, value) in target.items()}
+            return {key: self._object_to_dict(value) for (key, value) in target.items()}
         elif (isinstance(target, list)):
-            return [self._answers_to_dict(answer) for answer in target]
+            return [self._object_to_dict(answer) for answer in target]
         elif (isinstance(target, quizgen.parser.ParseNode)):
-            return target.to_pod()
+            if (include_docs):
+                return target.to_pod()
+            return "_document_"
         else:
             return target
 
@@ -232,6 +240,52 @@ class Question(abc.ABC):
             raise quizgen.common.QuizValidationError("Unknown question type: '%s'." % (str(question_type)))
 
         return Question._types[question_type]
+
+    def _validate_question_feedback(self):
+        if (self.feedback is None):
+            self.feedback = {}
+            return
+
+        if (isinstance(self.feedback, str)):
+            self.feedback = {'general': self.feedback}
+
+        self._check_type(self.feedback, dict, "'feedback'")
+
+        allowed_keys = ['general', 'correct', 'incorrect']
+        actual_keys = list(self.feedback.keys())
+
+        bad_keys = list(sorted(set(actual_keys) - set(allowed_keys)))
+        if (len(bad_keys) > 0):
+            raise quizgen.common.QuizValidationError("Unknown keys in feedback (%s). Allowed keys: '%s'." % (
+                    str(bad_keys), str(allowed_keys)))
+
+        new_feedback = {}
+        for (key, value) in self.feedback.items():
+            item = self._validate_feedback_item(value, "'%s' feedback value" % (key))
+            if (item is not None):
+                new_feedback[key] = item
+
+        self.feedback = new_feedback
+
+    def _validate_feedback_item(self, item, label):
+        if (isinstance(item, dict)):
+            if ('text' not in item):
+                raise quizgen.common.QuizValidationError("Feedback item ('%s') is a dict, but has no 'text' field. Found: '%s'." % (
+                        label, str(item)))
+
+            item = item['text']
+            label = "%s 'text' value" % (label)
+
+        self._check_type(item, str, label)
+
+        item = item.strip()
+        if (len(item) == 0):
+            return None
+
+        return {
+            'text': item,
+            'document': quizgen.parser.parse_text(item, base_dir = self.base_dir),
+        }
 
     def _validate_self_answer_list(self, min_correct = 0, max_correct = math.inf):
         self.answers_documents = self._validate_answer_list(self.answers, self.base_dir,

@@ -39,6 +39,12 @@ QUESTION_TYPE_MAP = {
     quizgen.constants.QUESTION_TYPE_SA: 'essay_question',
 }
 
+QUESTION_FEEDBACK_MAPPING = {
+    'general': 'neutral_comments_html',
+    'correct': 'correct_comments_html',
+    'incorrect': 'incorrect_comments_html',
+}
+
 DEFAULT_CANVAS_OPTIONS = {
     'practice': True,
     'published': False,
@@ -287,6 +293,15 @@ def _create_question_json(group_id, question, index, instance = None):
         'question[position]': index,
         'question[question_text]': question.prompt_document.to_html(canvas_instance = instance),
     }
+
+    # Handle question-level feedback.
+    for (key, canvas_key) in QUESTION_FEEDBACK_MAPPING.items():
+        if (key not in question.feedback):
+            continue
+
+        data_key = "question[%s]" % (canvas_key)
+        text = question.feedback[key]['document'].to_html(canvas_instance = instance)
+        data[data_key] = text
 
     _serialize_answers(data, question, instance)
 

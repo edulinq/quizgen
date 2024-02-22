@@ -1,0 +1,24 @@
+{
+    "prompt": "Feedback: Empty",
+    "question_type": "multiple_choice",
+    "feedback": {
+    },
+    "answers": [
+        {
+            "correct": true,
+            "text": "A"
+        },
+        {
+            "correct": false,
+            "text": "B"
+        },
+        {
+            "correct": false,
+            "text": "C"
+        },
+        {
+            "correct": false,
+            "text": "D"
+        }
+    ]
+}
