@@ -1,0 +1,7 @@
+{
+    "prompt": "True\\/False: List Short",
+    "question_type": "true_false",
+    "answers": [
+        {"correct": true,  "text": "True"}
+    ]
+}

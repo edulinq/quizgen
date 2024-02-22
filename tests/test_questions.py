@@ -2,7 +2,7 @@ import json
 import os
 
 import quizgen.common
-import quizgen.question
+import quizgen.question.base
 import quizgen.uploader.canvas
 import tests.base
 
@@ -51,14 +51,14 @@ def _add_question_test(path):
 
 def _get_question_parse_test_method(path):
     def __method(self):
-        question = quizgen.question.Question.from_path(path)
+        question = quizgen.question.base.Question.from_path(path)
         self.assertIsNotNone(question)
 
     return __method
 
 def _get_question_canvas_test_method(path, canvas_path):
     def __method(self):
-        question = quizgen.question.Question.from_path(path)
+        question = quizgen.question.base.Question.from_path(path)
         canvas_info = quizgen.uploader.canvas._create_question_json(CANVAS_TEST_GROUP_ID, question, CANVAS_TEST_INDEX)
 
         with open(canvas_path, 'r') as file:
@@ -77,7 +77,7 @@ def _add_fail_question_test(path):
 def _get_question_fail_test_method(path):
     def __method(self):
         with self.assertRaises(quizgen.common.QuizValidationError):
-            quizgen.question.Question.from_path(path)
+            quizgen.question.base.Question.from_path(path)
 
     return __method
 

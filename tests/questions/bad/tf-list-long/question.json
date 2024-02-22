@@ -1,0 +1,9 @@
+{
+    "prompt": "True\\/False: List Long",
+    "question_type": "true_false",
+    "answers": [
+        {"correct": true,  "text": "True"},
+        {"correct": false, "text": "False"},
+        {"correct": false, "text": "Other"}
+    ]
+}

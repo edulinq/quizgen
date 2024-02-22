@@ -2,7 +2,7 @@ import glob
 import os
 
 import quizgen.common
-import quizgen.question
+import quizgen.question.base
 
 QUESTION_FILENAME = 'question.json'
 
@@ -94,10 +94,10 @@ def _parse_questions(path):
         raise quizgen.common.QuizValidationError(f"Question path does not exist: '{path}'.")
 
     if (os.path.isfile(path)):
-        return [quizgen.question.Question.from_path(path)]
+        return [quizgen.question.base.Question.from_path(path)]
 
     questions = []
     for subpath in sorted(glob.glob(os.path.join(path, '**', QUESTION_FILENAME), recursive = True)):
-        questions.append(quizgen.question.Question.from_path(subpath))
+        questions.append(quizgen.question.base.Question.from_path(subpath))
 
     return questions

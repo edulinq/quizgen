@@ -1,0 +1,8 @@
+{
+    "prompt": "True\\/False: List Labels",
+    "question_type": "true_false",
+    "answers": [
+        {"correct": true,  "text": "A"},
+        {"correct": false, "text": "B"}
+    ]
+}

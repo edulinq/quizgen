@@ -5,7 +5,7 @@ import sys
 import quizgen.converter.convert
 import quizgen.constants
 import quizgen.log
-import quizgen.question
+import quizgen.question.base
 
 def run(args):
     if (not os.path.exists(args.path)):
@@ -14,7 +14,7 @@ def run(args):
     if (not os.path.isfile(args.path)):
         raise ValueError(f"Provided path '{args.path}' is not a file.")
 
-    question = quizgen.question.Question.from_path(args.path)
+    question = quizgen.question.base.Question.from_path(args.path)
     content = quizgen.converter.convert.convert_question(question, format = args.format,
             constructor_args = {'answer_key': args.answer_key})
 

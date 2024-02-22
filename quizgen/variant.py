@@ -4,7 +4,7 @@ import os
 
 import json5
 
-import quizgen.question
+import quizgen.question.base
 import quizgen.common
 import quizgen.parser
 import quizgen.quiz
@@ -96,7 +96,7 @@ class Variant(object):
             data['date'] = datetime.datetime.fromisoformat(data['date'])
 
         data['description_document'] = quizgen.parser.parse_text(data['description'], base_dir = base_dir)
-        data['questions'] = [quizgen.question.Question.from_dict(question, base_dir = base_dir) for question in data['questions']]
+        data['questions'] = [quizgen.question.base.Question.from_dict(question, base_dir = base_dir) for question in data['questions']]
 
         return Variant(**data)
 
