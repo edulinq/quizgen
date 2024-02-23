@@ -10,43 +10,52 @@ class Matching(quizgen.question.base.Question, question_type = quizgen.constants
     def validate_answers(self):
         self._check_type(self.answers, dict, "'answers' key")
 
+        self._validate_matches()
+        self._validate_distractors()
+
+    def _validate_matches(self):
         if ('matches' not in self.answers):
             raise quizgen.common.QuizValidationError("Matching 'answers' value is missing the 'matches' field.")
 
-        for i in range(len(self.answers['matches'])):
-            match = self.answers['matches'][i]
-            if (len(match) != 2):
-                raise quizgen.common.QuizValidationError(f"Expected exactly two items for a match list, found {len(match)} items at element {i}.")
+        matches = self.answers['matches']
+        new_matches = []
 
+        for i in range(len(matches)):
+            match = matches[i]
+
+            if (isinstance(match, list)):
+                if (len(match) != 2):
+                    raise quizgen.common.QuizValidationError(f"Expected exactly two items for a match list, found {len(match)} items at element {i}.")
+
+                match = {
+                    'left': match[0],
+                    'right': match[1],
+                }
+
+            keys = ['left', 'right']
+            for key in keys:
+                if (key not in match):
+                    raise quizgen.common.QuizValidationError("Missing key '{key}' for for match item {i}.")
+
+            new_matches.append({
+                'left': self._validate_text_answer_item(match['left'], "Left value for match item %d" % (i)),
+                'right': self._validate_text_answer_item(match['right'], "Right value for match item %d" % (i)),
+            })
+
+        self.answers['matches'] = new_matches
+
+    def _validate_distractors(self):
         if ('distractors' not in self.answers):
             self.answers['distractors'] = []
 
-        for i in range(len(self.answers['distractors'])):
-            distractor = self.answers['distractors'][i]
-            if (not isinstance(distractor, str)):
-                raise quizgen.common.QuizValidationError(f"Distractors must be strings, found {type(distractor)} at element {i}.")
+        distractors = self.answers['distractors']
+        new_distractors = []
 
-            distractor = distractor.strip()
+        for i in range(len(distractors)):
+            new_distractors.append(self._validate_text_answer_item(distractors[i], "distractor at index %d" % (i),
+                    clean_whitespace = True))
 
-            if ("\n" in distractor):
-                raise quizgen.common.QuizValidationError(f"Distractors cannot have newlines, found {type(distractor)} at element {i}.")
-
-            self.answers['distractors'][i] = distractor
-
-        self.answers_documents = {
-            'matches': [],
-            'distractors': [],
-        }
-
-        for (left, right) in self.answers['matches']:
-            left_doc = quizgen.parser.parse_text(left, base_dir = self.base_dir)
-            right_doc = quizgen.parser.parse_text(right, base_dir = self.base_dir)
-
-            self.answers_documents['matches'].append([left_doc, right_doc])
-
-        for distractor in self.answers['distractors']:
-            doc = quizgen.parser.parse_text(distractor, base_dir = self.base_dir)
-            self.answers_documents['distractors'].append(doc)
+        self.answers['distractors'] = new_distractors
 
     def _shuffle(self, rng):
         # Shuffling matching is special because it requires additional shuffling support at the converter level.

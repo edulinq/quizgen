@@ -1,0 +1,14 @@
+{
+    "prompt": "SA: Feedback List",
+    "question_type": "short_answer",
+    "answers": [
+        {
+            "text": "a",
+            "feedback": "1"
+        },
+        {
+            "text": "b",
+            "feedback": "2"
+        }
+    ]
+}

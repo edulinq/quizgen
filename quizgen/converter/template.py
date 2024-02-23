@@ -158,14 +158,14 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         # {left_index: right_index, ...}
         matches = {}
 
-        for (left, right) in question.answers_documents['matches']:
+        for items in question.answers['matches']:
             matches[len(lefts)] = len(rights)
 
-            lefts.append(left.to_format(self.format))
-            rights.append(right.to_format(self.format))
+            lefts.append(items['left']['document'].to_format(self.format))
+            rights.append(items['right']['document'].to_format(self.format))
 
-        for right in question.answers_documents['distractors']:
-            rights.append(right.to_format(self.format))
+        for right in question.answers['distractors']:
+            rights.append(right['document'].to_format(self.format))
 
         left_ids = self.get_matching_left_ids()
         right_ids = self.get_matching_right_ids()
@@ -227,15 +227,15 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         return RIGHT_IDS
 
     def create_answers_mcq(self, question_index, question_number, question, variant):
-        return self._create_answers_mcq_list(question.answers, question.answers_documents)
+        return self._create_answers_mcq_list(question.answers)
 
-    def _create_answers_mcq_list(self, answers, documents):
+    def _create_answers_mcq_list(self, answers):
         choices = []
 
         for i in range(len(answers)):
             choices.append({
                 'correct': answers[i]['correct'],
-                'text': documents[i].to_format(self.format),
+                'text': answers[i]['document'].to_format(self.format),
             })
 
         return choices
@@ -267,25 +267,25 @@ class TemplateConverter(quizgen.converter.converter.Converter):
     def create_answers_mdd(self, question_index, question_number, question, variant):
         answers = []
 
-        for key, values in question.answers.items():
+        for key, items in question.answers.items():
             answers.append({
-                'label': question.answers_documents[key]['key'].to_format(self.format),
-                'choices': self._create_answers_mcq_list(values, question.answers_documents[key]['values']),
+                'label': items['key']['document'].to_format(self.format),
+                'choices': self._create_answers_mcq_list(items['values']),
             })
 
         return answers
 
     def create_answers_ma(self, question_index, question_number, question, variant):
-        return self._create_answers_mcq_list(question.answers, question.answers_documents)
+        return self._create_answers_mcq_list(question.answers)
 
     def create_answers_fimb(self, question_index, question_number, question, variant):
         answers = []
 
-        for key, values in question.answers.items():
-            document = question.answers_documents[key]['values'][0]
+        for (key, item) in question.answers.items():
+            document = item['values'][0]['document']
 
             answers.append({
-                'label': question.answers_documents[key]['key'].to_format(self.format),
+                'label': item['key']['document'].to_format(self.format),
                 'solution': self.clean_solution_content(document),
                 'dirty_solution': document.to_format(self.format),
             })
@@ -293,7 +293,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         return answers
 
     def create_answers_fitb(self, question_index, question_number, question, variant):
-        document = question.answers_documents[""]["values"][0]
+        document = question.answers['']['values'][0]['document']
 
         return {
             'solution': self.clean_solution_content(document),
@@ -307,10 +307,11 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         return self._create_answers_text(question_index, question_number, question, variant)
 
     def _create_answers_text(self, question_index, question_number, question, variant):
-        document = question.answers_documents[0]
+        document = question.answers[0]['document']
+        raw_solutions = [answer['text'] for answer in question.answers]
 
         return {
-            'raw_solutions': question.answers,
+            'raw_solutions': raw_solutions,
             'solution': self.clean_solution_content(document),
             'dirty_solution': document.to_format(self.format),
         }

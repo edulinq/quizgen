@@ -2,9 +2,6 @@
     "prompt": "Bad Short Answer: Answers List",
     "question_type": "short_answer",
     "answers": [
-        {"correct": true,  "text": "A"},
-        {"correct": false, "text": "B"},
-        {"correct": false, "text": "C"},
-        {"correct": false, "text": "D"}
+        ["A"]
     ]
 }

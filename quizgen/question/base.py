@@ -7,6 +7,7 @@ import math
 import os
 import pkgutil
 import random
+import re
 
 import json5
 
@@ -50,7 +51,6 @@ class Question(abc.ABC):
         self.question_type = question_type
 
         self.answers = answers
-        self.answers_documents = None
 
         self.points = points
         self.base_name = base_name
@@ -118,10 +118,8 @@ class Question(abc.ABC):
 
         if (include_docs):
             value['prompt_document'] = self.prompt_document.to_pod()
-            value['answers_documents'] = self._object_to_dict(self.answers_documents, include_docs = include_docs)
         else:
             value.pop('prompt_document', None)
-            value.pop('answers_documents', None)
 
         return value
 
@@ -189,9 +187,7 @@ class Question(abc.ABC):
         A shuffle method for question types that are a simple list.
         """
 
-        collection = list(zip(self.answers, self.answers_documents))
-        rng.shuffle(collection)
-        self.answers, self.answers_documents = map(list, zip(*collection))
+        rng.shuffle(self.answers)
 
     @staticmethod
     def from_dict(data, base_dir = None):
@@ -204,7 +200,6 @@ class Question(abc.ABC):
 
         # Documents will be parsed.
         data.pop('prompt_document', None)
-        data.pop('answers_documents', None)
 
         question_class = Question._fetch_question_class(data.get('question_type'))
         return question_class(**data)
@@ -268,6 +263,9 @@ class Question(abc.ABC):
         self.feedback = new_feedback
 
     def _validate_feedback_item(self, item, label):
+        if ((item is None) or (item == {})):
+            return None
+
         if (isinstance(item, dict)):
             if ('text' not in item):
                 raise quizgen.common.QuizValidationError("Feedback item ('%s') is a dict, but has no 'text' field. Found: '%s'." % (
@@ -288,7 +286,7 @@ class Question(abc.ABC):
         }
 
     def _validate_self_answer_list(self, min_correct = 0, max_correct = math.inf):
-        self.answers_documents = self._validate_answer_list(self.answers, self.base_dir,
+        self.answers = self._validate_answer_list(self.answers, self.base_dir,
                 min_correct = min_correct, max_correct = max_correct)
 
     def _validate_answer_list(self, answers, base_dir, min_correct = 0, max_correct = math.inf):
@@ -314,36 +312,70 @@ class Question(abc.ABC):
         if (num_correct > max_correct):
             raise quizgen.common.QuizValidationError(f"Found too many correct answers. Expected at most {max_correct}, found {num_correct}.")
 
-        answers_documents = []
-        for answer in answers:
-            doc = quizgen.parser.parse_text(answer['text'], base_dir = base_dir)
-            answers_documents.append(doc)
+        new_answers = []
+        for i in range(len(answers)):
+            new_answer = self._validate_text_answer_item(answers[i], "'answers' values (element %d)" % (i))
+            new_answer['correct'] = answers[i]['correct']
+            new_answers.append(new_answer)
 
-        return answers_documents
+        return new_answers
 
     def _validate_text_answers(self):
+        possible_answers = 'null/None, string, empty list, list of strings, or list of objects'
+
         if (self.answers is None):
             self.answers = ['']
         elif (isinstance(self.answers, str)):
             self.answers = [self.answers]
 
         if (not isinstance(self.answers, list)):
-            possible_answers = 'null/None, string, empty list, or list of strings'
-            raise quizgen.common.QuizValidationError("Question type '%s' must an answer that is %s, found: '%s'." % (
-                    self.question_type, possible_answers, str(self.answers)))
+            raise quizgen.common.QuizValidationError("'answers' value must be %s, found: '%s'." % (
+                    possible_answers, str(self.answers)))
 
         if (len(self.answers) == 0):
             self.answers = ['']
 
+        new_answers = []
         for i in range(len(self.answers)):
-            answer = self.answers[i]
-            if (not isinstance(answer, str)):
-                raise quizgen.common.QuizValidationError("Question type '%s' answers must be a list of strings, element %d is '%s' (%s)." % (
-                        self.question_type, i, answer, str(type(answer))))
+            new_answers.append(self._validate_text_answer_item(self.answers[i], "'answers' values (element %d)" % (i)))
 
-        self.answers_documents = []
-        for answer in self.answers:
-            self.answers_documents.append(quizgen.parser.parse_text(answer, base_dir = self.base_dir))
+        self.answers = new_answers
+
+    def _validate_text_answer_item(self, item, label, strip = True, clean_whitespace = False):
+        """
+        Validate a portion of an answer/choice that is a parsed string.
+
+        The returned dict will have the 'text' and 'document' keys,
+        and may have the 'feedback' key (if present).
+        """
+
+        if (isinstance(item, str)):
+            item = {'text': item}
+
+        self._check_type(item, dict, label)
+
+        if ('text' not in item):
+            raise quizgen.common.QuizValidationError("%s is missing a 'text' key." % (label))
+
+        text = item['text']
+        self._check_type(item['text'], str, "%s 'text' key" % (label))
+
+        if (clean_whitespace):
+            text = re.sub(r'\s+', ' ', text)
+
+        if (strip):
+            text = text.strip()
+
+        new_item = {
+            'text': text,
+            'document': quizgen.parser.parse_text(text, base_dir = self.base_dir),
+        }
+
+        feedback = self._validate_feedback_item(item.get('feedback', None), label)
+        if (feedback is not None):
+            new_item['feedback'] = feedback
+
+        return new_item
 
     def _validate_fimb_answers(self):
         self._check_type(self.answers, dict, "'answers' key")
@@ -355,27 +387,28 @@ class Question(abc.ABC):
             if (not isinstance(values, list)):
                 self.answers[key] = [values]
 
+        new_answers = {}
+
         for (key, values) in self.answers.items():
             self._check_type(key, str, "key in 'answers' dict")
 
             if (len(values) == 0):
                 raise quizgen.common.QuizValidationError("Expected possible values to be non-empty.")
 
-            for value in values:
-                self._check_type(value, str, "value in 'answers' dict")
+            new_values = []
+            for i in range(len(values)):
+                label = "answers key '%s' index %d" % (key, i)
+                new_values.append(self._validate_text_answer_item(values[i], label))
 
-        self.answers_documents = {}
-        for (key, values) in self.answers.items():
-            key_doc = quizgen.parser.parse_text(key, base_dir = self.base_dir)
-
-            values_docs = []
-            for value in values:
-                values_docs.append(quizgen.parser.parse_text(value, base_dir = self.base_dir))
-
-            self.answers_documents[key] = {
-                'key': key_doc,
-                'values': values_docs,
+            new_answers[key] = {
+                'key': {
+                    'text': key,
+                    'document': quizgen.parser.parse_text(key, base_dir = self.base_dir),
+                },
+                'values': new_values,
             }
+
+        self.answers = new_answers
 
     def _check_type(self, value, expected_type, label):
         if (not isinstance(value, expected_type)):
