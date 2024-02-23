@@ -108,7 +108,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             raise ValueError("Unsupported question type: '%s'." % (question_type))
 
         data = question.to_dict(include_docs = False)
-        data['prompt_text'] = question.prompt_document.to_format(self.format)
+        data['prompt_text'] = question.prompt['document'].to_format(self.format)
         data['id'] = question_index
         data['number'] = question_number
 

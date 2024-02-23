@@ -291,7 +291,7 @@ def _create_question_json(group_id, question, index, instance = None):
         # but put in a one here so people don't get scared when they see a zero.
         'question[points_possible]': 1,
         'question[position]': index,
-        'question[question_text]': question.prompt_document.to_html(canvas_instance = instance),
+        'question[question_text]': question.prompt['document'].to_html(canvas_instance = instance),
     }
 
     # Handle question-level feedback.

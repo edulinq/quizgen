@@ -46,7 +46,6 @@ class Question(abc.ABC):
         self.base_dir = base_dir
 
         self.prompt = prompt
-        self.prompt_document = None
 
         self.question_type = question_type
 
@@ -69,9 +68,8 @@ class Question(abc.ABC):
             raise quizgen.common.QuizValidationError(f"Error while validating question (type: '%s', directory: '%s')." % (self.question_type, self.base_dir)) from ex
 
     def validate(self):
-        if ((self.prompt is None) or (self.prompt == "")):
-            raise quizgen.common.QuizValidationError("Prompt cannot be empty.")
-        self.prompt_document = quizgen.parser.parse_text(self.prompt, base_dir = self.base_dir)
+        self.prompt = self._validate_text_item(self.prompt, 'question prompt',
+                check_feedback = False, allow_empty = False)
 
         if (self.hints is None):
             self.hints = {}
@@ -111,17 +109,7 @@ class Question(abc.ABC):
         return json.dumps(self.to_dict(include_docs = include_docs), indent = indent)
 
     def to_dict(self, include_docs = True):
-        value = self.__dict__.copy()
-
-        value['answers'] = self._object_to_dict(self.answers, include_docs = include_docs)
-        value['feedback'] = self._object_to_dict(self.feedback, include_docs = include_docs)
-
-        if (include_docs):
-            value['prompt_document'] = self.prompt_document.to_pod()
-        else:
-            value.pop('prompt_document', None)
-
-        return value
+        return self._object_to_dict(self.__dict__.copy(), include_docs = include_docs)
 
     def _object_to_dict(self, target, include_docs = True):
         if (isinstance(target, dict)):
@@ -138,9 +126,7 @@ class Question(abc.ABC):
     def collect_file_paths(self):
         paths = []
 
-        paths += self.prompt_document.collect_file_paths(self.base_dir)
-
-        for document in self._collect_documents(self.answers):
+        for document in self._collect_documents([self.prompt, self.answers]):
             paths += document.collect_file_paths(self.base_dir)
 
         return paths
@@ -197,9 +183,6 @@ class Question(abc.ABC):
             data['base_dir'] = base_dir
         elif ('base_dir' not in data):
             data['base_dir'] = '.'
-
-        # Documents will be parsed.
-        data.pop('prompt_document', None)
 
         question_class = Question._fetch_question_class(data.get('question_type'))
         return question_class(**data)
@@ -314,7 +297,7 @@ class Question(abc.ABC):
 
         new_answers = []
         for i in range(len(answers)):
-            new_answer = self._validate_text_answer_item(answers[i], "'answers' values (element %d)" % (i))
+            new_answer = self._validate_text_item(answers[i], "'answers' values (element %d)" % (i))
             new_answer['correct'] = answers[i]['correct']
             new_answers.append(new_answer)
 
@@ -337,17 +320,22 @@ class Question(abc.ABC):
 
         new_answers = []
         for i in range(len(self.answers)):
-            new_answers.append(self._validate_text_answer_item(self.answers[i], "'answers' values (element %d)" % (i)))
+            new_answers.append(self._validate_text_item(self.answers[i], "'answers' values (element %d)" % (i)))
 
         self.answers = new_answers
 
-    def _validate_text_answer_item(self, item, label, strip = True, clean_whitespace = False):
+    def _validate_text_item(self, item, label,
+            check_feedback = True, allow_empty = True,
+            strip = True, clean_whitespace = False):
         """
         Validate a portion of an answer/choice that is a parsed string.
 
         The returned dict will have the 'text' and 'document' keys,
         and may have the 'feedback' key (if present).
         """
+
+        if (item is None):
+            item = ''
 
         if (isinstance(item, str)):
             item = {'text': item}
@@ -366,14 +354,18 @@ class Question(abc.ABC):
         if (strip):
             text = text.strip()
 
+        if ((not allow_empty) and (text == '')):
+            raise quizgen.common.QuizValidationError("%s text is empty." % (label))
+
         new_item = {
             'text': text,
             'document': quizgen.parser.parse_text(text, base_dir = self.base_dir),
         }
 
-        feedback = self._validate_feedback_item(item.get('feedback', None), label)
-        if (feedback is not None):
-            new_item['feedback'] = feedback
+        if (check_feedback):
+            feedback = self._validate_feedback_item(item.get('feedback', None), label)
+            if (feedback is not None):
+                new_item['feedback'] = feedback
 
         return new_item
 
@@ -401,7 +393,7 @@ class Question(abc.ABC):
             new_values = []
             for i in range(len(values)):
                 label = "answers key '%s' index %d" % (key, i)
-                new_values.append(self._validate_text_answer_item(values[i], label))
+                new_values.append(self._validate_text_item(values[i], label))
 
             new_answers[key] = {
                 'key': {

@@ -38,8 +38,8 @@ class Matching(quizgen.question.base.Question, question_type = quizgen.constants
                     raise quizgen.common.QuizValidationError("Missing key '{key}' for for match item {i}.")
 
             new_matches.append({
-                'left': self._validate_text_answer_item(match['left'], "Left value for match item %d" % (i)),
-                'right': self._validate_text_answer_item(match['right'], "Right value for match item %d" % (i)),
+                'left': self._validate_text_item(match['left'], "Left value for match item %d" % (i)),
+                'right': self._validate_text_item(match['right'], "Right value for match item %d" % (i)),
             })
 
         self.answers['matches'] = new_matches
@@ -52,7 +52,7 @@ class Matching(quizgen.question.base.Question, question_type = quizgen.constants
         new_distractors = []
 
         for i in range(len(distractors)):
-            new_distractors.append(self._validate_text_answer_item(distractors[i], "distractor at index %d" % (i),
+            new_distractors.append(self._validate_text_item(distractors[i], "distractor at index %d" % (i),
                     clean_whitespace = True))
 
         self.answers['distractors'] = new_distractors
