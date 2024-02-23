@@ -10,17 +10,17 @@
             \begin{tabular}{ >{\centering\arraybackslash}m{0.05\textwidth} >{\centering\arraybackslash}m{0.14\textwidth} }
                 << part.label >>: &
                 <% if answer_key %>
-                    \bigAnswerBox[<< part.solution >>]{4em}{0.13}{fimb}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
+                    \bigAnswerBox[<< part.solution >>]{4em}{0.13}{fill_in_multiple_blanks}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
                 <% else %>
-                    \bigAnswerBox{4em}{0.13}{fimb}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
+                    \bigAnswerBox{4em}{0.13}{fill_in_multiple_blanks}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
                 <% endif %>
             \end{tabular}
         <% else %>
             << part.label >>: \\
             <% if answer_key %>
-                \bigAnswerBox[<< part.solution >>]{4em}{0.95}{fimb}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
+                \bigAnswerBox[<< part.solution >>]{4em}{0.95}{fill_in_multiple_blanks}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
             <% else %>
-                \bigAnswerBox{4em}{0.95}{fimb}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
+                \bigAnswerBox{4em}{0.95}{fill_in_multiple_blanks}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
             <% endif %>
         <% endif %>
     <% endfor %>

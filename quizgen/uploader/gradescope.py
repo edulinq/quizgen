@@ -12,6 +12,7 @@ import bs4
 import requests
 
 import quizgen.converter.textemplate
+import quizgen.constants
 import quizgen.latex
 import quizgen.variant
 import quizgen.util.file
@@ -33,27 +34,27 @@ ID_BOX_ID = 'id'
 SIGNATURE_BOX_ID = 'signature'
 MANUAL_GRADING_BOX_ID = 'manual_grading'
 
-EXTEND_BOX_QUESTION_TYPES = [
-    'ma',
-    'mcq',
-    'mdd',
-    'tf',
-]
-
-STANDARD_BOX_QUESTION_TYPES = [
-    'essay',
-    'fimb',
-    'fitb',
-    'matching',
-    'numerical',
-    'sa',
-]
-
 SPECIAL_QUESTION_TYPES = [
     NAME_BOX_ID,
     ID_BOX_ID,
     SIGNATURE_BOX_ID,
     MANUAL_GRADING_BOX_ID,
+]
+
+EXTEND_BOX_QUESTION_TYPES = [
+    quizgen.constants.QUESTION_TYPE_MA,
+    quizgen.constants.QUESTION_TYPE_MCQ,
+    quizgen.constants.QUESTION_TYPE_MDD,
+    quizgen.constants.QUESTION_TYPE_TF,
+]
+
+STANDARD_BOX_QUESTION_TYPES = [
+    quizgen.constants.QUESTION_TYPE_ESSAY,
+    quizgen.constants.QUESTION_TYPE_FIMB,
+    quizgen.constants.QUESTION_TYPE_FITB,
+    quizgen.constants.QUESTION_TYPE_MATCHING,
+    quizgen.constants.QUESTION_TYPE_NUMERICAL,
+    quizgen.constants.QUESTION_TYPE_SA,
 ]
 
 BOX_TYPES = EXTEND_BOX_QUESTION_TYPES + STANDARD_BOX_QUESTION_TYPES + SPECIAL_QUESTION_TYPES

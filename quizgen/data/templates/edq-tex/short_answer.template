@@ -6,5 +6,5 @@
 
 <% block body %>
     <% set solution = question.answers.solution if answer_key else '' %>
-    \bigAnswerBox[<< solution >>]{2cm}{1.0}{sa}{<< question.id >>}{0}{0}
+    \bigAnswerBox[<< solution >>]{2cm}{1.0}{short_answer}{<< question.id >>}{0}{0}
 <% endblock %>

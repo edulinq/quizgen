@@ -6,8 +6,8 @@
 
 <% block body %>
     <% if answer_key %>
-        \bigAnswerBox[<< question.answers.solution >>]{2cm}{1.0}{fitb}{<< question.id >>}{0}{0}
+        \bigAnswerBox[<< question.answers.solution >>]{2cm}{1.0}{fill_in_the_blank}{<< question.id >>}{0}{0}
     <% else %>
-        \bigAnswerBox{2cm}{1.0}{fitb}{<< question.id >>}{0}{0}
+        \bigAnswerBox{2cm}{1.0}{fill_in_the_blank}{<< question.id >>}{0}{0}
     <% endif %>
 <% endblock %>
