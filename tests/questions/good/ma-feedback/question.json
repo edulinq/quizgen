@@ -1,0 +1,26 @@
+{
+    "prompt": "Multiple Answers: Feedback",
+    "question_type": "multiple_answers",
+    "answers": [
+        {
+            "correct": true,
+            "text": "A"
+        },
+        {
+            "correct": true,
+            "text": "B",
+            "feedback": "X"
+        },
+        {
+            "correct": false,
+            "text": "C",
+            "feedback": {
+                "text": "Y"
+            }
+        },
+        {
+            "correct": false,
+            "text": "D"
+        }
+    ]
+}

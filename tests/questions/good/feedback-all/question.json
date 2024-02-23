@@ -24,7 +24,8 @@
         },
         {
             "correct": false,
-            "text": "D"
+            "text": "D",
+            "feedback": ""
         }
     ]
 }

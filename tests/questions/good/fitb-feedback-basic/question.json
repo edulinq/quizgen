@@ -1,0 +1,10 @@
+{
+    "prompt": "Short Answer \\/ Fill in The Blank: Feedback Basic",
+    "question_type": "fill_in_the_blank",
+    "answers": [
+        {
+            "text": "1",
+            "feedback": "X"
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "prompt": "Short Answer \\/ Fill in The Blank: Feedback Multiple Values",
+    "question_type": "fill_in_the_blank",
+    "answers": [
+        {
+            "text": "1"
+        },
+        {
+            "text": "2",
+            "feedback": "X"
+        },
+        {
+            "text": "3",
+            "feedback": {
+                "text": "Y"
+            }
+        }
+    ]
+}

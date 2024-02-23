@@ -358,6 +358,10 @@ def _serialize_answer(data, answer, index, instance, blank_id = None, use_text =
     if (blank_id is not None):
         data["question[answers][%d][blank_id]" % (index)] = blank_id
 
+    if ('feedback' in answer):
+        feedback_html = answer['feedback']['document'].to_html(canvas_instance = instance)
+        data["question[answers][%d][answer_comment_html]" % (index)] = feedback_html
+
 def _serialize_matching_answers(data, question, instance):
     for i in range(len(question.answers['matches'])):
         left_content = question.answers['matches'][i]['left']['document'].to_text()
@@ -365,6 +369,10 @@ def _serialize_matching_answers(data, question, instance):
 
         data["question[answers][%d][answer_match_left]" % (i)] = left_content
         data["question[answers][%d][answer_match_right]" % (i)] = right_content
+
+        if ('feedback' in question.answers['matches'][i]['left']):
+            text = question.answers['matches'][i]['left']['feedback']['document'].to_html(canvas_instance = instance)
+            data["question[answers][%d][answer_comment_html]" % (i)] = text
 
     if (len(question.answers['distractors']) > 0):
         distractors = [distractor['document'].to_text() for distractor in question.answers['distractors']]
@@ -382,6 +390,10 @@ def _serialize_fimb_answers(data, question, instance):
             data[f"question[answers][{index}][blank_id]"] = key_text
             data[f"question[answers][{index}][answer_weight]"] = 100
             data[f"question[answers][{index}][answer_text]"] = value_text
+
+            if ('feedback' in item['values'][i]):
+                feedback_text = item['values'][i]['feedback']['document'].to_html(canvas_instance = instance)
+                data[f"question[answers][{index}][answer_comment_html]"] = feedback_text
 
             index += 1
 
@@ -406,6 +418,10 @@ def _serialize_numeric_answers(data, answers, instance):
             data[f"question[answers][{i}][answer_precision]"] = answer['precision']
         else:
             raise ValueError(f"Unknown numerical answer type: '{answer['type']}'.")
+
+        if ('feedback' in answer):
+            feedback_text = answer['feedback']['document'].to_html(canvas_instance = instance)
+            data[f"question[answers][{i}][answer_comment_html]"] = feedback_text
 
 def upload_file(path, canvas_path, instance):
     parent_id = ensure_folder(os.path.dirname(canvas_path), instance)

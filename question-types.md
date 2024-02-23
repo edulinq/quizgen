@@ -69,6 +69,7 @@ There are five types of feedback that can be used:
  - Answer-Level, General Feedback -- Attached to an answer object. This feedback should be provided to the student after choosing this answer.
 
 Not all platforms support all types of feedback (or implement feedback as you may expect).
+For example on matching questions, Canvas only uses feedback attached to left-hand values.
 It is suggested that you explore how feedback is used in your desired platform before administering a quiz.
 
 The text for all feedback should be a parsed string.
@@ -116,8 +117,13 @@ Below are details on all the QuizGen's supported question types.
 
 The form of the `answers` value will change depending on the question type.
 Question types will often have a "short" answer form for simple/common cases,
-and a more "extended" form where any available options can be specified.
+and a "long" form where any available options can be specified.
 Internally, "short" forms will always be expanded to "extended" forms.
+This document will tend to start with the short form,
+and then show the extended form for more complex cases.
+Because of the flexibility of JSON and the QuizGen configuration,
+only a subset of the possible ways a configuration can be written will be shown.
+However, this document will attempt to show a sufficient amount of example configurations.
 
 ### Multiple Choice (MC)
 
@@ -143,6 +149,24 @@ Example Answers Definition:
     ]
 ```
 
+Feedback can be directly attached to each list item:
+```json
+    "answers": [
+        {
+            "correct": true,
+            "text": "A",
+            "feedback": "You got it\\!"
+        },
+        {
+            "correct": false,
+            "text": "B",
+            "feedback": "Sorry, try again."
+        },
+        {"correct": false, "text": "C"},
+        {"correct": false, "text": "D"}
+    ]
+```
+
 ### True-False (TF)
 
 Question Type: `true_false`
@@ -153,6 +177,22 @@ The answers definition is just a single boolean indicating the correct answer.
 Example Answers Definition:
 ```json
     "answers": true
+```
+
+The attach feedback, the long-form of the answers value needs to be used:
+```json
+    "answers": [
+        {
+            "correct": true,
+            "text": "True",
+            "feedback": "Right answer."
+        },
+        {
+            "correct": false,
+            "text": "False",
+            "feedback": "Wrong answer."
+        }
+    ]
 ```
 
 ### Multiple Drop-Downs (MDD)
@@ -171,6 +211,27 @@ For example, a question may have the following prompt and answers definition:
     "answers": {
         "part1": [
             {"correct": true,  "text": "Time"},
+            {"correct": false, "text": "Busses"},
+            {"correct": false, "text": "Cats"}
+        ],
+        "part2": [
+            {"correct": true,  "text": "tides"},
+            {"correct": false, "text": "death"},
+            {"correct": false, "text": "dogs"}
+        ]
+    }
+```
+
+Feedback can be used in the same way as MC questions:
+```json
+    "prompt": "[[part1]] and [[part2]] wait for no one.",
+    "answers": {
+        "part1": [
+            {
+                "correct": true,
+                "text": "Time",
+                "feedback": "Correct\\!"
+            },
             {"correct": false, "text": "Busses"},
             {"correct": false, "text": "Cats"}
         ],
@@ -204,6 +265,16 @@ Example Answers Definition:
     ]
 ```
 
+Feedback can be used in the same way as MC questions:
+```json
+    "answers": [
+        {"correct": true,  "text": "A", "feedback": "Correct\\!"},
+        {"correct": true,  "text": "B": "feedback": "Also correct."},
+        {"correct": false, "text": "C"},
+        {"correct": false, "text": "D"}
+    ]
+```
+
 ### Matching
 
 Question Type: `matching`
@@ -228,8 +299,42 @@ Example Answers Definition:
         ],
         "distractors": [
             "cuatro",
-            "cuatro",
+            "cinco",
             "seis"
+        ]
+    }
+```
+
+The attach feedback, the long-form of the answers value needs to be used:
+```json
+    "prompt": "Match the English word to it's Spanish equivalent.",
+    "answers": {
+        "matches": [
+            [
+                "one",
+                "uno"
+            ],
+            {
+                "left": "two",
+                "right": "dos"
+            },
+            {
+                "left": {
+                    "text": "three",
+                    "feedback": "In French: 'trois'",
+                }
+                "right": "tres"
+            }
+        ],
+        "distractors": [
+            "cuatro",
+            {
+                "text": "cinco"
+            },
+            {
+                "text": "seis",
+                "feedback": "In French: 'six'"
+            }
         ]
     }
 ```
@@ -253,6 +358,22 @@ Example Answers Definition:
     "answers": ["4", "four", "Four", "FOUR"]
 ```
 
+Feedback can be attached to each possible choice:
+```json
+    "prompt": "How many cardinal directions are there?",
+    "answers": [
+        {
+            "text": "4",
+            "feedback": "This is the preferred answer."
+        },
+        {
+            "text": "four",
+        }
+        "Four",
+        "FOUR"
+    ]
+```
+
 ### Fill in Multiple Blanks (FIMB)
 
 Question Type: `fill_in_multiple_blanks`
@@ -269,6 +390,30 @@ Example Answers Definition:
     "answers": {
         "first": ["death", "Death", "DEATH"],
         "second": ["taxes", "taxs", "Taxes", "Taxs," "TAXES", "TAXS"],
+    }
+```
+
+Like FITB, feedback can be attached to each possible choice:
+```json
+    "prompt": "Nothing can be said to be certain, except [[first]] and [[second]].",
+    "answers": {
+        "first": [
+            "death",
+            "Death",
+            {
+                "text": "DEATH",
+                "feedback": "So dramatic."
+            }
+        ],
+        "second": [
+            {
+                "text": "taxes"
+            },
+            {
+                "text": "taxs",
+                "feedback": "Not the preferred spelling."
+            },
+            "Taxes", "Taxs," "TAXES", "TAXS"],
     }
 ```
 
@@ -299,6 +444,15 @@ Example Answers Definition:
     ]
 ```
 
+Feedback can be directly attached to each list item:
+```json
+    "answers": [
+        {"type": "exact", "value": 1.0, "margin": 0.01, "feedback": "Good job\\!"},
+        {"type": "range", "min": 0.99, "max": 1.01},
+        {"type": "precision", "value": 1.0, "precision": 2}
+    ]
+```
+
 ### Short Answer (SA)
 
 Question Type: `short_answer`
@@ -315,6 +469,21 @@ The answers value can be any of the following:
  - list of strings
 
 Any strings should be typed as parsed strings.
+
+Example Answers Definition:
+```json
+    "answers": "The correct answer should make a coherent argument."
+```
+
+The attach feedback, the long-form of the answers value needs to be used:
+```json
+    "answers": [
+        {
+            "text": "The correct answer should make a coherent argument.",
+            "feedback": "Your answer will be manually graded."
+        }
+    ]
+```
 
 ### Essay Questions
 

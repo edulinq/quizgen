@@ -1,0 +1,38 @@
+{
+    "prompt": "Multiple Drop Downs: Basic [[part1]] and [[part2]]",
+    "question_type": "multiple_dropdowns",
+    "answers": {
+        "part1": [
+            {
+                "correct": true,
+                "text": "a"
+            },
+            {
+                "correct": false,
+                "text": "b",
+                "feedback": "X"
+            },
+            {
+                "correct": false,
+                "text": "c"
+            }
+        ],
+        "part2": [
+            {
+                "correct": true,
+                "text": "1"
+            },
+            {
+                "correct": false,
+                "text": "2",
+                "feedback": {
+                    "text": "Y"
+                }
+            },
+            {
+                "correct": false,
+                "text": "3"
+            }
+        ]
+    }
+}

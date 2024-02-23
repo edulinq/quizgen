@@ -9,8 +9,10 @@ class Numerical(quizgen.question.base.Question, question_type = quizgen.constant
     def validate_answers(self):
         self._check_type(self.answers, list, "'answers' key")
 
-        for answer in self.answers:
-            label = "values of 'answers' key"
+        for i in range(len(self.answers)):
+            answer = self.answers[i]
+            label = "'answers' value index %d" % (i)
+
             self._check_type(answer, dict, label)
 
             if ('type' not in answer):
@@ -31,3 +33,9 @@ class Numerical(quizgen.question.base.Question, question_type = quizgen.constant
             for key in required_keys:
                 if (key not in answer):
                     raise quizgen.common.QuizValidationError(f"Missing required key '{key}' for numerical answer type '{answer['type']}'.")
+
+            feedback = self._validate_feedback_item(answer.get('feedback', None), label)
+            if (feedback is not None):
+                answer['feedback'] = feedback
+            else:
+                answer.pop('feedback', None)

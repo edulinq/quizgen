@@ -1,22 +1,16 @@
 {
-    "prompt": "Feedback: Question Key",
+    "prompt": "Feedback: Answer Key",
     "question_type": "multiple_choice",
-    "feedback": {
-        "ZZZ": "X",
-        "correct": "Y",
-        "incorrect": "Z"
-    },
     "answers": [
         {
             "correct": true,
-            "text": "A",
-            "feedback": "1"
+            "text": "A"
         },
         {
             "correct": false,
             "text": "B",
             "feedback": {
-                "text": "2"
+                "ZZZ": "1"
             }
         },
         {

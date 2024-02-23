@@ -1,0 +1,38 @@
+{
+    "prompt": "Matching: Basic",
+    "question_type": "matching",
+    "answers": {
+        "matches": [
+            [
+                "A",
+                "1"
+            ],
+            {
+                "left": {
+                    "text": "B",
+                    "feedback": "X"
+                },
+                "right": "2"
+            },
+            {
+                "left": {
+                    "text": "C",
+                    "feedback": {
+                        "text": "Y"
+                    }
+                },
+                "right": "3"
+            }
+        ],
+        "distractors": [
+            "4",
+            {
+                "text": "5"
+            },
+            {
+                "text": "6",
+                "feedback": "Z"
+            }
+        ]
+    }
+}

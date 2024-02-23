@@ -1,0 +1,20 @@
+{
+    "prompt": "Fill in Multiple Blanks: Feedback Basic",
+    "question_type": "fill_in_multiple_blanks",
+    "answers": {
+        "A": {
+            "text": "1"
+        },
+        "B": {
+            "text": "2",
+            "feedback": "X"
+        },
+        "C": {
+            "text": "3",
+            "feedback": {
+                "text": "Y"
+            }
+        },
+        "D": "4"
+    }
+}

@@ -14,7 +14,7 @@ class MDD(quizgen.question.base.Question, question_type = quizgen.constants.QUES
             raise quizgen.common.QuizValidationError("No answers provided, at least one answer required.")
 
         for (key, answers) in list(self.answers.items()):
-            values= self._validate_answer_list(answers, self.base_dir, min_correct = 1, max_correct = 1)
+            values = self._validate_answer_list(answers, self.base_dir, min_correct = 1, max_correct = 1)
 
             self.answers[key] = {
                 'key': {
