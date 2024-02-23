@@ -23,6 +23,10 @@ class FITB(quizgen.question.base.Question, question_type = quizgen.constants.QUE
 
             self.answers = self.answers['']
 
+            # If this was already in the full FIMB format, then we need to pull out the values.
+            if ((isinstance(self.answers, dict)) and ('values' in self.answers)):
+                self.answers = self.answers['values']
+
         self._check_type(self.answers, list, f"'answers' value")
 
         if (len(self.answers) == 0):

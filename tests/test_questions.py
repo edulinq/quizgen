@@ -44,15 +44,38 @@ def _add_question_test(path):
     test_name = 'test_question_parse_' + base_test_name
     setattr(QuestionsTest, test_name, _get_question_parse_test_method(path))
 
+    test_name = 'test_question_reparse_' + base_test_name
+    setattr(QuestionsTest, test_name, _get_question_reparse_test_method(path))
+
     canvas_path = os.path.join(os.path.dirname(path), CANVAS_FILENAME)
     if (os.path.exists(canvas_path)):
         test_name = 'test_question_canvas_' + base_test_name
         setattr(QuestionsTest, test_name, _get_question_canvas_test_method(path, canvas_path))
 
 def _get_question_parse_test_method(path):
+    """
+    Get a test for just parsing a question file.
+    """
+
     def __method(self):
         question = quizgen.question.base.Question.from_path(path)
         self.assertIsNotNone(question)
+
+    return __method
+
+def _get_question_reparse_test_method(path):
+    """
+    Get a test for parsing a question file, converting the question to a dict, then re-parsing the same question.
+    """
+
+    def __method(self):
+        question = quizgen.question.base.Question.from_path(path)
+        question_data = question.to_dict(include_docs = False)
+
+        new_question = quizgen.question.base.Question.from_dict(question_data)
+        new_question_data = new_question.to_dict(include_docs = False)
+
+        self.assertJSONDictEqual(question_data, new_question_data)
 
     return __method
 

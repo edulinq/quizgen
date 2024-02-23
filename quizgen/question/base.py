@@ -125,9 +125,9 @@ class Question(abc.ABC):
 
     def _object_to_dict(self, target, include_docs = True):
         if (isinstance(target, dict)):
-            return {key: self._object_to_dict(value) for (key, value) in target.items()}
+            return {key: self._object_to_dict(value, include_docs = include_docs) for (key, value) in target.items()}
         elif (isinstance(target, list)):
-            return [self._object_to_dict(answer) for answer in target]
+            return [self._object_to_dict(answer, include_docs = include_docs) for answer in target]
         elif (isinstance(target, quizgen.parser.ParseNode)):
             if (include_docs):
                 return target.to_pod()
@@ -191,7 +191,7 @@ class Question(abc.ABC):
 
     @staticmethod
     def from_dict(data, base_dir = None):
-        data = data.copy()
+        data = copy.deepcopy(data)
 
         if (base_dir is not None):
             data['base_dir'] = base_dir
@@ -384,7 +384,10 @@ class Question(abc.ABC):
             raise quizgen.common.QuizValidationError("Expected 'answers' dict to be non-empty.")
 
         for (key, values) in self.answers.items():
-            if (not isinstance(values, list)):
+            # If this was already in the full FIMB format, then we need to pull out the values.
+            if ((isinstance(values, dict)) and ('values' in values)):
+                self.answers[key] = values['values']
+            elif (not isinstance(values, list)):
                 self.answers[key] = [values]
 
         new_answers = {}
