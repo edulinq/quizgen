@@ -5,23 +5,38 @@
 <% endblock %>
 
 <% block body %>
+    <% set height = question.hints.height if question.hints.height else '4em' %>
+
+    <% set default_width = 0.13 if question.hints.inline else 0.95 %>
+    <% set width = question.hints.width if question.hints.width else default_width %>
+
+    <% set center = false if question.hints.nocenter else true %>
+
+    <% if center %>
+        \begin{center}
+    <% endif %>
+
     <% for part in question.answers %>
         <% if question.hints.inline %>
-            \begin{tabular}{ >{\centering\arraybackslash}m{0.05\textwidth} >{\centering\arraybackslash}m{0.14\textwidth} }
+            \begin{tabular}{ >{\centering\arraybackslash}m{0.05\textwidth} >{\centering\arraybackslash}m{<< width + 0.01 >>\textwidth} }
                 << part.label >>: &
                 <% if answer_key %>
-                    \bigAnswerBox[<< part.solution >>]{4em}{0.13}{fill_in_multiple_blanks}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
+                    \bigAnswerBox[<< part.solution >>]{<< height >>}{<< width >>}{fill_in_multiple_blanks}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
                 <% else %>
-                    \bigAnswerBox{4em}{0.13}{fill_in_multiple_blanks}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
+                    \bigAnswerBox{<< height >>}{<< width >>}{fill_in_multiple_blanks}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
                 <% endif %>
             \end{tabular}
         <% else %>
             << part.label >>: \\
             <% if answer_key %>
-                \bigAnswerBox[<< part.solution >>]{4em}{0.95}{fill_in_multiple_blanks}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
+                \bigAnswerBox[<< part.solution >>]{<< height >>}{<< width >>}{fill_in_multiple_blanks}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
             <% else %>
-                \bigAnswerBox{4em}{0.95}{fill_in_multiple_blanks}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
+                \bigAnswerBox{<< height >>}{<< width >>}{fill_in_multiple_blanks}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0} \\
             <% endif %>
         <% endif %>
     <% endfor %>
+
+    <% if center %>
+        \end{center}
+    <% endif %>
 <% endblock %>

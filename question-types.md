@@ -16,7 +16,7 @@ Table of Contents:
    - [Fill in Multiple Blanks (FIMB)](#fill-in-multiple-blanks-fimb)
    - [Numeric](#numeric)
    - [Short Answer (SA)](#short-answer-sa)
-   - [Essay Questions](#essay-questions)
+   - [Essay](#essay)
    - [Text-Only](#text-only)
  - [Differences with Canvas](#differences-with-canvas)
 
@@ -417,12 +417,6 @@ Like FITB, feedback can be attached to each possible choice:
     }
 ```
 
-#### Hints
-
-FIMB questions may observe the "inline" hint.
-This hint indicates that the output medium should attempt to reduce the reserved space for answers and place them on the same line
-(if possible).
-
 ### Numeric
 
 Question Type: `numerical`
@@ -485,7 +479,7 @@ The attach feedback, the long-form of the answers value needs to be used:
     ]
 ```
 
-### Essay Questions
+### Essay
 
 Question Type: `essay`
 

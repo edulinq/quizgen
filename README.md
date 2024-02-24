@@ -31,6 +31,7 @@ Documentation Table of Contents:
    - [Quiz Descriptions](#quiz-descriptions)
  - [Question Types](/question-types.md)
  - [QuizGen Markdown Syntax](/syntax.md)
+ - [QuizGen Builtin Templates](/builtin-templates.md)
 
 ## Installation / Requirements
 

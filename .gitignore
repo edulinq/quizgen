@@ -10,7 +10,7 @@ __pycache__/
 /bin/
 /dist/
 test/
-/out/
+/out*/
 /test.*
 /test_*/
 

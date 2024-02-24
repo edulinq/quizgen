@@ -5,15 +5,34 @@
 <% endblock %>
 
 <% block body %>
-    \begin{center}
-        \begin{tabular}{ >{\centering\arraybackslash}m{0.06\textwidth} m{0.80\textwidth} }
+    <% set default_width = 0.15 if question.hints.inline else 0.80 %>
+    <% set width = question.hints.width if question.hints.width else default_width %>
+
+    <% set center = false if question.hints.nocenter else true %>
+
+    <% if center %>
+        \begin{center}
+    <% endif %>
+
+    <% if question.hints.inline %>
+        <% for answer in question.answers %>
+            <% set fill = '[red]' if (answer_key and answer.correct) else '' %>
+            \begin{tabular}{ >{\centering\arraybackslash}m{0.06\textwidth} m{<< width >>\textwidth} }
+                \radio<< fill >>{multiple_choice}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0}
+                    & << answer.text >> \\
+            \end{tabular}
+        <% endfor %>
+    <% else %>
+        \begin{tabular}{ >{\centering\arraybackslash}m{0.06\textwidth} m{<< width >>\textwidth} }
             <% for answer in question.answers %>
-                <% if answer_key and answer.correct %>
-                    \radio[red]{multiple_choice}{<< question.id >>}{0}{<< question.id >>.<< loop.index0 >>} & << answer.text >> \\
-                <% else %>
-                    \radio{multiple_choice}{<< question.id >>}{0}{<< question.id >>.<< loop.index0 >>} & << answer.text >> \\
-                <% endif %>
+                <% set fill = '[red]' if (answer_key and answer.correct) else '' %>
+                \radio<< fill >>{multiple_choice}{<< question.id >>}{<< question.id >>.<< loop.index0 >>}{0}
+                    & << answer.text >> \\
             <% endfor %>
         \end{tabular}
-    \end{center}
+    <% endif %>
+
+    <% if center %>
+        \end{center}
+    <% endif %>
 <% endblock %>
