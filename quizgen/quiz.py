@@ -173,18 +173,7 @@ class Quiz(object):
 
         questions = []
         for group in self.groups:
-            new_questions = None
-
-            if (all_questions):
-                new_questions = group.copy_questions()
-            else:
-                new_questions = group.choose_questions(rng)
-
-            if (len(new_questions) > 1):
-                for i in range(len(new_questions)):
-                    new_questions[i].base_name = "%s - %d" % (group.name, i + 1)
-
-            questions += new_questions
+            questions += group.choose_questions(all_questions = all_questions, rng = rng)
 
         if (self.shuffle_answers):
             for question in questions:

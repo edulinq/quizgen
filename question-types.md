@@ -59,6 +59,17 @@ if not set explicitly.
 | `hints`           | Object        | true       | Formatting hints passed the converter about this question. We will note any question type that specifically looks for hints. |
 | `feedback`        | Object        | false      | Feedback to be given to the student upon completion of the question/quiz. Feedback can be on the question and answer level. Support for feedback can greatly vary between output modes. |
 
+### Hints
+
+Hints serve as additional information (usually about quiz layout or rendering) passed to different formats.
+Each format is not guaranteed to honor hints,
+but each [builtin templates](/builtin-templates.md) will declare the subset of hints that they support.
+
+Hint provided via the `hints` field in a group will also be inherited by each question in that group.
+To ensure that only the first or last question in a group inherit specific hints, use the `hints_first` and `hints_last` fields, respectively.
+This can be useful when using the `pagebreak_before` or `pagebreak_after` hints to add a page break before or after a group,
+but not before or after each question in that group.
+
 ### Question Feedback
 
 Many quiz platforms (like Canvas) allows feedback to be attached to questions and/or individual answers in a question.

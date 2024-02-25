@@ -100,9 +100,11 @@ class Question(abc.ABC):
 
         self.shuffle_answers = (self.shuffle_answers and group.shuffle_answers)
 
-        for (key, value) in group.hints.items():
-            # Only take hints not already set in the question.
-            if (key not in self.hints):
+        self.add_hints(group.hints)
+
+    def add_hints(self, new_hints, override = False):
+        for (key, value) in new_hints.items():
+            if (override or (key not in self.hints)):
                 self.hints[key] = value
 
     def to_json(self, indent = 4, include_docs = True):

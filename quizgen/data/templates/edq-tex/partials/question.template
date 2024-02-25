@@ -1,3 +1,7 @@
+<% if question.hints.pagebreak_before %>
+    \newpage
+<% endif %>
+
 %%% BEGIN Question {<< question.number >> -- << question.base_name >>} %%%
 
 \begin{minipage}{\textwidth}
@@ -28,3 +32,7 @@
 \end{minipage}
 
 %%% END Question {<< question.number >> -- << question.base_name >>} %%%
+
+<% if question.hints.pagebreak_after %>
+    \newpage
+<% endif %>

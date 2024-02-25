@@ -1,4 +1,5 @@
 import glob
+import logging
 import os
 
 import quizgen.common
@@ -11,7 +12,7 @@ class Group(object):
             pick_count = 1, points = 10,
             shuffle_answers = True,
             custom_header = None, skip_numbering = None,
-            hints = None,
+            hints = None, hints_first = None, hints_last = None,
             questions = [], **kwargs):
         self.name = name
         self.pick_count = pick_count
@@ -23,6 +24,8 @@ class Group(object):
         self.skip_numbering = skip_numbering
 
         self.hints = hints
+        self.hints_first = hints_first
+        self.hints_last = hints_last
 
         self.questions = questions
 
@@ -40,6 +43,12 @@ class Group(object):
 
         if (self.hints is None):
             self.hints = {}
+
+        if (self.hints_first is None):
+            self.hints_first = {}
+
+        if (self.hints_last is None):
+            self.hints_last = {}
 
         if (not isinstance(self.questions, list)):
             raise quizgen.common.QuizValidationError("Questions must be a non-empty list, found: '%s'." % (str(self.questions)))
@@ -88,6 +97,33 @@ class Group(object):
 
     def choose_questions(self, rng):
         return [question.copy() for question in rng.sample(self.questions, k = self.pick_count)]
+
+    def choose_questions(self, all_questions = False, rng = None):
+        if ((self.pick_count == 0) or (len(self.questions) == 0)):
+            logging.warning("Group '%s' will select no questions (pick_count: %d, size: %d)." % (
+                    self.name, self.pick_count, len(self.questions)))
+            return []
+
+        if (rng is None):
+            seed = random.randint(0, 2**64)
+            rng = random.Random(seed)
+
+        count = self.pick_count
+        if (all_questions):
+            count = len(self.questions)
+
+        questions = [question.copy() for question in rng.sample(self.questions, k = count)]
+
+        # Rename questions if there are more than one.
+        if (len(questions) > 1):
+            for i in range(len(questions)):
+                questions[i].base_name = "%s - %d" % (self.name, i + 1)
+
+        # Inherit position-specific hints.
+        questions[0].add_hints(self.hints_first)
+        questions[-1].add_hints(self.hints_last)
+
+        return questions
 
 def _parse_questions(path):
     if (not os.path.exists(path)):
