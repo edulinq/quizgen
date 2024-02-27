@@ -3,6 +3,9 @@ Convert a quiz into QTI using templates.
 """
 
 import os
+import warnings
+
+import bs4
 
 import quizgen.constants
 import quizgen.converter.template
@@ -29,6 +32,16 @@ QUESTION_TYPE_MAP = {
 class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
     def __init__(self, template_dir = DEFAULT_TEMPLATE_DIR, **kwargs):
         super().__init__(quizgen.constants.FORMAT_HTML, template_dir, **kwargs)
+
+    def convert_variant(self, variant, **kwargs):
+        # Parse and format the XML.
+
+        # Treat the XML as HTML so we can cleanly print pre nodes.
+        text = super(QTITemplateConverter, self).convert_variant(variant, **kwargs)
+
+        warnings.filterwarnings('ignore', category = bs4.builder.XMLParsedAsHTMLWarning)
+        document = bs4.BeautifulSoup(text, 'html.parser')
+        return document.prettify(formatter = bs4.formatter.HTMLFormatter(indent = 4))
 
     def modify_question_context(self, context, question, variant):
         context['question']['mapped_question_type'] = QUESTION_TYPE_MAP[question.question_type]
