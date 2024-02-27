@@ -1,0 +1,45 @@
+{% extends "partials/question.template" %}
+
+{% block field_ids %}
+    {% for answer in question.answers %}
+        {% set id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
+        {% if not loop.last %}
+                {% set id = id ~ ',' %}
+        {% endif %}
+        {{- id -}}
+    {% endfor %}
+{% endblock %}
+
+{% block body %}
+    <response_lid ident="response1" rcardinality="Single">
+        <render_choice>
+            {% for answer in question.answers %}
+                {% set id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
+                <response_label ident="{{ id }}">
+                <material>
+                    <mattext texttype="text/html">{{ answer.text }}</mattext>
+                </material>
+                </response_label>
+            {% endfor %}
+        </render_choice>
+    </response_lid>
+{% endblock %}
+
+{% block scoring %}
+    <resprocessing>
+        <outcomes>
+            <decvar maxvalue="100" minvalue="0" varname="SCORE" vartype="Decimal"/>
+        </outcomes>
+        {% for answer in question.answers %}
+            {% set id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
+            <respcondition>
+                <conditionvar>
+                    <varequal respident="response1">{{ id }}</varequal>
+                </conditionvar>
+                {% if answer.correct %}
+                    <setvar action="Set" varname="SCORE">100</setvar>
+                {% endif %}
+            </respcondition>
+        {% endfor %}
+    </resprocessing>
+{% endblock %}

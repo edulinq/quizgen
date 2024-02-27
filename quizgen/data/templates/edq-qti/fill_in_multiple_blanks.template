@@ -1,0 +1,46 @@
+{% extends "partials/question.template" %}
+
+{% block field_ids %}
+    {% for part in question.answers %}
+        {% set id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
+        {% if not loop.last %}
+            {% set id = id ~ ',' %}
+        {% endif %}
+        {{- id -}}
+    {% endfor %}
+{% endblock %}
+
+{% block body %}
+    {% for part in question.answers %}
+        {% set id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
+        <response_lid ident="{{ id }}">
+            <material>
+                <mattext>{{ part.raw_label }}</mattext>
+            </material>
+            <render_choice>
+                <response_label ident="{{ id }}.0">
+                <material>
+                    <mattext texttype="text/plain">{{ part.raw_solution }}</mattext>
+                </material>
+                </response_label>
+            </render_choice>
+        </response_lid>
+    {% endfor %}
+{% endblock %}
+
+{% block scoring %}
+    <resprocessing>
+        <outcomes>
+            <decvar maxvalue="100" minvalue="0" varname="SCORE" vartype="Decimal"/>
+        </outcomes>
+        {% for part in question.answers %}
+            {% set id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
+            <respcondition>
+                <conditionvar>
+                    <varequal respident="{{ id }}">{{ id }}.0</varequal>
+                </conditionvar>
+                <setvar varname="SCORE" action="Add">{{ question.points / (question.answers | length) }}</setvar>
+            </respcondition>
+        {% endfor %}
+    </resprocessing>
+{% endblock %}

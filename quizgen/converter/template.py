@@ -117,6 +117,10 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         answers_method = getattr(self, self.answer_functions[question_type])
         data['answers'] = answers_method(question_index, question_number, question, variant)
 
+        data['feedback'] = {}
+        for key, item in question.feedback.items():
+            data['feedback'][key] = item['document'].to_format(self.format)
+
         context = {
             'quiz': variant,
             'answer_key': self.answer_key,
@@ -125,9 +129,19 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
         template_name = "%s.template" % (question_type)
         template = self.env.get_template(template_name)
+
+        context = self.modify_question_context(context, question, variant)
         text = template.render(**context)
 
         return text
+
+    def modify_question_context(self, context, question, variant):
+        """
+        Provide an opportunity for children to modify the question context.
+        The new context reference (which may be new, unchanged, or modified version of the passed-in context).
+        """
+
+        return context
 
     def clean_solution_content(self, document):
         """
@@ -161,11 +175,24 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         for items in question.answers['matches']:
             matches[len(lefts)] = len(rights)
 
-            lefts.append(items['left']['document'].to_format(self.format))
-            rights.append(items['right']['document'].to_format(self.format))
+            lefts.append({
+                'initial_text': items['left']['text'],
+                'raw_text': items['left']['document'].to_text(),
+                'text': items['left']['document'].to_format(self.format),
+            })
+
+            rights.append({
+                'initial_text': items['right']['text'],
+                'raw_text': items['right']['document'].to_text(),
+                'text': items['right']['document'].to_format(self.format),
+            })
 
         for right in question.answers['distractors']:
-            rights.append(right['document'].to_format(self.format))
+            rights.append({
+                'initial_text': right['text'],
+                'raw_text': right['document'].to_text(),
+                'text': right['document'].to_format(self.format),
+            })
 
         left_ids = self.get_matching_left_ids()
         right_ids = self.get_matching_right_ids()
@@ -202,7 +229,9 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
             lefts[left_index] = {
                 'id': "%d.%s" % (question_index, left_ids[left_index]),
-                'text': lefts[left_index],
+                'text': lefts[left_index]['text'],
+                'initial_text': lefts[left_index]['initial_text'],
+                'raw_text': lefts[left_index]['raw_text'],
                 'solution': right_ids[right_index],
                 'solution_id': "%d.%s" % (question_index, right_ids[right_index]),
             }
@@ -210,7 +239,9 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         for right_index in range(len(rights)):
             rights[right_index] = {
                 'id': "%d.%s" % (question_index, right_ids[right_index]),
-                'text': rights[right_index],
+                'text': rights[right_index]['text'],
+                'initial_text': rights[right_index]['initial_text'],
+                'raw_text': rights[right_index]['raw_text'],
                 'label': right_ids[right_index],
             }
 
@@ -236,6 +267,8 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             choices.append({
                 'correct': answers[i]['correct'],
                 'text': answers[i]['document'].to_format(self.format),
+                'raw_text': answers[i]['document'].to_text(),
+                'initial_text': answers[i]['text'],
             })
 
         return choices
@@ -262,6 +295,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         return {
             'solution': self.clean_solution_content(document),
             'dirty_solution': document.to_format(self.format),
+            'raw_solution': document.to_text(),
         }
 
     def create_answers_mdd(self, question_index, question_number, question, variant):
@@ -270,6 +304,8 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         for key, items in question.answers.items():
             answers.append({
                 'label': items['key']['document'].to_format(self.format),
+                'initial_label': items['key']['text'],
+                'raw_label': items['key']['document'].to_text(),
                 'choices': self._create_answers_mcq_list(items['values']),
             })
 
@@ -286,8 +322,11 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
             answers.append({
                 'label': item['key']['document'].to_format(self.format),
+                'raw_label': item['key']['document'].to_text(),
+                'initial_label': item['key']['text'],
                 'solution': self.clean_solution_content(document),
                 'dirty_solution': document.to_format(self.format),
+                'raw_solution': document.to_text(),
             })
 
         return answers
@@ -295,9 +334,20 @@ class TemplateConverter(quizgen.converter.converter.Converter):
     def create_answers_fitb(self, question_index, question_number, question, variant):
         document = question.answers['']['values'][0]['document']
 
+        solutions = []
+        for item in question.answers['']['values']:
+            solutions.append({
+                'text': item['document'].to_format(self.format),
+                'raw_text': item['document'].to_text(),
+                'initial_text': item['text'],
+                'clean': self.clean_solution_content(item['document']),
+            })
+
         return {
             'solution': self.clean_solution_content(document),
             'dirty_solution': document.to_format(self.format),
+            'raw_solution': document.to_text(),
+            'solutions': solutions,
         }
 
     def create_answers_sa(self, question_index, question_number, question, variant):
@@ -314,4 +364,5 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             'raw_solutions': raw_solutions,
             'solution': self.clean_solution_content(document),
             'dirty_solution': document.to_format(self.format),
+            'raw_solution': document.to_text(),
         }

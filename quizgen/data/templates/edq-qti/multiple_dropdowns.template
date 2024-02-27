@@ -1,0 +1,59 @@
+{% extends "partials/question.template" %}
+
+{% block field_ids %}
+    {% for part in question.answers %}
+        {% set part_id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
+        {% for choice in part.choices %}
+            {% set choice_id = part_id ~ '.' ~ loop.index0 %}
+            {% if not loop.last %}
+                {% set id = id ~ ',' %}
+            {% endif %}
+            {{- choice_id -}}
+        {% endfor %}
+    {% endfor %}
+{% endblock %}
+
+{% block body %}
+    {% for part in question.answers %}
+        {% set part_id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
+        <response_lid ident="{{ part_id }}">
+            <material>
+                <mattext>{{ part.raw_label }}</mattext>
+            </material>
+            <render_choice>
+                {% for choice in part.choices %}
+                    {% set choice_id = part_id ~ '.' ~ loop.index0 %}
+                    <response_label ident="{{ choice_id }}">
+                        <material>
+                            <mattext texttype="text/plain">{{ choice.raw_text }}</mattext>
+                        </material>
+                    </response_label>
+                {% endfor %}
+            </render_choice>
+        </response_lid>
+    {% endfor %}
+{% endblock %}
+
+{% block scoring %}
+    <resprocessing>
+        <outcomes>
+            <decvar maxvalue="100" minvalue="0" varname="SCORE" vartype="Decimal"/>
+        </outcomes>
+        {% for part in question.answers %}
+            {% set part_id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
+            {% for choice in part.choices %}
+                {% set choice_id = part_id ~ '.' ~ loop.index0 %}
+                {% if choice.correct %}
+                    <respcondition>
+                        <conditionvar>
+                            <varequal respident="{{ part_id }}">{{ choice_id }}</varequal>
+                        </conditionvar>
+                        {% if part.correct %}
+                            <setvar varname="SCORE" action="Add">{{ question.points / (question.answers | length) }}</setvar>
+                        {% endif %}
+                    </respcondition>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </resprocessing>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "partials/question.template" %}
+
+{% block body %}
+    <!-- Empty -->
+{% endblock %}
+
+{% block scoring %}
+    <!-- Empty -->
+{% endblock %}
+
+{% block feedback %}
+    <!-- Empty -->
+{% endblock %}
