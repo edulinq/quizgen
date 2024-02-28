@@ -29,7 +29,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
     def __init__(self, format, template_dir,
             jinja_options = {}, jinja_filters = {},
             parser_format_options = {},
-            image_base_dir = None,
+            image_base_dir = None, image_relative_root = None, cleanup_images = True,
             **kwargs):
         super().__init__(**kwargs)
 
@@ -45,8 +45,15 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         # Some converters will need to store image paths.
         # Using the _store_images() callback will put the images inside image_base_dir.
         self.image_base_dir = image_base_dir
-        # This will hold: {<abs_path or link>: <filename (in image_base_dir)>, ...}
+
+        # This will hold: {<abs_path or link>: <new path (based on image_base_dir)>, ...}
         self.image_paths = {}
+
+        # If not None, override the default image output path with os.join(image_relative_root, filename).
+        self.image_relative_root = image_relative_root
+
+        # Remove any temp image directories.
+        self.cleanup_images = cleanup_images
 
         self.jinja_options = DEFAULT_JINJA_OPTIONS.copy()
         self.jinja_options.update(jinja_options)
@@ -391,7 +398,9 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
     def _store_images(self, link, base_dir):
         if (self.image_base_dir is None):
-            self.image_base_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-images-')
+            self.image_base_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-images-', rm = self.cleanup_images)
+
+        os.makedirs(self.image_base_dir, exist_ok = True)
 
         if (re.match(r'^http(s)?://', link)):
             temp_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-image-dl-')
@@ -406,6 +415,10 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         out_path = os.path.join(self.image_base_dir, filename)
 
         quizgen.util.file.copy_dirent(in_path, out_path)
+
+        if (self.image_relative_root is not None):
+            out_path = os.path.join(self.image_relative_root, filename)
+
         self.image_paths[image_id] = out_path
 
         return out_path

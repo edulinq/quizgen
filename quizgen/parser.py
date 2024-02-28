@@ -395,8 +395,6 @@ class ImageNode(ParseNode):
 
     def to_tex(self, base_dir = '.', image_path_callback = None, **kwargs):
         self._handle_callback(image_path_callback, base_dir)
-        # TEST
-        # path = os.path.join(base_dir, self._computed_path)
         return rf"\includegraphics[width=0.5\textwidth]{{{self._computed_path}}}"
 
     def to_html(self, base_dir = '.', canvas_instance = None,

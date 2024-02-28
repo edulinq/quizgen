@@ -20,8 +20,15 @@ JINJA_OPTIONS = {
 }
 
 class TexTemplateConverter(quizgen.converter.template.TemplateConverter):
-    def __init__(self, template_dir = DEFAULT_TEMPLATE_DIR, **kwargs):
-        super().__init__(quizgen.constants.FORMAT_TEX, template_dir, jinja_options = JINJA_OPTIONS, **kwargs)
+    def __init__(self, template_dir = DEFAULT_TEMPLATE_DIR,
+            cleanup_images = False,
+            **kwargs):
+        super().__init__(quizgen.constants.FORMAT_TEX, template_dir,
+                cleanup_images = cleanup_images,
+                parser_format_options = {
+                    'image_path_callback': self._store_images,
+                },
+                jinja_options = JINJA_OPTIONS, **kwargs)
 
     def clean_solution_content(self, document):
         tex = document.to_format(quizgen.constants.FORMAT_TEX)

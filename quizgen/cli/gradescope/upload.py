@@ -47,7 +47,11 @@ def run(args):
     return 0
 
 def _make_pdf(variant, base_dir, is_key, skip_tex_write, skip_compile):
-    converter = quizgen.converter.textemplate.TexTemplateConverter(answer_key = is_key)
+    image_relative_root = os.path.join('images', variant.title)
+    image_dir = os.path.join(base_dir, image_relative_root)
+
+    converter = quizgen.converter.textemplate.TexTemplateConverter(answer_key = is_key,
+            image_base_dir = image_dir, image_relative_root = image_relative_root, cleanup_images = True)
     content = converter.convert_variant(variant)
 
     out_path = os.path.join(base_dir, "%s.tex" % (variant.title))
