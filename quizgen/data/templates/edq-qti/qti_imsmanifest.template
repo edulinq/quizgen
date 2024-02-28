@@ -20,12 +20,17 @@
     </metadata>
     <organizations/>
     <resources>
-        <resource identifier="01" type="imsqti_xmlv1p2">
+        <resource identifier="a01" type="imsqti_xmlv1p2">
             <file href="quiz.xml"/>
-            <dependency identifierref="02"/>
+            <dependency identifierref="a02"/>
         </resource>
-        <resource identifier="02" type="associatedcontent/imscc_xmlv1p1/learning-application-resource" href="assessment_meta.xml">
+        <resource identifier="a02" type="associatedcontent/imscc_xmlv1p1/learning-application-resource" href="assessment_meta.xml">
             <file href="assessment_meta.xml"/>
         </resource>
+        {% for file in files %}
+            <resource identifier="{{ file.id }}" type="webcontent" href="{{ file.path }}">
+                <file href="images/{{ file.filename }}"/>
+            </resource>
+        {% endfor %}
     </resources>
 </manifest>

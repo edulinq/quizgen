@@ -1,11 +1,14 @@
 import math
 import os
 import random
+import re
 import string
 
 import quizgen.constants
 import quizgen.converter.converter
 import quizgen.parser
+import quizgen.util.file
+import quizgen.util.http
 import quizgen.variant
 
 import jinja2
@@ -25,6 +28,8 @@ DEFAULT_JINJA_OPTIONS = {
 class TemplateConverter(quizgen.converter.converter.Converter):
     def __init__(self, format, template_dir,
             jinja_options = {}, jinja_filters = {},
+            parser_format_options = {},
+            image_base_dir = None,
             **kwargs):
         super().__init__(**kwargs)
 
@@ -34,6 +39,14 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
         self.format = format
         self.template_dir = template_dir
+
+        self.parser_format_options = parser_format_options
+
+        # Some converters will need to store image paths.
+        # Using the _store_images() callback will put the images inside image_base_dir.
+        self.image_base_dir = image_base_dir
+        # This will hold: {<abs_path or link>: <filename (in image_base_dir)>, ...}
+        self.image_paths = {}
 
         self.jinja_options = DEFAULT_JINJA_OPTIONS.copy()
         self.jinja_options.update(jinja_options)
@@ -69,7 +82,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         questions_text = self.create_questions(variant)
 
         variant_context = variant.to_dict(include_docs = False)
-        variant_context['description_text'] = variant.description_document.to_format(self.format)
+        variant_context['description_text'] = self._format_doc(variant.description_document)
 
         context = {
             'quiz': variant_context,
@@ -108,7 +121,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             raise ValueError("Unsupported question type: '%s'." % (question_type))
 
         data = question.to_dict(include_docs = False)
-        data['prompt_text'] = question.prompt['document'].to_format(self.format)
+        data['prompt_text'] = self._format_doc(question.prompt['document'])
         data['id'] = question_index
         data['number'] = question_number
 
@@ -119,7 +132,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
         data['feedback'] = {}
         for key, item in question.feedback.items():
-            data['feedback'][key] = item['document'].to_format(self.format)
+            data['feedback'][key] = self._format_doc(item['document'])
 
         context = {
             'quiz': variant,
@@ -149,7 +162,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         For example, tex solutions are hacky and cannot use certain functions.
         """
 
-        return document.to_format(self.format)
+        return self._format_doc(document)
 
     def create_question_separator(self, variant):
         context = {
@@ -177,21 +190,21 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
             lefts.append({
                 'initial_text': items['left']['text'],
-                'raw_text': items['left']['document'].to_text(),
-                'text': items['left']['document'].to_format(self.format),
+                'raw_text': self._format_doc(items['left']['document'], doc_format = quizgen.constants.FORMAT_TEXT),
+                'text': self._format_doc(items['left']['document']),
             })
 
             rights.append({
                 'initial_text': items['right']['text'],
-                'raw_text': items['right']['document'].to_text(),
-                'text': items['right']['document'].to_format(self.format),
+                'raw_text': self._format_doc(items['right']['document'], doc_format = quizgen.constants.FORMAT_TEXT),
+                'text': self._format_doc(items['right']['document']),
             })
 
         for right in question.answers['distractors']:
             rights.append({
                 'initial_text': right['text'],
-                'raw_text': right['document'].to_text(),
-                'text': right['document'].to_format(self.format),
+                'raw_text': self._format_doc(right['document'], doc_format = quizgen.constants.FORMAT_TEXT),
+                'text': self._format_doc(right['document']),
             })
 
         left_ids = self.get_matching_left_ids()
@@ -266,8 +279,8 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         for i in range(len(answers)):
             choices.append({
                 'correct': answers[i]['correct'],
-                'text': answers[i]['document'].to_format(self.format),
-                'raw_text': answers[i]['document'].to_text(),
+                'text': self._format_doc(answers[i]['document']),
+                'raw_text': self._format_doc(answers[i]['document'], doc_format = quizgen.constants.FORMAT_TEXT),
                 'initial_text': answers[i]['text'],
             })
 
@@ -294,8 +307,8 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
         return {
             'solution': self.clean_solution_content(document),
-            'dirty_solution': document.to_format(self.format),
-            'raw_solution': document.to_text(),
+            'dirty_solution': self._format_doc(document),
+            'raw_solution': self._format_doc(document, doc_format = quizgen.constants.FORMAT_TEXT),
         }
 
     def create_answers_mdd(self, question_index, question_number, question, variant):
@@ -303,9 +316,9 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
         for key, items in question.answers.items():
             answers.append({
-                'label': items['key']['document'].to_format(self.format),
+                'label': self._format_doc(items['key']['document']),
                 'initial_label': items['key']['text'],
-                'raw_label': items['key']['document'].to_text(),
+                'raw_label': self._format_doc(items['key']['document'], doc_format = quizgen.constants.FORMAT_TEXT),
                 'choices': self._create_answers_mcq_list(items['values']),
             })
 
@@ -321,12 +334,12 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             document = item['values'][0]['document']
 
             answers.append({
-                'label': item['key']['document'].to_format(self.format),
-                'raw_label': item['key']['document'].to_text(),
+                'label': self._format_doc(item['key']['document']),
+                'raw_label': self._format_doc(item['key']['document'], doc_format = quizgen.constants.FORMAT_TEXT),
                 'initial_label': item['key']['text'],
                 'solution': self.clean_solution_content(document),
-                'dirty_solution': document.to_format(self.format),
-                'raw_solution': document.to_text(),
+                'dirty_solution': self._format_doc(document),
+                'raw_solution': self._format_doc(document, doc_format = quizgen.constants.FORMAT_TEXT),
             })
 
         return answers
@@ -337,16 +350,16 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         solutions = []
         for item in question.answers['']['values']:
             solutions.append({
-                'text': item['document'].to_format(self.format),
-                'raw_text': item['document'].to_text(),
+                'text': self._format_doc(item['document']),
+                'raw_text': self._format_doc(item['document'], doc_format = quizgen.constants.FORMAT_TEXT),
                 'initial_text': item['text'],
                 'clean': self.clean_solution_content(item['document']),
             })
 
         return {
             'solution': self.clean_solution_content(document),
-            'dirty_solution': document.to_format(self.format),
-            'raw_solution': document.to_text(),
+            'dirty_solution': self._format_doc(document),
+            'raw_solution': self._format_doc(document, doc_format = quizgen.constants.FORMAT_TEXT),
             'solutions': solutions,
         }
 
@@ -363,6 +376,36 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         return {
             'raw_solutions': raw_solutions,
             'solution': self.clean_solution_content(document),
-            'dirty_solution': document.to_format(self.format),
-            'raw_solution': document.to_text(),
+            'dirty_solution': self._format_doc(document),
+            'raw_solution': self._format_doc(document, doc_format = quizgen.constants.FORMAT_TEXT),
         }
+
+    def _format_doc(self, doc, doc_format = None, format_options = None):
+        if (doc_format is None):
+            doc_format = self.format
+
+        if (format_options is None):
+            format_options = self.parser_format_options
+
+        return doc.to_format(doc_format, **format_options)
+
+    def _store_images(self, link, base_dir):
+        if (self.image_base_dir is None):
+            self.image_base_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-images-')
+
+        if (re.match(r'^http(s)?://', link)):
+            temp_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-image-dl-')
+            in_path = quizgen.util.http.get_file(link, temp_dir)
+            image_id = link
+        else:
+            in_path = os.path.join(base_dir, link)
+            image_id = in_path
+
+        ext = os.path.splitext(in_path)[-1]
+        filename = "%03d%s" % (len(self.image_paths), ext)
+        out_path = os.path.join(self.image_base_dir, filename)
+
+        quizgen.util.file.copy_dirent(in_path, out_path)
+        self.image_paths[image_id] = out_path
+
+        return out_path

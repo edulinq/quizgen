@@ -101,6 +101,8 @@ Images can be include using the standard markdown syntax: `![alt text](url/path)
 ![Great Dane](tests/data/great-dane.jpg)
 ```
 
+All images pointing to a URL should start with "http/https".
+
 Images will generally be placed in-line,
 but can be put in their own block or even inside a table.
 

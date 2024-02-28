@@ -4,8 +4,9 @@ Convert a quiz into QTI using templates.
 
 import logging
 import os
+import pathlib
+import shutil
 import warnings
-import zipfile
 
 import bs4
 
@@ -35,17 +36,28 @@ QUESTION_TYPE_MAP = {
 TEMPLATE_FILENAME_ASSESSMENT_META = 'qti_assessment_meta.template'
 TEMPLATE_FILENAME_MANIFEST = 'qti_imsmanifest.template'
 
+OUT_DIR_IMAGES = 'images'
 OUT_FILENAME_QUIZ = 'quiz.xml'
 OUT_FILENAME_ASSESSMENT_META = 'assessment_meta.xml'
 OUT_FILENAME_MANIFEST = 'imsmanifest.xml'
 
 class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
-    def __init__(self, template_dir = DEFAULT_TEMPLATE_DIR, **kwargs):
+    def __init__(self, template_dir = DEFAULT_TEMPLATE_DIR, canvas = False, **kwargs):
+        parser_format_options = {}
+        if (canvas):
+            parser_format_options = {
+                'image_path_callback': self._store_images,
+                'force_raw_image_src': True,
+            }
+
         super().__init__(quizgen.constants.FORMAT_HTML, template_dir,
+                parser_format_options = parser_format_options,
                 jinja_filters = {
                     'to_xml': _to_xml,
                 },
                 **kwargs)
+
+        self.canvas = canvas
 
     def convert_variant(self, variant, **kwargs):
         # Parse and format the XML.
@@ -64,6 +76,10 @@ class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
         temp_dir = os.path.join(temp_dir, quiz.title)
         os.makedirs(temp_dir, exist_ok = True)
 
+        if (self.canvas):
+            self.image_base_dir = os.path.join(temp_dir, OUT_DIR_IMAGES)
+            os.makedirs(self.image_base_dir)
+
         path = os.path.join(temp_dir, OUT_FILENAME_QUIZ)
         quizgen.util.file.write(path, self.convert_variant(variant, **kwargs))
 
@@ -77,11 +93,7 @@ class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
         return path
 
     def _create_zip(self, quiz, path, temp_dir):
-        with zipfile.ZipFile(path, mode = 'w') as archive:
-            for filename in [OUT_FILENAME_QUIZ, OUT_FILENAME_ASSESSMENT_META, OUT_FILENAME_MANIFEST]:
-                in_path = os.path.join(temp_dir, filename)
-                name = '/'.join([quiz.title, filename])
-                archive.write(in_path, arcname = name)
+        shutil.make_archive(os.path.splitext(path)[0], 'zip', os.path.dirname(temp_dir), os.path.basename(temp_dir))
 
     def _format_xml(self, text):
         warnings.filterwarnings('ignore', category = bs4.builder.XMLParsedAsHTMLWarning)
@@ -103,13 +115,38 @@ class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
     def _convert_manifest(self, quiz, out_dir):
         template = self.env.get_template(TEMPLATE_FILENAME_MANIFEST)
 
-        quiz_context = quiz.to_dict(include_docs = False)
+        data = {
+            'quiz': quiz.to_dict(include_docs = False),
+            'files': [],
+        }
 
-        text = template.render(quiz = quiz_context)
+        for (old_path, new_path) in self.image_paths.items():
+            data['files'].append({
+                'type': 'image',
+                'id': os.path.splitext(os.path.basename(new_path))[0],
+                'raw_path': new_path,
+                'path': '/'.join([quiz.title, OUT_DIR_IMAGES, os.path.basename(new_path)]),
+                'filename': os.path.basename(new_path),
+            })
+
+        text = template.render(**data)
         text = self._format_xml(text)
 
         path = os.path.join(out_dir, OUT_FILENAME_MANIFEST)
         quizgen.util.file.write(path, text)
+
+    def _store_images(self, link, base_dir):
+        """
+        Override the final path that is returned to instead point to the Canvas path.
+        Note that this method should only be called when (self.canvas == True).
+        """
+
+        path = super(QTITemplateConverter, self)._store_images(link, base_dir)
+
+        quiz_name = os.path.basename(os.path.dirname(self.image_base_dir))
+        filename = os.path.basename(path)
+
+        return '/'.join(['$IMS-CC-FILEBASE$', quiz_name, OUT_DIR_IMAGES, filename])
 
 def _to_xml(item):
     """

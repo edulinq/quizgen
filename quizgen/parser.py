@@ -383,21 +383,31 @@ class ImageNode(ParseNode):
         self._text = text
         self._link = link
 
-    def to_markdown(self, **kwargs):
-        return f"![{self._text}]({self._link})"
+        self._computed_path = None
 
-    def to_text(self, **kwargs):
-        return f"{self._text} ({self._link})"
+    def to_markdown(self, base_dir = '.', image_path_callback = None, **kwargs):
+        self._handle_callback(image_path_callback, base_dir)
+        return f"![{self._text}]({self._computed_path})"
 
-    def to_tex(self, base_dir = '.', **kwargs):
-        path = os.path.join(base_dir, self._link)
-        return rf"\includegraphics[width=0.5\textwidth]{{{path}}}"
+    def to_text(self, base_dir = '.', image_path_callback = None, **kwargs):
+        self._handle_callback(image_path_callback, base_dir)
+        return f"{self._text} ({self._computed_path})"
 
-    def to_html(self, base_dir = '.', canvas_instance = None, **kwargs):
-        if (re.match(r'^http(s)?://', self._link)):
-            return f"<img src='{self._link}' alt='{self._text}' />"
+    def to_tex(self, base_dir = '.', image_path_callback = None, **kwargs):
+        self._handle_callback(image_path_callback, base_dir)
+        # TEST
+        # path = os.path.join(base_dir, self._computed_path)
+        return rf"\includegraphics[width=0.5\textwidth]{{{self._computed_path}}}"
 
-        path = os.path.realpath(os.path.join(base_dir, self._link))
+    def to_html(self, base_dir = '.', canvas_instance = None,
+            force_raw_image_src = False, image_path_callback = None,
+            **kwargs):
+        self._handle_callback(image_path_callback, base_dir)
+
+        if (force_raw_image_src or re.match(r'^http(s)?://', self._computed_path)):
+            return f"<img src='{self._computed_path}' alt='{self._text}' />"
+
+        path = os.path.realpath(os.path.join(base_dir, self._computed_path))
 
         if (canvas_instance is None):
             # If we are not uploading to canvas, do a base64 encode of the image.
@@ -405,7 +415,7 @@ class ImageNode(ParseNode):
             src = f"data:{mime};base64,{content}"
             return f"<img src='{src}' alt='{self._text}' />"
 
-        # Canvas requires uploading the image, which should have been done via quizgen.converter.canvas.upload_canvas_files().
+        # Canvas requires uploading the image, which should have been done via Canvas uploader.
 
         file_id = canvas_instance.context.get('file_ids', {}).get(path)
         if (file_id is None):
@@ -427,6 +437,15 @@ class ImageNode(ParseNode):
             "text": self._text,
             "link": self._link,
         }
+
+    def _handle_callback(self, image_path_callback, base_dir):
+        if (self._computed_path is not None):
+            return
+
+        if (image_path_callback is None):
+            self._computed_path = self._link
+        else:
+            self._computed_path = image_path_callback(self._link, base_dir)
 
 class TableNode(ParseNode):
     def __init__(self, rows):

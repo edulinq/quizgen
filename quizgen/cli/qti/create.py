@@ -15,7 +15,7 @@ def run(args):
 
     quiz = quizgen.quiz.Quiz.from_path(args.path)
 
-    converter = quizgen.converter.qtitemplate.QTITemplateConverter()
+    converter = quizgen.converter.qtitemplate.QTITemplateConverter(canvas = args.canvas)
     converter.convert_quiz(quiz, out_dir = args.out_dir)
 
     return 0
@@ -27,6 +27,10 @@ def _get_parser():
     parser.add_argument('path',
         type = str,
         help = 'The path to a quiz json file.')
+
+    parser.add_argument('--canvas', dest = 'canvas',
+        action = 'store_true', default = False,
+        help = 'Create the QTI with Canvas-specific tweaks (default: %(default)s).')
 
     parser.add_argument('--outdir', dest = 'out_dir',
         action = 'store', type = str, default = '.',
