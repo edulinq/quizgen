@@ -279,7 +279,7 @@ def create_question(quiz_id, group_id, question, index, instance):
 def _create_question_json(group_id, question, index, instance = None):
     question_type = QUESTION_TYPE_MAP[question.question_type]
 
-    name = question.base_name
+    name = question.name
     if (question.custom_header is not None):
         name = question.custom_header
 

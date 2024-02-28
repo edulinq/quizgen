@@ -1,4 +1,4 @@
-<section ident="{{ question.id }}" title="{{ question.base_name }}">
+<section ident="{{ question.id }}" title="{{ question.name }}">
     <selection_ordering>
         <selection>
             <selection_number>{{ question.id }}</selection_number>
@@ -7,7 +7,7 @@
             </selection_extension>
         </selection>
     </selection_ordering>
-    <item ident="{{ question.id }}.0" title="{{ question.base_name }}">
+    <item ident="{{ question.id }}.0" title="{{ question.name }}">
         <itemmetadata>
             <qtimetadata>
                 <qtimetadatafield>

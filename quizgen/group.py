@@ -117,7 +117,7 @@ class Group(object):
         # Rename questions if there are more than one.
         if (len(questions) > 1):
             for i in range(len(questions)):
-                questions[i].base_name = "%s - %d" % (self.name, i + 1)
+                questions[i].name = "%s - %d" % (self.name, i + 1)
 
         # Inherit position-specific hints.
         questions[0].add_hints(self.hints_first)

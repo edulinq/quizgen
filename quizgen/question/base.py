@@ -38,7 +38,7 @@ class Question(abc.ABC):
 
     def __init__(self, prompt = '', question_type = '', answers = None,
             base_dir = '.',
-            points = 0, base_name = '',
+            points = 0, name = '',
             shuffle_answers = True,
             custom_header = None, skip_numbering = None,
             hints = None, feedback = None,
@@ -52,7 +52,7 @@ class Question(abc.ABC):
         self.answers = answers
 
         self.points = points
-        self.base_name = base_name
+        self.name = name
 
         self.hints = hints
         self.feedback = feedback
@@ -90,7 +90,7 @@ class Question(abc.ABC):
         """
 
         self.points = group.points
-        self.base_name = group.name
+        self.name = group.name
 
         if (group.custom_header is not None):
             self.custom_header = group.custom_header
@@ -207,11 +207,11 @@ class Question(abc.ABC):
     @staticmethod
     def _fetch_question_class(question_type):
         if (not Question._imported_this_package):
-            for _, base_name, is_package in pkgutil.iter_modules([THIS_DIR]):
+            for _, name, is_package in pkgutil.iter_modules([THIS_DIR]):
                 if (is_package):
                     continue
 
-                module_name = BASE_MODULE_NAME + '.' + base_name
+                module_name = BASE_MODULE_NAME + '.' + name
                 importlib.import_module(module_name)
 
             _imported_this_package = True

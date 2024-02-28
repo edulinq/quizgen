@@ -115,7 +115,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             try:
                 questions.append(self.create_question(question_index, question_number, question, variant))
             except Exception as ex:
-                raise ValueError("Failed to convert question %d (%s)." % (question_index, question.base_name)) from ex
+                raise ValueError("Failed to convert question %d (%s)." % (question_index, question.name)) from ex
 
             if (not question.should_skip_numbering()):
                 question_number += 1

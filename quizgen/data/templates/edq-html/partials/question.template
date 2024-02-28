@@ -1,4 +1,4 @@
-<div class='qg-quiz-question' data-type='{{ question.question_type }}' data-number='{{ question.number }}' data-name='{{ question.base_name }}' data-points='{{ question.points }}'>
+<div class='qg-quiz-question' data-type='{{ question.question_type }}' data-number='{{ question.number }}' data-name='{{ question.name }}' data-points='{{ question.points }}'>
     {% if question.custom_header is none %}
         <h2 class='qg-quiz-question-name'>Question {{ question.number }} ({{ question.points }} Points)</h2>
     {% elif question.custom_header != '' %}
