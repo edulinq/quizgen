@@ -18,6 +18,7 @@ old/
 
 /quiz.*
 *.gz
+*.zip
 
 /.secrets
 

@@ -33,7 +33,7 @@ def write(path, contents):
 def get_temp_path(prefix = '', suffix = '', rm = True, mkdir = True):
     """
     Get a path to a valid temp dirent.
-    mkdir will determine of this directory will exist on return.
+    mkdir will determine if this directory will exist on return.
     If rm is True, then the dirent will be attempted to be deleted on exit
     (no error will occur if the path is not there).
     """
