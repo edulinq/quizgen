@@ -37,7 +37,27 @@
                 {% if answer.correct %}
                     <setvar action="Set" varname="SCORE">100</setvar>
                 {% endif %}
+                {% if answer.feedback %}
+                    <displayfeedback feedbacktype="Response" linkrefid="{{ id }}_fb"/>
+                {% endif %}
             </respcondition>
         {% endfor %}
     </resprocessing>
+{% endmacro %}
+
+{% macro feedback(question_id, answers) %}
+    {% for answer in answers %}
+        {% set id = 'af' ~ question_id ~ 'f' ~ loop.index0 %}
+        {% if answer.feedback %}
+            <itemfeedback ident="{{ id }}_fb">
+                <flow_mat>
+                    <material>
+                        <mattext texttype="text/html">
+                            {{ answer.feedback }}
+                        </mattext>
+                    </material>
+                </flow_mat>
+            </itemfeedback>
+        {% endif %}
+    {% endfor %}
 {% endmacro %}

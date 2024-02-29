@@ -13,3 +13,7 @@
 {% block scoring %}
     {{ answer_list.scoring(question.id, question.answers) }}
 {% endblock %}
+
+{% block additional_feedback %}
+    {{ answer_list.feedback(question.id, question.answers) }}
+{% endblock %}

@@ -339,12 +339,23 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         choices = []
 
         for i in range(len(answers)):
-            choices.append({
-                'correct': answers[i]['correct'],
-                'text': self._format_doc(answers[i]['document']),
-                'raw_text': self._format_doc(answers[i]['document'], doc_format = quizgen.constants.FORMAT_TEXT),
-                'initial_text': answers[i]['text'],
-            })
+            answer = answers[i]
+
+            choice = {
+                'correct': answer['correct'],
+                'text': self._format_doc(answer['document']),
+                'raw_text': self._format_doc(answer['document'], doc_format = quizgen.constants.FORMAT_TEXT),
+                'initial_text': answer['text'],
+            }
+
+            if ('feedback' in answer):
+                choice.update({
+                    'feedback': self._format_doc(answer['feedback']['document']),
+                    'raw_feedback': self._format_doc(answer['feedback']['document'], doc_format = quizgen.constants.FORMAT_TEXT),
+                    'initial_feedback': answer['feedback']['text'],
+                })
+
+            choices.append(choice)
 
         return choices
 

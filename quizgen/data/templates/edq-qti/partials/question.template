@@ -46,32 +46,39 @@
         </resprocessing>
     {% endblock %}
     {% block feedback %}
-        <itemfeedback ident="general_fb">
-            <flow_mat>
-                <material>
-                    <mattext texttype="text/html">
-                        {{ question.feedback.general }}
-                    </mattext>
-                </material>
-            </flow_mat>
-        </itemfeedback>
-        <itemfeedback ident="correct_fb">
-            <flow_mat>
-                <material>
-                    <mattext texttype="text/html">
-                        {{ question.feedback.correct }}
-                    </mattext>
-                </material>
-            </flow_mat>
-        </itemfeedback>
-        <itemfeedback ident="general_incorrect_fb">
-            <flow_mat>
-                <material>
-                    <mattext texttype="text/html">
-                        {{ question.feedback.incorrect }}
-                    </mattext>
-                </material>
-            </flow_mat>
-        </itemfeedback>
+        {% if question.feedback.general %}
+            <itemfeedback ident="general_fb">
+                <flow_mat>
+                    <material>
+                        <mattext texttype="text/html">
+                            {{ question.feedback.general }}
+                        </mattext>
+                    </material>
+                </flow_mat>
+            </itemfeedback>
+        {% endif %}
+        {% if question.feedback.correct %}
+            <itemfeedback ident="correct_fb">
+                <flow_mat>
+                    <material>
+                        <mattext texttype="text/html">
+                            {{ question.feedback.correct }}
+                        </mattext>
+                    </material>
+                </flow_mat>
+            </itemfeedback>
+        {% endif %}
+        {% if question.feedback.incorrect %}
+            <itemfeedback ident="general_incorrect_fb">
+                <flow_mat>
+                    <material>
+                        <mattext texttype="text/html">
+                            {{ question.feedback.incorrect }}
+                        </mattext>
+                    </material>
+                </flow_mat>
+            </itemfeedback>
+        {% endif %}
+        {% block additional_feedback %}{% endblock %}
     {% endblock %}
 </item>
