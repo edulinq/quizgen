@@ -7,6 +7,7 @@ import string
 import quizgen.constants
 import quizgen.converter.converter
 import quizgen.parser
+import quizgen.quiz
 import quizgen.util.file
 import quizgen.util.http
 import quizgen.variant
@@ -15,6 +16,7 @@ import jinja2
 
 TEMPLATE_FILENAME_QUIZ = 'quiz.template'
 TEMPLATE_FILENAME_QUESTION_SEP = 'question-separator.template'
+TEMPLATE_FILENAME_GROUP = 'group.template'
 
 RIGHT_IDS = string.ascii_uppercase
 LEFT_IDS = [str(i + 1) for i in range(len(RIGHT_IDS))]
@@ -25,11 +27,14 @@ DEFAULT_JINJA_OPTIONS = {
     'autoescape': jinja2.select_autoescape(),
 }
 
+DEFAULT_ID_DELIM = '.'
+
 class TemplateConverter(quizgen.converter.converter.Converter):
     def __init__(self, format, template_dir,
             jinja_options = {}, jinja_filters = {},
             parser_format_options = {},
             image_base_dir = None, image_relative_root = None, cleanup_images = True,
+            id_delim = DEFAULT_ID_DELIM,
             **kwargs):
         super().__init__(**kwargs)
 
@@ -41,6 +46,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         self.template_dir = template_dir
 
         self.parser_format_options = parser_format_options
+        self.id_delim = id_delim
 
         # Some converters will need to store image paths.
         # Using the _store_images() callback will put the images inside image_base_dir.
@@ -67,7 +73,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             self.env.filters[name] = function
 
         # Methods to generate answers.
-        # Signatuire: func(self, question_index, question_number, question, variant)
+        # Signatuire: func(self, question_id, question_number, question, variant)
         self.answer_functions = {
             quizgen.constants.QUESTION_TYPE_ESSAY: 'create_answers_essay',
             quizgen.constants.QUESTION_TYPE_FIMB: 'create_answers_fimb',
@@ -82,60 +88,101 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             quizgen.constants.QUESTION_TYPE_TF: 'create_answers_tf',
         }
 
+    def convert_quiz(self, quiz, **kwargs):
+        return self._convert_container(quiz, quizgen.quiz.Quiz, 'quiz', self.create_groups)
+
     def convert_variant(self, variant, **kwargs):
-        if (not isinstance(variant, quizgen.variant.Variant)):
-            raise ValueError("Template quiz converter requires a quizgen.variant.Variant type, found %s." % (type(variant)))
+        return self._convert_container(variant, quizgen.variant.Variant, 'variant', self.create_questions)
 
-        questions_text = self.create_questions(variant)
+    def _convert_container(self, container, container_type, container_label, container_creation_function):
+        if (not isinstance(container, container_type)):
+            raise ValueError("Template %s converter requires a %s, found %s." % (
+                    container_label, str(container_type), type(container)))
 
-        variant_context = variant.to_dict(include_docs = False)
-        variant_context['description_text'] = self._format_doc(variant.description_document)
+        inner_text = container_creation_function(container)
+
+        inner_context = container.to_dict(include_docs = False)
+        inner_context['description_text'] = self._format_doc(container.description_document)
 
         context = {
-            'quiz': variant_context,
+            'quiz': inner_context,
             'answer_key': self.answer_key,
-            'questions_text': questions_text,
+            'inner_text': inner_text,
         }
 
-        variant_template = self.env.get_template(TEMPLATE_FILENAME_QUIZ)
-        text = variant_template.render(**context)
+        template = self.env.get_template(TEMPLATE_FILENAME_QUIZ)
+        text = template.render(**context)
 
         return text
 
+    def create_groups(self, quiz):
+        return self._create_item_collection(quiz, 'groups', 'group', self.create_group)
+
     def create_questions(self, variant):
-        questions = []
+        return self._create_item_collection(variant, 'questions', 'question', self.create_question)
 
-        question_number = 1
-        for question_index in range(len(variant.questions)):
-            question = variant.questions[question_index]
+    def _create_item_collection(self, container, container_attr, label, item_creation_function, id_prefix = None):
+        """
+        Create a collection of groups (for quizzes) or questions (for variants or inside groups)
+        from a container (variant or quiz).
+        """
 
-            if (question_index != 0):
-                questions.append(self.create_question_separator(variant))
+        result = []
+        number = 1
+        items = getattr(container, container_attr)
+
+        for index in range(len(items)):
+            item = items[index]
+
+            item_id = str(index)
+            if (id_prefix is not None):
+                item_id = self.id_delim.join([id_prefix, item_id])
+
+            if (index != 0):
+                result.append(self.create_question_separator(container))
 
             try:
-                questions.append(self.create_question(question_index, question_number, question, variant))
+                result.append(item_creation_function(item_id, number, item, container))
             except Exception as ex:
-                raise ValueError("Failed to convert question %d (%s)." % (question_index, question.name)) from ex
+                raise ValueError("Failed to convert %s %d (%s: %s)." % (label, index, item_id, item.name)) from ex
 
-            if (not question.should_skip_numbering()):
-                question_number += 1
+            if (not item.should_skip_numbering()):
+                number += 1
 
-        return "\n\n".join(questions)
+        return "\n\n".join(result)
 
-    def create_question(self, question_index, question_number, question, variant):
+    def create_group(self, group_index, group_number, group, quiz):
+        data = group.to_dict(include_docs = False)
+        data['id'] = group_index
+        data['number'] = group_number
+
+        questions_text = self._create_item_collection(group, 'questions', 'question', self.create_question, id_prefix = group_index)
+
+        context = {
+            'quiz': quiz,
+            'group': data,
+            'questions_text': questions_text,
+        }
+
+        template = self.env.get_template(TEMPLATE_FILENAME_GROUP)
+        text = template.render(**context)
+
+        return text
+
+    def create_question(self, question_id, question_number, question, variant):
         question_type = question.question_type
         if (question_type not in self.answer_functions):
             raise ValueError("Unsupported question type: '%s'." % (question_type))
 
         data = question.to_dict(include_docs = False)
         data['prompt_text'] = self._format_doc(question.prompt['document'])
-        data['id'] = question_index
+        data['id'] = question_id
         data['number'] = question_number
 
         # Stash the old answers and add in new ones.
         data['answers_raw'] = data['answers']
         answers_method = getattr(self, self.answer_functions[question_type])
-        data['answers'] = answers_method(question_index, question_number, question, variant)
+        data['answers'] = answers_method(question_id, question_number, question, variant)
 
         data['feedback'] = {}
         for key, item in question.feedback.items():
@@ -182,10 +229,10 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
         return text
 
-    def create_answers_tf(self, question_index, question_number, question, variant):
+    def create_answers_tf(self, question_id, question_number, question, variant):
         return question.answers
 
-    def create_answers_matching(self, question_index, question_number, question, variant):
+    def create_answers_matching(self, question_id, question_number, question, variant):
         lefts = []
         rights = []
 
@@ -248,17 +295,17 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             right_index = matches[left_index]
 
             lefts[left_index] = {
-                'id': "%d.%s" % (question_index, left_ids[left_index]),
+                'id': self.id_delim.join([question_id, left_ids[left_index]]),
                 'text': lefts[left_index]['text'],
                 'initial_text': lefts[left_index]['initial_text'],
                 'raw_text': lefts[left_index]['raw_text'],
                 'solution': right_ids[right_index],
-                'solution_id': "%d.%s" % (question_index, right_ids[right_index]),
+                'solution_id': self.id_delim.join([question_id, right_ids[right_index]]),
             }
 
         for right_index in range(len(rights)):
             rights[right_index] = {
-                'id': "%d.%s" % (question_index, right_ids[right_index]),
+                'id': self.id_delim.join([question_id, right_ids[right_index]]),
                 'text': rights[right_index]['text'],
                 'initial_text': rights[right_index]['initial_text'],
                 'raw_text': rights[right_index]['raw_text'],
@@ -277,7 +324,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
     def get_matching_right_ids(self):
         return RIGHT_IDS
 
-    def create_answers_mcq(self, question_index, question_number, question, variant):
+    def create_answers_mcq(self, question_id, question_number, question, variant):
         return self._create_answers_mcq_list(question.answers)
 
     def _create_answers_mcq_list(self, answers):
@@ -293,10 +340,10 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
         return choices
 
-    def create_answers_text_only(self, question_index, question_number, question, variant):
+    def create_answers_text_only(self, question_id, question_number, question, variant):
         return None
 
-    def create_answers_numerical(self, question_index, question_number, question, variant):
+    def create_answers_numerical(self, question_id, question_number, question, variant):
         answer = question.answers[0]
 
         if (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_EXACT):
@@ -318,7 +365,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             'raw_solution': self._format_doc(document, doc_format = quizgen.constants.FORMAT_TEXT),
         }
 
-    def create_answers_mdd(self, question_index, question_number, question, variant):
+    def create_answers_mdd(self, question_id, question_number, question, variant):
         answers = []
 
         for key, items in question.answers.items():
@@ -331,10 +378,10 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
         return answers
 
-    def create_answers_ma(self, question_index, question_number, question, variant):
+    def create_answers_ma(self, question_id, question_number, question, variant):
         return self._create_answers_mcq_list(question.answers)
 
-    def create_answers_fimb(self, question_index, question_number, question, variant):
+    def create_answers_fimb(self, question_id, question_number, question, variant):
         answers = []
 
         for (key, item) in question.answers.items():
@@ -351,7 +398,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
         return answers
 
-    def create_answers_fitb(self, question_index, question_number, question, variant):
+    def create_answers_fitb(self, question_id, question_number, question, variant):
         document = question.answers['']['values'][0]['document']
 
         solutions = []
@@ -370,13 +417,13 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             'solutions': solutions,
         }
 
-    def create_answers_sa(self, question_index, question_number, question, variant):
-        return self._create_answers_text(question_index, question_number, question, variant)
+    def create_answers_sa(self, question_id, question_number, question, variant):
+        return self._create_answers_text(question_id, question_number, question, variant)
 
-    def create_answers_essay(self, question_index, question_number, question, variant):
-        return self._create_answers_text(question_index, question_number, question, variant)
+    def create_answers_essay(self, question_id, question_number, question, variant):
+        return self._create_answers_text(question_id, question_number, question, variant)
 
-    def _create_answers_text(self, question_index, question_number, question, variant):
+    def _create_answers_text(self, question_id, question_number, question, variant):
         document = question.answers[0]['document']
         raw_solutions = [answer['text'] for answer in question.answers]
 

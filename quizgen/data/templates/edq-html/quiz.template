@@ -22,7 +22,7 @@
 
             <div class='qg-quiz-body'>
                 <form class='qg-quiz-form'>
-                    {{ questions_text }}
+                    {{ inner_text }}
 
                     <hr>
 

@@ -64,6 +64,9 @@ class Group(object):
         value['questions'] = [question.to_dict(include_docs = include_docs) for question in self.questions]
         return value
 
+    def should_skip_numbering(self):
+        return ((self.skip_numbering is not None) and (self.skip_numbering))
+
     def collect_file_paths(self):
         paths = []
 

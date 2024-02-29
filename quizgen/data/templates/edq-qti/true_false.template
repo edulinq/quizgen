@@ -1,26 +1,15 @@
 {% extends "partials/question.template" %}
 
+{% import 'partials/answer_list.template' as answer_list %}
+
 {% block field_ids %}
-    {% for answer in question.answers %}
-        {% set id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
-        {% if not loop.last %}
-            {% set id = id ~ ',' %}
-        {% endif %}
-        {{- id -}}
-    {% endfor %}
+    {{ answer_list.field_ids(question.id, question.answers) }}
 {% endblock %}
 
 {% block body %}
-    <response_lid ident="response1" rcardinality="Single">
-        <render_choice>
-            {% for answer in question.answers %}
-                {% set id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
-                <response_label ident="{{ id }}">
-                    <material>
-                        <mattext texttype="text/html">{{ answer.text }}</mattext>
-                    </material>
-                </response_label>
-            {% endfor %}
-        </render_choice>
-    </response_lid>
+    {{ answer_list.body(question.id, question.answers) }}
+{% endblock %}
+
+{% block scoring %}
+    {{ answer_list.scoring(question.id, question.answers) }}
 {% endblock %}

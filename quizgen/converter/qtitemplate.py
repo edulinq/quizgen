@@ -41,17 +41,24 @@ OUT_FILENAME_QUIZ = 'quiz.xml'
 OUT_FILENAME_ASSESSMENT_META = 'assessment_meta.xml'
 OUT_FILENAME_MANIFEST = 'imsmanifest.xml'
 
+DEFAULT_ID_DELIM = '.'
+CANVAS_ID_DELIM = 'f'
+
 class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
     def __init__(self, template_dir = DEFAULT_TEMPLATE_DIR, canvas = False, **kwargs):
         parser_format_options = {}
+        id_delim = DEFAULT_ID_DELIM
+
         if (canvas):
             parser_format_options = {
                 'image_path_callback': self._store_images,
                 'force_raw_image_src': True,
             }
+            id_delim = CANVAS_ID_DELIM
 
         super().__init__(quizgen.constants.FORMAT_HTML, template_dir,
                 parser_format_options = parser_format_options,
+                id_delim = id_delim,
                 jinja_filters = {
                     'to_xml': _to_xml,
                 },
@@ -69,9 +76,6 @@ class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
         return context
 
     def convert_quiz(self, quiz, out_dir = '.', **kwargs):
-        # TEST
-        variant = quiz.create_variant(**kwargs)
-
         temp_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-qti-')
         temp_dir = os.path.join(temp_dir, quiz.title)
         os.makedirs(temp_dir, exist_ok = True)
@@ -81,7 +85,8 @@ class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
             os.makedirs(self.image_base_dir)
 
         path = os.path.join(temp_dir, OUT_FILENAME_QUIZ)
-        quizgen.util.file.write(path, self.convert_variant(variant, **kwargs))
+        text = super(QTITemplateConverter, self).convert_quiz(quiz, **kwargs)
+        quizgen.util.file.write(path, self._format_xml(text))
 
         self._convert_assessment_meta(quiz, temp_dir)
         self._convert_manifest(quiz, temp_dir)

@@ -1,87 +1,77 @@
-<section ident="{{ question.id }}" title="{{ question.name }}">
-    <selection_ordering>
-        <selection>
-            <selection_number>{{ question.id }}</selection_number>
-            <selection_extension>
-                <points_per_item>{{ question.points }}</points_per_item>
-            </selection_extension>
-        </selection>
-    </selection_ordering>
-    <item ident="{{ question.id }}.0" title="{{ question.name }}">
-        <itemmetadata>
-            <qtimetadata>
-                <qtimetadatafield>
-                    <fieldlabel>question_type</fieldlabel>
-                    <fieldentry>{{ question.mapped_question_type }}</fieldentry>
-                </qtimetadatafield>
-                <qtimetadatafield>
-                    <fieldlabel>points_possible</fieldlabel>
-                    <fieldentry>{{ question.points }}</fieldentry>
-                </qtimetadatafield>
-                <qtimetadatafield>
-                    <fieldlabel>original_answer_ids</fieldlabel>
-                    <fieldentry>{% block field_ids %}{% endblock %}</fieldentry>
-                </qtimetadatafield>
-                <qtimetadatafield>
-                    <fieldlabel>assessment_question_identifierref</fieldlabel>
-                    <fieldentry>{{ question.id }}.0.0</fieldentry>
-                </qtimetadatafield>
-            </qtimetadata>
-        </itemmetadata>
-        <presentation>
-            <material>
-                <mattext texttype="text/html">
-                    {{ question.prompt_text }}
-                </mattext>
-            </material>
-            {% block body required %}{% endblock %}
-        </presentation>
-        {% block scoring %}
-            <resprocessing>
-                <outcomes>
-                    <decvar maxvalue="100" minvalue="0" varname="SCORE" vartype="Decimal"/>
-                </outcomes>
-                <respcondition continue="Yes">
-                    <conditionvar>
-                        <other/>
-                    </conditionvar>
-                    <displayfeedback feedbacktype="Response" linkrefid="general_fb"/>
-                </respcondition>
-                <respcondition continue="No">
-                    <conditionvar>
-                        <other/>
-                    </conditionvar>
-                </respcondition>
-            </resprocessing>
-        {% endblock %}
-        {% block feedback %}
-            <itemfeedback ident="general_fb">
-                <flow_mat>
-                    <material>
-                        <mattext texttype="text/html">
-                            {{ question.feedback.general }}
-                        </mattext>
-                    </material>
-                </flow_mat>
-            </itemfeedback>
-            <itemfeedback ident="correct_fb">
-                <flow_mat>
-                    <material>
-                        <mattext texttype="text/html">
-                            {{ question.feedback.correct }}
-                        </mattext>
-                    </material>
-                </flow_mat>
-            </itemfeedback>
-            <itemfeedback ident="general_incorrect_fb">
-                <flow_mat>
-                    <material>
-                        <mattext texttype="text/html">
-                            {{ question.feedback.incorrect }}
-                        </mattext>
-                    </material>
-                </flow_mat>
-            </itemfeedback>
-        {% endblock %}
-    </item>
-</section>
+<item ident="question_{{ question.id }}" title="{{ question.name }}">
+    <itemmetadata>
+        <qtimetadata>
+            <qtimetadatafield>
+                <fieldlabel>question_type</fieldlabel>
+                <fieldentry>{{ question.mapped_question_type }}</fieldentry>
+            </qtimetadatafield>
+            <qtimetadatafield>
+                <fieldlabel>points_possible</fieldlabel>
+                <fieldentry>{{ question.points }}</fieldentry>
+            </qtimetadatafield>
+            <qtimetadatafield>
+                <fieldlabel>original_answer_ids</fieldlabel>
+                <fieldentry>{% block field_ids %}{% endblock %}</fieldentry>
+            </qtimetadatafield>
+            <qtimetadatafield>
+                <fieldlabel>assessment_question_identifierref</fieldlabel>
+                <fieldentry>question_{{ question.id }}</fieldentry>
+            </qtimetadatafield>
+        </qtimetadata>
+    </itemmetadata>
+    <presentation>
+        <material>
+            <mattext texttype="text/html">
+                {{ question.prompt_text }}
+            </mattext>
+        </material>
+        {% block body required %}{% endblock %}
+    </presentation>
+    {% block scoring %}
+        <resprocessing>
+            <outcomes>
+                <decvar maxvalue="100" minvalue="0" varname="SCORE" vartype="Decimal"/>
+            </outcomes>
+            <respcondition continue="Yes">
+                <conditionvar>
+                    <other/>
+                </conditionvar>
+                <displayfeedback feedbacktype="Response" linkrefid="general_fb"/>
+            </respcondition>
+            <respcondition continue="No">
+                <conditionvar>
+                    <other/>
+                </conditionvar>
+            </respcondition>
+        </resprocessing>
+    {% endblock %}
+    {% block feedback %}
+        <itemfeedback ident="general_fb">
+            <flow_mat>
+                <material>
+                    <mattext texttype="text/html">
+                        {{ question.feedback.general }}
+                    </mattext>
+                </material>
+            </flow_mat>
+        </itemfeedback>
+        <itemfeedback ident="correct_fb">
+            <flow_mat>
+                <material>
+                    <mattext texttype="text/html">
+                        {{ question.feedback.correct }}
+                    </mattext>
+                </material>
+            </flow_mat>
+        </itemfeedback>
+        <itemfeedback ident="general_incorrect_fb">
+            <flow_mat>
+                <material>
+                    <mattext texttype="text/html">
+                        {{ question.feedback.incorrect }}
+                    </mattext>
+                </material>
+            </flow_mat>
+        </itemfeedback>
+    {% endblock %}
+</item>
