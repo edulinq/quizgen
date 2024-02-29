@@ -1,4 +1,4 @@
-<item ident="question_{{ question.id }}" title="{{ question.name }}">
+<item ident="ef{{ question.id }}" title="{{ question.name }}">
     <itemmetadata>
         <qtimetadata>
             <qtimetadatafield>
@@ -15,7 +15,7 @@
             </qtimetadatafield>
             <qtimetadatafield>
                 <fieldlabel>assessment_question_identifierref</fieldlabel>
-                <fieldentry>question_{{ question.id }}</fieldentry>
+                <fieldentry>ef{{ question.id }}</fieldentry>
             </qtimetadatafield>
         </qtimetadata>
     </itemmetadata>

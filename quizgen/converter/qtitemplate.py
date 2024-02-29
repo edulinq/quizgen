@@ -62,6 +62,9 @@ class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
                 jinja_filters = {
                     'to_xml': _to_xml,
                 },
+                jinja_globals = {
+                    'canvas': canvas,
+                },
                 **kwargs)
 
         self.canvas = canvas

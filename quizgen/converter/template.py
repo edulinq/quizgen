@@ -31,7 +31,7 @@ DEFAULT_ID_DELIM = '.'
 
 class TemplateConverter(quizgen.converter.converter.Converter):
     def __init__(self, format, template_dir,
-            jinja_options = {}, jinja_filters = {},
+            jinja_options = {}, jinja_filters = {}, jinja_globals = {},
             parser_format_options = {},
             image_base_dir = None, image_relative_root = None, cleanup_images = True,
             id_delim = DEFAULT_ID_DELIM,
@@ -68,6 +68,8 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             loader = jinja2.FileSystemLoader(self.template_dir, followlinks = True),
             **self.jinja_options,
         )
+
+        self.env.globals.update(jinja_globals)
 
         for (name, function) in jinja_filters.items():
             self.env.filters[name] = function
@@ -301,6 +303,10 @@ class TemplateConverter(quizgen.converter.converter.Converter):
                 'raw_text': lefts[left_index]['raw_text'],
                 'solution': right_ids[right_index],
                 'solution_id': self.id_delim.join([question_id, right_ids[right_index]]),
+                'index': left_index,
+                'solution_index': right_index,
+                'one_index': left_index + 1,
+                'solution_one_index': right_index + 1,
             }
 
         for right_index in range(len(rights)):
@@ -310,6 +316,8 @@ class TemplateConverter(quizgen.converter.converter.Converter):
                 'initial_text': rights[right_index]['initial_text'],
                 'raw_text': rights[right_index]['raw_text'],
                 'label': right_ids[right_index],
+                'index': right_index,
+                'one_index': right_index + 1,
             }
 
         return {

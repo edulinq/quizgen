@@ -2,7 +2,7 @@
 
 {% block field_ids %}
     {% for left in question.answers.lefts %}
-        {% set id = left.id %}
+        {% set id = left.one_index %}
         {% if not loop.last %}
             {% set id = id ~ ',' %}
         {% endif %}
@@ -12,15 +12,23 @@
 
 {% block body %}
     {% for left in question.answers.lefts %}
-        <response_lid ident="{{ left.id }}">
+        <response_lid ident="response_{{ left.one_index }}">
             <material>
-                <mattext texttype="text/plain">{{ left.text }}</mattext>
+                {% if canvas %}
+                    <mattext texttype="text/plain">{{ left.raw_text }}</mattext>
+                {% else %}
+                    <mattext texttype="text/html">{{ left.text }}</mattext>
+                {% endif %}
             </material>
             <render_choice>
             {% for right in question.answers.rights %}
-                <response_label ident="{{ left.id}}.{{ right.id }}">
+                <response_label ident="{{ right.one_index }}">
                     <material>
-                        <mattext>{{ right.text }}</mattext>
+                        {% if canvas %}
+                            <mattext>{{ right.raw_text }}</mattext>
+                        {% else %}
+                            <mattext>{{ right.text }}</mattext>
+                        {% endif %}
                     </material>
                 </response_label>
             {% endfor %}
@@ -37,9 +45,9 @@
         {% for left in question.answers.lefts %}
             <respcondition>
                 <conditionvar>
-                    <varequal respident="{{ left.id }}">{{ left.id }}.{{ left.solution_id }}</varequal>
+                    <varequal respident="response_{{ left.one_index }}">{{ left.solution_one_index }}</varequal>
                 </conditionvar>
-                <setvar varname="SCORE" action="Add">{{ question.points / (question.answers.lefts | length) }}</setvar>
+                <setvar varname="SCORE" action="Add">{{ (100.0 / (question.answers.lefts | length)) | round(2) }}</setvar>
             </respcondition>
         {% endfor %}
     </resprocessing>
