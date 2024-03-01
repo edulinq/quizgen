@@ -15,7 +15,8 @@
 {% block body %}
     {% for part in question.answers %}
         {% set part_id = 'af' ~ question.id ~ 'f' ~ loop.index0 %}
-        <response_lid ident="{{ part_id }}">
+        {% set response_ref = 'response_' ~ part.raw_label %}
+        <response_lid ident="{{ response_ref }}">
             <material>
                 <mattext>{{ part.raw_label }}</mattext>
             </material>
@@ -40,11 +41,12 @@
         </outcomes>
         {% for part in question.answers %}
             {% set part_id = 'af' ~ question.id ~ 'f' ~ loop.index0 %}
+            {% set response_ref = 'response_' ~ part.raw_label %}
             {% for choice in part.choices %}
                 {% set choice_id = part_id ~ 'f' ~ loop.index0 %}
                 <respcondition continue="Yes">
                     <conditionvar>
-                        <varequal respident="{{ part_id }}">{{ choice_id }}</varequal>
+                        <varequal respident="{{ response_ref }}">{{ choice_id }}</varequal>
                     </conditionvar>
                     {% if choice.correct %}
                         <setvar varname="SCORE" action="Add">{{ (100.0 / (question.answers | length)) | round(2) }}</setvar>
