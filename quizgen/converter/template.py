@@ -151,10 +151,6 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             if (not item.should_skip_numbering()):
                 number += 1
 
-            # TEST
-            if (index >= 6):
-                break
-
         return "\n\n".join(result)
 
     def create_group(self, group_index, group_number, group, quiz):
