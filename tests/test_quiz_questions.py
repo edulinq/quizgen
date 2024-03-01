@@ -4,15 +4,17 @@ import os
 import quizgen.converter.htmltemplate
 import quizgen.converter.json
 import quizgen.converter.textemplate
+import quizgen.converter.qtitemplate
 import quizgen.quiz
 import tests.base
 
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
 CONVERTERS = [
+    quizgen.converter.htmltemplate.HTMLTemplateConverter,
     quizgen.converter.json.JSONConverter,
     quizgen.converter.textemplate.TexTemplateConverter,
-    quizgen.converter.htmltemplate.HTMLTemplateConverter,
+    quizgen.converter.qtitemplate.QTITemplateConverter,
 ]
 
 class QuizQuestionsTest(tests.base.BaseTest):
