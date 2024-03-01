@@ -1,15 +1,22 @@
 {% extends "partials/question.template" %}
 
-{% import 'partials/answer_list.template' as answer_list %}
-
 {% block field_ids %}
-    {{ answer_list.field_ids(question.id, question.answers) }}
+    {% set ids = [] %}
+    {% for part in question.answers.values() %}
+        {% set part_id = 'af' ~ question.id ~ 'f' ~ loop.index0 %}
+        {% for solution in part.solutions %}
+            {% set solution_id = part_id ~ 'f' ~ loop.index0 %}
+            {{ ids.append(solution_id) or '' }}
+        {% endfor %}
+    {% endfor %}
+    {{- ids | join(',') -}}
 {% endblock %}
 
 {% block body %}
     {% for part in question.answers.values() %}
         {% set part_id = 'af' ~ question.id ~ 'f' ~ loop.index0 %}
-        <response_lid ident="{{ part_id }}">
+        {% set response_ref = 'response_' ~ part.raw_label %}
+        <response_lid ident="{{ response_ref }}">
             <material>
                 <mattext>{{ part.raw_label }}</mattext>
             </material>
@@ -34,11 +41,12 @@
         </outcomes>
         {% for part in question.answers.values() %}
             {% set part_id = 'af' ~ question.id ~ 'f' ~ loop.index0 %}
+            {% set response_ref = 'response_' ~ part.raw_label %}
             {% for solution in part.solutions %}
                 {% set solution_id = part_id ~ 'f' ~ loop.index0 %}
                 <respcondition continue="Yes">
                     <conditionvar>
-                        <varequal respident="{{ part_id }}">{{ solution_id }}</varequal>
+                        <varequal respident="{{ response_ref }}">{{ solution_id }}</varequal>
                     </conditionvar>
                     <setvar varname="SCORE" action="Add">{{ (100.0 / (question.answers | length)) | round(2) }}</setvar>
                 </respcondition>
