@@ -403,40 +403,29 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         return self._create_answers_mcq_list(question.answers)
 
     def create_answers_fimb(self, question_id, question_number, question, variant):
-        answers = []
+        answers = {}
 
         for (key, item) in question.answers.items():
-            document = item['values'][0]['document']
+            solutions = []
+            for value in item['values']:
+                solutions.append({
+                    'text': self._format_doc(value['document']),
+                    'raw_text': self._format_doc(value['document'], doc_format = quizgen.constants.FORMAT_TEXT),
+                    'initial_text': value['text'],
+                    'clean': self.clean_solution_content(value['document']),
+                })
 
-            answers.append({
+            answers[key] = {
                 'label': self._format_doc(item['key']['document']),
                 'raw_label': self._format_doc(item['key']['document'], doc_format = quizgen.constants.FORMAT_TEXT),
                 'initial_label': item['key']['text'],
-                'solution': self.clean_solution_content(document),
-                'dirty_solution': self._format_doc(document),
-                'raw_solution': self._format_doc(document, doc_format = quizgen.constants.FORMAT_TEXT),
-            })
+                'solutions': solutions,
+            }
 
         return answers
 
     def create_answers_fitb(self, question_id, question_number, question, variant):
-        document = question.answers['']['values'][0]['document']
-
-        solutions = []
-        for item in question.answers['']['values']:
-            solutions.append({
-                'text': self._format_doc(item['document']),
-                'raw_text': self._format_doc(item['document'], doc_format = quizgen.constants.FORMAT_TEXT),
-                'initial_text': item['text'],
-                'clean': self.clean_solution_content(item['document']),
-            })
-
-        return {
-            'solution': self.clean_solution_content(document),
-            'dirty_solution': self._format_doc(document),
-            'raw_solution': self._format_doc(document, doc_format = quizgen.constants.FORMAT_TEXT),
-            'solutions': solutions,
-        }
+        return self.create_answers_fimb(question_id, question_number, question, variant)['']['solutions']
 
     def create_answers_sa(self, question_id, question_number, question, variant):
         return self._create_answers_text(question_id, question_number, question, variant)
@@ -445,15 +434,16 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         return self._create_answers_text(question_id, question_number, question, variant)
 
     def _create_answers_text(self, question_id, question_number, question, variant):
-        document = question.answers[0]['document']
-        raw_solutions = [answer['text'] for answer in question.answers]
+        solutions = []
+        for value in question.answers:
+            solutions.append({
+                'text': self._format_doc(value['document']),
+                'raw_text': self._format_doc(value['document'], doc_format = quizgen.constants.FORMAT_TEXT),
+                'initial_text': value['text'],
+                'clean': self.clean_solution_content(value['document']),
+            })
 
-        return {
-            'raw_solutions': raw_solutions,
-            'solution': self.clean_solution_content(document),
-            'dirty_solution': self._format_doc(document),
-            'raw_solution': self._format_doc(document, doc_format = quizgen.constants.FORMAT_TEXT),
-        }
+        return solutions
 
     def _format_doc(self, doc, doc_format = None, format_options = None):
         if (doc_format is None):

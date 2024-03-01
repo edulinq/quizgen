@@ -5,6 +5,6 @@
 {% endblock %}
 
 {% block body %}
-    {% set solution = question.answers.solution if answer_key else '' %}
+    {% set solution = question.answers[0].clean if answer_key else '' %}
     <textarea id='answer-{{ question.id }}' name='question-{{ question.id }}'>{{ solution }}</textarea>
 {% endblock %}
