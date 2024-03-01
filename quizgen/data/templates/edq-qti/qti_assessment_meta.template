@@ -24,7 +24,4 @@
     <show_correct_answers_last_attempt>false</show_correct_answers_last_attempt>
     <only_visible_to_overrides>false</only_visible_to_overrides>
     <module_locked>false</module_locked>
-    <assignment_group_identifierref>0</assignment_group_identifierref>
-    <assignment_overrides>
-    </assignment_overrides>
 </quiz>

@@ -21,11 +21,11 @@
     <organizations/>
     <resources>
         <resource identifier="quiz" type="imsqti_xmlv1p2">
-            <file href="quiz.xml"/>
-            <dependency identifierref="manifest"/>
+            <file href="quiz/quiz.xml"/>
+            <dependency identifierref="assessment_meta"/>
         </resource>
-        <resource identifier="manifest" type="associatedcontent/imscc_xmlv1p1/learning-application-resource" href="assessment_meta.xml">
-            <file href="assessment_meta.xml"/>
+        <resource identifier="assessment_meta" type="associatedcontent/imscc_xmlv1p1/learning-application-resource" href="quiz/assessment_meta.xml">
+            <file href="quiz/assessment_meta.xml"/>
         </resource>
         {% for file in files %}
             <resource identifier="image_{{ file.id }}" type="webcontent" href="{{ file.path }}">

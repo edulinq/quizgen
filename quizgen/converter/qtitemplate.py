@@ -2,6 +2,7 @@
 Convert a quiz into QTI using templates.
 """
 
+import html
 import logging
 import os
 import pathlib
@@ -37,6 +38,7 @@ TEMPLATE_FILENAME_ASSESSMENT_META = 'qti_assessment_meta.template'
 TEMPLATE_FILENAME_MANIFEST = 'qti_imsmanifest.template'
 
 OUT_DIR_IMAGES = 'images'
+OUT_DIR_QUIZ = 'quiz'
 OUT_FILENAME_QUIZ = 'quiz.xml'
 OUT_FILENAME_ASSESSMENT_META = 'assessment_meta.xml'
 OUT_FILENAME_MANIFEST = 'imsmanifest.xml'
@@ -81,17 +83,19 @@ class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
     def convert_quiz(self, quiz, out_dir = '.', **kwargs):
         temp_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-qti-')
         temp_dir = os.path.join(temp_dir, quiz.title)
-        os.makedirs(temp_dir, exist_ok = True)
+
+        quiz_dir = os.path.join(temp_dir, OUT_DIR_QUIZ)
+        os.makedirs(quiz_dir, exist_ok = True)
 
         if (self.canvas):
             self.image_base_dir = os.path.join(temp_dir, OUT_DIR_IMAGES)
             os.makedirs(self.image_base_dir)
 
-        path = os.path.join(temp_dir, OUT_FILENAME_QUIZ)
+        path = os.path.join(quiz_dir, OUT_FILENAME_QUIZ)
         text = super(QTITemplateConverter, self).convert_quiz(quiz, **kwargs)
         quizgen.util.file.write(path, self._format_xml(text))
 
-        self._convert_assessment_meta(quiz, temp_dir)
+        self._convert_assessment_meta(quiz, quiz_dir)
         self._convert_manifest(quiz, temp_dir)
 
         path = os.path.join(out_dir, "%s.qti.zip" % (quiz.title))
@@ -112,10 +116,19 @@ class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
         template = self.env.get_template(TEMPLATE_FILENAME_ASSESSMENT_META)
 
         quiz_context = quiz.to_dict(include_docs = False)
-        quiz_context['description_text'] = quiz.description_document.to_format(self.format)
+
+        description_text = quiz.description_document.to_format(self.format)
+        if (self.canvas):
+            description_text = html.escape(description_text)
+
+        quiz_context['description_text'] = description_text
 
         text = template.render(quiz = quiz_context)
-        text = self._format_xml(text)
+
+        if (not self.canvas):
+            # Canvas has some very strange and undocumented formatting requirements for the assessment meta file.
+            # Do not format/pretty when working with Canvas.
+            text = self._format_xml(text)
 
         path = os.path.join(out_dir, OUT_FILENAME_ASSESSMENT_META)
         quizgen.util.file.write(path, text)
