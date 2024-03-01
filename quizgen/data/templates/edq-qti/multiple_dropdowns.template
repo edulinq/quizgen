@@ -47,7 +47,7 @@
                         <varequal respident="{{ part_id }}">{{ choice_id }}</varequal>
                     </conditionvar>
                     {% if choice.correct %}
-                        <setvar varname="SCORE" action="Add">{{ question.points / (question.answers | length) }}</setvar>
+                        <setvar varname="SCORE" action="Add">{{ (100.0 / (question.answers | length)) | round(2) }}</setvar>
                     {% endif %}
                     {% if choice.feedback %}
                         <displayfeedback feedbacktype="Response" linkrefid="{{ choice_id }}_fb"/>

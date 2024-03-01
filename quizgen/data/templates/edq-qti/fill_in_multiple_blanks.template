@@ -1,24 +1,20 @@
 {% extends "partials/question.template" %}
 
+{% import 'partials/answer_list.template' as answer_list %}
+
 {% block field_ids %}
-    {% for part in question.answers %}
-        {% set id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
-        {% if not loop.last %}
-            {% set id = id ~ ',' %}
-        {% endif %}
-        {{- id -}}
-    {% endfor %}
+    {{ answer_list.field_ids(question.id, question.answers) }}
 {% endblock %}
 
 {% block body %}
     {% for part in question.answers %}
-        {% set id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
+        {% set id = 'af' ~ question.id ~ 'f' ~ loop.index0 %}
         <response_lid ident="{{ id }}">
             <material>
                 <mattext>{{ part.raw_label }}</mattext>
             </material>
             <render_choice>
-                <response_label ident="{{ id }}.0">
+                <response_label ident="{{ id }}f0">
                 <material>
                     <mattext texttype="text/plain">{{ part.raw_solution }}</mattext>
                 </material>
@@ -34,13 +30,17 @@
             <decvar maxvalue="100" minvalue="0" varname="SCORE" vartype="Decimal"/>
         </outcomes>
         {% for part in question.answers %}
-            {% set id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
+            {% set id = 'af' ~ question.id ~ 'f' ~ loop.index0 %}
             <respcondition>
                 <conditionvar>
-                    <varequal respident="{{ id }}">{{ id }}.0</varequal>
+                    <varequal respident="{{ id }}">{{ id }}f0</varequal>
                 </conditionvar>
-                <setvar varname="SCORE" action="Add">{{ question.points / (question.answers | length) }}</setvar>
+                <setvar varname="SCORE" action="Add">{{ (100.0 / (question.answers | length)) | round(2) }}</setvar>
             </respcondition>
         {% endfor %}
     </resprocessing>
+{% endblock %}
+
+{% block additional_feedback %}
+    <!-- TEST -- Need to list the multiple available options for each blank first -->
 {% endblock %}
