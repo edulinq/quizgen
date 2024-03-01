@@ -340,20 +340,8 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
         for i in range(len(answers)):
             answer = answers[i]
-
-            choice = {
-                'correct': answer['correct'],
-                'text': self._format_doc(answer['document']),
-                'raw_text': self._format_doc(answer['document'], doc_format = quizgen.constants.FORMAT_TEXT),
-                'initial_text': answer['text'],
-            }
-
-            if ('feedback' in answer):
-                choice.update({
-                    'feedback': self._format_doc(answer['feedback']['document']),
-                    'raw_feedback': self._format_doc(answer['feedback']['document'], doc_format = quizgen.constants.FORMAT_TEXT),
-                    'initial_feedback': answer['feedback']['text'],
-                })
+            choice = self._create_answers_text_value(answer)
+            choice['correct'] = answer['correct']
 
             choices.append(choice)
 
@@ -408,12 +396,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         for (key, item) in question.answers.items():
             solutions = []
             for value in item['values']:
-                solutions.append({
-                    'text': self._format_doc(value['document']),
-                    'raw_text': self._format_doc(value['document'], doc_format = quizgen.constants.FORMAT_TEXT),
-                    'initial_text': value['text'],
-                    'clean': self.clean_solution_content(value['document']),
-                })
+                solutions.append(self._create_answers_text_value(value))
 
             answers[key] = {
                 'label': self._format_doc(item['key']['document']),
@@ -436,14 +419,30 @@ class TemplateConverter(quizgen.converter.converter.Converter):
     def _create_answers_text(self, question_id, question_number, question, variant):
         solutions = []
         for value in question.answers:
-            solutions.append({
-                'text': self._format_doc(value['document']),
-                'raw_text': self._format_doc(value['document'], doc_format = quizgen.constants.FORMAT_TEXT),
-                'initial_text': value['text'],
-                'clean': self.clean_solution_content(value['document']),
-            })
+            solutions.append(self._create_answers_text_value(value))
 
         return solutions
+
+    def _create_answers_text_value(self, value):
+        """
+        Create an output dict for a value that was parsed from text (the result of a parsed string).
+        """
+
+        result = {
+            'text': self._format_doc(value['document']),
+            'raw_text': self._format_doc(value['document'], doc_format = quizgen.constants.FORMAT_TEXT),
+            'initial_text': value['text'],
+            'clean': self.clean_solution_content(value['document']),
+        }
+
+        if ('feedback' in value):
+            result.update({
+                'feedback': self._format_doc(value['feedback']['document']),
+                'raw_feedback': self._format_doc(value['feedback']['document'], doc_format = quizgen.constants.FORMAT_TEXT),
+                'initial_feedback': value['feedback']['text'],
+            })
+
+        return result
 
     def _format_doc(self, doc, doc_format = None, format_options = None):
         if (doc_format is None):

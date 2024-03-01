@@ -1,13 +1,9 @@
 {% extends "partials/question.template" %}
 
+{% import 'partials/answer_list.template' as answer_list %}
+
 {% block field_ids %}
-    {% for answer in question.answers %}
-        {% set id = 'answer-' ~ question.id ~ '.' ~ loop.index0 %}
-        {% if not loop.last %}
-                {% set id = id ~ ',' %}
-        {% endif %}
-        {{- id -}}
-    {% endfor %}
+    {{ answer_list.field_ids(question.id, question.answers) }}
 {% endblock %}
 
 {% block body %}
@@ -23,13 +19,21 @@
         <outcomes>
             <decvar maxvalue="100" minvalue="0" varname="SCORE" vartype="Decimal"/>
         </outcomes>
-        <respcondition continue="No">
-            <conditionvar>
-                {% for solution in question.answers.solutions %}
-                    <varequal respident="response1">{{ solution.raw_text }}</varequal>
-                {% endfor %}
-            </conditionvar>
-            <setvar action="Set" varname="SCORE">100</setvar>
-        </respcondition>
+        {% for answer in question.answers %}
+            {% set id = 'af' ~ question.id ~ 'f' ~ loop.index0 %}
+            <respcondition continue="Yes">
+                <conditionvar>
+                    <varequal respident="response1">{{ answer.raw_text }}</varequal>
+                </conditionvar>
+                <setvar varname="SCORE" action="Set">100</setvar>
+            </respcondition>
+            {% if answer.feedback %}
+                <displayfeedback feedbacktype="Response" linkrefid="{{ id }}_fb"/>
+            {% endif %}
+        {% endfor %}
     </resprocessing>
+{% endblock %}
+
+{% block additional_feedback %}
+    {{ answer_list.feedback(question.id, question.answers) }}
 {% endblock %}

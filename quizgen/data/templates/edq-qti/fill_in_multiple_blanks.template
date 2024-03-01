@@ -7,18 +7,21 @@
 {% endblock %}
 
 {% block body %}
-    {% for part in question.answers %}
-        {% set id = 'af' ~ question.id ~ 'f' ~ loop.index0 %}
-        <response_lid ident="{{ id }}">
+    {% for part in question.answers.values() %}
+        {% set part_id = 'af' ~ question.id ~ 'f' ~ loop.index0 %}
+        <response_lid ident="{{ part_id }}">
             <material>
                 <mattext>{{ part.raw_label }}</mattext>
             </material>
             <render_choice>
-                <response_label ident="{{ id }}f0">
-                <material>
-                    <mattext texttype="text/plain">{{ part.raw_solution }}</mattext>
-                </material>
-                </response_label>
+                {% for solution in part.solutions %}
+                    {% set solution_id = part_id ~ 'f' ~ loop.index0 %}
+                    <response_label ident="{{ solution_id }}">
+                        <material>
+                            <mattext texttype="text/plain">{{ solution.raw_text }}</mattext>
+                        </material>
+                    </response_label>
+                {% endfor %}
             </render_choice>
         </response_lid>
     {% endfor %}
@@ -29,18 +32,40 @@
         <outcomes>
             <decvar maxvalue="100" minvalue="0" varname="SCORE" vartype="Decimal"/>
         </outcomes>
-        {% for part in question.answers %}
-            {% set id = 'af' ~ question.id ~ 'f' ~ loop.index0 %}
-            <respcondition>
-                <conditionvar>
-                    <varequal respident="{{ id }}">{{ id }}f0</varequal>
-                </conditionvar>
-                <setvar varname="SCORE" action="Add">{{ (100.0 / (question.answers | length)) | round(2) }}</setvar>
-            </respcondition>
+        {% for part in question.answers.values() %}
+            {% set part_id = 'af' ~ question.id ~ 'f' ~ loop.index0 %}
+            {% for solution in part.solutions %}
+                {% set solution_id = part_id ~ 'f' ~ loop.index0 %}
+                <respcondition continue="Yes">
+                    <conditionvar>
+                        <varequal respident="{{ part_id }}">{{ solution_id }}</varequal>
+                    </conditionvar>
+                    <setvar varname="SCORE" action="Add">{{ (100.0 / (question.answers | length)) | round(2) }}</setvar>
+                </respcondition>
+                {% if solution.feedback %}
+                    <displayfeedback feedbacktype="Response" linkrefid="{{ solution_id }}_fb"/>
+                {% endif %}
+            {% endfor %}
         {% endfor %}
     </resprocessing>
 {% endblock %}
 
 {% block additional_feedback %}
-    <!-- TEST -- Need to list the multiple available options for each blank first -->
+    {% for part in question.answers.values() %}
+        {% set part_id = 'af' ~ question.id ~ 'f' ~ loop.index0 %}
+        {% for solution in part.solutions %}
+            {% set solution_id = part_id ~ 'f' ~ loop.index0 %}
+            {% if solution.feedback %}
+                <itemfeedback ident="{{ solution_id }}_fb">
+                    <flow_mat>
+                        <material>
+                            <mattext texttype="text/html">
+                                {{ solution.feedback }}
+                            </mattext>
+                        </material>
+                    </flow_mat>
+                </itemfeedback>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
 {% endblock %}
