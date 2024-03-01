@@ -1,5 +1,11 @@
 {% extends "partials/question.template" %}
 
+{% import 'partials/answer_list.template' as answer_list %}
+
+{% block field_ids %}
+    0
+{% endblock %}
+
 {% block body %}
     <response_str ident="response1" rcardinality="Single">
         <render_fib fibtype="Decimal">
@@ -13,6 +19,40 @@
         <outcomes>
             <decvar maxvalue="100" minvalue="0" varname="SCORE" vartype="Decimal"/>
         </outcomes>
-        <!-- TEST -->
-    </resprocessing>
+        {% for answer in question.answers.raw_answers %}
+            {% set id = 'af' ~ question_id ~ 'f' ~ loop.index0 %}
+            <respcondition continue="No">
+                <conditionvar>
+                {% if answer.type == 'exact' %}
+                    <or>
+                        <varequal respident="response1">{{ answer.value }}</varequal>
+                        <and>
+                            <vargte respident="response1">{{ answer.value - answer.margin }}</vargte>
+                            <varlte respident="response1">{{ answer.value + answer.margin }}</varlte>
+                        </and>
+                    </or>
+                {% elif answer.type == 'range' %}
+                    <vargte respident="response1">{{ answer.min }}</vargte>
+                    <varlte respident="response1">{{ answer.max }}</varlte>
+                {% elif answer.type == 'precision' %}
+                    {% set margin = (5 * (10 ** -(answer.precision))) %}
+                    <or>
+                        <varequal respident="response1">{{ answer.value }}</varequal>
+                        <and>
+                            <vargte respident="response1">{{ answer.value - margin }}</vargte>
+                            <varlte respident="response1">{{ answer.value + margin }}</varlte>
+                        </and>
+                    </or>
+                {% endif %}
+                </conditionvar>
+                <setvar action="Set" varname="SCORE">100</setvar>
+                {% if answer.feedback %}
+                    <displayfeedback feedbacktype="Response" linkrefid="{{ id }}_fb"/>
+                {% endif %}
+            </respcondition>
+        {% endfor %}
+{% endblock %}
+
+{% block additional_feedback %}
+    {{ answer_list.feedback(question.id, question.answers) }}
 {% endblock %}

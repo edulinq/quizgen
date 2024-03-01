@@ -151,6 +151,10 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             if (not item.should_skip_numbering()):
                 number += 1
 
+            # TEST
+            if (index >= 6):
+                break
+
         return "\n\n".join(result)
 
     def create_group(self, group_index, group_number, group, quiz):
@@ -370,10 +374,11 @@ class TemplateConverter(quizgen.converter.converter.Converter):
                 content = "%s" % (str(answer['value']))
             else:
                 content = "%s ± %f" % (str(answer['value']), answer['margin'])
-        elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_PRECISION):
-            content = "[%s, %s]" % (str(answer['min']), str(answer['max']))
         elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_RANGE):
+            content = "[%s, %s]" % (str(answer['min']), str(answer['max']))
+        elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_PRECISION):
             content = "%s (precision: %s)" % (str(answer['value']), str(answer['precision']))
+        else:
             raise ValueError(f"Unknown numerical answer type: '{answer['type']}'.")
 
         document = quizgen.parser.parse_text(content)
@@ -382,6 +387,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             'solution': self.clean_solution_content(document),
             'dirty_solution': self._format_doc(document),
             'raw_solution': self._format_doc(document, doc_format = quizgen.constants.FORMAT_TEXT),
+            'raw_answers': question.answers,
         }
 
     def create_answers_mdd(self, question_id, question_number, question, variant):
