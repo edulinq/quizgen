@@ -80,9 +80,14 @@ class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
         context['question']['mapped_question_type'] = QUESTION_TYPE_MAP[question.question_type]
         return context
 
-    def convert_quiz(self, quiz, out_dir = '.', **kwargs):
-        temp_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-qti-')
-        temp_dir = os.path.join(temp_dir, quiz.title)
+    def convert_quiz(self, quiz, out_path = None, **kwargs):
+        if (out_path is None):
+            out_path = f'{quiz.title}.qti.zip'
+
+        temp_base_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-qti-')
+
+        temp_out_path = os.path.join(temp_base_dir, 'out.zip')
+        temp_dir = os.path.join(temp_base_dir, quiz.title)
 
         quiz_dir = os.path.join(temp_dir, OUT_DIR_QUIZ)
         os.makedirs(quiz_dir, exist_ok = True)
@@ -98,14 +103,14 @@ class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
         self._convert_assessment_meta(quiz, quiz_dir)
         self._convert_manifest(quiz, temp_dir)
 
-        path = os.path.join(out_dir, "%s.qti.zip" % (quiz.title))
-        self._create_zip(quiz, path, temp_dir)
+        self._create_zip(quiz, temp_out_path, out_path, temp_dir)
 
-        logging.info("Created QTI quiz at '%s'." % (path))
+        logging.info("Created QTI quiz at '%s'." % (out_path))
         return path
 
-    def _create_zip(self, quiz, path, temp_dir):
-        shutil.make_archive(os.path.splitext(path)[0], 'zip', os.path.dirname(temp_dir), os.path.basename(temp_dir))
+    def _create_zip(self, quiz, temp_out_path, out_path, temp_dir):
+        shutil.make_archive(os.path.splitext(temp_out_path)[0], 'zip', os.path.dirname(temp_dir), os.path.basename(temp_dir))
+        quizgen.util.file.copy_dirent(temp_out_path, out_path)
 
     def _format_xml(self, text):
         warnings.filterwarnings('ignore', category = bs4.builder.XMLParsedAsHTMLWarning)

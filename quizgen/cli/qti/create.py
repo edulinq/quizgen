@@ -5,6 +5,7 @@ import sys
 import quizgen.converter.qtitemplate
 import quizgen.log
 import quizgen.quiz
+import quizgen.util.cli
 
 def run(args):
     if (not os.path.exists(args.path)):
@@ -15,8 +16,10 @@ def run(args):
 
     quiz = quizgen.quiz.Quiz.from_path(args.path)
 
+    out_path = quizgen.util.cli.resolve_out_arg(args.out, f'{quiz.title}.qti.zip')
+
     converter = quizgen.converter.qtitemplate.QTITemplateConverter(canvas = args.canvas)
-    converter.convert_quiz(quiz, out_dir = args.out_dir)
+    converter.convert_quiz(quiz, out_path = out_path)
 
     return 0
 
@@ -26,15 +29,13 @@ def _get_parser():
 
     parser.add_argument('path',
         type = str,
-        help = 'The path to a quiz json file.')
+        help = 'The path to a quiz JSON file.')
 
     parser.add_argument('--canvas', dest = 'canvas',
         action = 'store_true', default = False,
         help = 'Create the QTI with Canvas-specific tweaks (default: %(default)s).')
 
-    parser.add_argument('--outdir', dest = 'out_dir',
-        action = 'store', type = str, default = '.',
-        help = 'The directory to put the quiz creation output (default: %(default)s).')
+    quizgen.util.cli.add_out_arg(parser, '<title>.qti.zip')
 
     quizgen.log.set_cli_args(parser)
 
