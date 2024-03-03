@@ -29,6 +29,8 @@ Documentation Table of Contents:
    - [Uploading a Quiz to Canvas](#uploading-a-quiz-to-canvas)
    - [Uploading a Quiz to GradeScope](#uploading-a-quiz-to-gradescope)
  - [Quiz Format](#quiz-format)
+   - [Answer Shuffling](#answer-shuffling)
+   - [Question Selection from Groups](#question-selection-from-groups)
    - [Question Prompts](#question-prompts)
    - [Quiz Descriptions](#quiz-descriptions)
  - [Question Types](/question-types.md)
@@ -204,6 +206,60 @@ Some additional options that may be useful:
 You can also not use the `--upload` flag to just create TeX/PDF versions of your quizzes that you can tweak and upload manually.
 
 ## Quiz Format
+
+Below are some common fields used in the **quiz** JSON configuration.
+
+| Key                     | Type           | Required? | Default      | Description |
+|-------------------------|----------------|-----------|--------------|-------------|
+| `title`                 | Plain String   | true      |              | The title of the quiz. |
+| `course_title`          | Plain String   | false     | empty string | The title of the course for this quiz. |
+| `term_title`            | Plain String   | false     | empty string | The title of the term this quiz is given in. |
+| `description`           | Parsed String  | true      |              | The description of the quiz. May also be [provided in MD file](#quiz-descriptions). |
+| `date`                  | Plain String   | false     | today        | An [ISO 8601](https://docs.python.org/3/library/datetime.html#datetime.datetime.fromisoformat) date string. |
+| `time_limit_mins`       | Integer        | false     | null/None    | The time limit of the quiz, null/None for no limit. |
+| `shuffle_answers`       | Boolean        | false     | true         | Whether to shuffle question answers/choices, see [Answer Shuffling](#answer-shuffling). |
+| `pick_with_replacement` | Boolean        | false     | true         | Whether to select questions from groups with replacement, see [Question Selection from Groups](#question-selection-from-groups). |
+| `version`               | Plain String   | false     | current git commit hash | The title of the quiz. |
+| `groups`                | Object         | true      |              | The question groups. |
+
+
+Below are some common fields used in the **group** JSON configuration.
+The `Inherited?` column indicates values that will be inherited by questions within the group.
+
+| Key                     | Type           | Required? | Default      | Inherited? | Description |
+|-------------------------|----------------|-----------|--------------|------------|-------------|
+| `name`                  | Plain String   | true      |              | true       | The name of the question group. |
+| `pick_count`            | Integer        | false     | 1            | false      | The number of questions to randomly pick from this group, see [Question Selection from Groups](#question-selection-from-groups). |
+| `points`                | Number         | false     | 10           | true       | The number of points each question from this group is worth. |
+| `shuffle_answers`       | Boolean        | false     | true         | true       | Whether to shuffle question answers/choices, see [Answer Shuffling](#answer-shuffling). |
+| `pick_with_replacement` | Boolean        | false     | true         | false      | Whether to select questions from groups with replacement, see [Question Selection from Groups](#question-selection-from-groups). |
+| `custom_header`         | Plain String   | true      | null/None    | true       | An alternate header for a question. An empty string for no header. |
+| `skip_numbering`        | Boolean        | true      | false        | true       | Whether this question should skip incrementing the question number. |
+| `hints`                 | Object         | true      | empty object | true       | Formatting hints passed the converter about the questions in this group. |
+| `hints_first`           | Object         | true      | empty object | true*      | Hints inherited only by the first question in this group. |
+| `hints_last`            | Object         | true      | empty object | true*      | Hints inherited only by the last question in this group. |
+| `questions`             | Plain String   | true      |              | false      | The questions in the group. |
+
+### Answer Shuffling
+
+By default, answers/choices for each question will be shuffled.
+This behavior can be controlled with the `shuffle_answers` option that appears at the quiz, group, and question level.
+To know if a question's answers will be shuffled, take the conjunction of `shuffle_answers` values for that question's
+config, group, and quiz (with the default value being `true`).
+
+### Question Selection from Groups
+
+When selecting answers from a question group,
+the `pick_count` field of a group is used to determine how many questions for choose from each group
+(with the default being 1).
+By default, questions are chosen [with replacement](https://en.wikipedia.org/wiki/Sampling_(statistics)#Replacement_of_selected_units),
+with respects to different variants.
+This means that when variants are created, they could have randomly chosen the same questions from a group.
+The `pick_with_replacement` field of a question/group can be used to override this behavior
+(using the same conjunction semantics see in [Answer Shuffling](#answer-shuffling)).
+If you choose to pick questions without replacement (`pick_with_replacement`: false`),
+then you have to ensure you have enough questions in the group to distribute amongst all variants.
+If you do not have enough questions, then a warning will be output and some questions will be chosen with replacment.
 
 ### Question Prompts
 
