@@ -7,6 +7,7 @@ Quizzes can be taken from the standard definition and converted into:
  - GradeScope Quizzes
    - Both GradeScope-Compatible PDFs and Uploaded to GradeScope
  - HTML Forms
+ - [QTI Zip Files](https://en.wikipedia.org/wiki/QTI)
 
 Sample quizzes that demonstrate all question types are available [in the CSE Cracks course](https://github.com/eriq-augustine/cse-cracks-course/tree/main/quizzes).
 Additionally, you can see examples of good questions by looking at the [test cases for this project](tests/questions/good).
@@ -22,6 +23,7 @@ Documentation Table of Contents:
      - [Outputting a JSON Quiz](#outputting-a-json-quiz)
      - [Outputting a TeX Quiz](#outputting-a-tex-quiz)
      - [Outputting an HTML Quiz](#outputting-an-html-quiz)
+     - [Outputting a QTI Quiz](#outputting-a-qti-quiz)
    - [Parsing a Specific Question](#parsing-a-specific-question)
    - [Parsing a Specific File](#parsing-a-specific-file)
    - [Uploading a Quiz to Canvas](#uploading-a-quiz-to-canvas)
@@ -129,6 +131,22 @@ python3 -m quizgen.cli.parse.quiz <path to quiz JSON file> --format html > quiz.
 ```
 
 All question in an HTML quiz are grouped together into a single HTML form.
+
+#### Outputting a QTI Quiz
+
+You can use the same `quizgen.cli.parse.quiz` command to view the core QTI file for a quiz:
+```
+python3 -m quizgen.cli.parse.quiz <path to quiz JSON file> --format qti > quiz.qti.xml
+```
+
+However you will instead probably want a fill QTI zip archive,
+which is the common form used to upload to other platforms (like Canvas).
+To generate a full QTI zip archive, use the `quizgen.cli.qti.create` command:
+```
+python -m quizgen.cli.qti.create ~/code/cse-cracks-course/quizzes/regex/quiz.json --canvas
+```
+
+The `--canvas` flag enables Canvas-specific tweaks required when uploading a QTI file to Canvas.
 
 ### Parsing a Specific Question
 
