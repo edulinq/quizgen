@@ -18,7 +18,8 @@ class Quiz(object):
             title = '',
             course_title = '', term_title = '',
             description = '', date = '',
-            time_limit_mins = None, shuffle_answers = True,
+            time_limit_mins = None,
+            shuffle_answers = True, pick_with_replacement = True,
             groups = [],
             base_dir = '.',
             version = None,
@@ -33,7 +34,9 @@ class Quiz(object):
         self.description_document = None
 
         self.time_limit_mins = time_limit_mins
+
         self.shuffle_answers = shuffle_answers
+        self.pick_with_replacement = pick_with_replacement
 
         self.groups = groups
 
@@ -173,7 +176,8 @@ class Quiz(object):
 
         questions = []
         for group in self.groups:
-            questions += group.choose_questions(all_questions = all_questions, rng = rng)
+            questions += group.choose_questions(all_questions = all_questions, rng = rng,
+                    with_replacement = self.pick_with_replacement)
 
         if (self.shuffle_answers):
             for question in questions:
