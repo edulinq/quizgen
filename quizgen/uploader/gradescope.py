@@ -150,6 +150,10 @@ class GradeScopeUploader(object):
                 if (question_type in EXTEND_BOX_QUESTION_TYPES):
                     extend_box_right = True
 
+                    # There is a special case for inline MA questions.
+                    if (question_type == quizgen.constants.QUESTION_TYPE_MA):
+                        extend_box_right = False
+
                 (x1, y1), (x2, y2) = self._compute_box(ll_x, ll_y, ur_x, ur_y, page_width, page_height, extend_box_right = extend_box_right)
 
                 if (question_type in SPECIAL_QUESTION_TYPES):
