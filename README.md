@@ -188,22 +188,28 @@ python3 -m quizgen.cli.canvas.upload <path to quiz JSON file> --course <canvas c
 
 If an existing quiz with the same name is found, then nothing will be uploaded unless the `--force` flag is given..
 
-### Uploading a Quiz to GradeScope
+### Creating a PDF Quiz
 
-To upload a quiz to GradeScope, the `quizgen.cli.gradescope.create` module can be used.
+To create a PDF version of a quiz, `quizgen.cli.pdf.create` module can be used.
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.gradescope.gradescope <path to quiz JSON file> --course <course id> --user <username> --pass <password> --upload
+python3 -m quizgen.cli.pdf.create <path to quiz JSON file>
 ```
 
-Since GradeScope uses passwords instead of tokens, take extra caution about your password appearing in config files or command histories.
-
 Some additional options that may be useful:
- - `--force` -- Use if you want to replace existing GradeScope assignments (otherwise existing assignments will be skipped).
  - `--outdir <dir>` -- Choose where the output (TeX, PDF, etc) will be written to.
  - `--variants <X>` -- Create X variants (alternate versions) if the quiz. X may be in [1, 26].
 
-You can also not use the `--upload` flag to just create TeX/PDF versions of your quizzes that you can tweak and upload manually.
+### Uploading a Quiz to GradeScope
+
+To upload a quiz to GradeScope, the `quizgen.cli.gradescope.upload` module can be used.
+The basic usage is as follows:
+```
+python3 -m quizgen.cli.gradescope.upload <path to quiz JSON file> --course <course id> --user <username> --pass <password>
+```
+
+Since GradeScope uses passwords instead of tokens, take extra caution about your password appearing in config files or command histories.
+All the same options for creating PDFs (`quizgen.cli.pdf.create`) can be used.
 
 ## Quiz Format
 

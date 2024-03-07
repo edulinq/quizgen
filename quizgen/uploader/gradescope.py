@@ -11,9 +11,7 @@ import time
 import bs4
 import requests
 
-import quizgen.converter.textemplate
 import quizgen.constants
-import quizgen.latex
 import quizgen.variant
 import quizgen.util.file
 
@@ -67,7 +65,6 @@ GRADESCOPE_SLEEP_TIME_SEC = 0.50
 class GradeScopeUploader(object):
     def __init__(self, course_id, user, password,
             force = False, rubric = False,
-            skip_tex_write = False, skip_compile = False,
             **kwargs):
         super().__init__(**kwargs)
 
@@ -76,8 +73,6 @@ class GradeScopeUploader(object):
         self.password = password
         self.force = force
         self.rubric = rubric
-        self.skip_tex_write = skip_tex_write
-        self.skip_compile = skip_compile
 
     def upload_quiz(self, variant, base_dir = None, **kwargs):
         """
@@ -93,21 +88,8 @@ class GradeScopeUploader(object):
         if (base_dir is None):
             base_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-gradescope-')
 
-        if (not self.skip_tex_write):
-            self.write_quiz(variant, base_dir)
-
-        if (not self.skip_compile):
-            self.compile_tex(variant, base_dir)
-
         boxes, special_boxes = self.get_bounding_boxes(variant, base_dir)
         return self.upload(variant, base_dir, boxes, special_boxes)
-
-    def write_quiz(self, variant, base_dir):
-        converter = quizgen.converter.textemplate.TexTemplateConverter()
-        tex = converter.convert_variant(variant)
-
-        path = os.path.join(base_dir, "%s.tex" % (variant.title))
-        quizgen.util.file.write(path, tex)
 
     def create_assignment_group(self, title, gradescope_ids):
         session = requests.Session()
@@ -130,16 +112,6 @@ class GradeScopeUploader(object):
         response = session.post(post_url, params = data, headers = headers)
         response.raise_for_status()
         time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
-
-    def compile_tex(self, variant, base_dir):
-        path = os.path.join(base_dir, "%s.tex" % (variant.title))
-        if (not os.path.exists(path)):
-            raise ValueError("Could not find path for quiz tex: '%s'." % (path))
-
-        quizgen.latex.compile(path)
-
-        # Need to compile twice to get positioning.
-        quizgen.latex.compile(path)
 
     def get_bounding_boxes(self, variant, base_dir):
         # {<quetion id>: {<part id>: box, ...}, ...}

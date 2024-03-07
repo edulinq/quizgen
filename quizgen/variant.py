@@ -1,3 +1,4 @@
+import copy
 import datetime
 import json
 import os
@@ -105,6 +106,9 @@ class Variant(object):
 
     def num_questions(self):
         return len(self.questions)
+
+    def copy(self):
+        return copy.deepcopy(self)
 
     @staticmethod
     def get_dummy():
