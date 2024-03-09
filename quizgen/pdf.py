@@ -126,7 +126,7 @@ def make_pdf(variant, out_dir, is_key,
         quizgen.latex.compile(out_path)
 
 def set_cli_args(parser):
-    parser.add_argument('path',
+    parser.add_argument('path', metavar = 'PATH',
         type = str,
         help = 'The path to a quiz json file.')
 

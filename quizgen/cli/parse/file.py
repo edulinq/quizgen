@@ -17,7 +17,7 @@ def _get_parser():
     parser = argparse.ArgumentParser(description =
         "Parse a single file and output the results of the parse.")
 
-    parser.add_argument('path',
+    parser.add_argument('path', metavar = 'PATH',
         type = str,
         help = 'The path to parse.')
 

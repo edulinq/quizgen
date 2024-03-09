@@ -27,7 +27,7 @@ def _get_parser():
     parser = argparse.ArgumentParser(description =
         "Parse a quiz and upload the quiz to Canvas.")
 
-    parser.add_argument('path',
+    parser.add_argument('path', metavar = 'PATH',
         type = str,
         help = 'The path to a quiz JSON file.')
 

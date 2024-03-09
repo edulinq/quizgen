@@ -4,7 +4,6 @@ import random
 import sys
 
 import quizgen.converter.convert
-import quizgen.constants
 import quizgen.log
 import quizgen.quiz
 
@@ -15,31 +14,38 @@ def run(args):
     if (not os.path.isfile(args.path)):
         raise ValueError(f"Provided path '{args.path}' is not a file.")
 
+    for quiz_format in args.formats:
+        if (quiz_format not in quizgen.converter.convert.SUPPORTED_FORMATS):
+            raise ValueError("Unknown quiz format '%s', must be one of: [%s]." % (quiz_format, ', '.join(quizgen.converter.convert.SUPPORTED_FORMATS)))
+
     seed = args.seed
     if (seed is None):
         seed = random.randint(0, 2**64)
 
+    print("Parsing quiz: '%s'." % (args.path))
+
     quiz = quizgen.quiz.Quiz.from_path(args.path, flatten_groups = args.flatten_groups)
     variant = quiz.create_variant(all_questions = args.flatten_groups, seed = seed)
-    content = quizgen.converter.convert.convert_variant(variant, format = args.format,
-            constructor_args = {'answer_key': args.answer_key})
 
-    print(content)
+    for quiz_format in args.formats:
+        print("Generating quiz content for '%s'." % (quiz_format))
+        quizgen.converter.convert.convert_variant(variant, format = quiz_format,
+                constructor_args = {'answer_key': args.answer_key})
 
     return 0
 
 def _get_parser():
-    parser = argparse.ArgumentParser(description =
-        "Parse a single quiz and output the results of the parse.")
+    parser = argparse.ArgumentParser(description = ("Parse a quiz for the purposes of testing."
+            + " The quiz will be parsed one and content will be generated for (but not output)"
+            + " for each of the specified format (or none if none are specified)."))
 
     parser.add_argument('path', metavar = 'PATH',
         type = str,
         help = 'The path to a quiz json file.')
 
-    parser.add_argument('--format',
-        action = 'store', type = str, default = quizgen.constants.FORMAT_JSON,
-        choices = quizgen.converter.convert.SUPPORTED_FORMATS,
-        help = 'Output the parsed document in this format (default: %(default)s).')
+    parser.add_argument('formats', metavar = 'FORMAT',
+        type = str, nargs = '*',
+        help = 'Generate (but do not output) content in this format.')
 
     parser.add_argument('--key', dest = 'answer_key',
         action = 'store_true', default = False,

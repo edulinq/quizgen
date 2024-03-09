@@ -26,7 +26,7 @@ def _get_parser():
     parser = argparse.ArgumentParser(description =
         "Parse a single quiz question (JSON file) and output the result in the specified format.")
 
-    parser.add_argument('path',
+    parser.add_argument('path', metavar = 'PATH',
         type = str,
         help = 'The path to a quiz question json file.')
 
