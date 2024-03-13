@@ -2,7 +2,9 @@
 build-backend = "setuptools.build_meta"
 requires = [
     "setuptools",
-    "twine"
+    "packaging>=21.3",
+    "twine",
+    "vermin",
 ]
 
 [project]
