@@ -3,7 +3,7 @@ import logging
 import quizgen.log
 import tests.base
 
-class TestGit(tests.base.BaseTest):
+class TestLog(tests.base.BaseTest):
     def test_base_levels(self):
         quizgen.log.init()
 
