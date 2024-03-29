@@ -1,28 +1,51 @@
+import re
+
 import quizgen.parser
 import tests.base
 
 class TestParser(tests.base.BaseTest):
-    def test_good_parse_cases(self):
-        for i in range(len(GOOD_TEST_CASES)):
-            text, expected = GOOD_TEST_CASES[i]
+    """
+    Test parsing.
+    Good and bad situations will be loaded below into individual test cases.
+    """
 
-            with self.subTest(index = i, text = text):
-                document = quizgen.parser.parse_text(text)
-                result = document.to_pod(include_metadata = False)
+    pass
 
-                self.assertJSONDictEqual(expected, result)
+def _add_good_parse_questions(test_cases):
+    for (name, text, expected) in test_cases:
+        clean_name = name.lower().strip().replace(' ', '_')
+        clean_name = re.sub(r'\W+', '', clean_name)
 
-    def test_bad_parse_cases(self):
-        for i in range(len(BAD_TEST_CASES)):
-            text = BAD_TEST_CASES[i]
+        test_name = 'test_good_parse_' + clean_name
+        setattr(TestParser, test_name, _get_good_parse_test(text, expected))
 
-            with self.subTest(index = i, text = text):
-                try:
-                    quizgen.parser.parse_text(text)
-                    self.fail("Failed to raise an exception.")
-                except Exception:
-                    # Expected.
-                    pass
+def _get_good_parse_test(text, expected):
+    def __method(self):
+        document = quizgen.parser.parse_text(text)
+        result = document.to_pod(include_metadata = False)
+
+        self.assertJSONDictEqual(expected, result)
+
+    return __method
+
+def _add_bad_parse_questions(test_cases):
+    for (name, text) in test_cases:
+        clean_name = name.lower().strip().replace(' ', '_')
+        clean_name = re.sub(r'\W+', '', clean_name)
+
+        test_name = 'test_bad_parse_' + clean_name
+        setattr(TestParser, test_name, _get_bad_parse_test(text))
+
+def _get_bad_parse_test(text):
+    def __method(self):
+        try:
+            quizgen.parser.parse_text(text)
+            self.fail("Failed to raise an exception.")
+        except Exception:
+            # Expected.
+            pass
+
+    return __method
 
 # Wrap a pod parser node in a block.
 def _wrap_block(nodes, style = None):
@@ -51,22 +74,23 @@ def _wrap_text_nodes(nodes):
         'nodes': nodes,
     }])
 
-GOOD_TEST_CASES = [
-    ['Text', _wrap_text_nodes([
+# [[name, input, expected AST], ...]
+_add_good_parse_questions([
+    ['Single Word', 'Text', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Text'
         },
     ])],
 
-    ['Foo bar', _wrap_text_nodes([
+    ['Text with Spaces', 'Foo bar', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Foo bar'
         },
     ])],
 
-    ['\nFoo\nbar\n', _wrap_block([
+    ['Text with Implicit Newlines', '\nFoo\nbar\n', _wrap_block([
         {
             'type': 'text',
             'nodes': [{
@@ -83,7 +107,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['\nFoo\\nbar\n', _wrap_text_nodes([
+    ['Text with Explicit Linebreak', '\nFoo\\nbar\n', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Foo',
@@ -97,7 +121,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['Some *italics* text.', _wrap_text_nodes([
+    ['Basic Italics', 'Some *italics* text.', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Some '
@@ -112,7 +136,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['Some * spaced  italics   * text.', _wrap_text_nodes([
+    ['Italics with Spaces', 'Some * spaced  italics   * text.', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Some '
@@ -127,7 +151,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['Some **bold** text.', _wrap_text_nodes([
+    ['Basic Bold', 'Some **bold** text.', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Some '
@@ -142,7 +166,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['Some ** spaced  bold   ** text.', _wrap_text_nodes([
+    ['Bold with Spaces', 'Some ** spaced  bold   ** text.', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Some '
@@ -157,63 +181,70 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['Escape \\\\ backslash.', _wrap_text_nodes([
+    ['Escaped Backslash', 'Escape \\\\ backslash.', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Escape \\ backslash.'
         },
     ])],
 
-    ['Escape \\* asterisk.', _wrap_text_nodes([
+    ['Escaped Asterisk', 'Escape \\* asterisk.', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Escape * asterisk.'
         },
     ])],
 
-    ['Escape \\| pipe.', _wrap_text_nodes([
+    ['Escaped Pipe', 'Escape \\| pipe.', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Escape | pipe.'
         },
     ])],
 
-    ['Escape \\` backtick.', _wrap_text_nodes([
+    ['Escaped Backtick', 'Escape \\` backtick.', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Escape ` backtick.'
         },
     ])],
 
-    ['Escape \\- dash.', _wrap_text_nodes([
+    ['Escaped Dash', 'Escape \\- dash.', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Escape - dash.'
         },
     ])],
 
-    ['Escape \\! bang.', _wrap_text_nodes([
+    ['Escaped Bang', 'Escape \\! bang.', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Escape ! bang.'
         },
     ])],
 
-    ['Escape \\[ open bracket.', _wrap_text_nodes([
+    ['Escaped Open Bracket', 'Escape \\[ open bracket.', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Escape [ open bracket.'
         },
     ])],
 
-    ['Escape \\/ slash.', _wrap_text_nodes([
+    ['Escaped Open Brace', 'Escape \\{ open brace.', _wrap_text_nodes([
+        {
+            'type': 'normal_text',
+            'text': 'Escape { open brace.'
+        },
+    ])],
+
+    ['Escaped Slash', 'Escape \\/ slash.', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Escape / slash.'
         },
     ])],
 
-    ['`inline_code();`', _wrap_text_nodes([
+    ['Basic Inline Code', '`inline_code();`', _wrap_text_nodes([
         {
             'type': 'code',
             'inline': True,
@@ -221,7 +252,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['Inline `code()`.', _wrap_text_nodes([
+    ['Mid-Text Inline Code', 'Inline `code()`.', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Inline '
@@ -237,7 +268,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['`inline_code("\\`");`', _wrap_text_nodes([
+    ['Inline Code with Escapes', '`inline_code("\\`");`', _wrap_text_nodes([
         {
             'type': 'code',
             'inline': True,
@@ -245,7 +276,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['```code_block()```', _wrap_block([
+    ['Basic Code Block', '```code_block()```', _wrap_block([
         {
             'type': 'code',
             'inline': False,
@@ -253,7 +284,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['``` code_block() ```', _wrap_block([
+    ['Code Block with Inner Whitespace', '``` code_block() ```', _wrap_block([
         {
             'type': 'code',
             'inline': False,
@@ -261,7 +292,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['```\ncode_block()\n```', _wrap_block([
+    ['Code Block with Inner Newlines', '```\ncode_block()\n```', _wrap_block([
         {
             'type': 'code',
             'inline': False,
@@ -269,7 +300,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['```foo(1, \'-2\')\nbar("|", x*);```', _wrap_block([
+    ['Code Block with Unescaped Escape Characters', '```foo(1, \'-2\')\nbar("|", x*);```', _wrap_block([
         {
             'type': 'code',
             'inline': False,
@@ -277,7 +308,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['$ f(x) = x_i + x^2 \\alpha $', _wrap_text_nodes([
+    ['Basic Inline Equation', '$ f(x) = x_i + x^2 \\alpha $', _wrap_text_nodes([
         {
             'type': 'equation',
             'inline': True,
@@ -285,7 +316,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['Inline $\\text{equation}$.', _wrap_text_nodes([
+    ['Inline Equation without Whitespace', 'Inline $\\text{equation}$.', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Inline '
@@ -301,7 +332,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['$f(\\$a)$', _wrap_text_nodes([
+    ['Inline Equation with Dollar Sign', '$f(\\$a)$', _wrap_text_nodes([
         {
             'type': 'equation',
             'inline': True,
@@ -309,7 +340,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['$$equation + block$$', _wrap_block([
+    ['Basic Equation Block', '$$equation + block$$', _wrap_block([
         {
             'type': 'equation',
             'inline': False,
@@ -317,7 +348,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['$$ equation + - * / block() $$', _wrap_block([
+    ['Equation Block with Unescaped Escape Characters', '$$ equation + - * / block() $$', _wrap_block([
         {
             'type': 'equation',
             'inline': False,
@@ -325,7 +356,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['$$\nf(x)\n$$', _wrap_block([
+    ['Equation Block with Terminal Newlines', '$$\nf(x)\n$$', _wrap_block([
         {
             'type': 'equation',
             'inline': False,
@@ -333,7 +364,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['$$ f(x)\ng(x) $$', _wrap_block([
+    ['Equation Block with Inner Newlines', '$$ f(x)\ng(x) $$', _wrap_block([
         {
             'type': 'equation',
             'inline': False,
@@ -341,7 +372,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['[text](url)', _wrap_text_nodes([
+    ['Basic Link', '[text](url)', _wrap_text_nodes([
         {
             'type': 'link',
             'text': 'text',
@@ -349,7 +380,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['![alt text](url)', _wrap_text_nodes([
+    ['Basic Image', '![alt text](url)', _wrap_text_nodes([
         {
             'type': 'image',
             'text': 'alt text',
@@ -357,7 +388,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['[text]( )', _wrap_text_nodes([
+    ['Link with No URL', '[text]( )', _wrap_text_nodes([
         {
             'type': 'link',
             'text': 'text',
@@ -365,7 +396,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['[ ](url)', _wrap_text_nodes([
+    ['Link with No Text', '[ ](url)', _wrap_text_nodes([
         {
             'type': 'link',
             'text': '',
@@ -373,7 +404,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['[ some text ]( some url )', _wrap_text_nodes([
+    ['Link with Extra Whitesspace', '[ some text ]( some url )', _wrap_text_nodes([
         {
             'type': 'link',
             'text': 'some text',
@@ -381,7 +412,7 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['[ some [\\] text ]( some (\\) url )', _wrap_text_nodes([
+    ['Link with Escaped Characters', '[ some [\\] text ]( some (\\) url )', _wrap_text_nodes([
         {
             'type': 'link',
             'text': 'some [] text',
@@ -389,42 +420,42 @@ GOOD_TEST_CASES = [
         },
     ])],
 
-    ['[[answerReference]]', _wrap_text_nodes([
+    ['Basic Answer Reference', '[[answerReference]]', _wrap_text_nodes([
         {
             'type': 'answer-reference',
             'text': 'answerReference',
         },
     ])],
 
-    ['[[answer_reference]]', _wrap_text_nodes([
+    ['Answer Reference with Underscore', '[[answer_reference]]', _wrap_text_nodes([
         {
             'type': 'answer-reference',
             'text': 'answer_reference',
         },
     ])],
 
-    ['[[A]]', _wrap_text_nodes([
+    ['One Character Answer Reference', '[[A]]', _wrap_text_nodes([
         {
             'type': 'answer-reference',
             'text': 'A',
         },
     ])],
 
-    ['// Some comment.', _wrap_text_nodes([
+    ['Basic Slash Comment', '// Some comment.', _wrap_text_nodes([
         {
             'type': 'comment',
             'text': 'Some comment.'
         },
     ])],
 
-    ['// Some // comment. \\ * | ` - ! [ / ', _wrap_text_nodes([
+    ['Slash Comment with Slashes', '// Some // comment. \\ * | ` - ! [ / ', _wrap_text_nodes([
         {
             'type': 'comment',
             'text': 'Some // comment. \\ * | ` - ! [ /'
         },
     ])],
 
-    ['Some // comment.', _wrap_text_nodes([
+    ['Mid-Line Slash Comment', 'Some // comment.', _wrap_text_nodes([
         {
             'type': 'normal_text',
             'text': 'Some '
@@ -436,6 +467,7 @@ GOOD_TEST_CASES = [
     ])],
 
     [
+        'Basic Table',
         '''
 | a | b | c |
         ''',
@@ -482,6 +514,7 @@ GOOD_TEST_CASES = [
     ],
 
     [
+        'One-Column Table Separator',
         '''
 |---|
         ''',
@@ -498,6 +531,7 @@ GOOD_TEST_CASES = [
     ],
 
     [
+        'Two-Column Table Separator',
         '''
 |---|---|
         ''',
@@ -514,6 +548,7 @@ GOOD_TEST_CASES = [
     ],
 
     [
+        'Table Separator with Short Dashes',
         '''
 |---| |
         ''',
@@ -530,6 +565,7 @@ GOOD_TEST_CASES = [
     ],
 
     [
+        'Table Seperator That Doesn\' Fill Column',
         '''
 |--- | |
         ''',
@@ -546,6 +582,7 @@ GOOD_TEST_CASES = [
     ],
 
     [
+        'Table with Differnet Text Types',
         '''
 |- 1  | \-2   |         3^        |
 |-----|-------|-------------------|
@@ -639,8 +676,8 @@ GOOD_TEST_CASES = [
         ])
     ],
 
-    # Root style with empty node.
     [
+        'Root Style',
         '''
 {{
     "font-size": 12
@@ -658,8 +695,8 @@ GOOD_TEST_CASES = [
         },
     ],
 
-    # Basic style.
     [
+        'Root Style Alongside Text',
         '''
 Base Style
 
@@ -680,17 +717,18 @@ Base Style
             }
         )
     ],
-]
+])
 
 # TEST - Style
 # TEST - Style Nest
 # TEST - Style Pop
 # TEST - Style
 
-BAD_TEST_CASES = [
-    '[[_]]',
-    '[[1]]',
-    '[[_a]]',
-    '[[1a]]',
-    '[[%a]]',
-]
+# [(name, text), ...]
+_add_bad_parse_questions([
+    ('Answer Reference with Only Underscore', '[[_]]'),
+    ('Answer Reference with Only Number', '[[1]]'),
+    ('Answer Reference Starting with Underscore', '[[_a]]'),
+    ('Answer Reference Starting with Number', '[[1a]]'),
+    ('Answer Reference Starting with Character', '[[%a]]'),
+])

@@ -16,9 +16,12 @@ ENCODING = 'utf-8'
 
 # TEST - Nested blocks and initial block for document.
 GRAMMAR = r'''
-    document: [ block ( NEWLINE+ block )* NEWLINE* ]
+    document: blocks
+    blocks: [ block ( NEWLINE+ block )* NEWLINE* ]
 
-    block: ( ( style_block | code_block | equation_block | table_block | list_block | text_line ) NEWLINE )+
+    block: ( ( explicit_block | style_block | code_block | equation_block | table_block | list_block | text_line ) NEWLINE )+
+
+    explicit_block: "{-" blocks "-}"
 
     style_block: "{{" NEWLINE? style_block_internal "}}"
     ?style_block_internal: /.+?(?=\}\})/s
@@ -110,9 +113,16 @@ HTML_TABLE_STYLE = [
 
 VERB_CHARACTERS = ['|', '!', '@', '#', '$', '^', '&', '-', '_', '=', '+']
 
+STYLE_KEY_IMAGE_WIDTH = 'image-width'
+
+STYLE_DEFAULT_IMAGE_WIDTH = 1.0
+
 class DocTransformer(lark.Transformer):
     def document(self, blocks):
-        return DocumentNode(blocks)
+        return DocumentNode(blocks[0])
+
+    def blocks(self, blocks):
+        return blocks
 
     def block(self, nodes):
         return BlockNode(nodes)
@@ -458,31 +468,38 @@ class ImageNode(ParseNode):
         self._handle_callback(image_path_callback, base_dir)
         return rf"\includegraphics[width=0.5\textwidth]{{{self._computed_path}}}"
 
-    # TEST: image-width
     def to_html(self, base_dir = '.', canvas_instance = None,
             force_raw_image_src = False, image_path_callback = None,
+            style = {},
             **kwargs):
         self._handle_callback(image_path_callback, base_dir)
-
-        if (force_raw_image_src or re.match(r'^http(s)?://', self._computed_path)):
-            return f"<img src='{self._computed_path}' alt='{self._text}' />"
-
         path = os.path.realpath(os.path.join(base_dir, self._computed_path))
 
-        if (canvas_instance is None):
-            # If we are not uploading to canvas, do a base64 encode of the image.
+        attr = {
+            'alt': self._text,
+            'width': "%5.2f%%" % (100.0 * float(style.get(STYLE_KEY_IMAGE_WIDTH, STYLE_DEFAULT_IMAGE_WIDTH))),
+        }
+
+        if (force_raw_image_src or re.match(r'^http(s)?://', self._computed_path)):
+            attr['src'] = self._computed_path
+        elif (canvas_instance is not None):
+            # Canvas requires uploading the image, which should have been done via Canvas uploader.
+            file_id = canvas_instance.context.get('file_ids', {}).get(path)
+            if (file_id is None):
+                raise ValueError(f"Could not get canvas context file id of image '{path}'.")
+
+            attr['src'] = f"{canvas_instance.base_url}/courses/{canvas_instance.course_id}/files/{file_id}/preview"
+        else:
+            # If we are not uploading to canvas or using a raw source, do a base64 encode of the image.
             mime, content = encode_image(path)
-            src = f"data:{mime};base64,{content}"
-            return f"<img src='{src}' alt='{self._text}' />"
+            attr['src'] = f"data:{mime};base64,{content}"
 
-        # Canvas requires uploading the image, which should have been done via Canvas uploader.
+        content = []
+        for (key, value) in sorted(attr.items()):
+            value = str(value).replace("'", r"\'")
+            content.append("%s='%s'" % (key, value))
 
-        file_id = canvas_instance.context.get('file_ids', {}).get(path)
-        if (file_id is None):
-            raise ValueError(f"Could not get canvas context file id of image '{path}'.")
-
-        src = f"{canvas_instance.base_url}/courses/{canvas_instance.course_id}/files/{file_id}/preview"
-        return f"<img src='{src}' alt='{self._text}' />"
+        return "<img %s />" % (' '.join(content))
 
     def collect_file_paths(self, base_dir):
         if (re.match(r'^http(s)?://', self._link)):
