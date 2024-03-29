@@ -40,6 +40,7 @@ The following characters need to be escaped with a backslash when they appear in
  - `*` - Star / Asterisk
  - `|` - Pipe
  - `$` - Dollar Sign
+ - `{` - Open Brace
  - `[` - Open Bracket
  - `!` - Bang / Exclamation Point
  - `` ` `` - Backtick
@@ -105,6 +106,7 @@ All images pointing to a URL should start with "http/https".
 
 Images will generally be placed in-line,
 but can be put in their own block or even inside a table.
+However, it is up to the output format/template if images will be actually displayed in-line.
 
 ### Inline Code
 
@@ -228,6 +230,7 @@ Markdown is an [inherently ambiguous language](https://roopc.net/posts/2014/mark
 so converting it into a language that can be represented by a CFG will mean a few quirks.
 Below are some quirks that should be noted:
 
+ - Blocks (code, equation, style, etc) need to start on the first column (they should not have whitespace before them).
  - Tables and lists need to have two blank lines after them (hence the general recommendation that all blocks be separated by two blank lines).
  - Table separators cannot be the first or last row.
  - Table cells, list items, and equations will be stripped of leading and trailing whitespace.

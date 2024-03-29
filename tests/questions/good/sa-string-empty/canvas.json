@@ -4,5 +4,5 @@
     "question[quiz_group_id]": 0,
     "question[points_possible]": 1,
     "question[position]": 0,
-    "question[question_text]": "<div class='document'>\n<div class='block' style='margin-bottom: 1em;'>\n<span>Short Answer: String Empty</span>\n</div>\n</div>"
+    "question[question_text]": "<div class='document'>\n<div class='block' style='margin-bottom: 1em;'>\n<div class='block' style='margin-bottom: 1em;'>\n<span>Short Answer: String Empty</span>\n</div>\n</div>\n</div>"
 }

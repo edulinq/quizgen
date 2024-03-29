@@ -2,7 +2,7 @@ import quizgen.parser
 import tests.base
 
 class TestParser(tests.base.BaseTest):
-    def test_good_cases(self):
+    def test_good_parse_cases(self):
         for i in range(len(GOOD_TEST_CASES)):
             text, expected = GOOD_TEST_CASES[i]
 
@@ -12,7 +12,7 @@ class TestParser(tests.base.BaseTest):
 
                 self.assertJSONDictEqual(expected, result)
 
-    def test_bad_cases(self):
+    def test_bad_parse_cases(self):
         for i in range(len(BAD_TEST_CASES)):
             text = BAD_TEST_CASES[i]
 
@@ -25,16 +25,24 @@ class TestParser(tests.base.BaseTest):
                     pass
 
 # Wrap a pod parser node in a block.
-def _wrap_block(nodes):
-    return {
+def _wrap_block(nodes, style = None):
+    data = {
         'type': 'document',
-        'nodes': [
-            {
-                'type': 'block',
-                'nodes': nodes,
-            },
-        ],
+        'root': {
+            'type': 'block',
+            'nodes': [
+                {
+                    'type': 'block',
+                    'nodes': nodes,
+                }
+            ],
+        },
     }
+
+    if ((style is not None) and (len(style) > 0)):
+        data['root']['style'] = style
+
+    return data
 
 # Wrap text nodes in a text block.
 def _wrap_text_nodes(nodes):
@@ -630,7 +638,54 @@ GOOD_TEST_CASES = [
             }
         ])
     ],
+
+    # Root style with empty node.
+    [
+        '''
+{{
+    "font-size": 12
+}}
+        ''',
+        {
+            'type': 'document',
+            'root': {
+                'type': 'block',
+                'nodes': [],
+                'style': {
+                    'font-size': 12,
+                }
+            }
+        },
+    ],
+
+    # Basic style.
+    [
+        '''
+Base Style
+
+{{
+    "font-size": 12
+}}
+        ''',
+        _wrap_block(
+            [{
+                'type': 'text',
+                'nodes': [{
+                    'type': 'normal_text',
+                    'text': 'Base Style',
+                }],
+            }],
+            style = {
+                'font-size': 12,
+            }
+        )
+    ],
 ]
+
+# TEST - Style
+# TEST - Style Nest
+# TEST - Style Pop
+# TEST - Style
 
 BAD_TEST_CASES = [
     '[[_]]',

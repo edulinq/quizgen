@@ -14,14 +14,17 @@ import quizgen.util.file
 
 ENCODING = 'utf-8'
 
+# TEST - Nested blocks and initial block for document.
 GRAMMAR = r'''
     document: [ block ( NEWLINE+ block )* NEWLINE* ]
 
-    block: ( ( code_block | equation_block | table_block | list_block | text_line ) NEWLINE )+
+    block: ( ( style_block | code_block | equation_block | table_block | list_block | text_line ) NEWLINE )+
+
+    style_block: "{{" NEWLINE? style_block_internal "}}"
+    ?style_block_internal: /.+?(?=\}\})/s
 
     code_block: "```" NEWLINE? code_block_internal "```"
     ?code_block_internal: /.+?(?=```)/s
-    CODE_BLOCK_TERMINAL: "```"
 
     equation_block: "$$" NEWLINE? equation_block_internal "$$"
     ?equation_block_internal: /.+?(?=\$\$)/s
@@ -71,13 +74,14 @@ GRAMMAR = r'''
     REFERENCE_WORD: /[a-zA-Z][a-zA-Z0-9_]*/
 
     NON_ESC_TEXT: NON_ESC_CHAR+
-    NON_ESC_CHAR: /[^\n\\`|\*\$\-\[!\/]/x
+    NON_ESC_CHAR: /[^\n\\`|\*\$\-\[{!\/]/x
     ESC_CHAR: "\\\\"
             | "\\-"
             | "\\*"
             | "\\|"
             | "\\$"
             | "\\["
+            | "\\{"
             | "\\!"
             | "\\`"
             | "\\/"
@@ -112,6 +116,11 @@ class DocTransformer(lark.Transformer):
 
     def block(self, nodes):
         return BlockNode(nodes)
+
+    def style_block(self, text):
+        text = '{' + text[0].strip("\n") + '}'
+        data = json.loads(text)
+        return StyleNode(data)
 
     def code_block(self, text):
         # Trim any newlines.
@@ -220,6 +229,10 @@ class ParseNode(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def to_text(self, **kwargs):
+        pass
+
+    @abc.abstractmethod
     def to_html(self, **kwargs):
         pass
 
@@ -260,39 +273,38 @@ class ParseNode(abc.ABC):
 
 class DocumentNode(ParseNode):
     def __init__(self, nodes):
-        self._nodes = list(nodes)
+        self._root = BlockNode(nodes)
         self._context = {}
 
-    def set_context(self, key, value):
+    def set_context_value(self, key, value):
         self._context[key] = value
 
     def set_base_dir(self, base_dir):
-        self.set_context("base_dir", base_dir)
+        self.set_context_value("base_dir", base_dir)
 
     def to_markdown(self, **kwargs):
         context = copy.deepcopy(self._context)
         context.update(kwargs)
 
-        return "\n\n".join([node.to_markdown(**context) for node in self._nodes])
+        return self._root.to_markdown(**context)
 
     def to_text(self, **kwargs):
         context = copy.deepcopy(self._context)
         context.update(kwargs)
 
-        return "\n\n".join([node.to_text(**context) for node in self._nodes])
+        return self._root.to_text(**context)
 
     def to_tex(self, **kwargs):
         context = copy.deepcopy(self._context)
         context.update(kwargs)
 
-        content = "\n\n".join([node.to_tex(**context) for node in self._nodes])
-        return content
+        return self._root.to_tex(**context)
 
     def to_html(self, **kwargs):
         context = copy.deepcopy(self._context)
         context.update(kwargs)
 
-        content = "\n\n".join([node.to_html(level = 1, **context) for node in self._nodes])
+        content = self._root.to_html(**context)
         content = f"<div class='document'>\n{content}\n</div>"
 
         return content
@@ -300,11 +312,66 @@ class DocumentNode(ParseNode):
     def to_pod(self, include_metadata = True, **kwargs):
         data = {
             "type": "document",
-            "nodes": [node.to_pod(include_metadata = True, **kwargs) for node in self._nodes],
+            "root": self._root.to_pod(include_metadata = include_metadata),
         }
 
         if (include_metadata):
             data["context"] = self._context
+
+        return data
+
+    def collect_file_paths(self, base_dir):
+        return self._root.collect_file_paths(base_dir)
+
+class BlockNode(ParseNode):
+    def __init__(self, nodes, style = {}):
+        self._nodes = []
+        self._style = style.copy()
+
+        for node in nodes:
+            if (node.is_empty()):
+                # Empty blocks with style get their style absorbed by the parent.
+                _style_dict_update(self._style, node._style)
+                continue
+
+            if (isinstance(node, StyleNode)):
+                _style_dict_update(self._style, node.to_pod())
+            else:
+                self._nodes.append(node)
+
+    def to_markdown(self, style = {}, **kwargs):
+        new_style = copy.deepcopy(self._style)
+        new_style.update(style)
+
+        return "\n".join([node.to_markdown(style = new_style, **kwargs) for node in self._nodes])
+
+    def to_text(self, style = {}, **kwargs):
+        new_style = copy.deepcopy(self._style)
+        new_style.update(style)
+
+        return "\n".join([node.to_text(style = new_style, **kwargs) for node in self._nodes])
+
+    def to_tex(self, style = {}, **kwargs):
+        new_style = copy.deepcopy(self._style)
+        new_style.update(style)
+
+        return "\n".join([node.to_tex(style = new_style, **kwargs) for node in self._nodes])
+
+    def to_html(self, style = {}, **kwargs):
+        new_style = copy.deepcopy(self._style)
+        new_style.update(style)
+
+        content = "\n".join([node.to_html(style = new_style, **kwargs) for node in self._nodes])
+        return f"<div class='block' style='margin-bottom: 1em;'>\n{content}\n</div>"
+
+    def to_pod(self, **kwargs):
+        data = {
+            "type": "block",
+            "nodes": [node.to_pod(**kwargs) for node in self._nodes],
+        }
+
+        if (len(self._style) > 0):
+            data['style'] = self._style
 
         return data
 
@@ -316,36 +383,27 @@ class DocumentNode(ParseNode):
 
         return paths
 
-class BlockNode(ParseNode):
-    def __init__(self, nodes):
-        self._nodes = list(nodes)
+    def is_empty(self):
+        return (len(self._nodes) == 0)
+
+class StyleNode(ParseNode):
+    def __init__(self, style = {}):
+        self._style = style
 
     def to_markdown(self, **kwargs):
-        return "\n".join([node.to_markdown(**kwargs) for node in self._nodes])
+        raise RuntimeError("Style nodes should not be in the AST.")
 
     def to_text(self, **kwargs):
-        return "\n".join([node.to_text(**kwargs) for node in self._nodes])
+        raise RuntimeError("Style nodes should not be in the AST.")
 
     def to_tex(self, **kwargs):
-        return "\n".join([node.to_tex(**kwargs) for node in self._nodes])
+        raise RuntimeError("Style nodes should not be in the AST.")
 
     def to_html(self, **kwargs):
-        content = "\n".join([node.to_html(**kwargs) for node in self._nodes])
-        return f"<div class='block' style='margin-bottom: 1em;'>\n{content}\n</div>"
+        raise RuntimeError("Style nodes should not be in the AST.")
 
     def to_pod(self, **kwargs):
-        return {
-            "type": "block",
-            "nodes": [node.to_pod(**kwargs) for node in self._nodes],
-        }
-
-    def collect_file_paths(self, base_dir):
-        paths = []
-
-        for node in self._nodes:
-            paths += node.collect_file_paths(base_dir)
-
-        return paths
+        return self._style
 
 class LinkNode(ParseNode):
     def __init__(self, text, link):
@@ -385,18 +443,22 @@ class ImageNode(ParseNode):
 
         self._computed_path = None
 
+    # TEST: image-width
     def to_markdown(self, base_dir = '.', image_path_callback = None, **kwargs):
         self._handle_callback(image_path_callback, base_dir)
         return f"![{self._text}]({self._computed_path})"
 
+    # TEST: image-width
     def to_text(self, base_dir = '.', image_path_callback = None, **kwargs):
         self._handle_callback(image_path_callback, base_dir)
         return f"{self._text} ({self._computed_path})"
 
+    # TEST: image-width
     def to_tex(self, base_dir = '.', image_path_callback = None, **kwargs):
         self._handle_callback(image_path_callback, base_dir)
         return rf"\includegraphics[width=0.5\textwidth]{{{self._computed_path}}}"
 
+    # TEST: image-width
     def to_html(self, base_dir = '.', canvas_instance = None,
             force_raw_image_src = False, image_path_callback = None,
             **kwargs):
@@ -959,6 +1021,17 @@ def tex_escape(text):
         text = text.replace(key, value)
 
     return text
+
+# Modify the existing syle (old) with any values from new.
+# None values indicate a clear.
+def _style_dict_update(old, new):
+    for (key, value) in new.items():
+        if (value is None):
+            old.pop(key, None)
+        else:
+            old[key] = value
+
+    return old
 
 def clean_text(text):
     # Remove carriage returns.
