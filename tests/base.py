@@ -4,9 +4,14 @@ import os
 import unittest
 
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+
 QUESTIONS_DIR = os.path.join(THIS_DIR, "questions")
 GOOD_QUESTIONS_DIR = os.path.join(QUESTIONS_DIR, "good")
 BAD_QUESTIONS_DIR = os.path.join(QUESTIONS_DIR, "bad")
+
+DOCUMENTS_DIR = os.path.join(THIS_DIR, 'documents')
+GOOD_DOCUMENTS_DIR = os.path.join(DOCUMENTS_DIR, "good")
+BAD_DOCUMENTS_DIR = os.path.join(DOCUMENTS_DIR, "bad")
 
 QUESTIONS_FILENAME = 'question.json'
 
@@ -23,3 +28,6 @@ def discover_question_tests():
     bad_paths = list(sorted(glob.glob(os.path.join(BAD_QUESTIONS_DIR, "**", QUESTIONS_FILENAME), recursive = True)))
 
     return good_paths, bad_paths
+
+def discover_good_document_files():
+    return list(sorted(glob.glob(os.path.join(GOOD_DOCUMENTS_DIR, "**", "*.json"), recursive = True)))

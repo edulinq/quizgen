@@ -93,7 +93,11 @@ GRAMMAR = r'''
 '''
 
 TEX_REPLACEMENTS = {
-    '\\': '\\textbackslash{}',
+    # Specially handle braces and slashes to avoid clobbering other replacements.
+    '{': 'ZZZzzz  OPEN BRACE REPLACEMENT  zzzZZZ',
+    '}': 'ZZZzzz  CLOSE BRACE REPLACEMENT  zzzZZZ',
+    '\\': 'ZZZzzz  BACKSLASH REPLACEMENT  zzzZZZ',
+
     '|': '\\textbar{}',
     '$': '\\$',
     '#': '\\#',
@@ -101,8 +105,10 @@ TEX_REPLACEMENTS = {
     '_': '\\_',
     'π': '$\\pi$',
     '`': '\\`{}',
-    '{': '\\{',
-    '}': '\\}',
+
+    'ZZZzzz  OPEN BRACE REPLACEMENT  zzzZZZ': '\\{',
+    'ZZZzzz  CLOSE BRACE REPLACEMENT  zzzZZZ': '\\}',
+    'ZZZzzz  BACKSLASH REPLACEMENT  zzzZZZ': '\\textbackslash{}',
 }
 
 HTML_TABLE_STYLE = [

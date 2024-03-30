@@ -1,0 +1,281 @@
+[
+    {
+        "name": "Single Word",
+        "text": "Text",
+        "formats": {
+            "text": "Text",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Text</span></div></div>",
+            "tex": "Text",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Text"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Text with Spaces",
+        "text": "Foo Bar",
+        "formats": {
+            "text": "Foo Bar",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Foo Bar</span></div></div>",
+            "tex": "Foo Bar",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Foo Bar"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Text with Implicit Newlines",
+        "text": "\nFoo\nBar\n",
+        "formats": {
+            "text": "Foo\nBar",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Foo</span><span>Bar</span></div></div>",
+            "tex": "Foo\nBar",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Foo"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Bar"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Text with Explicit Linebreak",
+        "text": "\nFoo\\nBar\n",
+        "formats": {
+            "text": "Foo\n\nBar",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Foo</span><br /><span>Bar</span></div></div>",
+            "tex": "Foo \\newline\nBar",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Foo"
+                                    },
+                                    {
+                                        "type": "linebreak"
+                                    },
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Bar"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Basic Italics",
+        "text": "Some *italics* text.",
+        "formats": {
+            "text": "Some italics text.",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Some</span><span><emph>italics</emph></span><span>text.</span></div></div>",
+            "tex": "Some \\textit{italics} text.",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Some "
+                                    },
+                                    {
+                                        "type": "italics_text",
+                                        "text": "italics"
+                                    },
+                                    {
+                                        "type": "normal_text",
+                                        "text": " text."
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Italics with Spaces",
+        "text": "Some * spaced  italics   * text.",
+        "formats": {
+            "text": "Some  spaced  italics    text.",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Some</span><span><emph>spaced  italics</emph></span><span>text.</span></div></div>",
+            "tex": "Some \\textit{ spaced  italics   } text.",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Some "
+                                    },
+                                    {
+                                        "type": "italics_text",
+                                        "text": " spaced  italics   "
+                                    },
+                                    {
+                                        "type": "normal_text",
+                                        "text": " text."
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Basic Bold",
+        "text": "Some **bold** text.",
+        "formats": {
+            "text": "Some bold text.",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Some</span><span><strong>bold</strong></span><span>text.</span></div></div>",
+            "tex": "Some \\textbf{bold} text.",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Some "
+                                    },
+                                    {
+                                        "type": "bold_text",
+                                        "text": "bold"
+                                    },
+                                    {
+                                        "type": "normal_text",
+                                        "text": " text."
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Bold with Spaces",
+        "text": "Some ** spaced  bold   ** text.",
+        "formats": {
+            "text": "Some  spaced  bold    text.",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Some</span><span><strong>spaced  bold</strong></span><span>text.</span></div></div>",
+            "tex": "Some \\textbf{ spaced  bold   } text.",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Some "
+                                    },
+                                    {
+                                        "type": "bold_text",
+                                        "text": " spaced  bold   "
+                                    },
+                                    {
+                                        "type": "normal_text",
+                                        "text": " text."
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+]

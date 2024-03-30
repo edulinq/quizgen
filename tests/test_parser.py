@@ -1,5 +1,11 @@
+# TEST
+import json
+import os
 import re
 
+import bs4
+
+import quizgen.constants
 import quizgen.parser
 import tests.base
 
@@ -11,6 +17,20 @@ class TestParser(tests.base.BaseTest):
 
     pass
 
+# TEST
+def _add_good_parse_questions():
+    for path in tests.base.discover_good_document_files():
+        with open(path, 'r') as file:
+            documents = json.load(file)
+
+        for document in documents:
+            text = document['text']
+
+            for (doc_format, expected) in document['formats'].items():
+                test_name = _make_name('good_parse', path, document['name'], doc_format)
+                setattr(TestParser, test_name, _get_good_parse_test(text, doc_format, expected))
+
+''' TEST
 def _add_good_parse_questions(test_cases):
     for (name, text, expected) in test_cases:
         clean_name = name.lower().strip().replace(' ', '_')
@@ -18,13 +38,48 @@ def _add_good_parse_questions(test_cases):
 
         test_name = 'test_good_parse_' + clean_name
         setattr(TestParser, test_name, _get_good_parse_test(text, expected))
+'''
 
-def _get_good_parse_test(text, expected):
+def _make_name(prefix, path, name, doc_format):
+    clean_name = name.lower().strip().replace(' ', '_')
+    clean_name = re.sub(r'\W+', '', clean_name)
+
+    filename = os.path.splitext(os.path.basename(path))[0]
+
+    return "test_%s__%s__%s__%s" % (prefix, filename, clean_name, doc_format)
+
+def _get_good_parse_test(text, doc_format, base_expected):
     def __method(self):
         document = quizgen.parser.parse_text(text)
-        result = document.to_pod(include_metadata = False)
+        result = document.to_format(doc_format, include_metadata = False)
 
-        self.assertJSONDictEqual(expected, result)
+        if (doc_format == quizgen.constants.FORMAT_JSON):
+            result = json.loads(result)
+            expected = {
+                'type': 'document',
+                'root': base_expected,
+            }
+
+            self.assertJSONDictEqual(expected, result)
+        elif (doc_format == quizgen.constants.FORMAT_HTML):
+            expected = f"""
+                <div class='document'>
+                    {base_expected}
+                </div>
+            """
+
+            document = bs4.BeautifulSoup(result, 'html.parser')
+            result = document.prettify(formatter = bs4.formatter.HTMLFormatter(indent = 4))
+
+            document = bs4.BeautifulSoup(expected, 'html.parser')
+            expected = document.prettify(formatter = bs4.formatter.HTMLFormatter(indent = 4))
+
+            self.assertEqual(expected, result)
+        else:
+            result = result.strip()
+            expected = base_expected.strip()
+
+            self.assertEqual(expected, result)
 
     return __method
 
@@ -74,176 +129,9 @@ def _wrap_text_nodes(nodes):
         'nodes': nodes,
     }])
 
+""" TEST
 # [[name, input, expected AST], ...]
 _add_good_parse_questions([
-    ['Single Word', 'Text', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Text'
-        },
-    ])],
-
-    ['Text with Spaces', 'Foo bar', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Foo bar'
-        },
-    ])],
-
-    ['Text with Implicit Newlines', '\nFoo\nbar\n', _wrap_block([
-        {
-            'type': 'text',
-            'nodes': [{
-                'type': 'normal_text',
-                'text': 'Foo',
-            }],
-        },
-        {
-            'type': 'text',
-            'nodes': [{
-                'type': 'normal_text',
-                'text': 'bar',
-            }],
-        },
-    ])],
-
-    ['Text with Explicit Linebreak', '\nFoo\\nbar\n', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Foo',
-        },
-        {
-            'type': 'linebreak',
-        },
-        {
-            'type': 'normal_text',
-            'text': 'bar'
-        },
-    ])],
-
-    ['Basic Italics', 'Some *italics* text.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Some '
-        },
-        {
-            'type': 'italics_text',
-            'text': 'italics'
-        },
-        {
-            'type': 'normal_text',
-            'text': ' text.'
-        },
-    ])],
-
-    ['Italics with Spaces', 'Some * spaced  italics   * text.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Some '
-        },
-        {
-            'type': 'italics_text',
-            'text': ' spaced  italics   '
-        },
-        {
-            'type': 'normal_text',
-            'text': ' text.'
-        },
-    ])],
-
-    ['Basic Bold', 'Some **bold** text.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Some '
-        },
-        {
-            'type': 'bold_text',
-            'text': 'bold'
-        },
-        {
-            'type': 'normal_text',
-            'text': ' text.'
-        },
-    ])],
-
-    ['Bold with Spaces', 'Some ** spaced  bold   ** text.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Some '
-        },
-        {
-            'type': 'bold_text',
-            'text': ' spaced  bold   '
-        },
-        {
-            'type': 'normal_text',
-            'text': ' text.'
-        },
-    ])],
-
-    ['Escaped Backslash', 'Escape \\\\ backslash.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Escape \\ backslash.'
-        },
-    ])],
-
-    ['Escaped Asterisk', 'Escape \\* asterisk.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Escape * asterisk.'
-        },
-    ])],
-
-    ['Escaped Pipe', 'Escape \\| pipe.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Escape | pipe.'
-        },
-    ])],
-
-    ['Escaped Backtick', 'Escape \\` backtick.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Escape ` backtick.'
-        },
-    ])],
-
-    ['Escaped Dash', 'Escape \\- dash.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Escape - dash.'
-        },
-    ])],
-
-    ['Escaped Bang', 'Escape \\! bang.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Escape ! bang.'
-        },
-    ])],
-
-    ['Escaped Open Bracket', 'Escape \\[ open bracket.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Escape [ open bracket.'
-        },
-    ])],
-
-    ['Escaped Open Brace', 'Escape \\{ open brace.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Escape { open brace.'
-        },
-    ])],
-
-    ['Escaped Slash', 'Escape \\/ slash.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Escape / slash.'
-        },
-    ])],
-
     ['Basic Inline Code', '`inline_code();`', _wrap_text_nodes([
         {
             'type': 'code',
@@ -718,6 +606,7 @@ Base Style
         )
     ],
 ])
+"""
 
 # TEST - Style
 # TEST - Style Nest
@@ -732,3 +621,6 @@ _add_bad_parse_questions([
     ('Answer Reference Starting with Number', '[[1a]]'),
     ('Answer Reference Starting with Character', '[[%a]]'),
 ])
+
+# TEST
+_add_good_parse_questions()
