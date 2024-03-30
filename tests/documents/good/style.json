@@ -1,0 +1,51 @@
+[
+    {
+        "name": "Root Style",
+        "text": "{{ \"font-size\": 12 }}",
+        "formats": {
+            "text": "",
+            "html": "<div class='block' style='margin-bottom: 1em;'></div>",
+            "tex": "",
+            "json": {
+                "type": "block",
+                "nodes": [],
+                "style": {
+                    "font-size": 12
+                }
+            }
+        }
+    },
+
+    {
+        "name": "Root Style Slongside Text",
+        "text": "Base Style\n{{ \"font-size\": 12 }}",
+        "formats": {
+            "text": "Base Style",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Base Style</span></div>",
+            "tex": "Base Style",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Base Style"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "font-size": 12
+                        }
+                    }
+                ]
+            }
+        }
+    }
+
+]

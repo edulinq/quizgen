@@ -1,0 +1,306 @@
+[
+    {
+        "name": "Basic Table",
+        "text": "| a | b | c |",
+        "options": {
+            "tex": {
+                "ignore-whitespace": true
+            }
+        },
+        "formats": {
+            "text": "| a | b | c |",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'><tr><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>a</span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>b</span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>c</span></td></tr></table></div></div>",
+            "tex": "\\begin{center}\n\\begin{tabular}{ ccc }\na & b & c \\\\\n\\end{tabular}\\end{center}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "table",
+                                "rows": [
+                                    {
+                                        "type": "table-row",
+                                        "head": false,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "a"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "b"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "c"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "One-Column Table Separator",
+        "text": "|---|",
+        "options": {
+            "tex": {
+                "ignore-whitespace": true
+            }
+        },
+        "formats": {
+            "text": "|---|",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'></table></div></div>",
+            "tex": "\\begin{center}\n\\begin{tabular}{ c }\n\\hline\\\\\n\\end{tabular}\\end{center}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "table",
+                                "rows": [
+                                    {
+                                        "type": "table-sep"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Two-Column Table Separator",
+        "text": "|---|---|",
+        "options": {
+            "tex": {
+                "ignore-whitespace": true
+            }
+        },
+        "formats": {
+            "text": "|---|",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'></table></div></div>",
+            "tex": "\\begin{center}\n\\begin{tabular}{ c }\n\\hline\\\\\n\\end{tabular}\\end{center}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "table",
+                                "rows": [
+                                    {
+                                        "type": "table-sep"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Table Separator with Short Dashes",
+        "text": "|---| |",
+        "options": {
+            "tex": {
+                "ignore-whitespace": true
+            }
+        },
+        "formats": {
+            "text": "|---|",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'></table></div></div>",
+            "tex": "\\begin{center}\n\\begin{tabular}{ c }\n\\hline\\\\\n\\end{tabular}\\end{center}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "table",
+                                "rows": [
+                                    {
+                                        "type": "table-sep"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Table Seperator That Doesn' Fill Column",
+        "text": "|--- | |",
+        "options": {
+            "tex": {
+                "ignore-whitespace": true
+            }
+        },
+        "formats": {
+            "text": "|---|",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'></table></div></div>",
+            "tex": "\\begin{center}\n\\begin{tabular}{ c }\n\\hline\\\\\n\\end{tabular}\\end{center}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "table",
+                                "rows": [
+                                    {
+                                        "type": "table-sep"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Table with Differnet Text Types",
+        "text": "|- 1  | \\-2   |         3^        |\n|-----|-------|-------------------|\n| *a* | **b** | `c()` and $ d() $ |",
+        "options": {
+            "tex": {
+                "ignore-whitespace": true
+            }
+        },
+        "formats": {
+            "text": "| 1 | -2 | 3^ |\n|---|---|---|\n| a | b | `c()` and $ d() $ |",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'><tr><th style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>1</span></th><th style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>-2</span></th><th style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>3^</span></th></tr><tr><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em  ; border-top: 2px solid black;'><span><emph>a</emph></span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em  ; border-top: 2px solid black;'><span><strong>b</strong></span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em  ; border-top: 2px solid black;'><code>c()</code><span>and</span><span><code>d()</code></span></td></tr></table></div></div>",
+            "tex": "\\begin{center} \n \\begin{tabular}{ccc} \n 1 & -2 & 3^ \\\\ \n \\hline \\\\ \n \\textit{a} & \\textbf{b} & \\verb|c()| and $ d() $ \\\\ \n \\end{tabular} \\end{center}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "table",
+                                "rows": [
+                                    {
+                                        "type": "table-row",
+                                        "head": true,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "1"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "-2"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "3^"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "table-sep"
+                                    },
+                                    {
+                                        "type": "table-row",
+                                        "head": false,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "italics_text",
+                                                        "text": "a"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "bold_text",
+                                                        "text": "b"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "code",
+                                                        "inline": true,
+                                                        "text": "c()"
+                                                    },
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": " and "
+                                                    },
+                                                    {
+                                                        "type": "equation",
+                                                        "inline": true,
+                                                        "text": "d()"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+
+]

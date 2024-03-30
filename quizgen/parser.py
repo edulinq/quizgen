@@ -459,10 +459,8 @@ class ImageNode(ParseNode):
 
         self._computed_path = None
 
-    # TEST: image-width
-    def to_markdown(self, base_dir = '.', image_path_callback = None, **kwargs):
-        self._handle_callback(image_path_callback, base_dir)
-        return f"![{self._text}]({self._computed_path})"
+    def to_markdown(self, **kwargs):
+        return self.to_html(**kwargs)
 
     def to_text(self, base_dir = '.', image_path_callback = None, **kwargs):
         self._handle_callback(image_path_callback, base_dir)

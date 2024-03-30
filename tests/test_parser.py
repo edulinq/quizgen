@@ -36,7 +36,8 @@ def _add_good_parse_questions():
 
             for (doc_format, expected) in document['formats'].items():
                 test_name = _make_name('good_parse', path, document['name'], doc_format)
-                setattr(TestParser, test_name, _get_good_parse_test(text, doc_format, expected, base_dir))
+                options = document.get('options', {}).get(doc_format, {})
+                setattr(TestParser, test_name, _get_good_parse_test(text, doc_format, expected, base_dir, options))
 
 def _make_name(prefix, path, name, doc_format):
     clean_name = name.lower().strip().replace(' ', '_')
@@ -46,7 +47,7 @@ def _make_name(prefix, path, name, doc_format):
 
     return "test_%s__%s__%s__%s" % (prefix, filename, clean_name, doc_format)
 
-def _get_good_parse_test(text, doc_format, base_expected, base_dir):
+def _get_good_parse_test(text, doc_format, base_expected, base_dir, options):
     def __method(self):
         document = quizgen.parser.parse_text(text)
         result = document.to_format(doc_format, base_dir = base_dir, include_metadata = False)
@@ -66,20 +67,29 @@ def _get_good_parse_test(text, doc_format, base_expected, base_dir):
                 </div>
             """
 
-            document = bs4.BeautifulSoup(result, 'html.parser')
-            result = document.prettify(formatter = bs4.formatter.HTMLFormatter(indent = 4))
-
             document = bs4.BeautifulSoup(expected, 'html.parser')
             expected = document.prettify(formatter = bs4.formatter.HTMLFormatter(indent = 4))
 
+            document = bs4.BeautifulSoup(result, 'html.parser')
+            result = document.prettify(formatter = bs4.formatter.HTMLFormatter(indent = 4))
+
+            expected, result = _apply_text_options(options, expected, result)
             self.assertEqual(expected, result)
         else:
-            result = result.strip()
             expected = base_expected.strip()
+            result = result.strip()
 
+            expected, result = _apply_text_options(options, expected, result)
             self.assertEqual(expected, result)
 
     return __method
+
+def _apply_text_options(options, a, b):
+    if (options.get("ignore-whitespace", False)):
+        a = re.sub(r'\s+', '', a)
+        b = re.sub(r'\s+', '', b)
+
+    return a, b
 
 # TEST
 def _add_bad_parse_questions(test_cases):
@@ -128,264 +138,6 @@ def _wrap_text_nodes(nodes):
         'nodes': nodes,
     }])
 
-""" TEST
-# [[name, input, expected AST], ...]
-_add_good_parse_questions([
-
-    [
-        'Basic Table',
-        '''
-| a | b | c |
-        ''',
-        _wrap_block([
-            {
-                'type': 'table',
-                'rows': [
-                    {
-                        'type': 'table-row',
-                        'head': False,
-                        'cells': [
-                            {
-                                'type': 'text',
-                                'nodes': [
-                                    {
-                                        'type': 'normal_text',
-                                        'text': 'a'
-                                    },
-                                ],
-                            },
-                            {
-                                'type': 'text',
-                                'nodes': [
-                                    {
-                                        'type': 'normal_text',
-                                        'text': 'b'
-                                    },
-                                ],
-                            },
-                            {
-                                'type': 'text',
-                                'nodes': [
-                                    {
-                                        'type': 'normal_text',
-                                        'text': 'c'
-                                    },
-                                ],
-                            },
-                        ]
-                    },
-                ],
-            }
-        ])
-    ],
-
-    [
-        'One-Column Table Separator',
-        '''
-|---|
-        ''',
-        _wrap_block([
-            {
-                'type': 'table',
-                'rows': [
-                    {
-                        'type': 'table-sep'
-                    },
-                ],
-            }
-        ])
-    ],
-
-    [
-        'Two-Column Table Separator',
-        '''
-|---|---|
-        ''',
-        _wrap_block([
-            {
-                'type': 'table',
-                'rows': [
-                    {
-                        'type': 'table-sep'
-                    },
-                ],
-            }
-        ])
-    ],
-
-    [
-        'Table Separator with Short Dashes',
-        '''
-|---| |
-        ''',
-        _wrap_block([
-            {
-                'type': 'table',
-                'rows': [
-                    {
-                        'type': 'table-sep'
-                    },
-                ],
-            }
-        ])
-    ],
-
-    [
-        'Table Seperator That Doesn\' Fill Column',
-        '''
-|--- | |
-        ''',
-        _wrap_block([
-            {
-                'type': 'table',
-                'rows': [
-                    {
-                        'type': 'table-sep'
-                    },
-                ],
-            }
-        ])
-    ],
-
-    [
-        'Table with Differnet Text Types',
-        '''
-|- 1  | \-2   |         3^        |
-|-----|-------|-------------------|
-| *a* | **b** | `c()` and $ d() $ |
-        ''',
-        _wrap_block([
-            {
-                'type': 'table',
-                'rows': [
-                    {
-                        'type': 'table-row',
-                        'head': True,
-                        'cells': [
-                            {
-                                'type': 'text',
-                                'nodes': [
-                                    {
-                                        'type': 'normal_text',
-                                        'text': '1'
-                                    },
-                                ],
-                            },
-                            {
-                                'type': 'text',
-                                'nodes': [
-                                    {
-                                        'type': 'normal_text',
-                                        'text': '-2',
-                                    },
-                                ],
-                            },
-                            {
-                                'type': 'text',
-                                'nodes': [
-                                    {
-                                        'type': 'normal_text',
-                                        'text': '3^'
-                                    },
-                                ],
-                            },
-                        ]
-                    },
-                    {
-                        'type': 'table-sep'
-                    },
-                    {
-                        'type': 'table-row',
-                        'head': False,
-                        'cells': [
-                            {
-                                'type': 'text',
-                                'nodes': [
-                                    {
-                                        'type': 'italics_text',
-                                        'text': 'a'
-                                    },
-                                ],
-                            },
-                            {
-                                'type': 'text',
-                                'nodes': [
-                                    {
-                                        'type': 'bold_text',
-                                        'text': 'b'
-                                    },
-                                ],
-                            },
-                            {
-                                'type': 'text',
-                                'nodes': [
-                                    {
-                                        'type': 'code',
-                                        'inline': True,
-                                        'text': 'c()'
-                                    },
-                                    {
-                                        'type': 'normal_text',
-                                        'text': ' and '
-                                    },
-                                    {
-                                        'type': 'equation',
-                                        'inline': True,
-                                        'text': 'd()'
-                                    },
-                                ],
-                            },
-                        ]
-                    },
-                ],
-            }
-        ])
-    ],
-
-    [
-        'Root Style',
-        '''
-{{
-    "font-size": 12
-}}
-        ''',
-        {
-            'type': 'document',
-            'root': {
-                'type': 'block',
-                'nodes': [],
-                'style': {
-                    'font-size': 12,
-                }
-            }
-        },
-    ],
-
-    [
-        'Root Style Alongside Text',
-        '''
-Base Style
-
-{{
-    "font-size": 12
-}}
-        ''',
-        _wrap_block(
-            [{
-                'type': 'text',
-                'nodes': [{
-                    'type': 'normal_text',
-                    'text': 'Base Style',
-                }],
-            }],
-            style = {
-                'font-size': 12,
-            }
-        )
-    ],
-])
-"""
-
 # TEST - Style
 # TEST - Style Nest
 # TEST - Style Pop
@@ -400,5 +152,4 @@ _add_bad_parse_questions([
     ('Answer Reference Starting with Character', '[[%a]]'),
 ])
 
-# TEST
 _add_good_parse_questions()
