@@ -1,0 +1,200 @@
+[
+    {
+        "name": "Basic Inline Equation",
+        "text": "$ f(x) = x_i + x^2 \\alpha $",
+        "formats": {
+            "text": "$ f(x) = x_i + x^2 \\alpha $",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span><code>f(x) = x_i + x^2 \\alpha</code></span></div></div>",
+            "tex": "$ f(x) = x_i + x^2 \\alpha $",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "equation",
+                                        "inline": true,
+                                        "text": "f(x) = x_i + x^2 \\alpha"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Inline Equation without Whitespace",
+        "text": "Inline$\\text{equation}$.",
+        "formats": {
+            "text": "Inline$ \\text{equation} $.",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Inline</span><span><code>\\text{equation}</code></span><span>.</span></div></div>",
+            "tex": "Inline$ \\text{equation} $.",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Inline"
+                                    },
+                                    {
+                                        "type": "equation",
+                                        "inline": true,
+                                        "text": "\\text{equation}"
+                                    },
+                                    {
+                                        "type": "normal_text",
+                                        "text": "."
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Inline Equation with Dollar Sign",
+        "text": "$f(\\$a)$",
+        "formats": {
+            "text": "$ f(\\$a) $",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span><code>f($a)</code></span></div></div>",
+            "tex": "$ f(\\$a) $",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "equation",
+                                        "inline": true,
+                                        "text": "f($a)"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Basic Equation Block",
+        "text": "$$equation + block$$",
+        "formats": {
+            "text": "$$\nequation + block\n$$",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><p><code>equation + block</code></p></div></div>",
+            "tex": "$$\nequation + block\n$$",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "equation",
+                                "inline": false,
+                                "text": "equation + block"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Equation Block with Unescaped Escape Characters",
+        "text": "$$ equation + - * / block() $$",
+        "formats": {
+            "text": "$$\nequation + - * / block()\n$$",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><p><code>equation + - * / block()</code></p></div></div>",
+            "tex": "$$\nequation + - * / block()\n$$",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "equation",
+                                "inline": false,
+                                "text": "equation + - * / block()"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Equation Block with Terminal Newlines",
+        "text": "$$\nf(x)\n$$",
+        "formats": {
+            "text": "$$\nf(x)\n$$",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><p><code>f(x)</code></p></div></div>",
+            "tex": "$$\nf(x)\n$$",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "equation",
+                                "inline": false,
+                                "text": "f(x)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Equation Block with Inner Newlines",
+        "text": "$$ f(x)\ng(x) $$",
+        "formats": {
+            "text": "$$\nf(x)\ng(x)\n$$",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><p><code>f(x)\ng(x)</code></p></div></div>",
+            "tex": "$$\nf(x)\ng(x)\n$$",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "equation",
+                                "inline": false,
+                                "text": "f(x)\ng(x)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+
+]

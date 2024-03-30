@@ -15,7 +15,14 @@ class TestParser(tests.base.BaseTest):
     Good and bad situations will be loaded below into individual test cases.
     """
 
-    pass
+    @classmethod
+    def setUpClass(cls):
+        # Disable KaTeX for testing.
+        quizgen.parser.EquationNode.katex_available = False
+
+    @classmethod
+    def tearDownClass(cls):
+        quizgen.parser.EquationNode.katex_available = None
 
 # TEST
 def _add_good_parse_questions():
@@ -132,133 +139,6 @@ def _wrap_text_nodes(nodes):
 """ TEST
 # [[name, input, expected AST], ...]
 _add_good_parse_questions([
-    ['Basic Inline Code', '`inline_code();`', _wrap_text_nodes([
-        {
-            'type': 'code',
-            'inline': True,
-            'text': 'inline_code();'
-        },
-    ])],
-
-    ['Mid-Text Inline Code', 'Inline `code()`.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Inline '
-        },
-        {
-            'type': 'code',
-            'inline': True,
-            'text': 'code()'
-        },
-        {
-            'type': 'normal_text',
-            'text': '.'
-        },
-    ])],
-
-    ['Inline Code with Escapes', '`inline_code("\\`");`', _wrap_text_nodes([
-        {
-            'type': 'code',
-            'inline': True,
-            'text': 'inline_code("`");'
-        },
-    ])],
-
-    ['Basic Code Block', '```code_block()```', _wrap_block([
-        {
-            'type': 'code',
-            'inline': False,
-            'text': 'code_block()'
-        },
-    ])],
-
-    ['Code Block with Inner Whitespace', '``` code_block() ```', _wrap_block([
-        {
-            'type': 'code',
-            'inline': False,
-            'text': ' code_block() '
-        },
-    ])],
-
-    ['Code Block with Inner Newlines', '```\ncode_block()\n```', _wrap_block([
-        {
-            'type': 'code',
-            'inline': False,
-            'text': 'code_block()'
-        },
-    ])],
-
-    ['Code Block with Unescaped Escape Characters', '```foo(1, \'-2\')\nbar("|", x*);```', _wrap_block([
-        {
-            'type': 'code',
-            'inline': False,
-            'text': 'foo(1, \'-2\')\nbar("|", x*);'
-        },
-    ])],
-
-    ['Basic Inline Equation', '$ f(x) = x_i + x^2 \\alpha $', _wrap_text_nodes([
-        {
-            'type': 'equation',
-            'inline': True,
-            'text': 'f(x) = x_i + x^2 \\alpha'
-        },
-    ])],
-
-    ['Inline Equation without Whitespace', 'Inline $\\text{equation}$.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Inline '
-        },
-        {
-            'type': 'equation',
-            'inline': True,
-            'text': '\\text{equation}'
-        },
-        {
-            'type': 'normal_text',
-            'text': '.'
-        },
-    ])],
-
-    ['Inline Equation with Dollar Sign', '$f(\\$a)$', _wrap_text_nodes([
-        {
-            'type': 'equation',
-            'inline': True,
-            'text': 'f($a)'
-        },
-    ])],
-
-    ['Basic Equation Block', '$$equation + block$$', _wrap_block([
-        {
-            'type': 'equation',
-            'inline': False,
-            'text': 'equation + block'
-        },
-    ])],
-
-    ['Equation Block with Unescaped Escape Characters', '$$ equation + - * / block() $$', _wrap_block([
-        {
-            'type': 'equation',
-            'inline': False,
-            'text': 'equation + - * / block()'
-        },
-    ])],
-
-    ['Equation Block with Terminal Newlines', '$$\nf(x)\n$$', _wrap_block([
-        {
-            'type': 'equation',
-            'inline': False,
-            'text': 'f(x)'
-        },
-    ])],
-
-    ['Equation Block with Inner Newlines', '$$ f(x)\ng(x) $$', _wrap_block([
-        {
-            'type': 'equation',
-            'inline': False,
-            'text': 'f(x)\ng(x)'
-        },
-    ])],
 
     ['Basic Link', '[text](url)', _wrap_text_nodes([
         {

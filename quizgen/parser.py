@@ -990,20 +990,21 @@ class EquationNode(BaseTextNode):
         return f"$$\n{self._text}\n$$"
 
     def to_text(self, bare = False, **kwargs):
-        if (bare and self._inline):
+        if (not bare):
+            return self.to_tex()
+
+        if (self._inline):
             return f"{self._text}"
-        elif (bare and (not self._inline)):
-            return f"\n{self._text}\n"
-        elif ((not bare) and self._inline):
-            return f"$ {self._text} $"
-        else:
-            return f"$$\n{self._text}\n$$"
+
+        return f"\n{self._text}\n"
 
     def to_tex(self, **kwargs):
-        if (self._inline):
-            return f"$ {self._text} $"
+        text = self._text.replace('$', '\$')
 
-        return f"$$\n{self._text}\n$$"
+        if (self._inline):
+            return f"$ {text} $"
+
+        return f"$$\n{text}\n$$"
 
     def to_html(self, **kwargs):
         if (EquationNode.katex_available is None):
