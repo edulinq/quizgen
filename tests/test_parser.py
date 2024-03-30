@@ -1,4 +1,3 @@
-# TEST
 import json
 import os
 import re
@@ -32,20 +31,13 @@ def _add_good_parse_questions():
         base_dir = os.path.dirname(path)
 
         for document in documents:
+            name = document['name']
             text = document['text']
 
             for (doc_format, expected) in document['formats'].items():
-                test_name = _make_name('good_parse', path, document['name'], doc_format)
+                test_name = _make_name('good_parse', path, name, doc_format)
                 options = document.get('options', {}).get(doc_format, {})
                 setattr(TestParser, test_name, _get_good_parse_test(text, doc_format, expected, base_dir, options))
-
-def _make_name(prefix, path, name, doc_format):
-    clean_name = name.lower().strip().replace(' ', '_')
-    clean_name = re.sub(r'\W+', '', clean_name)
-
-    filename = os.path.splitext(os.path.basename(path))[0]
-
-    return "test_%s__%s__%s__%s" % (prefix, filename, clean_name, doc_format)
 
 def _get_good_parse_test(text, doc_format, base_expected, base_dir, options):
     def __method(self):
@@ -84,6 +76,46 @@ def _get_good_parse_test(text, doc_format, base_expected, base_dir, options):
 
     return __method
 
+def _add_bad_parse_questions():
+    for path in tests.base.discover_bad_document_files():
+        with open(path, 'r') as file:
+            documents = json.load(file)
+
+        base_dir = os.path.dirname(path)
+
+        for document in documents:
+            name = document['name']
+            text = document['text']
+            options = document.get('options', {})
+
+            test_name = _make_name('bad_parse', path, name)
+            setattr(TestParser, test_name, _get_bad_parse_test(text, base_dir, options))
+
+def _get_bad_parse_test(text, base_dir, options):
+    def __method(self):
+        try:
+            quizgen.parser.parse_text(text)
+        except Exception:
+            # Expected.
+            return
+
+        self.fail("Failed to raise an exception.")
+
+    return __method
+
+def _make_name(prefix, path, name, doc_format = None):
+    clean_name = name.lower().strip().replace(' ', '_')
+    clean_name = re.sub(r'\W+', '', clean_name)
+
+    filename = os.path.splitext(os.path.basename(path))[0]
+
+    test_name = "test_%s__%s__%s" % (prefix, filename, clean_name)
+
+    if (doc_format is not None):
+        test_name += ('__' + doc_format)
+
+    return test_name
+
 def _apply_text_options(options, a, b):
     if (options.get("ignore-whitespace", False)):
         a = re.sub(r'\s+', '', a)
@@ -91,65 +123,10 @@ def _apply_text_options(options, a, b):
 
     return a, b
 
-# TEST
-def _add_bad_parse_questions(test_cases):
-    for (name, text) in test_cases:
-        clean_name = name.lower().strip().replace(' ', '_')
-        clean_name = re.sub(r'\W+', '', clean_name)
-
-        test_name = 'test_bad_parse_' + clean_name
-        setattr(TestParser, test_name, _get_bad_parse_test(text))
-
-def _get_bad_parse_test(text):
-    def __method(self):
-        try:
-            quizgen.parser.parse_text(text)
-            self.fail("Failed to raise an exception.")
-        except Exception:
-            # Expected.
-            pass
-
-    return __method
-
-# Wrap a pod parser node in a block.
-def _wrap_block(nodes, style = None):
-    data = {
-        'type': 'document',
-        'root': {
-            'type': 'block',
-            'nodes': [
-                {
-                    'type': 'block',
-                    'nodes': nodes,
-                }
-            ],
-        },
-    }
-
-    if ((style is not None) and (len(style) > 0)):
-        data['root']['style'] = style
-
-    return data
-
-# Wrap text nodes in a text block.
-def _wrap_text_nodes(nodes):
-    return _wrap_block([{
-        'type': 'text',
-        'nodes': nodes,
-    }])
-
 # TEST - Style
 # TEST - Style Nest
 # TEST - Style Pop
 # TEST - Style
 
-# [(name, text), ...]
-_add_bad_parse_questions([
-    ('Answer Reference with Only Underscore', '[[_]]'),
-    ('Answer Reference with Only Number', '[[1]]'),
-    ('Answer Reference Starting with Underscore', '[[_a]]'),
-    ('Answer Reference Starting with Number', '[[1a]]'),
-    ('Answer Reference Starting with Character', '[[%a]]'),
-])
-
+_add_bad_parse_questions()
 _add_good_parse_questions()

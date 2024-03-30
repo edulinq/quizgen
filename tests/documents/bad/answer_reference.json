@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Answer Reference with Only Underscore",
+        "text": "[[_]]"
+    },
+    {
+        "name": "Answer Reference with Only Number",
+        "text": "[[1]]"
+    },
+    {
+        "name": "Answer Reference Starting with Underscore",
+        "text": "[[_a]]"
+    },
+    {
+        "name": "Answer Reference Starting with Number",
+        "text": "[[1a]]"
+    },
+    {
+        "name": "Answer Reference Starting with Symbol",
+        "text": "[[%a]]"
+    }
+]

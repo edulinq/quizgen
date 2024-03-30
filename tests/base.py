@@ -31,3 +31,6 @@ def discover_question_tests():
 
 def discover_good_document_files():
     return list(sorted(glob.glob(os.path.join(GOOD_DOCUMENTS_DIR, "**", "*.json"), recursive = True)))
+
+def discover_bad_document_files():
+    return list(sorted(glob.glob(os.path.join(BAD_DOCUMENTS_DIR, "**", "*.json"), recursive = True)))
