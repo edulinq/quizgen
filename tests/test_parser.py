@@ -24,28 +24,19 @@ class TestParser(tests.base.BaseTest):
     def tearDownClass(cls):
         quizgen.parser.EquationNode.katex_available = None
 
-# TEST
 def _add_good_parse_questions():
     for path in tests.base.discover_good_document_files():
         with open(path, 'r') as file:
             documents = json.load(file)
+
+        base_dir = os.path.dirname(path)
 
         for document in documents:
             text = document['text']
 
             for (doc_format, expected) in document['formats'].items():
                 test_name = _make_name('good_parse', path, document['name'], doc_format)
-                setattr(TestParser, test_name, _get_good_parse_test(text, doc_format, expected))
-
-''' TEST
-def _add_good_parse_questions(test_cases):
-    for (name, text, expected) in test_cases:
-        clean_name = name.lower().strip().replace(' ', '_')
-        clean_name = re.sub(r'\W+', '', clean_name)
-
-        test_name = 'test_good_parse_' + clean_name
-        setattr(TestParser, test_name, _get_good_parse_test(text, expected))
-'''
+                setattr(TestParser, test_name, _get_good_parse_test(text, doc_format, expected, base_dir))
 
 def _make_name(prefix, path, name, doc_format):
     clean_name = name.lower().strip().replace(' ', '_')
@@ -55,10 +46,10 @@ def _make_name(prefix, path, name, doc_format):
 
     return "test_%s__%s__%s__%s" % (prefix, filename, clean_name, doc_format)
 
-def _get_good_parse_test(text, doc_format, base_expected):
+def _get_good_parse_test(text, doc_format, base_expected, base_dir):
     def __method(self):
         document = quizgen.parser.parse_text(text)
-        result = document.to_format(doc_format, include_metadata = False)
+        result = document.to_format(doc_format, base_dir = base_dir, include_metadata = False)
 
         if (doc_format == quizgen.constants.FORMAT_JSON):
             result = json.loads(result)
@@ -90,6 +81,7 @@ def _get_good_parse_test(text, doc_format, base_expected):
 
     return __method
 
+# TEST
 def _add_bad_parse_questions(test_cases):
     for (name, text) in test_cases:
         clean_name = name.lower().strip().replace(' ', '_')
@@ -139,100 +131,6 @@ def _wrap_text_nodes(nodes):
 """ TEST
 # [[name, input, expected AST], ...]
 _add_good_parse_questions([
-
-    ['Basic Link', '[text](url)', _wrap_text_nodes([
-        {
-            'type': 'link',
-            'text': 'text',
-            'link': 'url',
-        },
-    ])],
-
-    ['Basic Image', '![alt text](url)', _wrap_text_nodes([
-        {
-            'type': 'image',
-            'text': 'alt text',
-            'link': 'url',
-        },
-    ])],
-
-    ['Link with No URL', '[text]( )', _wrap_text_nodes([
-        {
-            'type': 'link',
-            'text': 'text',
-            'link': '',
-        },
-    ])],
-
-    ['Link with No Text', '[ ](url)', _wrap_text_nodes([
-        {
-            'type': 'link',
-            'text': '',
-            'link': 'url',
-        },
-    ])],
-
-    ['Link with Extra Whitesspace', '[ some text ]( some url )', _wrap_text_nodes([
-        {
-            'type': 'link',
-            'text': 'some text',
-            'link': 'some url',
-        },
-    ])],
-
-    ['Link with Escaped Characters', '[ some [\\] text ]( some (\\) url )', _wrap_text_nodes([
-        {
-            'type': 'link',
-            'text': 'some [] text',
-            'link': 'some () url',
-        },
-    ])],
-
-    ['Basic Answer Reference', '[[answerReference]]', _wrap_text_nodes([
-        {
-            'type': 'answer-reference',
-            'text': 'answerReference',
-        },
-    ])],
-
-    ['Answer Reference with Underscore', '[[answer_reference]]', _wrap_text_nodes([
-        {
-            'type': 'answer-reference',
-            'text': 'answer_reference',
-        },
-    ])],
-
-    ['One Character Answer Reference', '[[A]]', _wrap_text_nodes([
-        {
-            'type': 'answer-reference',
-            'text': 'A',
-        },
-    ])],
-
-    ['Basic Slash Comment', '// Some comment.', _wrap_text_nodes([
-        {
-            'type': 'comment',
-            'text': 'Some comment.'
-        },
-    ])],
-
-    ['Slash Comment with Slashes', '// Some // comment. \\ * | ` - ! [ / ', _wrap_text_nodes([
-        {
-            'type': 'comment',
-            'text': 'Some // comment. \\ * | ` - ! [ /'
-        },
-    ])],
-
-    ['Mid-Line Slash Comment', 'Some // comment.', _wrap_text_nodes([
-        {
-            'type': 'normal_text',
-            'text': 'Some '
-        },
-        {
-            'type': 'comment',
-            'text': 'comment.'
-        },
-    ])],
 
     [
         'Basic Table',

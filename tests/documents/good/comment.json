@@ -1,0 +1,93 @@
+[
+    {
+        "name": "Basic Slash Comment",
+        "text": "// Some comment.",
+        "formats": {
+            "text": "",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'></div></div>",
+            "tex": "",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "comment",
+                                        "text": "Some comment."
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Slash Comment with Slashes",
+        "text": "// Some // comment. \\\\ * | ` - ! [ / ",
+        "formats": {
+            "text": "",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'></div></div>",
+            "tex": "",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "comment",
+                                        "text": "Some // comment. \\\\ * | ` - ! [ /"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Mid-Line Slash Comment",
+        "text": "Some // comment.",
+        "formats": {
+            "text": "Some",
+            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Some</span></div></div>",
+            "tex": "Some",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Some "
+                                    },
+                                    {
+                                        "type": "comment",
+                                        "text": "comment."
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+
+]

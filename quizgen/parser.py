@@ -464,15 +464,15 @@ class ImageNode(ParseNode):
         self._handle_callback(image_path_callback, base_dir)
         return f"![{self._text}]({self._computed_path})"
 
-    # TEST: image-width
     def to_text(self, base_dir = '.', image_path_callback = None, **kwargs):
         self._handle_callback(image_path_callback, base_dir)
         return f"{self._text} ({self._computed_path})"
 
-    # TEST: image-width
-    def to_tex(self, base_dir = '.', image_path_callback = None, **kwargs):
+    def to_tex(self, base_dir = '.', style = {}, image_path_callback = None, **kwargs):
         self._handle_callback(image_path_callback, base_dir)
-        return rf"\includegraphics[width=0.5\textwidth]{{{self._computed_path}}}"
+
+        width = float(style.get(STYLE_KEY_IMAGE_WIDTH, STYLE_DEFAULT_IMAGE_WIDTH))
+        return r"\includegraphics[width=%0.2f\textwidth]{%s}" % (width, self._computed_path)
 
     def to_html(self, base_dir = '.', canvas_instance = None,
             force_raw_image_src = False, image_path_callback = None,
