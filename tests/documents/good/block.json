@@ -1,6 +1,45 @@
 [
     {
+        "name": "Empty Explicit Block",
+        "text": "{-\n-}",
+        "formats": {
+            "text": "",
+            "html": "<div class='block' style='margin-bottom: 1em;'></div>",
+            "tex": "",
+            "json": {
+                "type": "block",
+                "nodes": [
+                ]
+            }
+        }
+    },
+
+    {
         "name": "Explicit Block",
+        "text": "{-\nText\n-}",
+        "formats": {
+            "text": "Text",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>Text</span></div>",
+            "tex": "Text",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "text",
+                        "nodes": [
+                            {
+                                "type": "normal_text",
+                                "text": "Text"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Explicit Block in Text",
         "text": "Root Block\n{-\nExplicit Block\n-}",
         "formats": {
             "text": "Root Block\nExplicit Block",
@@ -24,6 +63,96 @@
                             {
                                 "type": "normal_text",
                                 "text": "Explicit Block"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Empty Explicit Block with Style",
+        "text": "{-\n{{\n\"font-size\": 12\n}}\n-}",
+        "formats": {
+            "text": "",
+            "html": "<div class='block' style='margin-bottom: 1em;'></div>",
+            "tex": "",
+            "json": {
+                "type": "block",
+                "nodes": [
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Nested Empty Blocks",
+        "text": "{-\n{-\n{-\n-}\n{-\n-}\n-}\n-}",
+        "formats": {
+            "text": "",
+            "html": "<div class='block' style='margin-bottom: 1em;'></div>",
+            "tex": "",
+            "json": {
+                "type": "block",
+                "nodes": [
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Nested Empty Blocks",
+        "text": "Root\n{-\nRoot.A\n{-\nRoot.A.A\n{-\nRoot.A.A.A\n-}\n{-\nRoot.A.A.B\n-}\n-}\n-}",
+        "formats": {
+            "text": "Root\nRoot.A\nRoot.A.A\nRoot.A.A.A\nRoot.A.A.B",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>Root</span><span>Root.A</span><span>Root.A.A</span><span>Root.A.A.A</span><span>Root.A.A.B</span></div>",
+            "tex": "Root\nRoot.A\nRoot.A.A\nRoot.A.A.A\nRoot.A.A.B",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "text",
+                        "nodes": [
+                            {
+                                "type": "normal_text",
+                                "text": "Root"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "text",
+                        "nodes": [
+                            {
+                                "type": "normal_text",
+                                "text": "Root.A"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "text",
+                        "nodes": [
+                            {
+                                "type": "normal_text",
+                                "text": "Root.A.A"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "text",
+                        "nodes": [
+                            {
+                                "type": "normal_text",
+                                "text": "Root.A.A.A"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "text",
+                        "nodes": [
+                            {
+                                "type": "normal_text",
+                                "text": "Root.A.A.B"
                             }
                         ]
                     }

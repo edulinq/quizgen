@@ -14,7 +14,6 @@ import quizgen.util.file
 
 ENCODING = 'utf-8'
 
-# TEST - Nested blocks and initial block for document.
 GRAMMAR = r'''
     document: blocks
     blocks: [ block ( NEWLINE+ block )* NEWLINE* ]
@@ -348,9 +347,7 @@ class BlockNode(ParseNode):
         self._style = style.copy()
 
         for node in nodes:
-            if (node.is_empty()):
-                # Empty blocks with style get their style absorbed by the parent.
-                _style_dict_update(self._style, node._style)
+            if ((node is None) or node.is_empty()):
                 continue
 
             if (isinstance(node, BlockNode) and node.is_liftable()):

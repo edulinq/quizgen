@@ -1,6 +1,7 @@
 [
     {
         "name": "Root Style",
+        "comment": "If the block is empty, the block/style will get thrown out.",
         "text": "{{ \"font-size\": 12 }}",
         "formats": {
             "text": "",
@@ -8,16 +9,13 @@
             "tex": "",
             "json": {
                 "type": "block",
-                "nodes": [],
-                "style": {
-                    "font-size": 12
-                }
+                "nodes": []
             }
         }
     },
 
     {
-        "name": "Root Style Slongside Text",
+        "name": "Root Style Alongside Text",
         "text": "Base Style\n{{ \"font-size\": 12 }}",
         "formats": {
             "text": "Base Style",
