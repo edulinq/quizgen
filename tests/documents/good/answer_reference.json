@@ -4,7 +4,7 @@
         "text": "[[answerReference]]",
         "formats": {
             "text": "[answerReference]",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>[answerReference]</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>[answerReference]</span></div>",
             "tex": "\\textsc{<answerReference>}",
             "json": {
                 "type": "block",
@@ -28,7 +28,7 @@
         "text": "[[answer_reference]]",
         "formats": {
             "text": "[answer_reference]",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>[answer_reference]</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>[answer_reference]</span></div>",
             "tex": "\\textsc{<answer\\_reference>}",
             "json": {
                 "type": "block",
@@ -52,7 +52,7 @@
         "text": "[[A]]",
         "formats": {
             "text": "[A]",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>[A]</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>[A]</span></div>",
             "tex": "\\textsc{<A>}",
             "json": {
                 "type": "block",

@@ -4,7 +4,7 @@
         "text": "{-\n-}",
         "formats": {
             "text": "",
-            "html": "<div class='block' style='margin-bottom: 1em;'></div>",
+            "html": "",
             "tex": "",
             "json": {
                 "type": "block",
@@ -19,7 +19,7 @@
         "text": "{-\nText\n-}",
         "formats": {
             "text": "Text",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>Text</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>Text</span></div>",
             "tex": "Text",
             "json": {
                 "type": "block",
@@ -43,7 +43,7 @@
         "text": "Root Block\n{-\nExplicit Block\n-}",
         "formats": {
             "text": "Root Block\nExplicit Block",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>Root Block</span><span>Explicit Block</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>Root Block</span><span>Explicit Block</span></div>",
             "tex": "Root Block\nExplicit Block",
             "json": {
                 "type": "block",
@@ -76,7 +76,7 @@
         "text": "{-\n{{\n\"font-size\": 12\n}}\n-}",
         "formats": {
             "text": "",
-            "html": "<div class='block' style='margin-bottom: 1em;'></div>",
+            "html": "",
             "tex": "",
             "json": {
                 "type": "block",
@@ -91,7 +91,7 @@
         "text": "{-\n{-\n{-\n-}\n{-\n-}\n-}\n-}",
         "formats": {
             "text": "",
-            "html": "<div class='block' style='margin-bottom: 1em;'></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'></div>",
             "tex": "",
             "json": {
                 "type": "block",
@@ -106,7 +106,7 @@
         "text": "Root\n{-\nRoot.A\n{-\nRoot.A.A\n{-\nRoot.A.A.A\n-}\n{-\nRoot.A.A.B\n-}\n-}\n-}",
         "formats": {
             "text": "Root\nRoot.A\nRoot.A.A\nRoot.A.A.A\nRoot.A.A.B",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>Root</span><span>Root.A</span><span>Root.A.A</span><span>Root.A.A.A</span><span>Root.A.A.B</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>Root</span><span>Root.A</span><span>Root.A.A</span><span>Root.A.A.A</span><span>Root.A.A.B</span></div>",
             "tex": "Root\nRoot.A\nRoot.A.A\nRoot.A.A.A\nRoot.A.A.B",
             "json": {
                 "type": "block",

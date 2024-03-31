@@ -4,7 +4,7 @@
         "text": "`inline_code();`",
         "formats": {
             "text": "`inline_code();`",
-            "html": "<div class='block' style='margin-bottom: 1em;'><code>inline_code();</code></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><code>inline_code();</code></div>",
             "tex": "\\verb|inline_code();|",
             "json": {
                 "type": "block",
@@ -29,7 +29,7 @@
         "text": "Inline `code()`.",
         "formats": {
             "text": "Inline `code()`.",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>Inline</span><code>code()</code><span>.</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>Inline</span><code>code()</code><span>.</span></div>",
             "tex": "Inline \\verb|code()|.",
             "json": {
                 "type": "block",
@@ -62,7 +62,7 @@
         "text": "`inline_code(\"\\`\");`",
         "formats": {
             "text": "`inline_code(\"`\");`",
-            "html": "<div class='block' style='margin-bottom: 1em;'><code>inline_code(\"`\");</code></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><code>inline_code(\"`\");</code></div>",
             "tex": "\\verb|inline_code(\"`\");|",
             "json": {
                 "type": "block",
@@ -87,7 +87,7 @@
         "text": "`inline_code(\"|\");`",
         "formats": {
             "text": "`inline_code(\"|\");`",
-            "html": "<div class='block' style='margin-bottom: 1em;'><code>inline_code(\"|\");</code></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><code>inline_code(\"|\");</code></div>",
             "tex": "\\verb!inline_code(\"|\");!",
             "json": {
                 "type": "block",
@@ -112,7 +112,7 @@
         "text": "```code_block();```",
         "formats": {
             "text": "```\ncode_block();\n```",
-            "html": "<div class='block' style='margin-bottom: 1em;'><pre style='margin: 1em'><code>code_block();</code></pre></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><pre style='margin: 1em'><code>code_block();</code></pre></div>",
             "tex": "\\begin{lstlisting}\ncode_block();\n\\end{lstlisting}",
             "json": {
                 "type": "block",
@@ -132,7 +132,7 @@
         "text": "``` code_block(); ```",
         "formats": {
             "text": "```\n code_block(); \n```",
-            "html": "<div class='block' style='margin-bottom: 1em;'><pre style='margin: 1em'><code> code_block(); </code></pre></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><pre style='margin: 1em'><code> code_block(); </code></pre></div>",
             "tex": "\\begin{lstlisting}\n code_block(); \n\\end{lstlisting}",
             "json": {
                 "type": "block",
@@ -152,7 +152,7 @@
         "text": "```code_block();```",
         "formats": {
             "text": "```\ncode_block();\n```",
-            "html": "<div class='block' style='margin-bottom: 1em;'><pre style='margin: 1em'><code>code_block();</code></pre></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><pre style='margin: 1em'><code>code_block();</code></pre></div>",
             "tex": "\\begin{lstlisting}\ncode_block();\n\\end{lstlisting}",
             "json": {
                 "type": "block",
@@ -172,7 +172,7 @@
         "text": "```foo(1, \\'-2\\')\\nbar(\"|\", x*);```",
         "formats": {
             "text": "```\nfoo(1, \\'-2\\')\\nbar(\"|\", x*);\n```",
-            "html": "<div class='block' style='margin-bottom: 1em;'><pre style='margin: 1em'><code>foo(1, \\'-2\\')\\nbar(\"|\", x*);</code></pre></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><pre style='margin: 1em'><code>foo(1, \\'-2\\')\\nbar(\"|\", x*);</code></pre></div>",
             "tex": "\\begin{lstlisting}\nfoo(1, \\'-2\\')\\nbar(\"|\", x*);\n\\end{lstlisting}",
             "json": {
                 "type": "block",

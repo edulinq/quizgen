@@ -118,8 +118,10 @@ HTML_TABLE_STYLE = [
 
 VERB_CHARACTERS = ['|', '!', '@', '#', '$', '^', '&', '-', '_', '=', '+']
 
+STYLE_KEY_FONT_SIZE = 'font-size'
 STYLE_KEY_IMAGE_WIDTH = 'image-width'
 
+STYLE_DEFAULT_FONT_SIZE = None
 STYLE_DEFAULT_IMAGE_WIDTH = 1.0
 
 class DocTransformer(lark.Transformer):
@@ -130,6 +132,10 @@ class DocTransformer(lark.Transformer):
         return blocks
 
     def block(self, nodes):
+        # Lift blocks and style up.
+        if ((len(nodes) == 1) and isinstance(nodes[0], (BlockNode, StyleNode))):
+            return nodes[0]
+
         return BlockNode(nodes)
 
     def explicit_block(self, nodes):
@@ -137,7 +143,11 @@ class DocTransformer(lark.Transformer):
 
     def style_block(self, text):
         text = '{' + text[0].strip("\n") + '}'
-        data = json.loads(text)
+        try:
+            data = json.loads(text)
+        except Exception as ex:
+            raise ValueError("Style is not valid JSON.") from ex
+
         return StyleNode(data)
 
     def code_block(self, text):
@@ -354,35 +364,74 @@ class BlockNode(ParseNode):
                 # Lift the child (absorb it).
                 self._nodes += node._nodes
             elif (isinstance(node, StyleNode)):
-                # Style nodes don't have any text context, just style.
-                _style_dict_update(self._style, node.to_pod())
+                # Style nodes don't have any visible content, just style.
+                self._style.update(node.to_pod())
             else:
                 self._nodes.append(node)
 
     def to_markdown(self, style = {}, **kwargs):
-        new_style = copy.deepcopy(self._style)
-        new_style.update(style)
+        if (len(self._nodes) == 0):
+            return ''
 
-        return "\n".join([node.to_markdown(style = new_style, **kwargs) for node in self._nodes])
+        full_style = copy.deepcopy(style)
+        full_style.update(self._style)
+
+        return "\n".join([node.to_markdown(style = full_style, **kwargs) for node in self._nodes])
 
     def to_text(self, style = {}, **kwargs):
-        new_style = copy.deepcopy(self._style)
-        new_style.update(style)
+        if (len(self._nodes) == 0):
+            return ''
 
-        return "\n".join([node.to_text(style = new_style, **kwargs) for node in self._nodes])
+        full_style = copy.deepcopy(style)
+        full_style.update(self._style)
+
+        return "\n".join([node.to_text(style = full_style, **kwargs) for node in self._nodes])
 
     def to_tex(self, style = {}, **kwargs):
-        new_style = copy.deepcopy(self._style)
-        new_style.update(style)
+        if (len(self._nodes) == 0):
+            return ''
 
-        return "\n".join([node.to_tex(style = new_style, **kwargs) for node in self._nodes])
+        full_style = copy.deepcopy(style)
+        full_style.update(self._style)
+
+        container = '%s'
+        font_size = full_style.get(STYLE_KEY_FONT_SIZE, STYLE_DEFAULT_FONT_SIZE)
+
+        if (font_size is not None):
+            font_size = float(font_size)
+            # 1.2 is the default size for baseline skip relative to font size.
+            # See: https://ctan.math.illinois.edu/macros/latex/contrib/fontsize/fontsize.pdf
+            baseline_skip = 1.2 * font_size
+            container = "\\begingroup\\fontsize{%.2fpt}{%.2fpt}\\selectfont\n%%s\n\\endgroup" % (font_size, baseline_skip)
+
+        content = "\n".join([node.to_tex(style = full_style, **kwargs) for node in self._nodes])
+        return container % (content)
 
     def to_html(self, style = {}, **kwargs):
-        new_style = copy.deepcopy(self._style)
-        new_style.update(style)
+        if (len(self._nodes) == 0):
+            return ''
 
-        content = "\n".join([node.to_html(style = new_style, **kwargs) for node in self._nodes])
-        return f"<div class='block' style='margin-bottom: 1em;'>\n{content}\n</div>"
+        full_style = copy.deepcopy(style)
+        full_style.update(self._style)
+
+        content = "\n".join([node.to_html(style = full_style, **kwargs) for node in self._nodes])
+        style_string = self._compute_html_style_string(full_style)
+
+        return "<div class='block' %s>\n%s\n</div>" % (style_string, content)
+
+    def _compute_html_style_string(self, style):
+        attributes = [
+            'margin-bottom: 1em',
+        ]
+
+        font_size = style.get(STYLE_KEY_FONT_SIZE, STYLE_DEFAULT_FONT_SIZE)
+        if (font_size is not None):
+            attributes.append("font-size: %.2fpt" % (float(font_size)))
+
+        if (len(attributes) == 0):
+            return ''
+
+        return "style='%s'" % ('; '.join(attributes))
 
     def to_pod(self, **kwargs):
         data = {
@@ -477,7 +526,7 @@ class ImageNode(ParseNode):
     def to_tex(self, base_dir = '.', style = {}, image_path_callback = None, **kwargs):
         self._handle_callback(image_path_callback, base_dir)
 
-        width = float(style.get(STYLE_KEY_IMAGE_WIDTH, STYLE_DEFAULT_IMAGE_WIDTH))
+        width = self._get_width(style)
         return r"\includegraphics[width=%0.2f\textwidth]{%s}" % (width, self._computed_path)
 
     def to_html(self, base_dir = '.', canvas_instance = None,
@@ -489,7 +538,7 @@ class ImageNode(ParseNode):
 
         attr = {
             'alt': self._text,
-            'width': "%5.2f%%" % (100.0 * float(style.get(STYLE_KEY_IMAGE_WIDTH, STYLE_DEFAULT_IMAGE_WIDTH))),
+            'width': "%5.2f%%" % (100.0 * self._get_width(style)),
         }
 
         if (force_raw_image_src or re.match(r'^http(s)?://', self._computed_path)):
@@ -512,6 +561,13 @@ class ImageNode(ParseNode):
             content.append("%s='%s'" % (key, value))
 
         return "<img %s />" % (' '.join(content))
+
+    def _get_width(self, style):
+        width = style.get(STYLE_KEY_IMAGE_WIDTH, None)
+        if (width is None):
+            width = STYLE_DEFAULT_IMAGE_WIDTH
+
+        return float(width)
 
     def collect_file_paths(self, base_dir):
         if (re.match(r'^http(s)?://', self._link)):
@@ -1051,17 +1107,6 @@ def tex_escape(text):
         text = text.replace(key, value)
 
     return text
-
-# Modify the existing syle (old) with any values from new.
-# None values indicate a clear.
-def _style_dict_update(old, new):
-    for (key, value) in new.items():
-        if (value is None):
-            old.pop(key, None)
-        else:
-            old[key] = value
-
-    return old
 
 def clean_text(text):
     # Remove carriage returns.

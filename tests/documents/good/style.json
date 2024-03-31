@@ -1,15 +1,17 @@
 [
     {
-        "name": "Root Style",
-        "comment": "If the block is empty, the block/style will get thrown out.",
+        "name": "Empty Root Style",
         "text": "{{ \"font-size\": 12 }}",
         "formats": {
             "text": "",
-            "html": "<div class='block' style='margin-bottom: 1em;'></div>",
+            "html": "",
             "tex": "",
             "json": {
                 "type": "block",
-                "nodes": []
+                "nodes": [],
+                "style": {
+                    "font-size": 12
+                }
             }
         }
     },
@@ -19,8 +21,8 @@
         "text": "Base Style\n{{ \"font-size\": 12 }}",
         "formats": {
             "text": "Base Style",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Base Style</span></div>",
-            "tex": "Base Style",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; font-size: 12.00pt'><span>Base Style</span></div>",
+            "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\nBase Style\n\\endgroup",
             "json": {
                 "type": "block",
                 "nodes": [
@@ -35,6 +37,105 @@
                                         "text": "Base Style"
                                     }
                                 ]
+                            }
+                        ],
+                        "style": {
+                            "font-size": 12
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Nest Override Style",
+        "text": "Root\n{{ \"font-size\": 12 }}\n{-\nChild\n{{ \"font-size\": 10 }}\n-}",
+        "formats": {
+            "text": "Root\nChild",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; font-size: 12.00pt'><span>Root</span><div class='block' style='margin-bottom: 1em; font-size: 10.00pt'><span>Child</span></div></div></div>",
+            "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\nRoot\n\\begingroup\\fontsize{10.00pt}{12.00pt}\\selectfont\nChild\n\\endgroup\n\\endgroup",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Root"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "block",
+                                "nodes": [
+                                    {
+                                        "type": "text",
+                                        "nodes": [
+                                            {
+                                                "type": "normal_text",
+                                                "text": "Child"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "style": {
+                                    "font-size": 10
+                                }
+                            }
+                        ],
+                        "style": {
+                            "font-size": 12
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Nest Clear Style",
+        "comment": "Clearing style is not actually useful for font size, since it is set and applies to the parent block.",
+        "text": "Root\n{{ \"font-size\": 12 }}\n{-\nChild\n{{ \"font-size\": null }}\n-}",
+        "formats": {
+            "text": "Root\nChild",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; font-size: 12.00pt'><span>Root</span><div class='block' style='margin-bottom: 1em'><span>Child</span></div></div></div>",
+            "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\nRoot\nChild\n\\endgroup",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Root"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "block",
+                                "nodes": [
+                                    {
+                                        "type": "text",
+                                        "nodes": [
+                                            {
+                                                "type": "normal_text",
+                                                "text": "Child"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "style": {
+                                    "font-size": null
+                                }
                             }
                         ],
                         "style": {

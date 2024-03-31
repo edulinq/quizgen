@@ -9,7 +9,7 @@
         },
         "formats": {
             "text": "| a | b | c |",
-            "html": "<div class='block' style='margin-bottom: 1em;'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'><tr><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>a</span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>b</span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>c</span></td></tr></table></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'><tr><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>a</span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>b</span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>c</span></td></tr></table></div>",
             "tex": "\\begin{center}\n\\begin{tabular}{ ccc }\na & b & c \\\\\n\\end{tabular}\\end{center}",
             "json": {
                 "type": "block",
@@ -67,7 +67,7 @@
         },
         "formats": {
             "text": "|---|",
-            "html": "<div class='block' style='margin-bottom: 1em;'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'></table></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'></table></div>",
             "tex": "\\begin{center}\n\\begin{tabular}{ c }\n\\hline\\\\\n\\end{tabular}\\end{center}",
             "json": {
                 "type": "block",
@@ -95,7 +95,7 @@
         },
         "formats": {
             "text": "|---|",
-            "html": "<div class='block' style='margin-bottom: 1em;'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'></table></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'></table></div>",
             "tex": "\\begin{center}\n\\begin{tabular}{ c }\n\\hline\\\\\n\\end{tabular}\\end{center}",
             "json": {
                 "type": "block",
@@ -123,7 +123,7 @@
         },
         "formats": {
             "text": "|---|",
-            "html": "<div class='block' style='margin-bottom: 1em;'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'></table></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'></table></div>",
             "tex": "\\begin{center}\n\\begin{tabular}{ c }\n\\hline\\\\\n\\end{tabular}\\end{center}",
             "json": {
                 "type": "block",
@@ -151,7 +151,7 @@
         },
         "formats": {
             "text": "|---|",
-            "html": "<div class='block' style='margin-bottom: 1em;'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'></table></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'></table></div>",
             "tex": "\\begin{center}\n\\begin{tabular}{ c }\n\\hline\\\\\n\\end{tabular}\\end{center}",
             "json": {
                 "type": "block",
@@ -179,7 +179,7 @@
         },
         "formats": {
             "text": "| 1 | -2 | 3^ |\n|---|---|---|\n| a | b | `c()` and $ d() $ |",
-            "html": "<div class='block' style='margin-bottom: 1em;'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'><tr><th style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>1</span></th><th style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>-2</span></th><th style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>3^</span></th></tr><tr><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em  ; border-top: 2px solid black;'><span><emph>a</emph></span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em  ; border-top: 2px solid black;'><span><strong>b</strong></span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em  ; border-top: 2px solid black;'><code>c()</code><span>and</span><span><code>d()</code></span></td></tr></table></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse ; text-align: center ; margin-bottom: 1em'><tr><th style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>1</span></th><th style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>-2</span></th><th style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>3^</span></th></tr><tr><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em  ; border-top: 2px solid black;'><span><emph>a</emph></span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em  ; border-top: 2px solid black;'><span><strong>b</strong></span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em  ; border-top: 2px solid black;'><code>c()</code><span>and</span><span><code>d()</code></span></td></tr></table></div>",
             "tex": "\\begin{center} \n \\begin{tabular}{ccc} \n 1 & -2 & 3^ \\\\ \n \\hline \\\\ \n \\textit{a} & \\textbf{b} & \\verb|c()| and $ d() $ \\\\ \n \\end{tabular} \\end{center}",
             "json": {
                     "type": "block",

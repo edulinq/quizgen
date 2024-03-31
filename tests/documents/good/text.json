@@ -4,7 +4,7 @@
         "text": "Text",
         "formats": {
             "text": "Text",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>Text</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>Text</span></div>",
             "tex": "Text",
             "json": {
                 "type": "block",
@@ -28,7 +28,7 @@
         "text": "Foo Bar",
         "formats": {
             "text": "Foo Bar",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>Foo Bar</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>Foo Bar</span></div>",
             "tex": "Foo Bar",
             "json": {
                 "type": "block",
@@ -52,7 +52,7 @@
         "text": "\nFoo\nBar\n",
         "formats": {
             "text": "Foo\nBar",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>Foo</span><span>Bar</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>Foo</span><span>Bar</span></div>",
             "tex": "Foo\nBar",
             "json": {
                 "type": "block",
@@ -85,7 +85,7 @@
         "text": "\nFoo\\nBar\n",
         "formats": {
             "text": "Foo\n\nBar",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>Foo</span><br /><span>Bar</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>Foo</span><br /><span>Bar</span></div>",
             "tex": "Foo \\newline\nBar",
             "json": {
                 "type": "block",
@@ -116,7 +116,7 @@
         "text": "Some *italics* text.",
         "formats": {
             "text": "Some italics text.",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>Some</span><span><emph>italics</emph></span><span>text.</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>Some</span><span><emph>italics</emph></span><span>text.</span></div>",
             "tex": "Some \\textit{italics} text.",
             "json": {
                 "type": "block",
@@ -148,7 +148,7 @@
         "text": "Some * spaced  italics   * text.",
         "formats": {
             "text": "Some  spaced  italics    text.",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>Some</span><span><emph>spaced  italics</emph></span><span>text.</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>Some</span><span><emph>spaced  italics</emph></span><span>text.</span></div>",
             "tex": "Some \\textit{ spaced  italics   } text.",
             "json": {
                 "type": "block",
@@ -180,7 +180,7 @@
         "text": "Some **bold** text.",
         "formats": {
             "text": "Some bold text.",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>Some</span><span><strong>bold</strong></span><span>text.</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>Some</span><span><strong>bold</strong></span><span>text.</span></div>",
             "tex": "Some \\textbf{bold} text.",
             "json": {
                 "type": "block",
@@ -212,7 +212,7 @@
         "text": "Some ** spaced  bold   ** text.",
         "formats": {
             "text": "Some  spaced  bold    text.",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>Some</span><span><strong>spaced  bold</strong></span><span>text.</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>Some</span><span><strong>spaced  bold</strong></span><span>text.</span></div>",
             "tex": "Some \\textbf{ spaced  bold   } text.",
             "json": {
                 "type": "block",

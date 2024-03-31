@@ -1,0 +1,180 @@
+[
+    {
+        "name": "Basic Image Width",
+        "text": "{{\n \"image-width\": 0.5 \n}}\n![alt text](http://test.edulinq.org/image.png)",
+        "formats": {
+            "text": "alt text (http://test.edulinq.org/image.png)",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em'><img alt='alt text' src='http://test.edulinq.org/image.png' width='50.00%' /></div></div>",
+            "tex": "\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "image",
+                                        "text": "alt text",
+                                        "link": "http://test.edulinq.org/image.png"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "image-width": 0.5
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Nested Image Width",
+        "text": "{{\n \"image-width\": 0.5 \n}}\n![root](http://test.edulinq.org/image.png)\n{-\n![child](http://test.edulinq.org/image.png)\n-}",
+        "formats": {
+            "text": "root (http://test.edulinq.org/image.png)\nchild (http://test.edulinq.org/image.png)",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em'><img alt='root' src='http://test.edulinq.org/image.png' width='50.00%'/><img alt='child' src='http://test.edulinq.org/image.png' width='50.00%'/></div></div>",
+            "tex": "\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}\n\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "image",
+                                        "text": "root",
+                                        "link": "http://test.edulinq.org/image.png"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "image",
+                                        "text": "child",
+                                        "link": "http://test.edulinq.org/image.png"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "image-width": 0.5
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Nested Image Override Width",
+        "text": "{{\n \"image-width\": 0.5 \n}}\n![root](http://test.edulinq.org/image.png)\n{-\n{{\n \"image-width\": 0.75 \n}}\n![child](http://test.edulinq.org/image.png)\n-}",
+        "formats": {
+            "text": "root (http://test.edulinq.org/image.png)\nchild (http://test.edulinq.org/image.png)",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em'><img alt='root' src='http://test.edulinq.org/image.png' width='50.00%'/><div class=\"block\" style=\"margin-bottom: 1em\"><img alt='child' src='http://test.edulinq.org/image.png' width='75.00%'/></div></div></div>",
+            "tex": "\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}\n\\includegraphics[width=0.75\\textwidth]{http://test.edulinq.org/image.png}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "image",
+                                        "text": "root",
+                                        "link": "http://test.edulinq.org/image.png"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "block",
+                                "nodes": [
+                                    {
+                                        "type": "text",
+                                        "nodes": [
+                                            {
+                                                "type": "image",
+                                                "text": "child",
+                                                "link": "http://test.edulinq.org/image.png"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "style": {
+                                    "image-width": 0.75
+                                }
+                            }
+                        ],
+                        "style": {
+                            "image-width": 0.5
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Nested Image Clear Width",
+        "text": "{{\n \"image-width\": 0.5 \n}}\n![root](http://test.edulinq.org/image.png)\n{-\n{{\n \"image-width\": null \n}}\n![child](http://test.edulinq.org/image.png)\n-}",
+        "formats": {
+            "text": "root (http://test.edulinq.org/image.png)\nchild (http://test.edulinq.org/image.png)",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em'><img alt='root' src='http://test.edulinq.org/image.png' width='50.00%'/><div class=\"block\" style=\"margin-bottom: 1em\"><img alt='child' src='http://test.edulinq.org/image.png' width='100.00%'/></div></div></div>",
+            "tex": "\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}\n\\includegraphics[width=1.00\\textwidth]{http://test.edulinq.org/image.png}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "image",
+                                        "text": "root",
+                                        "link": "http://test.edulinq.org/image.png"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "block",
+                                "nodes": [
+                                    {
+                                        "type": "text",
+                                        "nodes": [
+                                            {
+                                                "type": "image",
+                                                "text": "child",
+                                                "link": "http://test.edulinq.org/image.png"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "style": {
+                                    "image-width": null
+                                }
+                            }
+                        ],
+                        "style": {
+                            "image-width": 0.5
+                        }
+                    }
+                ]
+            }
+        }
+    }
+
+]

@@ -4,7 +4,7 @@
         "text": "[text](url)",
         "formats": {
             "text": "text (url)",
-            "html": "<div class='block' style='margin-bottom: 1em;'><a href='url'>text</a></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><a href='url'>text</a></div>",
             "tex": "\\href{url}{text}",
             "json": {
                 "type": "block",
@@ -29,7 +29,7 @@
         "text": "[text]( )",
         "formats": {
             "text": "text ()",
-            "html": "<div class='block' style='margin-bottom: 1em;'><a href=''>text</a></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><a href=''>text</a></div>",
             "tex": "\\href{}{text}",
             "json": {
                 "type": "block",
@@ -54,7 +54,7 @@
         "text": "[ ](url)",
         "formats": {
             "text": "(url)",
-            "html": "<div class='block' style='margin-bottom: 1em;'><a href='url'>url</a></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><a href='url'>url</a></div>",
             "tex": "\\url{url}",
             "json": {
                 "type": "block",
@@ -79,7 +79,7 @@
         "text": "[ some text ]( some url )",
         "formats": {
             "text": "some text (some url)",
-            "html": "<div class='block' style='margin-bottom: 1em;'><a href='some url'>some text</a></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><a href='some url'>some text</a></div>",
             "tex": "\\href{some url}{some text}",
             "json": {
                 "type": "block",
@@ -104,7 +104,7 @@
         "text": "[ some [\\] text ]( some (\\) url )",
         "formats": {
             "text": "some [] text (some () url)",
-            "html": "<div class='block' style='margin-bottom: 1em;'><a href='some () url'>some [] text</a></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><a href='some () url'>some [] text</a></div>",
             "tex": "\\href{some () url}{some [] text}",
             "json": {
                 "type": "block",

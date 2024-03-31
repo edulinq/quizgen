@@ -123,10 +123,5 @@ def _apply_text_options(options, a, b):
 
     return a, b
 
-# TEST - Style
-# TEST - Style Nest
-# TEST - Style Pop
-# TEST - Style
-
 _add_bad_parse_questions()
 _add_good_parse_questions()

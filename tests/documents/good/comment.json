@@ -4,7 +4,7 @@
         "text": "// Some comment.",
         "formats": {
             "text": "",
-            "html": "<div class='block' style='margin-bottom: 1em;'></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'></div>",
             "tex": "",
             "json": {
                 "type": "block",
@@ -28,7 +28,7 @@
         "text": "// Some // comment. \\\\ * | ` - ! [ / ",
         "formats": {
             "text": "",
-            "html": "<div class='block' style='margin-bottom: 1em;'></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'></div>",
             "tex": "",
             "json": {
                 "type": "block",
@@ -52,7 +52,7 @@
         "text": "Some // comment.",
         "formats": {
             "text": "Some",
-            "html": "<div class='block' style='margin-bottom: 1em;'><span>Some</span></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>Some</span></div>",
             "tex": "Some",
             "json": {
                 "type": "block",
