@@ -4,23 +4,18 @@
         "text": "$ f(x) = x_i + x^2 \\alpha $",
         "formats": {
             "text": "$ f(x) = x_i + x^2 \\alpha $",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span><code>f(x) = x_i + x^2 \\alpha</code></span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span><code>f(x) = x_i + x^2 \\alpha</code></span></div>",
             "tex": "$ f(x) = x_i + x^2 \\alpha $",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "equation",
-                                        "inline": true,
-                                        "text": "f(x) = x_i + x^2 \\alpha"
-                                    }
-                                ]
+                                "type": "equation",
+                                "inline": true,
+                                "text": "f(x) = x_i + x^2 \\alpha"
                             }
                         ]
                     }
@@ -34,31 +29,26 @@
         "text": "Inline$\\text{equation}$.",
         "formats": {
             "text": "Inline$ \\text{equation} $.",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Inline</span><span><code>\\text{equation}</code></span><span>.</span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>Inline</span><span><code>\\text{equation}</code></span><span>.</span></div>",
             "tex": "Inline$ \\text{equation} $.",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "normal_text",
-                                        "text": "Inline"
-                                    },
-                                    {
-                                        "type": "equation",
-                                        "inline": true,
-                                        "text": "\\text{equation}"
-                                    },
-                                    {
-                                        "type": "normal_text",
-                                        "text": "."
-                                    }
-                                ]
+                                "type": "normal_text",
+                                "text": "Inline"
+                            },
+                            {
+                                "type": "equation",
+                                "inline": true,
+                                "text": "\\text{equation}"
+                            },
+                            {
+                                "type": "normal_text",
+                                "text": "."
                             }
                         ]
                     }
@@ -72,23 +62,18 @@
         "text": "$f(\\$a)$",
         "formats": {
             "text": "$ f(\\$a) $",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span><code>f($a)</code></span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span><code>f($a)</code></span></div>",
             "tex": "$ f(\\$a) $",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "equation",
-                                        "inline": true,
-                                        "text": "f($a)"
-                                    }
-                                ]
+                                "type": "equation",
+                                "inline": true,
+                                "text": "f($a)"
                             }
                         ]
                     }
@@ -102,20 +87,15 @@
         "text": "$$equation + block$$",
         "formats": {
             "text": "$$\nequation + block\n$$",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><p><code>equation + block</code></p></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><p><code>equation + block</code></p></div>",
             "tex": "$$\nequation + block\n$$",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
-                        "nodes": [
-                            {
-                                "type": "equation",
-                                "inline": false,
-                                "text": "equation + block"
-                            }
-                        ]
+                        "type": "equation",
+                        "inline": false,
+                        "text": "equation + block"
                     }
                 ]
             }
@@ -127,20 +107,15 @@
         "text": "$$ equation + - * / block() $$",
         "formats": {
             "text": "$$\nequation + - * / block()\n$$",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><p><code>equation + - * / block()</code></p></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><p><code>equation + - * / block()</code></p></div>",
             "tex": "$$\nequation + - * / block()\n$$",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
-                        "nodes": [
-                            {
-                                "type": "equation",
-                                "inline": false,
-                                "text": "equation + - * / block()"
-                            }
-                        ]
+                        "type": "equation",
+                        "inline": false,
+                        "text": "equation + - * / block()"
                     }
                 ]
             }
@@ -152,20 +127,15 @@
         "text": "$$\nf(x)\n$$",
         "formats": {
             "text": "$$\nf(x)\n$$",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><p><code>f(x)</code></p></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><p><code>f(x)</code></p></div>",
             "tex": "$$\nf(x)\n$$",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
-                        "nodes": [
-                            {
-                                "type": "equation",
-                                "inline": false,
-                                "text": "f(x)"
-                            }
-                        ]
+                        "type": "equation",
+                        "inline": false,
+                        "text": "f(x)"
                     }
                 ]
             }
@@ -177,20 +147,15 @@
         "text": "$$ f(x)\ng(x) $$",
         "formats": {
             "text": "$$\nf(x)\ng(x)\n$$",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><p><code>f(x)\ng(x)</code></p></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><p><code>f(x)\ng(x)</code></p></div>",
             "tex": "$$\nf(x)\ng(x)\n$$",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
-                        "nodes": [
-                            {
-                                "type": "equation",
-                                "inline": false,
-                                "text": "f(x)\ng(x)"
-                            }
-                        ]
+                        "type": "equation",
+                        "inline": false,
+                        "text": "f(x)\ng(x)"
                     }
                 ]
             }

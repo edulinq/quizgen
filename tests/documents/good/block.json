@@ -1,0 +1,35 @@
+[
+    {
+        "name": "Explicit Block",
+        "text": "Root Block\n{-\nExplicit Block\n-}",
+        "formats": {
+            "text": "Root Block\nExplicit Block",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>Root Block</span><span>Explicit Block</span></div>",
+            "tex": "Root Block\nExplicit Block",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "text",
+                        "nodes": [
+                            {
+                                "type": "normal_text",
+                                "text": "Root Block"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "text",
+                        "nodes": [
+                            {
+                                "type": "normal_text",
+                                "text": "Explicit Block"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+
+]

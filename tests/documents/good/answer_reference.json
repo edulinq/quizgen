@@ -4,22 +4,17 @@
         "text": "[[answerReference]]",
         "formats": {
             "text": "[answerReference]",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>[answerReference]</span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>[answerReference]</span></div>",
             "tex": "\\textsc{<answerReference>}",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "answer-reference",
-                                        "text": "answerReference"
-                                    }
-                                ]
+                                "type": "answer-reference",
+                                "text": "answerReference"
                             }
                         ]
                     }
@@ -33,22 +28,17 @@
         "text": "[[answer_reference]]",
         "formats": {
             "text": "[answer_reference]",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>[answer_reference]</span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>[answer_reference]</span></div>",
             "tex": "\\textsc{<answer\\_reference>}",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "answer-reference",
-                                        "text": "answer_reference"
-                                    }
-                                ]
+                                "type": "answer-reference",
+                                "text": "answer_reference"
                             }
                         ]
                     }
@@ -62,22 +52,17 @@
         "text": "[[A]]",
         "formats": {
             "text": "[A]",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>[A]</span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>[A]</span></div>",
             "tex": "\\textsc{<A>}",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "answer-reference",
-                                        "text": "A"
-                                    }
-                                ]
+                                "type": "answer-reference",
+                                "text": "A"
                             }
                         ]
                     }

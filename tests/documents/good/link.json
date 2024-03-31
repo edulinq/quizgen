@@ -4,23 +4,18 @@
         "text": "[text](url)",
         "formats": {
             "text": "text (url)",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><a href='url'>text</a></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><a href='url'>text</a></div>",
             "tex": "\\href{url}{text}",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "link",
-                                        "text": "text",
-                                        "link": "url"
-                                    }
-                                ]
+                                "type": "link",
+                                "text": "text",
+                                "link": "url"
                             }
                         ]
                     }
@@ -34,23 +29,18 @@
         "text": "[text]( )",
         "formats": {
             "text": "text ()",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><a href=''>text</a></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><a href=''>text</a></div>",
             "tex": "\\href{}{text}",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "link",
-                                        "text": "text",
-                                        "link": ""
-                                    }
-                                ]
+                                "type": "link",
+                                "text": "text",
+                                "link": ""
                             }
                         ]
                     }
@@ -64,23 +54,18 @@
         "text": "[ ](url)",
         "formats": {
             "text": "(url)",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><a href='url'>url</a></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><a href='url'>url</a></div>",
             "tex": "\\url{url}",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "link",
-                                        "text": "",
-                                        "link": "url"
-                                    }
-                                ]
+                                "type": "link",
+                                "text": "",
+                                "link": "url"
                             }
                         ]
                     }
@@ -94,23 +79,18 @@
         "text": "[ some text ]( some url )",
         "formats": {
             "text": "some text (some url)",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><a href='some url'>some text</a></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><a href='some url'>some text</a></div>",
             "tex": "\\href{some url}{some text}",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "link",
-                                        "text": "some text",
-                                        "link": "some url"
-                                    }
-                                ]
+                                "type": "link",
+                                "text": "some text",
+                                "link": "some url"
                             }
                         ]
                     }
@@ -124,23 +104,18 @@
         "text": "[ some [\\] text ]( some (\\) url )",
         "formats": {
             "text": "some [] text (some () url)",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><a href='some () url'>some [] text</a></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><a href='some () url'>some [] text</a></div>",
             "tex": "\\href{some () url}{some [] text}",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "link",
-                                        "text": "some [] text",
-                                        "link": "some () url"
-                                    }
-                                ]
+                                "type": "link",
+                                "text": "some [] text",
+                                "link": "some () url"
                             }
                         ]
                     }

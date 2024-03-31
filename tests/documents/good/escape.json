@@ -4,22 +4,17 @@
         "text": "Escape \\\\ backslash.",
         "formats": {
             "text": "Escape \\ backslash.",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Escape \\ backslash.</span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>Escape \\ backslash.</span></div>",
             "tex": "Escape \\textbackslash{} backslash.",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "normal_text",
-                                        "text": "Escape \\ backslash."
-                                    }
-                                ]
+                                "type": "normal_text",
+                                "text": "Escape \\ backslash."
                             }
                         ]
                     }
@@ -33,22 +28,17 @@
         "text": "Escape \\* asterisk.",
         "formats": {
             "text": "Escape * asterisk.",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Escape * asterisk.</span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>Escape * asterisk.</span></div>",
             "tex": "Escape * asterisk.",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "normal_text",
-                                        "text": "Escape * asterisk."
-                                    }
-                                ]
+                                "type": "normal_text",
+                                "text": "Escape * asterisk."
                             }
                         ]
                     }
@@ -62,22 +52,17 @@
         "text": "Escape \\| pipe.",
         "formats": {
             "text": "Escape | pipe.",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Escape | pipe.</span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>Escape | pipe.</span></div>",
             "tex": "Escape \\textbar{} pipe.",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "normal_text",
-                                        "text": "Escape | pipe."
-                                    }
-                                ]
+                                "type": "normal_text",
+                                "text": "Escape | pipe."
                             }
                         ]
                     }
@@ -91,22 +76,17 @@
         "text": "Escape \\` backtick.",
         "formats": {
             "text": "Escape ` backtick.",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Escape ` backtick.</span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>Escape ` backtick.</span></div>",
             "tex": "Escape \\`{} backtick.",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "normal_text",
-                                        "text": "Escape ` backtick."
-                                    }
-                                ]
+                                "type": "normal_text",
+                                "text": "Escape ` backtick."
                             }
                         ]
                     }
@@ -120,22 +100,17 @@
         "text": "Escape \\- dash.",
         "formats": {
             "text": "Escape - dash.",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Escape - dash.</span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>Escape - dash.</span></div>",
             "tex": "Escape - dash.",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "normal_text",
-                                        "text": "Escape - dash."
-                                    }
-                                ]
+                                "type": "normal_text",
+                                "text": "Escape - dash."
                             }
                         ]
                     }
@@ -149,22 +124,17 @@
         "text": "Escape \\! bang.",
         "formats": {
             "text": "Escape ! bang.",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Escape ! bang.</span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>Escape ! bang.</span></div>",
             "tex": "Escape ! bang.",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "normal_text",
-                                        "text": "Escape ! bang."
-                                    }
-                                ]
+                                "type": "normal_text",
+                                "text": "Escape ! bang."
                             }
                         ]
                     }
@@ -178,22 +148,17 @@
         "text": "Escape \\[ open bracket.",
         "formats": {
             "text": "Escape [ open bracket.",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Escape [ open bracket.</span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>Escape [ open bracket.</span></div>",
             "tex": "Escape [ open bracket.",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "normal_text",
-                                        "text": "Escape [ open bracket."
-                                    }
-                                ]
+                                "type": "normal_text",
+                                "text": "Escape [ open bracket."
                             }
                         ]
                     }
@@ -207,22 +172,17 @@
         "text": "Escape \\{ open brace.",
         "formats": {
             "text": "Escape { open brace.",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Escape { open brace.</span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>Escape { open brace.</span></div>",
             "tex": "Escape \\{ open brace.",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "normal_text",
-                                        "text": "Escape { open brace."
-                                    }
-                                ]
+                                "type": "normal_text",
+                                "text": "Escape { open brace."
                             }
                         ]
                     }
@@ -236,22 +196,17 @@
         "text": "Escape \\/ slash.",
         "formats": {
             "text": "Escape / slash.",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Escape / slash.</span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>Escape / slash.</span></div>",
             "tex": "Escape / slash.",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "normal_text",
-                                        "text": "Escape / slash."
-                                    }
-                                ]
+                                "type": "normal_text",
+                                "text": "Escape / slash."
                             }
                         ]
                     }

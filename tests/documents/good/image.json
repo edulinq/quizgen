@@ -4,23 +4,18 @@
         "text": "![alt text](http://test.edulinq.org/image.png)",
         "formats": {
             "text": "alt text (http://test.edulinq.org/image.png)",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><img alt='alt text' src='http://test.edulinq.org/image.png' width='100.00%' /></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><img alt='alt text' src='http://test.edulinq.org/image.png' width='100.00%' /></div>",
             "tex": "\\includegraphics[width=1.00\\textwidth]{http://test.edulinq.org/image.png}",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "image",
-                                        "text": "alt text",
-                                        "link": "http://test.edulinq.org/image.png"
-                                    }
-                                ]
+                                "type": "image",
+                                "text": "alt text",
+                                "link": "http://test.edulinq.org/image.png"
                             }
                         ]
                     }
@@ -34,23 +29,18 @@
         "text": "![alt text](../../data/tiny.png)",
         "formats": {
             "text": "alt text (../../data/tiny.png)",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><img alt='alt text' src='data:image/.png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAEUlEQVQI12NgYGD4z4AE/gMADwMB/4OExBQAAAAASUVORK5CYII=' width='100.00%' /></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><img alt='alt text' src='data:image/.png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAEUlEQVQI12NgYGD4z4AE/gMADwMB/4OExBQAAAAASUVORK5CYII=' width='100.00%' /></div>",
             "tex": "\\includegraphics[width=1.00\\textwidth]{../../data/tiny.png}",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "image",
-                                        "text": "alt text",
-                                        "link": "../../data/tiny.png"
-                                    }
-                                ]
+                                "type": "image",
+                                "text": "alt text",
+                                "link": "../../data/tiny.png"
                             }
                         ]
                     }

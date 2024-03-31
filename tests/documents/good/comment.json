@@ -4,22 +4,17 @@
         "text": "// Some comment.",
         "formats": {
             "text": "",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'></div>",
             "tex": "",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "comment",
-                                        "text": "Some comment."
-                                    }
-                                ]
+                                "type": "comment",
+                                "text": "Some comment."
                             }
                         ]
                     }
@@ -33,22 +28,17 @@
         "text": "// Some // comment. \\\\ * | ` - ! [ / ",
         "formats": {
             "text": "",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'></div>",
             "tex": "",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "comment",
-                                        "text": "Some // comment. \\\\ * | ` - ! [ /"
-                                    }
-                                ]
+                                "type": "comment",
+                                "text": "Some // comment. \\\\ * | ` - ! [ /"
                             }
                         ]
                     }
@@ -62,26 +52,21 @@
         "text": "Some // comment.",
         "formats": {
             "text": "Some",
-            "html": "<div class='block' style='margin-bottom: 1em;'><div class='block' style='margin-bottom: 1em;'><span>Some</span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em;'><span>Some</span></div>",
             "tex": "Some",
             "json": {
                 "type": "block",
                 "nodes": [
                     {
-                        "type": "block",
+                        "type": "text",
                         "nodes": [
                             {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "normal_text",
-                                        "text": "Some "
-                                    },
-                                    {
-                                        "type": "comment",
-                                        "text": "comment."
-                                    }
-                                ]
+                                "type": "normal_text",
+                                "text": "Some "
+                            },
+                            {
+                                "type": "comment",
+                                "text": "comment."
                             }
                         ]
                     }

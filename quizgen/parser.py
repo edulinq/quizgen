@@ -21,7 +21,7 @@ GRAMMAR = r'''
 
     block: ( ( explicit_block | style_block | code_block | equation_block | table_block | list_block | text_line ) NEWLINE )+
 
-    explicit_block: "{-" blocks "-}"
+    explicit_block: "{-" NEWLINE+ blocks "-}"
 
     style_block: "{{" NEWLINE? style_block_internal "}}"
     ?style_block_internal: /.+?(?=\}\})/s
@@ -132,6 +132,9 @@ class DocTransformer(lark.Transformer):
 
     def block(self, nodes):
         return BlockNode(nodes)
+
+    def explicit_block(self, nodes):
+        return BlockNode(nodes[0])
 
     def style_block(self, text):
         text = '{' + text[0].strip("\n") + '}'
@@ -350,7 +353,11 @@ class BlockNode(ParseNode):
                 _style_dict_update(self._style, node._style)
                 continue
 
-            if (isinstance(node, StyleNode)):
+            if (isinstance(node, BlockNode) and node.is_liftable()):
+                # Lift the child (absorb it).
+                self._nodes += node._nodes
+            elif (isinstance(node, StyleNode)):
+                # Style nodes don't have any text context, just style.
                 _style_dict_update(self._style, node.to_pod())
             else:
                 self._nodes.append(node)
@@ -401,6 +408,10 @@ class BlockNode(ParseNode):
 
     def is_empty(self):
         return (len(self._nodes) == 0)
+
+    # A block node can be "lifted" (absorbed by the parent) if it has no style.
+    def is_liftable(self):
+        return (len(self._style) == 0)
 
 class StyleNode(ParseNode):
     def __init__(self, style = {}):
