@@ -35,7 +35,7 @@ or as identifiers in some output language (e.g., as an HTML class).
 Therefore, the content in plain strings are very limited.
 
 Parsed strings are text that will be parsed by the QuizGen parser
-(see [the syntax documentation](/syntax.md)),
+(see [the syntax documentation](/docs/syntax.md)),
 and therefore must be valid syntax.
 When using some output formats (like Canvas),
 it may seem odd why some fields need to be parsed (like a question's title).
@@ -63,7 +63,7 @@ if not set explicitly.
 
 Hints serve as additional information (usually about quiz layout or rendering) passed to different formats.
 Each format is not guaranteed to honor hints,
-but each [builtin templates](/builtin-templates.md) will declare the subset of hints that they support.
+but each [builtin templates](/docs/builtin-templates.md) will declare the subset of hints that they support.
 
 Hint provided via the `hints` field in a group will also be inherited by each question in that group.
 To ensure that only the first or last question in a group inherit specific hints, use the `hints_first` and `hints_last` fields, respectively.
@@ -213,7 +213,7 @@ Question Type: `multiple_dropdowns`
 Multiple Drop-Down questions are questions that contain one or more parts,
 where each part is a multiple choice question.
 In a digital medium, each part could be represented with a drop-down selection list.
-The question prompt should contain an [answer reference](/syntax.md#answer-references) for the location of each question part.
+The question prompt should contain an [answer reference](/docs/syntax.md#answer-references) for the location of each question part.
 The answers definition then maps each answer reference to a multiple choice-style answers definition.
 
 For example, a question may have the following prompt and answers definition:

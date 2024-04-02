@@ -22,10 +22,14 @@ Table of Contents:
 
 ### Hints
 
-Hints are suggestions to the layout engine on how to display a quiz.
+Hints are suggestions to the layout engine on how to display a quiz or question.
 Hints can be very powerful, but can also be fragile.
-When using hints, you are override the default (and safe behavior of a template).
+When using hints, you override the default (and safe) behavior of a template.
 You are encouraged to look at how a hint is used inside of a template before using it.
+
+Hints generally control the layout and flow of content.
+If you are looking to control the rendering or style of content,
+then you want to [styling documentation](/docs/styling.md).
 
 Here are hints general to all question types:
 

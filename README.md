@@ -33,9 +33,10 @@ Documentation Table of Contents:
    - [Question Selection from Groups](#question-selection-from-groups)
    - [Question Prompts](#question-prompts)
    - [Quiz Descriptions](#quiz-descriptions)
- - [Question Types](/question-types.md)
- - [QuizGen Markdown Syntax](/syntax.md)
- - [QuizGen Builtin Templates](/builtin-templates.md)
+ - [Question Types](/docs/question-types.md)
+ - [QuizGen Markdown Syntax](/docs/syntax.md)
+ - [Builtin Templates and Hints](/docs/builtin-templates.md)
+ - [Styling](/docs/styling.md)
 
 ## Installation / Requirements
 
