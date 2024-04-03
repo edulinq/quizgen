@@ -1,0 +1,33 @@
+[
+    {
+        "name": "Basic Center",
+        "text": "{{\n\"center\": true\n}}\nText",
+        "formats": {
+            "text": "Text",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center'><span>Text</span></div></div>",
+            "tex": "\\begin{center}\nText\n\\end{center}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Text"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "center": true
+                        }
+                    }
+                ]
+            }
+        }
+    }
+]

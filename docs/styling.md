@@ -20,8 +20,10 @@ for more advanced use cases see the [Blocks & Style Blocks](#blocks--style-block
 
 Table of Contents:
  - [FAQ](#faq)
-   - [How do I resize an image?](#resize-image)
+   - [How do I center something?](#faq-center)
+   - [How do I resize an image?](#faq-resize-image)
  - [Style Options](#style-options)
+   - [Center](#center)
    - [Font Size](#font-size)
    - [Image Width](#image-width)
  - [Blocks & Style Blocks](#blocks--style-blocks)
@@ -33,7 +35,25 @@ Table of Contents:
 TEST
 FAQ first, since most people will just need this little bit of information.
 
-<a name="resize-image"></a>
+<a name="faq-center"></a>
+### How do I center something?
+
+You can center something (image, table, text, etc) using the `center` style value.
+
+For example, to center an image:
+```
+{{
+    "center": true
+}}
+
+![Great Dane](../tests/data/great-dane.jpg)
+```
+
+TEST - Centering vs Text Align
+
+See the [``center` documentation](#center) for more information.
+
+<a name="faq-resize-image"></a>
 ### How do I resize an image?
 
 The size of an image can be controlled using the `image-width` value.
@@ -52,6 +72,24 @@ For example, to make an image 50% it's normal size:
 See the [`image-width` documentation](#image-width) for more information.
 
 ## Style Options
+
+### Center
+
+| Key           | `center` |
+| Type          | boolean  |
+| Default Value | false    |
+
+`center` can be used to center all elements
+incuding containers and text.
+
+For example:
+```
+{{
+    "center": true
+}}
+```
+
+TEST - Centering vs Text Align
 
 ### Font Size
 

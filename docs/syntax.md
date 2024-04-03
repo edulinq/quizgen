@@ -108,7 +108,7 @@ Images will generally be placed in-line,
 but can be put in their own block or even inside a table.
 However, it is up to the output format/template if images will be actually displayed in-line.
 
-Images can be resized using [style blocks](/docs/styling.md#resize-image).
+Images can be resized using [style blocks](/docs/styling.md#faq-resize-image).
 
 ### Inline Code
 

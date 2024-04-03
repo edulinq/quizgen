@@ -118,9 +118,11 @@ HTML_TABLE_STYLE = [
 
 VERB_CHARACTERS = ['|', '!', '@', '#', '$', '^', '&', '-', '_', '=', '+']
 
+STYLE_KEY_CENTER = 'center'
 STYLE_KEY_FONT_SIZE = 'font-size'
 STYLE_KEY_IMAGE_WIDTH = 'image-width'
 
+STYLE_DEFAULT_CENTER = False
 STYLE_DEFAULT_FONT_SIZE = None
 STYLE_DEFAULT_IMAGE_WIDTH = 1.0
 
@@ -394,18 +396,30 @@ class BlockNode(ParseNode):
         full_style = copy.deepcopy(style)
         full_style.update(self._style)
 
-        container = '%s'
+        prefixes = []
+        suffixes = []
+
+        center = full_style.get(STYLE_KEY_CENTER, STYLE_DEFAULT_CENTER)
         font_size = full_style.get(STYLE_KEY_FONT_SIZE, STYLE_DEFAULT_FONT_SIZE)
+
+        if ((center is not None) and center):
+            prefixes.insert(0, '\\begin{center}')
+            suffixes.append('\\end{center}')
 
         if (font_size is not None):
             font_size = float(font_size)
             # 1.2 is the default size for baseline skip relative to font size.
             # See: https://ctan.math.illinois.edu/macros/latex/contrib/fontsize/fontsize.pdf
             baseline_skip = 1.2 * font_size
-            container = "\\begingroup\\fontsize{%.2fpt}{%.2fpt}\\selectfont\n%%s\n\\endgroup" % (font_size, baseline_skip)
 
-        content = "\n".join([node.to_tex(style = full_style, **kwargs) for node in self._nodes])
-        return container % (content)
+            prefixes.append('\\begingroup\\fontsize{%.2fpt}{%.2fpt}\\selectfont' % (font_size, baseline_skip))
+            suffixes.insert(0, '\\endgroup')
+
+        node_content = [node.to_tex(style = full_style, **kwargs) for node in self._nodes]
+
+        content = prefixes + node_content + suffixes
+
+        return "\n".join(content)
 
     def to_html(self, style = {}, **kwargs):
         if (len(self._nodes) == 0):
@@ -423,6 +437,14 @@ class BlockNode(ParseNode):
         attributes = [
             'margin-bottom: 1em',
         ]
+
+        center = style.get(STYLE_KEY_CENTER, STYLE_DEFAULT_CENTER)
+        if ((center is not None) and center):
+            attributes.append("display: flex")
+            attributes.append("flex-direction: column")
+            attributes.append("align-items: center")
+            attributes.append("justify-content: center")
+            attributes.append("text-align: center")
 
         font_size = style.get(STYLE_KEY_FONT_SIZE, STYLE_DEFAULT_FONT_SIZE)
         if (font_size is not None):
