@@ -6,6 +6,7 @@ import json
 import os
 import re
 
+import json5
 import lark
 import lark.visitors
 
@@ -110,21 +111,41 @@ TEX_REPLACEMENTS = {
     'ZZZzzz  BACKSLASH REPLACEMENT  zzzZZZ': '\\textbackslash{}',
 }
 
-HTML_TABLE_STYLE = [
-    'border-collapse: collapse',
-    'text-align: center',
-    'margin-bottom: 1em',
-]
-
 VERB_CHARACTERS = ['|', '!', '@', '#', '$', '^', '&', '-', '_', '=', '+']
 
-STYLE_KEY_CENTER = 'center'
+STYLE_KEY_CONTENT_ALIGN = 'content-align'
 STYLE_KEY_FONT_SIZE = 'font-size'
 STYLE_KEY_IMAGE_WIDTH = 'image-width'
+STYLE_KEY_TEXT_ALIGN = 'text-align'
 
-STYLE_DEFAULT_CENTER = False
-STYLE_DEFAULT_FONT_SIZE = None
 STYLE_DEFAULT_IMAGE_WIDTH = 1.0
+
+STYLE_ALLOWED_VALUES_ALIGNMENT_LEFT = 'left'
+STYLE_ALLOWED_VALUES_ALIGNMENT_CENTER = 'center'
+STYLE_ALLOWED_VALUES_ALIGNMENT_RIGHT = 'right'
+STYLE_ALLOWED_VALUES_ALIGNMENT = [
+    STYLE_ALLOWED_VALUES_ALIGNMENT_LEFT,
+    STYLE_ALLOWED_VALUES_ALIGNMENT_CENTER,
+    STYLE_ALLOWED_VALUES_ALIGNMENT_RIGHT
+]
+
+FLEXBOX_ALIGNMENT = {
+    STYLE_ALLOWED_VALUES_ALIGNMENT_LEFT: 'flex-start',
+    STYLE_ALLOWED_VALUES_ALIGNMENT_CENTER: 'center',
+    STYLE_ALLOWED_VALUES_ALIGNMENT_RIGHT: 'flex-end',
+}
+
+TEX_BLOCK_ALIGNMENT = {
+    STYLE_ALLOWED_VALUES_ALIGNMENT_LEFT: 'flushleft',
+    STYLE_ALLOWED_VALUES_ALIGNMENT_CENTER: 'center',
+    STYLE_ALLOWED_VALUES_ALIGNMENT_RIGHT: 'flushright',
+}
+
+TEX_TEXT_TABLE_ALIGNMENT = {
+    STYLE_ALLOWED_VALUES_ALIGNMENT_LEFT: 'l',
+    STYLE_ALLOWED_VALUES_ALIGNMENT_CENTER: 'c',
+    STYLE_ALLOWED_VALUES_ALIGNMENT_RIGHT: 'r',
+}
 
 class DocTransformer(lark.Transformer):
     def document(self, blocks):
@@ -146,7 +167,7 @@ class DocTransformer(lark.Transformer):
     def style_block(self, text):
         text = '{' + text[0].strip("\n") + '}'
         try:
-            data = json.loads(text)
+            data = json5.loads(text)
         except Exception as ex:
             raise ValueError("Style is not valid JSON.") from ex
 
@@ -396,16 +417,26 @@ class BlockNode(ParseNode):
         full_style = copy.deepcopy(style)
         full_style.update(self._style)
 
+        prefixes, suffixes = self._compute_tex_fixes(full_style)
+        node_content = [node.to_tex(style = full_style, **kwargs) for node in self._nodes]
+
+        content = prefixes + node_content + list(reversed(suffixes))
+
+        return "\n".join(content)
+
+    def _compute_tex_fixes(self, style):
+        # The beginning and ends of groups.
+        # These will match 1-1.
         prefixes = []
         suffixes = []
 
-        center = full_style.get(STYLE_KEY_CENTER, STYLE_DEFAULT_CENTER)
-        font_size = full_style.get(STYLE_KEY_FONT_SIZE, STYLE_DEFAULT_FONT_SIZE)
+        content_align = _get_alignment(STYLE_KEY_CONTENT_ALIGN, style)
+        if (content_align is not None):
+            env_name = TEX_BLOCK_ALIGNMENT[content_align]
+            prefixes.append("\\begin{%s}" % (env_name))
+            suffixes.append("\\end{%s}" % (env_name))
 
-        if ((center is not None) and center):
-            prefixes.insert(0, '\\begin{center}')
-            suffixes.append('\\end{center}')
-
+        font_size = style.get(STYLE_KEY_FONT_SIZE, None)
         if (font_size is not None):
             font_size = float(font_size)
             # 1.2 is the default size for baseline skip relative to font size.
@@ -413,13 +444,9 @@ class BlockNode(ParseNode):
             baseline_skip = 1.2 * font_size
 
             prefixes.append('\\begingroup\\fontsize{%.2fpt}{%.2fpt}\\selectfont' % (font_size, baseline_skip))
-            suffixes.insert(0, '\\endgroup')
+            suffixes.append('\\endgroup')
 
-        node_content = [node.to_tex(style = full_style, **kwargs) for node in self._nodes]
-
-        content = prefixes + node_content + suffixes
-
-        return "\n".join(content)
+        return prefixes, suffixes
 
     def to_html(self, style = {}, **kwargs):
         if (len(self._nodes) == 0):
@@ -438,15 +465,18 @@ class BlockNode(ParseNode):
             'margin-bottom: 1em',
         ]
 
-        center = style.get(STYLE_KEY_CENTER, STYLE_DEFAULT_CENTER)
-        if ((center is not None) and center):
+        content_align = _get_alignment(STYLE_KEY_CONTENT_ALIGN, style)
+        if (content_align is not None):
             attributes.append("display: flex")
             attributes.append("flex-direction: column")
-            attributes.append("align-items: center")
-            attributes.append("justify-content: center")
-            attributes.append("text-align: center")
+            attributes.append("justify-content: flex-start")
+            attributes.append("align-items: %s" % (FLEXBOX_ALIGNMENT[content_align]))
 
-        font_size = style.get(STYLE_KEY_FONT_SIZE, STYLE_DEFAULT_FONT_SIZE)
+        text_align = _get_alignment(STYLE_KEY_TEXT_ALIGN, style)
+        if (text_align is not None):
+            attributes.append("text-align: %s" % (text_align))
+
+        font_size = style.get(STYLE_KEY_FONT_SIZE, None)
         if (font_size is not None):
             attributes.append("font-size: %.2fpt" % (float(font_size)))
 
@@ -628,31 +658,29 @@ class TableNode(ParseNode):
     def to_text(self, **kwargs):
         return "\n".join([row.to_text(width = self._width, **kwargs) for row in self._rows]) + "\n"
 
-    def to_tex(self, **kwargs):
-        column_spec = "c" * self._width
+    def to_tex(self, style = {}, **kwargs):
+        alignment = _get_alignment(STYLE_KEY_TEXT_ALIGN, style, default_value = STYLE_ALLOWED_VALUES_ALIGNMENT_CENTER)
+        column_align = TEX_TEXT_TABLE_ALIGNMENT[alignment]
+
+        column_spec = column_align * self._width
 
         lines = [
-            r'\begin{center}',
-            r'    \begin{tabular}{ ' + column_spec + ' }',
+            r'\begin{tabular}{ ' + column_spec + ' }',
         ]
 
         for row in self._rows:
             row = row.to_tex(width = self._width, **kwargs)
-            lines.append(f"        {row}")
+            lines.append(f"{row}")
 
         lines += [
-            r'    \end{tabular}',
-            r'\end{center}',
-            '',
+            r'\end{tabular}',
         ]
 
         return "\n".join(lines)
 
     def to_html(self, **kwargs):
-        table_style = ' ; '.join(HTML_TABLE_STYLE)
-
         lines = [
-            f'<table style="{table_style}">',
+            "<table style='border-collapse: collapse'>"
         ]
 
         next_cell_style = None
@@ -703,6 +731,7 @@ class TableRowNode(ParseNode):
         if (self._head):
             tag = 'th'
 
+        # TEST
         cell_inline_style = "padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em "
         if (cell_style is not None):
             cell_inline_style += (' ; ' + cell_style)
@@ -1129,6 +1158,17 @@ def tex_escape(text):
         text = text.replace(key, value)
 
     return text
+
+def _get_alignment(key, style, default_value = None):
+    alignment = style.get(key, None)
+    if (alignment is None):
+        return default_value
+
+    alignment = str(alignment).lower()
+    if (alignment not in STYLE_ALLOWED_VALUES_ALIGNMENT):
+        raise ValueError("Unknown value for '%s' style key '%s'. Allowed values: '%s'." % (key, alignment, STYLE_ALLOWED_VALUES_ALIGNMENT))
+
+    return alignment
 
 def clean_text(text):
     # Remove carriage returns.

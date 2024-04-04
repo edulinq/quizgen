@@ -23,7 +23,7 @@ Table of Contents:
    - [How do I center something?](#faq-center)
    - [How do I resize an image?](#faq-resize-image)
  - [Style Options](#style-options)
-   - [Center](#center)
+   - [Alignment](#alignment)
    - [Font Size](#font-size)
    - [Image Width](#image-width)
  - [Blocks & Style Blocks](#blocks--style-blocks)
@@ -35,23 +35,38 @@ Table of Contents:
 TEST
 FAQ first, since most people will just need this little bit of information.
 
-<a name="faq-center"></a>
-### How do I center something?
+<a name="faq-align"></a>
+### How do I (left, center, right) align something?
 
-You can center something (image, table, text, etc) using the `center` style value.
+You can center something (image, table, text, etc) using the [alignment](#alignment) style options.
+For non-text things (images, tables, containers, etc) you can use the `content-align` option,
+and for text alignment, you can use the `text-align` option.
+
+Both options support the following values: {`left`, `center`, `right`}.
 
 For example, to center an image:
 ```
 {{
-    "center": true
+    "content-align": "center"
 }}
 
 ![Great Dane](../tests/data/great-dane.jpg)
 ```
 
-TEST - Centering vs Text Align
+To center align a table, but right align the text inside the table, you can do:
+```
+{{
+    "content-align": "center",
+    "text-align": "right"
+}}
 
-See the [``center` documentation](#center) for more information.
+| ID | Value |
+|----|-------|
+| 1  | 1.23  |
+| 45 | 6.7   |
+```
+
+See the [alignment documentation](#alignment) for more information.
 
 <a name="faq-resize-image"></a>
 ### How do I resize an image?
@@ -73,23 +88,46 @@ See the [`image-width` documentation](#image-width) for more information.
 
 ## Style Options
 
-### Center
+### Alignment
 
-| Key           | `center` |
-| Type          | boolean  |
-| Default Value | false    |
+Alignment determines where on the horizontal axis content will appear:
+`left`, `center`, or `right`.
+Objects are split into two groups for the purposes of alignment:
+non-text (content) and text.
+Non-text (content) objects (images, tables, containers, etc) are aligned using the `content-align` key,
+while text is aligned using the `text-align` key.
 
-`center` can be used to center all elements
-incuding containers and text.
+When not specified, the output format/converter determines alignment.
 
-For example:
+For example, to center align a table but right align the text inside the table:
 ```
 {{
-    "center": true
+    "content-align": "center",
+    "text-align": "right"
 }}
+
+| ID | Value |
+|----|-------|
+| 1  | 1.23  |
+| 45 | 6.7   |
 ```
 
-TEST - Centering vs Text Align
+*Warning*: Alignment does not work well within TeX documents.
+Content alignment will also affect text and text alignment will not work within normal paragraphs.
+
+#### Content Align
+
+| Key           | `content-size`              |
+| Type          | string                      |
+| Range         | {`left`, `center`, `right`} |
+| Default Value | null                        |
+
+#### Text Align
+
+| Key           | `text-size`                 |
+| Type          | string                      |
+| Range         | {`left`, `center`, `right`} |
+| Default Value | null                        |
 
 ### Font Size
 
@@ -98,7 +136,7 @@ TEST - Centering vs Text Align
 | Range         | (0.0, infinity] |
 | Default Value | null            |
 
-`font-size` can be used to set the font size **in points**.
+`font-size` can be used to set the font size **in points** ([typographic points](https://en.wikipedia.org/wiki/Point_(typography)).
 Fractional point sizes (e.g. 12.5) are allowed,
 but the exact support depends on the output format.
 

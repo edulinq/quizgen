@@ -1,10 +1,10 @@
 [
     {
-        "name": "Basic Center",
-        "text": "{{\n\"center\": true\n}}\nText",
+        "name": "Basic Content Align Center",
+        "text": "{{\n\"content-align\": \"center\"\n}}\nText",
         "formats": {
             "text": "Text",
-            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center'><span>Text</span></div></div>",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; display: flex; flex-direction: column; justify-content: flex-start; align-items: center'><span>Text</span></div></div>",
             "tex": "\\begin{center}\nText\n\\end{center}",
             "json": {
                 "type": "block",
@@ -23,11 +23,234 @@
                             }
                         ],
                         "style": {
-                            "center": true
+                            "content-align": "center"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Basic Content Align Left",
+        "text": "{{\n\"content-align\": \"left\"\n}}\nText",
+        "formats": {
+            "text": "Text",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start'><span>Text</span></div></div>",
+            "tex": "\\begin{flushleft}\nText\n\\end{flushleft}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Text"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "content-align": "left"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Basic Content Align Right",
+        "text": "{{\n\"content-align\": \"right\"\n}}\nText",
+        "formats": {
+            "text": "Text",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-end'><span>Text</span></div></div>",
+            "tex": "\\begin{flushright}\nText\n\\end{flushright}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Text"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "content-align": "right"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Basic Text Align Center",
+        "text": "{{\n\"text-align\": \"center\"\n}}\nText",
+        "formats": {
+            "text": "Text",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; text-align: center'><span>Text</span></div></div>",
+            "tex": "Text",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Text"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "text-align": "center"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Basic Text Align Left",
+        "text": "{{\n\"text-align\": \"left\"\n}}\nText",
+        "formats": {
+            "text": "Text",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; text-align: left'><span>Text</span></div></div>",
+            "tex": "Text",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Text"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "text-align": "left"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Basic Text Align Right",
+        "text": "{{\n\"text-align\": \"right\"\n}}\nText",
+        "formats": {
+            "text": "Text",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; text-align: right'><span>Text</span></div></div>",
+            "tex": "Text",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "text",
+                                "nodes": [
+                                    {
+                                        "type": "normal_text",
+                                        "text": "Text"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "text-align": "right"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Table With Content and Text Alignment",
+        "text": "{{\n\"content-align\": \"center\",\n\"text-align\": \"right\"\n}}\n| a | b | c |",
+        "formats": {
+            "text": "| a | b | c |",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; text-align: right'><table style='border-collapse: collapse'><tr><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>a</span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>b</span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>c</span></td></tr></table></div></div>",
+            "tex": "\\begin{center}\n\\begin{tabular}{ rrr }\na & b & c \\\\\n\\end{tabular}\n\\end{center}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "table",
+                                "rows": [
+                                    {
+                                        "type": "table-row",
+                                        "head": false,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "a"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "b"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "c"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "content-align": "center",
+                            "text-align": "right"
                         }
                     }
                 ]
             }
         }
     }
+
 ]
