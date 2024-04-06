@@ -7,7 +7,7 @@ then you are looking for [template hints](docs/builtin-templates.md).
 Styling in the Quiz Generator is done via *style blocks* where specific options can be set.
 Style blocks are surrounded by double braces (`{{` and `}}`).
 Internally, style blocks use JSON object syntax.
-For example:
+For example, the following style block will set the font size.
 
 ```
 {{
@@ -15,30 +15,38 @@ For example:
 }}
 ```
 
-Most styling needs can be answered by the [FAQ](#faq) or by looking over the [styling options](#style-options),
-for more advanced use cases see the [Blocks & Style Blocks](#blocks--style-blocks) section.
+By default, a style block will apply to all content in the document,
+even if that content appears before or after the style block.
+To set styling information for a subset of your document,
+see the [Blocks & Style Blocks](#blocks--style-blocks) section.
+
+The styling functionality provided is intended to be simple and cover some common use cases.
+If you have styling needs that are not covered here,
+then you can achieve you desired style by editing the output of the QuizGen or by using a custom template.
 
 Table of Contents:
  - [FAQ](#faq)
-   - [How do I center something?](#faq-center)
+   - [How do I left/center/right align something](#faq-align)
    - [How do I resize an image?](#faq-resize-image)
  - [Style Options](#style-options)
    - [Alignment](#alignment)
    - [Font Size](#font-size)
    - [Image Width](#image-width)
+   - [Tables](#tables)
+     - [Cell Size](#cell-size)
+     - [Table Borders](#table-borders)
  - [Blocks & Style Blocks](#blocks--style-blocks)
    - [Overriding Style](#overriding-style)
    - [Clearing Style](#clearing-style)
 
 ## FAQ
 
-TEST
-FAQ first, since most people will just need this little bit of information.
+The FAQ should be the first place to check for styling questions.
 
 <a name="faq-align"></a>
-### How do I (left, center, right) align something?
+### How do I left/center/right align something?
 
-You can center something (image, table, text, etc) using the [alignment](#alignment) style options.
+You can align something (image, table, text, etc) using the [alignment](#alignment) style options.
 For non-text things (images, tables, containers, etc) you can use the `content-align` option,
 and for text alignment, you can use the `text-align` option.
 
@@ -72,8 +80,8 @@ See the [alignment documentation](#alignment) for more information.
 ### How do I resize an image?
 
 The size of an image can be controlled using the `image-width` value.
-Only the width of an image can be explicitly set.
-The aspect ratio of the image will be preserved, which will determine the height of the image.
+Only the width of an image can be explicitly set,
+and the aspect ratio of the image will be preserved.
 
 For example, to make an image 50% it's normal size:
 ```
@@ -84,11 +92,23 @@ For example, to make an image 50% it's normal size:
 ![Great Dane](../tests/data/great-dane.jpg)
 ```
 
+Image width is provided as a proportion of the image container's width.
+
 See the [`image-width` documentation](#image-width) for more information.
 
 ## Style Options
 
+This section cover all the known style options
+and details on their semantics.
+For all options, `null` is always an allowed value,
+and indicates that the default behavior should be used.
+
 ### Alignment
+
+| Key             | Type   | Default Value | Allowed Values              | Notes |
+|-----------------|--------|---------------|-----------------------------|-------|
+| `content-align` | string | `null`        | {`left`, `center`, `right`} | By default, alignment is dependent on the output format. |
+| `text-align`    | string | `null`        | {`left`, `center`, `right`} | By default, alignment is dependent on the output format. |
 
 Alignment determines where on the horizontal axis content will appear:
 `left`, `center`, or `right`.
@@ -113,28 +133,13 @@ For example, to center align a table but right align the text inside the table:
 ```
 
 *Warning*: Alignment does not work well within TeX documents.
-Content alignment will also affect text and text alignment will not work within normal paragraphs.
-
-#### Content Align
-
-| Key           | `content-size`              |
-| Type          | string                      |
-| Range         | {`left`, `center`, `right`} |
-| Default Value | null                        |
-
-#### Text Align
-
-| Key           | `text-size`                 |
-| Type          | string                      |
-| Range         | {`left`, `center`, `right`} |
-| Default Value | null                        |
+In TeX, content alignment will also affect text and text alignment will not work within normal paragraphs.
 
 ### Font Size
 
-| Key           | `font-size`     |
-| Type          | float           |
-| Range         | (0.0, infinity] |
-| Default Value | null            |
+| Key         | Type  | Default Value | Allowed Values  | Notes |
+|-------------|-------|---------------|-----------------|-------|
+| `font-size` | float | `null`        | (0.0, infinity] | Size in points. |
 
 `font-size` can be used to set the font size **in points** ([typographic points](https://en.wikipedia.org/wiki/Point_(typography)).
 Fractional point sizes (e.g. 12.5) are allowed,
@@ -149,13 +154,12 @@ For example, a 12 point font can be set with:
 
 ### Image Width
 
-| Key           | `image-width` |
-| Type          | float         |
-| Range         | (0.0, 1.0]    |
-| Default Value | 1.0           |
+| Key           | Type  | Default Value | Allowed Values  | Notes |
+|---------------|-------|---------------|-----------------|-------|
+| `image-width` | float | 1.0           | (0.0, 1.0]      | Width relative to container. |
 
 `image-width` can be used to set the width of an image.
-The width is given as **a ratio** of the image's parent container's width.
+The width is given as **a proportion** of the image's parent container's width.
 This will typically mean the width of the page.
 So `0.5` will set the image size to half of it's container.
 Values above 1.0 are allowed, but the behavior is undefined.
@@ -176,28 +180,66 @@ Use half the available width:
 }}
 ```
 
-TEST
 ### Tables
 
-TEST
+| Key                  | Type    | Default Value | Allowed Values    | Notes |
+|----------------------|---------|---------------|-------------------|-------|
+| `table-head-bold`    | boolean | `true`        | {`true`, `false`} | Bold table headers. |
+| `table-cell-height`  | float   | `1.5`         | [1.0, infinity]   | In [em](https://en.wikipedia.org/wiki/Em_(typography)). Set the vertical size in a cell. |
+| `table-cell-width`   | float   | `1.5`         | [1.0, infinity]   | In [em](https://en.wikipedia.org/wiki/Em_(typography)). Set the horizontal size in a cell. |
+| `table-border-table` | boolean | `false`       | {`true`, `false`} | Sets the border *around* the table. |
+| `table-border-cells` | boolean | `false`       | {`true`, `false`} | Sets the border *inside* the table (around each cell). |
 
-Provide some options.
-Tables are very complex, and we only provide some common styling functionality.
-Style outside of these options can be achieved by editing the output of the QUizGen
-or by using a custom template.
+Some basic options to control the look of tables are provided.
 
-table-head-bold
+#### Cell Size
 
-table-cell-height
-cannot be smalller than 1.0
-em
+The size of cells can be set using the `table-cell-height` and `table-cell-width` options.
+These options take a value no smaller than 1.0 in [em units](https://en.wikipedia.org/wiki/Em_(typography)).
+Note that exact table size computations depend on the output format
+and typically are the maximum of all the cells in a column/row.
 
-table-cell-width
-cannot be smalller than 1.0
-em
+To make a very tight table, you can use 1.0:
+```
+{{
+    "table-cell-height": 1.0,
+    "table-cell-width": 1.0
+}}
+```
 
-table-border-table
-table-border-cells
+To make a very spacious table, you can use something larger (like 2.0):
+```
+{{
+    "table-cell-height": 2.0,
+    "table-cell-width": 2.0
+}}
+```
+
+#### Table Borders
+
+There are two options that control border for tables:
+`table-border-table` and `table-border-cells`.
+Both are off (`false`) by default.
+`table-border-table` controls borders *around* the table itself,
+while `table-border-cells` controls the borders *inside* the table (and around each cell).
+Note that any cell border that overlaps with the border of the actual table
+(e.g., the top border of the first row) is controlled by `table-border-table` and **not** `table-border-cells`.
+
+To get a table with full borders, use:
+```
+{{
+    "table-border-table": true,
+    "table-border-cells": true
+}}
+```
+
+To get a table that only has dividers/borders between cells and not around the table itself, use:
+```
+{{
+    "table-border-table": false,
+    "table-border-cells": true
+}}
+```
 
 ## Blocks & Style Blocks
 
