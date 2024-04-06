@@ -726,6 +726,11 @@ class TableNode(ParseNode):
         else:
             table_style.append('border-style: hidden')
 
+        # HTML tables require extra encouragement to align.
+        text_align = _get_alignment(style, STYLE_KEY_TEXT_ALIGN)
+        if (text_align is not None):
+            table_style.append("text-align: %s" % (text_align))
+
         table_style_string = '; '.join(table_style)
         lines = [
             "<table style='%s'>" % (table_style_string)
