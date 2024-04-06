@@ -176,6 +176,29 @@ Use half the available width:
 }}
 ```
 
+TEST
+### Tables
+
+TEST
+
+Provide some options.
+Tables are very complex, and we only provide some common styling functionality.
+Style outside of these options can be achieved by editing the output of the QUizGen
+or by using a custom template.
+
+table-head-bold
+
+table-cell-height
+cannot be smalller than 1.0
+em
+
+table-cell-width
+cannot be smalller than 1.0
+em
+
+table-border-table
+table-border-cells
+
 ## Blocks & Style Blocks
 
 A styling rule applies within the *block* it was declared in,

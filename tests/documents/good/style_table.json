@@ -1,0 +1,653 @@
+[
+    {
+        "name": "Base Style",
+        "text": "|- a | b | c |\n| 1 | 2 | 3 |",
+        "formats": {
+            "text": "| a | b | c |\n| 1 | 2 | 3 |",
+            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse; border-style: hidden'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'><span>a</span></th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'><span>b</span></th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'><span>c</span></th></tr><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><span>1</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><span>2</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><span>3</span></td></tr></table></div>",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\n\\textbf{a} & \\textbf{b} & \\textbf{c} \\\\\n1 & 2 & 3 \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup\n",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "table",
+                        "rows": [
+                            {
+                                "type": "table-row",
+                                "head": true,
+                                "cells": [
+                                    {
+                                        "type": "text",
+                                        "nodes": [
+                                            {
+                                                "type": "normal_text",
+                                                "text": "a"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "text",
+                                        "nodes": [
+                                            {
+                                                "type": "normal_text",
+                                                "text": "b"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "text",
+                                        "nodes": [
+                                            {
+                                                "type": "normal_text",
+                                                "text": "c"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "table-row",
+                                "head": false,
+                                "cells": [
+                                    {
+                                        "type": "text",
+                                        "nodes": [
+                                            {
+                                                "type": "normal_text",
+                                                "text": "1"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "text",
+                                        "nodes": [
+                                            {
+                                                "type": "normal_text",
+                                                "text": "2"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "text",
+                                        "nodes": [
+                                            {
+                                                "type": "normal_text",
+                                                "text": "3"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "No Bold Headers",
+        "text": "{{\n\"table-head-bold\": false\n}}\n|- a | b | c |\n| 1 | 2 | 3 |",
+        "formats": {
+            "text": "| a | b | c |\n| 1 | 2 | 3 |",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse; border-style: hidden'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: normal'><span>a</span></th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: normal'><span>b</span></th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: normal'><span>c</span></th></tr><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><span>1</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><span>2</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><span>3</span></td></tr></table></div></div>",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\na & b & c \\\\\n1 & 2 & 3 \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup\n",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "table",
+                                "rows": [
+                                    {
+                                        "type": "table-row",
+                                        "head": true,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "a"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "b"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "c"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "table-row",
+                                        "head": false,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "1"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "2"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "3"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "table-head-bold": false
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Border Cells",
+        "text": "{{\n\"table-border-cells\": true\n}}\n|- a | b | c |\n| 1 | 2 | 3 |",
+        "formats": {
+            "text": "| a | b | c |\n| 1 | 2 | 3 |",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse; border-style: hidden'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'><span>a</span></th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'><span>b</span></th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'><span>c</span></th></tr><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'><span>1</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'><span>2</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'><span>3</span></td></tr></table></div></div>",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ c|c|c }\n\\textbf{a} & \\textbf{b} & \\textbf{c} \\\\\n\\hline\n1 & 2 & 3 \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "table",
+                                "rows": [
+                                    {
+                                        "type": "table-row",
+                                        "head": true,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "a"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "b"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "c"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "table-row",
+                                        "head": false,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "1"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "2"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "3"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "table-border-cells": true
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Border Table",
+        "text": "{{\n\"table-border-table\": true\n}}\n|- a | b | c |\n| 1 | 2 | 3 |",
+        "formats": {
+            "text": "| a | b | c |\n| 1 | 2 | 3 |",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse; border: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'><span>a</span></th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'><span>b</span></th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'><span>c</span></th></tr><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><span>1</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><span>2</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><span>3</span></td></tr></table></div></div>",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ |ccc| }\n\\hline\n\\textbf{a} & \\textbf{b} & \\textbf{c} \\\\\n1 & 2 & 3 \\\\\n\\hline\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "table",
+                                "rows": [
+                                    {
+                                        "type": "table-row",
+                                        "head": true,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "a"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "b"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "c"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "table-row",
+                                        "head": false,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "1"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "2"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "3"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "table-border-table": true
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Full Border",
+        "text": "{{\n\"table-border-cells\": true,\n\"table-border-table\": true\n}}\n|- a | b | c |\n| 1 | 2 | 3 |",
+        "formats": {
+            "text": "| a | b | c |\n| 1 | 2 | 3 |",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse; border: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'><span>a</span></th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'><span>b</span></th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'><span>c</span></th></tr><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'><span>1</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'><span>2</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'><span>3</span></td></tr></table></div></div>",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ |c|c|c| }\n\\hline\n\\textbf{a} & \\textbf{b} & \\textbf{c} \\\\\n\\hline\n1 & 2 & 3 \\\\\n\\hline\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "table",
+                                "rows": [
+                                    {
+                                        "type": "table-row",
+                                        "head": true,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "a"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "b"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "c"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "table-row",
+                                        "head": false,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "1"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "2"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "3"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "table-border-cells": true,
+                            "table-border-table": true
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Base Cell Height",
+        "text": "{{\n\"table-cell-height\": 1.0\n}}\n|- a | b | c |\n| 1 | 2 | 3 |",
+        "formats": {
+            "text": "| a | b | c |\n| 1 | 2 | 3 |",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse; border-style: hidden'><tr><th style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'><span>a</span></th><th style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'><span>b</span></th><th style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'><span>c</span></th></tr><tr><td style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em'><span>1</span></td><td style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em'><span>2</span></td><td style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em'><span>3</span></td></tr></table></div></div>",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.00}\n\\begin{tabular}{ ccc }\n\\textbf{a} & \\textbf{b} & \\textbf{c} \\\\\n1 & 2 & 3 \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "table",
+                                "rows": [
+                                    {
+                                        "type": "table-row",
+                                        "head": true,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "a"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "b"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "c"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "table-row",
+                                        "head": false,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "1"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "2"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "3"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "table-cell-height": 1.0
+                        }
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Base Cell Width",
+        "text": "{{\n\"table-cell-width\": 1.0\n}}\n|- a | b | c |\n| 1 | 2 | 3 |",
+        "formats": {
+            "text": "| a | b | c |\n| 1 | 2 | 3 |",
+            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse; border-style: hidden'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em; font-weight: bold'><span>a</span></th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em; font-weight: bold'><span>b</span></th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em; font-weight: bold'><span>c</span></th></tr><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em'><span>1</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em'><span>2</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em'><span>3</span></td></tr></table></div></div>",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.00em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\n\\textbf{a} & \\textbf{b} & \\textbf{c} \\\\\n1 & 2 & 3 \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "block",
+                        "nodes": [
+                            {
+                                "type": "table",
+                                "rows": [
+                                    {
+                                        "type": "table-row",
+                                        "head": true,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "a"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "b"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "c"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "table-row",
+                                        "head": false,
+                                        "cells": [
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "1"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "2"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "nodes": [
+                                                    {
+                                                        "type": "normal_text",
+                                                        "text": "3"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": {
+                            "table-cell-width": 1.0
+                        }
+                    }
+                ]
+            }
+        }
+    }
+
+]

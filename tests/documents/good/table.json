@@ -4,8 +4,8 @@
         "text": "| a | b | c |",
         "formats": {
             "text": "| a | b | c |",
-            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse'><tr><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>a</span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>b</span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>c</span></td></tr></table></div>",
-            "tex": "\\begin{tabular}{ ccc }\na & b & c \\\\\n\\end{tabular}",
+            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse; border-style: hidden'><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><span>a</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><span>b</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><span>c</span></td></tr></table></div>",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "json": {
                 "type": "block",
                 "nodes": [
@@ -57,8 +57,8 @@
         "text": "|---|",
         "formats": {
             "text": "|---|",
-            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse'></table></div>",
-            "tex": "\\begin{tabular}{ c }\n\\hline \\\\\n\\end{tabular}",
+            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse; border-style: hidden'></table></div>",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ c }\n\\hline\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "json": {
                 "type": "block",
                 "nodes": [
@@ -80,8 +80,8 @@
         "text": "|---|---|",
         "formats": {
             "text": "|---|",
-            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse'></table></div>",
-            "tex": "\\begin{tabular}{ c }\n\\hline \\\\\n\\end{tabular}",
+            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse; border-style: hidden'></table></div>",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ c }\n\\hline\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "json": {
                 "type": "block",
                 "nodes": [
@@ -103,8 +103,8 @@
         "text": "|---| |",
         "formats": {
             "text": "|---|",
-            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse'></table></div>",
-            "tex": "\\begin{tabular}{ c }\n\\hline \\\\\n\\end{tabular}",
+            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse; border-style: hidden'></table></div>",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ c }\n\\hline\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "json": {
                 "type": "block",
                 "nodes": [
@@ -126,8 +126,8 @@
         "text": "|--- | |",
         "formats": {
             "text": "|---|",
-            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse'></table></div>",
-            "tex": "\\begin{tabular}{ c }\n\\hline \\\\\n\\end{tabular}",
+            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse; border-style: hidden'></table></div>",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ c }\n\\hline\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "json": {
                 "type": "block",
                 "nodes": [
@@ -149,8 +149,8 @@
         "text": "|- 1  | \\-2   |         3^        |\n|-----|-------|-------------------|\n| *a* | **b** | `c()` and $ d() $ |",
         "formats": {
             "text": "| 1 | -2 | 3^ |\n|---|---|---|\n| a | b | `c()` and $ d() $ |",
-            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse'><tr><th style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>1</span></th><th style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>-2</span></th><th style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em '><span>3^</span></th></tr><tr><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em  ; border-top: 2px solid black;'><span><emph>a</emph></span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em  ; border-top: 2px solid black;'><span><strong>b</strong></span></td><td style='padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em  ; border-top: 2px solid black;'><code>c()</code><span>and</span><span><code>d()</code></span></td></tr></table></div>",
-            "tex": "\\begin{tabular}{ ccc }\n1 & -2 & 3^ \\\\\n\\hline \\\\\n\\textit{a} & \\textbf{b} & \\verb|c()| and $ d() $ \\\\\n\\end{tabular}",
+            "html": "<div class='block' style='margin-bottom: 1em'><table style='border-collapse: collapse; border-style: hidden'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'><span>1</span></th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'><span>-2</span></th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'><span>3^</span></th></tr><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border-top: 1px solid black'><span><emph>a</emph></span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border-top: 1px solid black'><span><strong>b</strong></span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border-top: 1px solid black'><code>c()</code><span>and</span><span><code>d()</code></span></td></tr></table></div>",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\n\\textbf{1} & \\textbf{-2} & \\textbf{3^} \\\\\n\\hline\n\\textit{a} & \\textbf{b} & \\verb|c()| and $ d() $ \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "json": {
                 "type": "block",
                 "nodes": [

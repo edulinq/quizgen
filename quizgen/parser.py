@@ -116,9 +116,19 @@ VERB_CHARACTERS = ['|', '!', '@', '#', '$', '^', '&', '-', '_', '=', '+']
 STYLE_KEY_CONTENT_ALIGN = 'content-align'
 STYLE_KEY_FONT_SIZE = 'font-size'
 STYLE_KEY_IMAGE_WIDTH = 'image-width'
+STYLE_KEY_TABLE_BORDER_CELLS = 'table-border-cells'
+STYLE_KEY_TABLE_BORDER_TABLE = 'table-border-table'
+STYLE_KEY_TABLE_CELL_HEIGHT = 'table-cell-height'
+STYLE_KEY_TABLE_CELL_WIDTH = 'table-cell-width'
+STYLE_KEY_TABLE_HEAD_BOLD = 'table-head-bold'
 STYLE_KEY_TEXT_ALIGN = 'text-align'
 
 STYLE_DEFAULT_IMAGE_WIDTH = 1.0
+STYLE_DEFAULT_TABLE_BORDER_CELLS = False
+STYLE_DEFAULT_TABLE_BORDER_TABLE = False
+STYLE_DEFAULT_TABLE_CELL_HEIGHT = 1.5
+STYLE_DEFAULT_TABLE_CELL_WIDTH = 1.5
+STYLE_DEFAULT_TABLE_HEAD_BOLD = True
 
 STYLE_ALLOWED_VALUES_ALIGNMENT_LEFT = 'left'
 STYLE_ALLOWED_VALUES_ALIGNMENT_CENTER = 'center'
@@ -146,6 +156,8 @@ TEX_TEXT_TABLE_ALIGNMENT = {
     STYLE_ALLOWED_VALUES_ALIGNMENT_CENTER: 'c',
     STYLE_ALLOWED_VALUES_ALIGNMENT_RIGHT: 'r',
 }
+
+HTML_BORDER_SPEC = '1px solid black'
 
 class DocTransformer(lark.Transformer):
     def document(self, blocks):
@@ -430,7 +442,7 @@ class BlockNode(ParseNode):
         prefixes = []
         suffixes = []
 
-        content_align = _get_alignment(STYLE_KEY_CONTENT_ALIGN, style)
+        content_align = _get_alignment(style, STYLE_KEY_CONTENT_ALIGN)
         if (content_align is not None):
             env_name = TEX_BLOCK_ALIGNMENT[content_align]
             prefixes.append("\\begin{%s}" % (env_name))
@@ -465,14 +477,14 @@ class BlockNode(ParseNode):
             'margin-bottom: 1em',
         ]
 
-        content_align = _get_alignment(STYLE_KEY_CONTENT_ALIGN, style)
+        content_align = _get_alignment(style, STYLE_KEY_CONTENT_ALIGN)
         if (content_align is not None):
             attributes.append("display: flex")
             attributes.append("flex-direction: column")
             attributes.append("justify-content: flex-start")
             attributes.append("align-items: %s" % (FLEXBOX_ALIGNMENT[content_align]))
 
-        text_align = _get_alignment(STYLE_KEY_TEXT_ALIGN, style)
+        text_align = _get_alignment(style, STYLE_KEY_TEXT_ALIGN)
         if (text_align is not None):
             attributes.append("text-align: %s" % (text_align))
 
@@ -659,37 +671,73 @@ class TableNode(ParseNode):
         return "\n".join([row.to_text(width = self._width, **kwargs) for row in self._rows]) + "\n"
 
     def to_tex(self, style = {}, **kwargs):
-        alignment = _get_alignment(STYLE_KEY_TEXT_ALIGN, style, default_value = STYLE_ALLOWED_VALUES_ALIGNMENT_CENTER)
+        border_table = _get_boolean_style_key(style, STYLE_KEY_TABLE_BORDER_TABLE, STYLE_DEFAULT_TABLE_BORDER_TABLE)
+        border_cells = _get_boolean_style_key(style, STYLE_KEY_TABLE_BORDER_CELLS, STYLE_DEFAULT_TABLE_BORDER_CELLS)
+        alignment = _get_alignment(style, STYLE_KEY_TEXT_ALIGN, default_value = STYLE_ALLOWED_VALUES_ALIGNMENT_CENTER)
+
         column_align = TEX_TEXT_TABLE_ALIGNMENT[alignment]
 
-        column_spec = column_align * self._width
+        column_join = ''
+        if (border_cells):
+            column_join = '|'
+
+        column_spec = column_join.join([column_align] * self._width)
+
+        if (border_table):
+            column_spec = '|' + column_spec + '|'
 
         lines = [
             r'\begin{tabular}{ ' + column_spec + ' }',
         ]
 
-        for row in self._rows:
-            row = row.to_tex(width = self._width, **kwargs)
+        if (border_table):
+            lines.append(r'\hline')
+
+        for i in range(len(self._rows)):
+            row = self._rows[i]
+
+            if (border_cells and isinstance(row, TableSepNode)):
+                continue
+
+            if (border_cells and (i > 0)):
+                lines.append(r'\hline')
+
+            row = row.to_tex(width = self._width, style = style, **kwargs)
             lines.append(f"{row}")
+
+        if (border_table):
+            lines.append(r'\hline')
 
         lines += [
             r'\end{tabular}',
         ]
 
+        lines = self._apply_tex_table_style(style, lines)
+
         return "\n".join(lines)
 
-    def to_html(self, **kwargs):
-        lines = [
-            "<table style='border-collapse: collapse'>"
+    def to_html(self, style = {}, **kwargs):
+        table_style = [
+            'border-collapse: collapse',
         ]
 
-        next_cell_style = None
+        if (_get_boolean_style_key(style, STYLE_KEY_TABLE_BORDER_TABLE, STYLE_DEFAULT_TABLE_BORDER_TABLE)):
+            table_style.append("border: %s" % HTML_BORDER_SPEC)
+        else:
+            table_style.append('border-style: hidden')
+
+        table_style_string = '; '.join(table_style)
+        lines = [
+            "<table style='%s'>" % (table_style_string)
+        ]
+
+        next_cell_style = {}
         for row in self._rows:
             if (isinstance(row, TableSepNode)):
-                next_cell_style = "border-top: 2px solid black;"
+                next_cell_style = {'border-top': "%s" % (HTML_BORDER_SPEC)}
             else:
-                lines.append(row.to_html(cell_style = next_cell_style, **kwargs))
-                next_cell_style = None
+                lines.append(row.to_html(extra_cell_style = next_cell_style, style = style, **kwargs))
+                next_cell_style = {}
 
         lines += [
             '</table>'
@@ -712,6 +760,27 @@ class TableNode(ParseNode):
 
         return paths
 
+    def _apply_tex_table_style(self, style, lines):
+        # Height
+        height = max(1.0, float(style.get(STYLE_KEY_TABLE_CELL_HEIGHT, STYLE_DEFAULT_TABLE_CELL_HEIGHT)))
+        prefix = [
+            r'\begingroup',
+            r'\renewcommand{\arraystretch}{%0.2f}' % (height),
+        ]
+        lines = prefix + lines
+        lines.append(r'\endgroup')
+
+        # Width
+        width = max(1.0, float(style.get(STYLE_KEY_TABLE_CELL_WIDTH, STYLE_DEFAULT_TABLE_CELL_WIDTH)))
+        prefix = [
+            r'\begingroup',
+            r'\setlength{\tabcolsep}{%0.2fem}' % (width),
+        ]
+        lines = prefix + lines
+        lines.append(r'\endgroup')
+
+        return lines
+
 class TableRowNode(ParseNode):
     def __init__(self, cells, head = False):
         self._cells = list(cells)
@@ -723,24 +792,33 @@ class TableRowNode(ParseNode):
     def to_text(self, **kwargs):
         return "| " + " | ".join([cell.to_text(**kwargs) for cell in self._cells]) + " |"
 
-    def to_tex(self, **kwargs):
-        return " & ".join([cell.to_tex(**kwargs) for cell in self._cells]) + r' \\'
+    def to_tex(self, style = {}, **kwargs):
+        cells_text = [cell.to_tex(style = style, **kwargs) for cell in self._cells]
 
-    def to_html(self, cell_style = None, **kwargs):
+        if (self._head and _get_boolean_style_key(style, STYLE_KEY_TABLE_HEAD_BOLD, STYLE_DEFAULT_TABLE_HEAD_BOLD)):
+            cells_text = [BoldNode.bold_tex(text) for text in cells_text]
+
+        return " & ".join(cells_text) + r' \\'
+
+    def to_html(self, extra_cell_style = {}, style = {}, **kwargs):
         tag = 'td'
         if (self._head):
             tag = 'th'
 
-        # TEST
-        cell_inline_style = "padding-left: 0.50em ; padding-right: 0.50em ; padding-bottom: 0.25em "
-        if (cell_style is not None):
-            cell_inline_style += (' ; ' + cell_style)
+            weight = 'normal'
+            if (_get_boolean_style_key(style, STYLE_KEY_TABLE_HEAD_BOLD, STYLE_DEFAULT_TABLE_HEAD_BOLD)):
+                weight = 'bold'
+
+            extra_cell_style['font-weight'] = "%s" % (weight)
 
         lines = ['<tr>']
 
+        cell_style = self._compute_cell_style(style, extra_cell_style = extra_cell_style)
+        cell_style_string = '; '.join([': '.join(item) for item in cell_style.items()])
+
         for cell in self._cells:
-            content = cell.to_html(**kwargs)
-            content = f"<{tag} style='{cell_inline_style}' >{content}</{tag}>"
+            content = cell.to_html(style = style, **kwargs)
+            content = f"<%s style='%s'>%s</%s>" % (tag, cell_style_string, content, tag)
             lines.append(content)
 
         lines += ['</tr>']
@@ -765,6 +843,28 @@ class TableRowNode(ParseNode):
     def __len__(self):
         return len(self._cells)
 
+    def _compute_cell_style(self, style, extra_cell_style = {}):
+        height = max(1.0, float(style.get(STYLE_KEY_TABLE_CELL_HEIGHT, STYLE_DEFAULT_TABLE_CELL_HEIGHT)))
+        vertical_padding = height - 1.0
+
+        width = max(1.0, float(style.get(STYLE_KEY_TABLE_CELL_WIDTH, STYLE_DEFAULT_TABLE_CELL_WIDTH)))
+        horizontal_padding = width - 1.0
+
+        cell_style = {
+            'padding-top': "%0.2fem" % (vertical_padding / 2),
+            'padding-bottom': "%0.2fem" % (vertical_padding / 2),
+
+            'padding-left': "%0.2fem" % (horizontal_padding / 2),
+            'padding-right': "%0.2fem" % (horizontal_padding / 2),
+        }
+
+        if (_get_boolean_style_key(style, STYLE_KEY_TABLE_BORDER_CELLS, STYLE_DEFAULT_TABLE_BORDER_CELLS)):
+            cell_style['border'] = "%s" % (HTML_BORDER_SPEC)
+
+        cell_style.update(extra_cell_style)
+
+        return cell_style
+
 class TableSepNode(ParseNode):
     def __init__(self):
         pass
@@ -776,7 +876,7 @@ class TableSepNode(ParseNode):
         return "|" + ("---|" * width)
 
     def to_tex(self, **kwargs):
-        return r'\hline \\'
+        return r'\hline'
 
     def to_html(self, **kwargs):
         raise RuntimeError("to_html() should never be called on a table separator (row should handle it).")
@@ -1032,12 +1132,16 @@ class BoldNode(BaseTextNode):
         return self._text
 
     def to_tex(self, **kwargs):
-        text = tex_escape(self._text)
-        return rf"\textbf{{{text}}}"
+        return BoldNode.bold_tex(self._text)
 
     def to_html(self, **kwargs):
         text = html.escape(self._text)
         return f"<span><strong>{text}</strong></span>"
+
+    @classmethod
+    def bold_tex(cls, text, escape = True):
+        text = tex_escape(text)
+        return rf"\textbf{{{text}}}"
 
 class CodeNode(BaseTextNode):
     def __init__(self, text, inline = False):
@@ -1159,7 +1263,7 @@ def tex_escape(text):
 
     return text
 
-def _get_alignment(key, style, default_value = None):
+def _get_alignment(style, key, default_value = None):
     alignment = style.get(key, None)
     if (alignment is None):
         return default_value
@@ -1169,6 +1273,13 @@ def _get_alignment(key, style, default_value = None):
         raise ValueError("Unknown value for '%s' style key '%s'. Allowed values: '%s'." % (key, alignment, STYLE_ALLOWED_VALUES_ALIGNMENT))
 
     return alignment
+
+def _get_boolean_style_key(style, key, default_value = None):
+    value = style.get(key, default_value)
+    if (value is None):
+        return default_value
+
+    return (value is True)
 
 def clean_text(text):
     # Remove carriage returns.

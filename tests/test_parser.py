@@ -14,6 +14,9 @@ class TestParser(tests.base.BaseTest):
     Good and bad situations will be loaded below into individual test cases.
     """
 
+    # Show full output on large string diffs.
+    maxDiff = None
+
     @classmethod
     def setUpClass(cls):
         # Disable KaTeX for testing.
