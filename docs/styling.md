@@ -2,7 +2,7 @@
 
 Styling can be used in the QuizGen to change the visual appearance of content.
 If you want to change the location or flow of information,
-then you are looking for [template hints](docs/builtin-templates.md).
+then you are looking for [template hints](/docs/builtin-templates.md).
 
 Styling in the Quiz Generator is done via *style blocks* where specific options can be set.
 Style blocks are surrounded by double braces (`{{` and `}}`).
@@ -52,7 +52,14 @@ and for text alignment, you can use the `text-align` option.
 
 Both options support the following values: {`left`, `center`, `right`}.
 
-For example, to center an image:
+For example, by default the following will get you a non-aligned image:
+```
+![Great Dane](../tests/data/great-dane.jpg)
+```
+
+![Non-Aligned Image](/docs/resources/default-image.png)
+
+To center align this image, you can do:
 ```
 {{
     "content-align": "center"
@@ -60,6 +67,8 @@ For example, to center an image:
 
 ![Great Dane](../tests/data/great-dane.jpg)
 ```
+
+![Center Aligned Image](/docs/resources/center-image.png)
 
 To center align a table, but right align the text inside the table, you can do:
 ```
@@ -74,6 +83,8 @@ To center align a table, but right align the text inside the table, you can do:
 | 45 | 6.7   |
 ```
 
+![Center Aligned Table, Right Aligned Text](/docs/resources/center-right-table.png)
+
 See the [alignment documentation](#alignment) for more information.
 
 <a name="faq-resize-image"></a>
@@ -82,8 +93,16 @@ See the [alignment documentation](#alignment) for more information.
 The size of an image can be controlled using the `image-width` value.
 Only the width of an image can be explicitly set,
 and the aspect ratio of the image will be preserved.
+Image width is provided as a proportion of the image container's width.
 
-For example, to make an image 50% it's normal size:
+For example, you can start with the following image:
+```
+![Great Dane](../tests/data/great-dane.jpg)
+```
+
+![Default Image](/docs/resources/default-image.png)
+
+To make this image 50% smaller, you can use:
 ```
 {{
     "image-width": 0.5
@@ -92,7 +111,7 @@ For example, to make an image 50% it's normal size:
 ![Great Dane](../tests/data/great-dane.jpg)
 ```
 
-Image width is provided as a proportion of the image container's width.
+![Smaller Image](/docs/resources/smaller-image.png)
 
 See the [`image-width` documentation](#image-width) for more information.
 
@@ -107,8 +126,8 @@ and indicates that the default behavior should be used.
 
 | Key             | Type   | Default Value | Allowed Values              | Notes |
 |-----------------|--------|---------------|-----------------------------|-------|
-| `content-align` | string | `null`        | {`left`, `center`, `right`} | By default, alignment is dependent on the output format. |
-| `text-align`    | string | `null`        | {`left`, `center`, `right`} | By default, alignment is dependent on the output format. |
+| `content-align` | string | `null`        | {`left`, `center`, `right`} | Default alignment depends on output format. |
+| `text-align`    | string | `null`        | {`left`, `center`, `right`} | Default alignment depends on output format. |
 
 Alignment determines where on the horizontal axis content will appear:
 `left`, `center`, or `right`.
@@ -131,6 +150,8 @@ For example, to center align a table but right align the text inside the table:
 | 1  | 1.23  |
 | 45 | 6.7   |
 ```
+
+![Center Aligned Table, Right Aligned Text](/docs/resources/center-right-table.png)
 
 *Warning*: Alignment does not work well within TeX documents.
 In TeX, content alignment will also affect text and text alignment will not work within normal paragraphs.
@@ -164,8 +185,6 @@ This will typically mean the width of the page.
 So `0.5` will set the image size to half of it's container.
 Values above 1.0 are allowed, but the behavior is undefined.
 
-Examples:
-
 Use the full width:
 ```
 {{
@@ -173,12 +192,16 @@ Use the full width:
 }}
 ```
 
+![Default Image](/docs/resources/default-image.png)
+
 Use half the available width:
 ```
 {{
     "image-width": 0.5
 }}
 ```
+
+![Smaller Image](/docs/resources/smaller-image.png)
 
 ### Tables
 
@@ -199,21 +222,53 @@ These options take a value no smaller than 1.0 in [em units](https://en.wikipedi
 Note that exact table size computations depend on the output format
 and typically are the maximum of all the cells in a column/row.
 
+To demonstrate, start with the following table:
+```
+{{
+    "text-align": "center"
+}}
+
+| ID | Value |
+|----|-------|
+| 1  | 1.23  |
+| 45 | 6.7   |
+```
+
+![Default Table](/docs/resources/table-default.png)
+
+The text alignment is not necessary, but makes the example easier to see.
+
 To make a very tight table, you can use 1.0:
 ```
 {{
+    "text-align": "center",
     "table-cell-height": 1.0,
     "table-cell-width": 1.0
 }}
+
+| ID | Value |
+|----|-------|
+| 1  | 1.23  |
+| 45 | 6.7   |
 ```
+
+![Tight Table](/docs/resources/table-tight.png)
 
 To make a very spacious table, you can use something larger (like 2.0):
 ```
 {{
+    "text-align": "center",
     "table-cell-height": 2.0,
     "table-cell-width": 2.0
 }}
+
+| ID | Value |
+|----|-------|
+| 1  | 1.23  |
+| 45 | 6.7   |
 ```
+
+![Loose Table](/docs/resources/table-loose.png)
 
 #### Table Borders
 
@@ -231,7 +286,14 @@ To get a table with full borders, use:
     "table-border-table": true,
     "table-border-cells": true
 }}
+
+| ID | Value |
+|----|-------|
+| 1  | 1.23  |
+| 45 | 6.7   |
 ```
+
+![Table Full Border](/docs/resources/table-border-full.png)
 
 To get a table that only has dividers/borders between cells and not around the table itself, use:
 ```
@@ -239,7 +301,29 @@ To get a table that only has dividers/borders between cells and not around the t
     "table-border-table": false,
     "table-border-cells": true
 }}
+
+| ID | Value |
+|----|-------|
+| 1  | 1.23  |
+| 45 | 6.7   |
 ```
+
+![Table Inner Border](/docs/resources/table-border-inner.png)
+
+To get a table that only has an outer border, user:
+```
+{{
+    "table-border-table": true,
+    "table-border-cells": false
+}}
+
+| ID | Value |
+|----|-------|
+| 1  | 1.23  |
+| 45 | 6.7   |
+```
+
+![Table Outer Border](/docs/resources/table-border-outer.png)
 
 ## Blocks & Style Blocks
 
