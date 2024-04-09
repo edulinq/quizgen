@@ -12,7 +12,8 @@ import re
 import json5
 
 import quizgen.common
-import quizgen.parser
+import quizgen.parser.node
+import quizgen.parser.parse
 import quizgen.util.file
 
 PROMPT_FILENAME = 'prompt.md'
@@ -118,7 +119,7 @@ class Question(abc.ABC):
             return {key: self._object_to_dict(value, include_docs = include_docs) for (key, value) in target.items()}
         elif (isinstance(target, list)):
             return [self._object_to_dict(answer, include_docs = include_docs) for answer in target]
-        elif (isinstance(target, quizgen.parser.ParseNode)):
+        elif (isinstance(target, quizgen.parser.node.ParseNode)):
             if (include_docs):
                 return target.to_pod()
             return "_document_"
@@ -141,7 +142,7 @@ class Question(abc.ABC):
             for value in target:
                 documents += self._collect_documents(value)
             return documents
-        elif (isinstance(target, quizgen.parser.ParseNode)):
+        elif (isinstance(target, quizgen.parser.node.ParseNode)):
             return [target]
         else:
             return []
@@ -267,7 +268,7 @@ class Question(abc.ABC):
 
         return {
             'text': item,
-            'document': quizgen.parser.parse_text(item, base_dir = self.base_dir),
+            'document': quizgen.parser.parse.parse_text(item, base_dir = self.base_dir),
         }
 
     def _validate_self_answer_list(self, min_correct = 0, max_correct = math.inf):
@@ -361,7 +362,7 @@ class Question(abc.ABC):
 
         new_item = {
             'text': text,
-            'document': quizgen.parser.parse_text(text, base_dir = self.base_dir),
+            'document': quizgen.parser.parse.parse_text(text, base_dir = self.base_dir),
         }
 
         if (check_feedback):
@@ -400,7 +401,7 @@ class Question(abc.ABC):
             new_answers[key] = {
                 'key': {
                     'text': key,
-                    'document': quizgen.parser.parse_text(key, base_dir = self.base_dir),
+                    'document': quizgen.parser.parse.parse_text(key, base_dir = self.base_dir),
                 },
                 'values': new_values,
             }

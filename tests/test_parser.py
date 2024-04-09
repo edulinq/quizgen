@@ -5,7 +5,8 @@ import re
 import bs4
 
 import quizgen.constants
-import quizgen.parser
+import quizgen.parser.parse
+import quizgen.parser.text
 import tests.base
 
 class TestParser(tests.base.BaseTest):
@@ -20,11 +21,11 @@ class TestParser(tests.base.BaseTest):
     @classmethod
     def setUpClass(cls):
         # Disable KaTeX for testing.
-        quizgen.parser.EquationNode.katex_available = False
+        quizgen.parser.text.EquationNode.katex_available = False
 
     @classmethod
     def tearDownClass(cls):
-        quizgen.parser.EquationNode.katex_available = None
+        quizgen.parser.text.EquationNode.katex_available = None
 
 def _add_good_parse_questions():
     for path in tests.base.discover_good_document_files():
@@ -44,7 +45,7 @@ def _add_good_parse_questions():
 
 def _get_good_parse_test(text, doc_format, base_expected, base_dir, options):
     def __method(self):
-        document = quizgen.parser.parse_text(text)
+        document = quizgen.parser.parse.parse_text(text)
         result = document.to_format(doc_format, base_dir = base_dir, include_metadata = False)
 
         if (doc_format == quizgen.constants.FORMAT_JSON):
@@ -97,7 +98,7 @@ def _add_bad_parse_questions():
 def _get_bad_parse_test(text, base_dir, options):
     def __method(self):
         try:
-            quizgen.parser.parse_text(text)
+            quizgen.parser.parse.parse_text(text)
         except Exception:
             # Expected.
             return

@@ -6,7 +6,7 @@ import string
 
 import quizgen.constants
 import quizgen.converter.converter
-import quizgen.parser
+import quizgen.parser.parse
 import quizgen.quiz
 import quizgen.util.file
 import quizgen.util.http
@@ -365,7 +365,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         else:
             raise ValueError(f"Unknown numerical answer type: '{answer['type']}'.")
 
-        document = quizgen.parser.parse_text(content)
+        document = quizgen.parser.parse.parse_text(content)
 
         return {
             'solution': self.clean_solution_content(document),

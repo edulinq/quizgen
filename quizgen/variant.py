@@ -7,7 +7,7 @@ import json5
 
 import quizgen.question.base
 import quizgen.common
-import quizgen.parser
+import quizgen.parser.parse
 import quizgen.quiz
 
 DUMMY_DATA = {
@@ -96,7 +96,7 @@ class Variant(object):
         if ('date' in data):
             data['date'] = datetime.datetime.fromisoformat(data['date'])
 
-        data['description_document'] = quizgen.parser.parse_text(data['description'], base_dir = base_dir)
+        data['description_document'] = quizgen.parser.parse.parse_text(data['description'], base_dir = base_dir)
         data['questions'] = [quizgen.question.base.Question.from_dict(question, base_dir = base_dir) for question in data['questions']]
 
         return Variant(**data)

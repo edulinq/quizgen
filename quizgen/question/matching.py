@@ -1,6 +1,5 @@
 import quizgen.common
 import quizgen.constants
-import quizgen.parser
 import quizgen.question.base
 
 class Matching(quizgen.question.base.Question, question_type = quizgen.constants.QUESTION_TYPE_MATCHING):

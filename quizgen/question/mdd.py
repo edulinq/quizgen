@@ -1,6 +1,6 @@
 import quizgen.common
 import quizgen.constants
-import quizgen.parser
+import quizgen.parser.parse
 import quizgen.question.base
 
 class MDD(quizgen.question.base.Question, question_type = quizgen.constants.QUESTION_TYPE_MDD):
@@ -23,7 +23,7 @@ class MDD(quizgen.question.base.Question, question_type = quizgen.constants.QUES
             self.answers[key] = {
                 'key': {
                     'text': key,
-                    'document': quizgen.parser.parse_text(key, base_dir = self.base_dir),
+                    'document': quizgen.parser.parse.parse_text(key, base_dir = self.base_dir),
                 },
                 'values': values,
             }

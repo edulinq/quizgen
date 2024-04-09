@@ -8,7 +8,7 @@ import json5
 
 import quizgen.common
 import quizgen.group
-import quizgen.parser
+import quizgen.parser.parse
 import quizgen.uploader.canvas
 import quizgen.util.file
 import quizgen.util.git
@@ -56,7 +56,7 @@ class Quiz(object):
 
         if ((self.description is None) or (self.description == "")):
             raise quizgen.common.QuizValidationError("Description cannot be empty.")
-        self.description_document = quizgen.parser.parse_text(self.description,
+        self.description_document = quizgen.parser.parse.parse_text(self.description,
                 base_dir = self.base_dir)
 
         if (self.version is None):
