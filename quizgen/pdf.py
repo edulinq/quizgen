@@ -27,15 +27,21 @@ def make_with_args(args, **kwargs):
     if ((args.variants < 1) or (args.variants >= len(string.ascii_uppercase))):
         raise ValueError("Number of variants must be in [1, %d), found %d." % (len(string.ascii_uppercase), args.variants))
 
-    return make(args.path, args.out_dir, seed = args.seed, num_variants = args.variants,
+    return make_with_path(args.path, base_out_dir = args.out_dir, seed = args.seed, num_variants = args.variants,
             skip_key = args.skip_key, skip_tex = args.skip_tex, skip_pdf = args.skip_pdf,
             **kwargs)
 
-def make(quiz_path, base_out_dir,
+def make_with_path(quiz_path, **kwargs):
+    quiz = quizgen.quiz.Quiz.from_path(quiz_path)
+    return make(quiz, quiz_path = quiz_path, **kwargs)
+
+def make(quiz,
+        quiz_path = None, base_out_dir = None,
         seed = None, num_variants = 1, write_options = True,
         skip_key = False, skip_tex = False, skip_pdf = False,
         **kwargs):
-    quiz = quizgen.quiz.Quiz.from_path(quiz_path)
+    if (base_out_dir is None):
+        base_out_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen_pdf_', rm = False)
 
     out_dir = os.path.join(base_out_dir, quiz.title)
     os.makedirs(out_dir, exist_ok = True)
@@ -73,7 +79,7 @@ def make(quiz_path, base_out_dir,
         out_path = os.path.join(out_dir, "%s.json" % (variant.title))
         quizgen.util.file.write(out_path, variant.to_json(include_docs = False))
 
-        make_pdf(variant, out_dir, False, skip_tex = skip_tex, skip_pdf = skip_pdf)
+        make_pdf(variant, out_dir = out_dir, is_key = False, skip_tex = skip_tex, skip_pdf = skip_pdf)
 
         title = variant.title
 
@@ -82,7 +88,7 @@ def make(quiz_path, base_out_dir,
         if (not skip_key):
             try:
                 variant.title = "%s -- Answer Key" % (title)
-                make_pdf(variant, out_dir, True, skip_tex = skip_tex, skip_pdf = skip_pdf)
+                make_pdf(variant, out_dir = out_dir, is_key = True, skip_tex = skip_tex, skip_pdf = skip_pdf)
                 has_key = True
             except Exception as ex:
                 logging.warning("Failed to generate answer key for '%s'.", title)
@@ -106,8 +112,12 @@ def make(quiz_path, base_out_dir,
 
     return (quiz, variants, options)
 
-def make_pdf(variant, out_dir, is_key,
+def make_pdf(variant,
+        out_dir = None, is_key = False,
         skip_tex = False, skip_pdf = False):
+    if (out_dir is None):
+        out_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen_pdf_', rm = False)
+
     image_relative_root = os.path.join('images', variant.title)
     image_dir = os.path.join(out_dir, image_relative_root)
 
@@ -121,9 +131,11 @@ def make_pdf(variant, out_dir, is_key,
         quizgen.util.file.write(out_path, content)
 
     if (not skip_pdf):
-        # Need to compile twice to get positioning.
+        # Need to compile twice to get positioning information.
         quizgen.latex.compile(out_path)
         quizgen.latex.compile(out_path)
+
+    return out_dir
 
 def set_cli_args(parser):
     parser.add_argument('path', metavar = 'PATH',
