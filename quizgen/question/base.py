@@ -12,15 +12,18 @@ import re
 import json5
 
 import quizgen.common
+import quizgen.jtype.base
+import quizgen.jtype.constants
 import quizgen.parser.node
 import quizgen.parser.parse
 import quizgen.util.file
 
+JTYPE_FILENAME = 'question.json'
 PROMPT_FILENAME = 'prompt.md'
 BASE_MODULE_NAME = 'quizgen.question'
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
-class Question(abc.ABC):
+class Question(quizgen.jtype.base.JTyped):
     # {question_type: class, ...}
     _types = {}
     _imported_this_package = False
@@ -221,6 +224,22 @@ class Question(abc.ABC):
             raise quizgen.common.QuizValidationError("Unknown question type: '%s'." % (str(question_type)))
 
         return Question._types[question_type]
+
+    def get_jtype_def(self):
+        base_path = os.path.join(quizgen.jtype.constants.TYPES_DIR, JTYPE_FILENAME)
+        base_def = json5.loads(quizgen.util.file.read(base_path))
+
+        answers_def = None
+
+        answer_filename = "%s_answers.json" % (self.question_type)
+        answers_path = os.path.join(quizgen.jtype.constants.TYPES_DIR, answer_filename)
+        if (not os.path.isfile(answers_path)):
+            logging.warning("Could not find answers type definition at '%s'. Answers will not be validated." % answers_path)
+        else:
+            answers_def = json5.loads(quizgen.util.file.read(answers_path))
+
+        base_def['fields']['answers'] = answers_def
+        return base_def
 
     def _validate_question_feedback(self):
         if (self.feedback is None):

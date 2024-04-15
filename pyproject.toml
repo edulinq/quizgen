@@ -43,7 +43,10 @@ Repository = "https://github.com/edulinq/quizgen"
 include-package-data = true
 
 [tool.setuptools.package-data]
-"*" = ["*.template"]
+"*" = [
+    "*.template",
+    "*.json"
+]
 
 [tool.setuptools.packages.find]
 where = ["."]

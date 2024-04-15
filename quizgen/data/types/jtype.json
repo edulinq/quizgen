@@ -1,0 +1,55 @@
+{
+    "name": "TypeValue",
+    "fields": {
+        "type": {
+            "type": "enum_string",
+            "values": [
+                "any",
+
+                "boolean",
+
+                "list",
+                "map",
+
+                "enum_string",
+                "parsed_string",
+                "simple_string",
+
+                "float",
+                "int",
+                "number",
+
+                "existing_dir",
+                "existing_file",
+                "existing_path",
+                "path",
+
+                "jtype"
+            ],
+            "required": true
+        },
+
+        "required": {
+            "type": "boolean",
+            "required": false,
+            "default": false
+        },
+
+        "internal": {
+            "type": "boolean"
+        },
+
+        "default": {
+            "type": "any",
+            "default": null
+        },
+
+        "values": {
+            "type": "list"
+        },
+
+        "jtype_def": {
+            "type": "map"
+        }
+    }
+}
