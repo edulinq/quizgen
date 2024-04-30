@@ -6,7 +6,7 @@ class TF(quizgen.question.base.Question, question_type = quizgen.constants.QUEST
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def validate_answers(self):
+    def _validate_answers(self):
         if (isinstance(self.answers, bool)):
             # Change answers to look like multiple choice.
             self.answers = [

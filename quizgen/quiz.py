@@ -70,8 +70,10 @@ class Quiz(object):
 
         if (self.date == ''):
             self.date = datetime.date.today()
-        else:
+        elif (isinstance(self.date, str)):
             self.date = datetime.date.fromisoformat(self.date)
+        else:
+            raise quizgen.common.QuizValidationError("Date should be a string or datetime.date, found '%s'." % (str(type(self.date))))
 
         for key in kwargs:
             logging.warning("Unknown quiz option: '%s'." % (key))

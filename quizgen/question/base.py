@@ -14,13 +14,15 @@ import json5
 import quizgen.common
 import quizgen.parser.node
 import quizgen.parser.parse
+import quizgen.question.feedback
 import quizgen.util.file
+import quizgen.util.serial
 
 PROMPT_FILENAME = 'prompt.md'
 BASE_MODULE_NAME = 'quizgen.question'
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
-class Question(abc.ABC):
+class Question(quizgen.util.serial.JSONSerializer):
     # {question_type: class, ...}
     _types = {}
     _imported_this_package = False
@@ -37,16 +39,21 @@ class Question(abc.ABC):
 
         cls._types[question_type] = cls
 
-    def __init__(self, prompt = '', question_type = '', answers = None,
+    def __init__(self,
+            prompt = '', prompt_path = None,
+            question_type = '', answers = None,
             base_dir = '.',
             points = 0, name = '',
             shuffle_answers = True,
             custom_header = None, skip_numbering = None,
             hints = None, feedback = None,
             **kwargs):
+        super().__init__(**kwargs)
+
         self.base_dir = base_dir
 
         self.prompt = prompt
+        self._prompt_path = prompt_path
 
         self.question_type = question_type
 
@@ -68,22 +75,64 @@ class Question(abc.ABC):
         except Exception as ex:
             raise quizgen.common.QuizValidationError(f"Error while validating question (type: '%s', directory: '%s')." % (self.question_type, self.base_dir)) from ex
 
-    def validate(self):
-        self.prompt = self._validate_text_item(self.prompt, 'question prompt',
-                check_feedback = False, allow_empty = False)
+    def _validate(self):
+        self._validate_prompt()
+        self._validate_question_feedback()
+        self._validate_answers()
 
         if (self.hints is None):
             self.hints = {}
         else:
             self._check_type(self.hints, dict, "'hints'")
 
-        self._validate_question_feedback()
-
-        self.validate_answers()
-
     @abc.abstractmethod
-    def validate_answers(self):
+    def _validate_answers(self):
         pass
+
+    def _validate_prompt(self):
+        """
+        The prompt is allowed to appear (in order of priority):
+        in the prompt field, be pointed to by the _prompt_path member, or be in ./PROMPT_FILENAME.
+        Both None and empty/white strings are ignored.
+
+        Will raise an exception on an empty prompt.
+        If this method does not raise an exception, the result will be placed in self.prompt.
+        If the prompt is loaded from a file, self._prompt_path will be set with the absolute path.
+        """
+
+        text = self._get_prompt_text()
+        self.prompt = self._validate_text_item(text, 'question prompt', check_feedback = False, allow_empty = False)
+
+    def _get_prompt_text(self):
+        # First check self.prompt.
+        text = self.prompt
+        if (text is None):
+            text = ''
+
+        text = text.strip()
+
+        if (text != ''):
+            return text
+
+        # Next, check for prompt files.
+
+        check_paths = [self._prompt_path, PROMPT_FILENAME]
+        for path in check_paths:
+            if ((path is None) or (path.strip() == '')):
+                continue
+
+            if (not os.path.isabs(path)):
+                path = os.path.join(self.base_dir, path)
+
+            path = os.path.abspath(path)
+            if (not os.path.exists(path)):
+                continue
+
+            logging.debug("Loading question prompt from '%s'.", path)
+            self._prompt_path = path
+            return quizgen.util.file.read(path)
+
+        raise quizgen.common.QuizValidationError("Could not find any non-empty prompt.")
 
     def inherit_from_group(self, group):
         """
@@ -107,24 +156,6 @@ class Question(abc.ABC):
         for (key, value) in new_hints.items():
             if (override or (key not in self.hints)):
                 self.hints[key] = value
-
-    def to_json(self, indent = 4, include_docs = True):
-        return json.dumps(self.to_dict(include_docs = include_docs), indent = indent)
-
-    def to_dict(self, include_docs = True):
-        return self._object_to_dict(self.__dict__.copy(), include_docs = include_docs)
-
-    def _object_to_dict(self, target, include_docs = True):
-        if (isinstance(target, dict)):
-            return {key: self._object_to_dict(value, include_docs = include_docs) for (key, value) in target.items()}
-        elif (isinstance(target, list)):
-            return [self._object_to_dict(answer, include_docs = include_docs) for answer in target]
-        elif (isinstance(target, quizgen.parser.node.ParseNode)):
-            if (include_docs):
-                return target.to_pod()
-            return "_document_"
-        else:
-            return target
 
     def collect_file_paths(self):
         paths = []
@@ -178,32 +209,17 @@ class Question(abc.ABC):
 
         rng.shuffle(self.answers)
 
+    # Override the class method JSONSerializer.from_dict() with a static method
+    # so that we can select the correct child class.
     @staticmethod
-    def from_dict(data, base_dir = None):
-        data = copy.deepcopy(data)
-
+    def from_dict(data, base_dir = None, **kwargs):
         if (base_dir is not None):
             data['base_dir'] = base_dir
         elif ('base_dir' not in data):
             data['base_dir'] = '.'
 
         question_class = Question._fetch_question_class(data.get('question_type'))
-        return question_class(**data)
-
-    @staticmethod
-    def from_path(path):
-        with open(path, 'r') as file:
-            data = json5.load(file)
-
-        # Check for a prompt file.
-        prompt_path = os.path.join(os.path.dirname(path), PROMPT_FILENAME)
-        if (os.path.exists(prompt_path)):
-            logging.debug("Loading question prompt from '%s'.", prompt_path)
-            data['prompt'] = quizgen.util.file.read(prompt_path)
-
-        base_dir = os.path.dirname(path)
-
-        return Question.from_dict(data, base_dir = base_dir)
+        return quizgen.util.serial._from_dict(question_class, data, **kwargs)
 
     @staticmethod
     def _fetch_question_class(question_type):
@@ -331,11 +347,22 @@ class Question(abc.ABC):
             check_feedback = True, allow_empty = True,
             strip = True, clean_whitespace = False):
         """
-        Validate a portion of an answer/choice that is a parsed string.
+        Validate a portion of an answer/choice/field that is a parsed string.
 
-        The returned dict will have the 'text' and 'document' keys,
-        and may have the 'feedback' key (if present).
+        Allowed values are:
+         - None (will be converted to an empty string).
+         - Empty String (if allow_empty is True).
+         - String
+         - quizgen.question.feedback.ParsedTextWithFeedback (will be passed back without any checks).
+         - Dict with required key 'text' and optional key 'feedback'.
+
+        If no exception is raised, a quizgen.question.feedback.ParsedTextWithFeedback (child of quizgen.parser.common.ParsedText)
+        will be returned, even if there is no feedback.
         """
+
+        if (isinstance(item, quizgen.question.feedback.ParsedTextWithFeedback)):
+            # Nothing to do if the item is already parsed.
+            return item
 
         if (item is None):
             item = ''
@@ -360,17 +387,11 @@ class Question(abc.ABC):
         if ((not allow_empty) and (text == '')):
             raise quizgen.common.QuizValidationError("%s text is empty." % (label))
 
-        new_item = {
-            'text': text,
-            'document': quizgen.parser.parse.parse_text(text, base_dir = self.base_dir),
-        }
-
+        feedback = None
         if (check_feedback):
             feedback = self._validate_feedback_item(item.get('feedback', None), label)
-            if (feedback is not None):
-                new_item['feedback'] = feedback
 
-        return new_item
+        return quizgen.question.feedback.ParsedTextWithFeedback(quizgen.parser.parse.parse_text(text, base_dir = self.base_dir), feedback = feedback)
 
     def _validate_fimb_answers(self):
         self._check_type(self.answers, dict, "'answers' key")

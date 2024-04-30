@@ -30,7 +30,7 @@ class Variant(object):
     def __init__(self,
             title = None,
             course_title = None, term_title = None,
-            description = None, description_document = None,
+            description = None,
             date = None,
             questions = None,
             version = None, seed = None,
@@ -41,7 +41,6 @@ class Variant(object):
         self.date = date
 
         self.description = description
-        self.description_document = description_document
 
         self.questions = questions
 
@@ -56,21 +55,6 @@ class Variant(object):
             if (value is None):
                 raise quizgen.common.QuizValidationError("Empty variant value: '%s'." % (key))
 
-    def to_dict(self, include_docs = True):
-        value = self.__dict__.copy()
-
-        if ('date' in value):
-            value['date'] = value['date'].isoformat()
-
-        value['questions'] = [question.to_dict(include_docs = include_docs) for question in self.questions]
-
-        if (include_docs):
-            value['description_document'] = self.description_document.to_pod()
-        else:
-            del value['description_document']
-
-        return value
-
     @staticmethod
     def from_path(path, override_base_dir = False):
         path = os.path.abspath(path)
@@ -81,6 +65,8 @@ class Variant(object):
         base_dir = None
         if (override_base_dir):
             base_dir = os.path.dirname(path)
+
+        # TEST - description and questions will need validations. Maybe just add this to the main validation. check is_validated (does not exist yet).
 
         return Variant.from_dict(data, base_dir = base_dir)
 
@@ -100,9 +86,6 @@ class Variant(object):
         data['questions'] = [quizgen.question.base.Question.from_dict(question, base_dir = base_dir) for question in data['questions']]
 
         return Variant(**data)
-
-    def to_json(self, indent = 4, include_docs = True):
-        return json.dumps(self.to_dict(include_docs = include_docs), indent = indent)
 
     def num_questions(self):
         return len(self.questions)

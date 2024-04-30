@@ -6,7 +6,7 @@ class Numerical(quizgen.question.base.Question, question_type = quizgen.constant
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def validate_answers(self):
+    def _validate_answers(self):
         self._check_type(self.answers, list, "'answers' key")
 
         for i in range(len(self.answers)):

@@ -4,6 +4,7 @@ import json5
 import lark
 import lark.visitors
 
+import quizgen.parser.common
 import quizgen.parser.image
 import quizgen.parser.list
 import quizgen.parser.node
@@ -226,7 +227,7 @@ def _clean_text(text):
 def parse_text(text, base_dir = '.'):
     # Special case for empty documents.
     if (text.strip() == ''):
-        return quizgen.parser.node.DocumentNode([])
+        return quizgen.parser.common.ParsedText('', quizgen.parser.node.DocumentNode([]))
 
     text = _clean_text(text)
 
@@ -236,7 +237,7 @@ def parse_text(text, base_dir = '.'):
     document = _DocTransformer().transform(ast)
     document.set_base_dir(base_dir)
 
-    return document
+    return quizgen.parser.common.ParsedText(text, document)
 
 def parse_file(path):
     if (not os.path.isfile(path)):

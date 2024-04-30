@@ -6,7 +6,7 @@ class Matching(quizgen.question.base.Question, question_type = quizgen.constants
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def validate_answers(self):
+    def _validate_answers(self):
         self._check_type(self.answers, dict, "'answers' key")
 
         self._validate_matches()

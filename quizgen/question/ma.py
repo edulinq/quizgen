@@ -5,7 +5,7 @@ class MA(quizgen.question.base.Question, question_type = quizgen.constants.QUEST
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def validate_answers(self):
+    def _validate_answers(self):
         self._validate_self_answer_list()
 
     def _shuffle(self, rng):

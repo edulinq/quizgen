@@ -6,7 +6,7 @@ class FITB(quizgen.question.base.Question, question_type = quizgen.constants.QUE
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def validate_answers(self):
+    def _validate_answers(self):
         """
         Set up the answers to look like fill in multiple blanks with an empty key.
         """

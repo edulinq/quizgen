@@ -5,5 +5,5 @@ class FIMB(quizgen.question.base.Question, question_type = quizgen.constants.QUE
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def validate_answers(self):
+    def _validate_answers(self):
         self._validate_fimb_answers()

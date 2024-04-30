@@ -45,7 +45,7 @@ def _add_good_parse_questions():
 
 def _get_good_parse_test(text, doc_format, base_expected, base_dir, options):
     def __method(self):
-        document = quizgen.parser.parse.parse_text(text)
+        document = quizgen.parser.parse.parse_text(text).document
         result = document.to_format(doc_format, base_dir = base_dir, include_metadata = False)
 
         if (doc_format == quizgen.constants.FORMAT_JSON):
