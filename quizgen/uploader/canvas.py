@@ -291,7 +291,7 @@ def _create_question_json(group_id, question, index, instance = None):
         # but put in a one here so people don't get scared when they see a zero.
         'question[points_possible]': 1,
         'question[position]': index,
-        'question[question_text]': question.prompt['document'].to_html(canvas_instance = instance),
+        'question[question_text]': question.prompt.document.to_html(canvas_instance = instance),
     }
 
     # Handle question-level feedback.
@@ -300,7 +300,7 @@ def _create_question_json(group_id, question, index, instance = None):
             continue
 
         data_key = "question[%s]" % (canvas_key)
-        text = question.feedback[key]['document'].to_html(canvas_instance = instance)
+        text = question.feedback[key].document.to_html(canvas_instance = instance)
         data[data_key] = text
 
     _serialize_answers(data, question, instance)
@@ -343,56 +343,56 @@ def _serialize_answer_list(data, answers, instance,
 
 def _serialize_answer(data, answer, index, instance, blank_id = None, use_text = False):
     weight = 0
-    if (answer['correct']):
+    if (answer.is_correct()):
         weight = 100
 
     data["question[answers][%d][answer_weight]" % (index)] = weight
 
     if (use_text):
-        text = answer['document'].to_text()
+        text = answer.document.to_text()
         data["question[answers][%d][answer_text]" % (index)] = text
     else:
-        html = answer['document'].to_html(canvas_instance = instance)
+        html = answer.document.to_html(canvas_instance = instance)
         data["question[answers][%d][answer_html]" % (index)] = html
 
     if (blank_id is not None):
         data["question[answers][%d][blank_id]" % (index)] = blank_id
 
-    if ('feedback' in answer):
-        feedback_html = answer['feedback']['document'].to_html(canvas_instance = instance)
+    if (answer.has_feedback()):
+        feedback_html = answer.feedback.document.to_html(canvas_instance = instance)
         data["question[answers][%d][answer_comment_html]" % (index)] = feedback_html
 
 def _serialize_matching_answers(data, question, instance):
     for i in range(len(question.answers['matches'])):
-        left_content = question.answers['matches'][i]['left']['document'].to_text()
-        right_content = question.answers['matches'][i]['right']['document'].to_text()
+        left_content = question.answers['matches'][i]['left'].document.to_text()
+        right_content = question.answers['matches'][i]['right'].document.to_text()
 
         data["question[answers][%d][answer_match_left]" % (i)] = left_content
         data["question[answers][%d][answer_match_right]" % (i)] = right_content
 
         if ('feedback' in question.answers['matches'][i]['left']):
-            text = question.answers['matches'][i]['left']['feedback']['document'].to_html(canvas_instance = instance)
+            text = question.answers['matches'][i]['left']['feedback'].document.to_html(canvas_instance = instance)
             data["question[answers][%d][answer_comment_html]" % (i)] = text
 
     if (len(question.answers['distractors']) > 0):
-        distractors = [distractor['document'].to_text() for distractor in question.answers['distractors']]
+        distractors = [distractor.document.to_text() for distractor in question.answers['distractors']]
         data["question[matching_answer_incorrect_matches]"] = "\n".join(distractors)
 
 def _serialize_fimb_answers(data, question, instance):
     index = 0
 
     for (key, item) in question.answers.items():
-        key_text = item['key']['document'].to_text()
+        key_text = item['key'].document.to_text()
 
         for i in range(len(item['values'])):
-            value_text = item['values'][i]['document'].to_text()
+            value_text = item['values'][i].document.to_text()
 
             data[f"question[answers][{index}][blank_id]"] = key_text
             data[f"question[answers][{index}][answer_weight]"] = 100
             data[f"question[answers][{index}][answer_text]"] = value_text
 
             if ('feedback' in item['values'][i]):
-                feedback_text = item['values'][i]['feedback']['document'].to_html(canvas_instance = instance)
+                feedback_text = item['values'][i]['feedback'].document.to_html(canvas_instance = instance)
                 data[f"question[answers][{index}][answer_comment_html]"] = feedback_text
 
             index += 1
@@ -420,7 +420,7 @@ def _serialize_numeric_answers(data, answers, instance):
             raise ValueError(f"Unknown numerical answer type: '{answer['type']}'.")
 
         if ('feedback' in answer):
-            feedback_text = answer['feedback']['document'].to_html(canvas_instance = instance)
+            feedback_text = answer['feedback'].document.to_html(canvas_instance = instance)
             data[f"question[answers][{i}][answer_comment_html]"] = feedback_text
 
 def upload_file(path, canvas_path, instance):

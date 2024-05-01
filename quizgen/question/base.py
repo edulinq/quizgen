@@ -14,7 +14,7 @@ import json5
 import quizgen.common
 import quizgen.parser.node
 import quizgen.parser.parse
-import quizgen.question.feedback
+import quizgen.question.common
 import quizgen.util.file
 import quizgen.util.serial
 
@@ -157,6 +157,7 @@ class Question(quizgen.util.serial.JSONSerializer):
             if (override or (key not in self.hints)):
                 self.hints[key] = value
 
+    # TEST
     def collect_file_paths(self):
         paths = []
 
@@ -165,6 +166,7 @@ class Question(quizgen.util.serial.JSONSerializer):
 
         return paths
 
+    # TEST
     def _collect_documents(self, target):
         if (isinstance(target, dict)):
             return self._collect_documents(list(target.values()))
@@ -265,16 +267,9 @@ class Question(quizgen.util.serial.JSONSerializer):
         self.feedback = new_feedback
 
     def _validate_feedback_item(self, item, label):
-        if ((item is None) or (item == {})):
-            return None
-
-        if (isinstance(item, dict)):
-            if ('text' not in item):
-                raise quizgen.common.QuizValidationError("Feedback item ('%s') is a dict, but has no 'text' field. Found: '%s'." % (
-                        label, str(item)))
-
-            item = item['text']
-            label = "%s 'text' value" % (label)
+        if ((item is None) or isinstance(item, quizgen.parser.common.ParsedText)):
+            # Nothing to do.
+            return item
 
         self._check_type(item, str, label)
 
@@ -282,10 +277,7 @@ class Question(quizgen.util.serial.JSONSerializer):
         if (len(item) == 0):
             return None
 
-        return {
-            'text': item,
-            'document': quizgen.parser.parse.parse_text(item, base_dir = self.base_dir),
-        }
+        return quizgen.parser.parse.parse_text(item, base_dir = self.base_dir)
 
     def _validate_self_answer_list(self, min_correct = 0, max_correct = math.inf):
         self.answers = self._validate_answer_list(self.answers, self.base_dir,
@@ -316,8 +308,8 @@ class Question(quizgen.util.serial.JSONSerializer):
 
         new_answers = []
         for i in range(len(answers)):
-            new_answer = self._validate_text_item(answers[i], "'answers' values (element %d)" % (i))
-            new_answer['correct'] = answers[i]['correct']
+            parsed_text = self._validate_text_item(answers[i], "'answers' values (element %d)" % (i))
+            new_answer = quizgen.question.common.ParsedTextChoice(parsed_text, answers[i]['correct'])
             new_answers.append(new_answer)
 
         return new_answers
@@ -353,14 +345,14 @@ class Question(quizgen.util.serial.JSONSerializer):
          - None (will be converted to an empty string).
          - Empty String (if allow_empty is True).
          - String
-         - quizgen.question.feedback.ParsedTextWithFeedback (will be passed back without any checks).
+         - quizgen.question.common.ParsedTextWithFeedback (will be passed back without any checks).
          - Dict with required key 'text' and optional key 'feedback'.
 
-        If no exception is raised, a quizgen.question.feedback.ParsedTextWithFeedback (child of quizgen.parser.common.ParsedText)
+        If no exception is raised, a quizgen.question.common.ParsedTextWithFeedback (child of quizgen.parser.common.ParsedText)
         will be returned, even if there is no feedback.
         """
 
-        if (isinstance(item, quizgen.question.feedback.ParsedTextWithFeedback)):
+        if (isinstance(item, quizgen.question.common.ParsedTextWithFeedback)):
             # Nothing to do if the item is already parsed.
             return item
 
@@ -391,7 +383,7 @@ class Question(quizgen.util.serial.JSONSerializer):
         if (check_feedback):
             feedback = self._validate_feedback_item(item.get('feedback', None), label)
 
-        return quizgen.question.feedback.ParsedTextWithFeedback(quizgen.parser.parse.parse_text(text, base_dir = self.base_dir), feedback = feedback)
+        return quizgen.question.common.ParsedTextWithFeedback(quizgen.parser.parse.parse_text(text, base_dir = self.base_dir), feedback = feedback)
 
     def _validate_fimb_answers(self):
         self._check_type(self.answers, dict, "'answers' key")

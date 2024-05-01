@@ -13,7 +13,7 @@
     "question[answers][0][answer_comment_html]": "<div class='document'>\n<div class='block' style='margin-bottom: 1em'>\n<span>1</span>\n</div>\n</div>",
     "question[answers][1][answer_weight]": 0,
     "question[answers][1][answer_html]": "<div class='document'>\n<div class='block' style='margin-bottom: 1em'>\n<span>B</span>\n</div>\n</div>",
-    "question[answers][1][answer_comment_html]": "<div class='document'>\n<div class='block' style='margin-bottom: 1em'>\n<span>2</span>\n</div>\n</div>",
+    "question[answers][1][answer_comment_html]": "<div class='document'>\n<div class='block' style='margin-bottom: 1em'>\n<span>Foo Bar</span>\n</div>\n</div>",
     "question[answers][2][answer_weight]": 0,
     "question[answers][2][answer_html]": "<div class='document'>\n<div class='block' style='margin-bottom: 1em'>\n<span>C</span>\n</div>\n</div>",
     "question[answers][3][answer_weight]": 0,

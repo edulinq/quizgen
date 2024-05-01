@@ -55,11 +55,6 @@ class JSONSerializer(abc.ABC):
         if (copy):
             data = pycopy.deepcopy(data)
 
-        # TEST
-        print('---')
-        print(json.dumps(_serialize(data, **kwargs), indent = 4))
-        print('---')
-
         return _serialize(data, **kwargs)
 
     def to_json(self, indent = 4, **kwargs):
@@ -111,7 +106,7 @@ def _serialize(item,
     if (isinstance(item, JSONSerializer) and convert_serializers):
         return item.to_dict(**kwargs)
     elif (isinstance(item, quizgen.parser.common.ParsedText) and convert_parsed_text):
-        return item.text
+        return item.to_pod(**kwargs)
     elif (isinstance(item, list) and recursive):
         return [_serialize(value, **kwargs) for value in item]
     elif (isinstance(item, dict) and recursive):

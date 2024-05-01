@@ -18,6 +18,7 @@ DUMMY_DATA = {
     'version': '0.0.0',
 }
 
+# TEST - ParsedText rework
 class Variant(object):
     """
     A quiz varint is an instantiation of a quiz with specific questions chosen for each group.

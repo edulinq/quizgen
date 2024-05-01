@@ -7,5 +7,5 @@ class ParsedText(object):
         self.text = text
         self.document = document
 
-    def to_dict(self):
-        return self.__dict__.copy()
+    def to_pod(self, **kwargs):
+        return self.text

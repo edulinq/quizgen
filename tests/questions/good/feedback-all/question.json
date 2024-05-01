@@ -3,7 +3,7 @@
     "question_type": "multiple_choice",
     "feedback": {
         "general": "X",
-        "correct": {"text": "Y"},
+        "correct": "Y",
         "incorrect": "Z"
     },
     "answers": [
@@ -15,17 +15,17 @@
         {
             "correct": false,
             "text": "B",
-            "feedback": {"text": "2"}
+            "feedback": "Foo Bar"
         },
         {
             "correct": false,
             "text": "C",
-            "feedback": {}
+            "feedback": ""
         },
         {
             "correct": false,
             "text": "D",
-            "feedback": ""
+            "feedback": null
         }
     ]
 }

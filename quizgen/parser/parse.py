@@ -237,7 +237,7 @@ def parse_text(text, base_dir = '.'):
     document = _DocTransformer().transform(ast)
     document.set_base_dir(base_dir)
 
-    return quizgen.parser.common.ParsedText(text, document)
+    return quizgen.parser.common.ParsedText(text.strip(), document)
 
 def parse_file(path):
     if (not os.path.isfile(path)):
