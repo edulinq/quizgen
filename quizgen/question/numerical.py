@@ -1,6 +1,7 @@
 import quizgen.common
 import quizgen.constants
 import quizgen.question.base
+import quizgen.question.common
 
 class Numerical(quizgen.question.base.Question, question_type = quizgen.constants.QUESTION_TYPE_NUMERICAL):
     def __init__(self, **kwargs):
@@ -39,3 +40,5 @@ class Numerical(quizgen.question.base.Question, question_type = quizgen.constant
                 answer['feedback'] = feedback
             else:
                 answer.pop('feedback', None)
+
+            self.answers[i] = quizgen.question.common.NumericChoice(**answer)

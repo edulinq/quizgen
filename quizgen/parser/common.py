@@ -1,4 +1,6 @@
-class ParsedText(object):
+import quizgen.util.serial
+
+class ParsedText(quizgen.util.serial.PODSerializer):
     """
     A representation of text that has been successfully parsed.
     """

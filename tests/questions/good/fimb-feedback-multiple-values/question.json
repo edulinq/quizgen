@@ -19,9 +19,7 @@
             "5",
             {
                 "text": "6",
-                "feedback": {
-                    "text": "Y"
-                }
+                "feedback": "Y"
             },
             "7"
         ]

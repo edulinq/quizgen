@@ -6,10 +6,18 @@ import os
 
 import json5
 
-import quizgen.parser.common
 import quizgen.util.file
 
-class JSONSerializer(abc.ABC):
+class PODSerializer(abc.ABC):
+    @abc.abstractmethod
+    def to_pod(self, **kwargs):
+        """
+        Create a "Plain Old Data" representation of this object.
+        """
+
+        pass
+
+class JSONSerializer(PODSerializer):
     """
     A base class that can automatically handle serialization.
     Deserialization is harder (and requires validation),
@@ -43,6 +51,9 @@ class JSONSerializer(abc.ABC):
 
     def is_valid(self):
         return self._validated
+
+    def to_pod(self, **kwargs):
+        return self.to_dict(**kwargs)
 
     def to_dict(self, copy = True, **kwargs):
         """
@@ -90,7 +101,7 @@ def _from_dict(cls, data, copy = True, extra_fields = {}, **kwargs):
 def _serialize(item,
         skip_private = True,
         convert_serializers = True,
-        convert_dates = True, convert_parsed_text = True,
+        convert_dates = True,
         recursive = True,
         **kwargs):
     """
@@ -100,12 +111,9 @@ def _serialize(item,
     kwargs['skip_private'] = skip_private
     kwargs['convert_serializers'] = convert_serializers
     kwargs['convert_dates'] = convert_dates
-    kwargs['convert_parsed_text'] = convert_parsed_text
     kwargs['recursive'] = recursive
 
-    if (isinstance(item, JSONSerializer) and convert_serializers):
-        return item.to_dict(**kwargs)
-    elif (isinstance(item, quizgen.parser.common.ParsedText) and convert_parsed_text):
+    if (isinstance(item, PODSerializer) and convert_serializers):
         return item.to_pod(**kwargs)
     elif (isinstance(item, list) and recursive):
         return [_serialize(value, **kwargs) for value in item]

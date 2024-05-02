@@ -11,9 +11,7 @@
         },
         "C": {
             "text": "3",
-            "feedback": {
-                "text": "Y"
-            }
+            "feedback": "Y"
         },
         "D": "4"
     }

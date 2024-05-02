@@ -23,7 +23,7 @@ class TF(quizgen.question.base.Question, question_type = quizgen.constants.QUEST
         if (len(self.answers) != 2):
             raise quizgen.common.QuizValidationError("Expecting exactly two answer, found %d." % (len(self.answers)))
 
-        labels = list(sorted([answer['text'] for answer in self.answers]))
+        labels = list(sorted([answer.text for answer in self.answers]))
 
         expected = ['False', 'True']
         if (labels != expected):

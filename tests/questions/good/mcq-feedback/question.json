@@ -15,14 +15,12 @@
         {
             "correct": false,
             "text": "C",
-            "feedback": {
-                "text": "Y"
-            }
+            "feedback": "Y"
         },
         {
             "correct": false,
             "text": "D",
-            "feedback": {}
+            "feedback": null
         }
     ]
 }

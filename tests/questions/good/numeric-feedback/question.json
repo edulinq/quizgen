@@ -6,7 +6,7 @@
             "type": "exact",
             "value": 0.08,
             "margin": 0.01,
-            "feedback": {}
+            "feedback": null
         },
         {
             "type": "range",
@@ -18,9 +18,7 @@
             "type": "precision",
             "value": 0.08,
             "precision": 2,
-            "feedback": {
-                "text": "Y"
-            }
+            "feedback": "Y"
         }
     ]
 }

@@ -412,10 +412,7 @@ class Question(quizgen.util.serial.JSONSerializer):
                 new_values.append(self._validate_text_item(values[i], label))
 
             new_answers[key] = {
-                'key': {
-                    'text': key,
-                    'document': quizgen.parser.parse.parse_text(key, base_dir = self.base_dir),
-                },
+                'key': quizgen.parser.parse.parse_text(key, base_dir = self.base_dir),
                 'values': new_values,
             }
 

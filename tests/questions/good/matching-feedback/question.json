@@ -17,9 +17,7 @@
             {
                 "left": {
                     "text": "C",
-                    "feedback": {
-                        "text": "Y"
-                    }
+                    "feedback": "Y"
                 },
                 "right": "3"
             }

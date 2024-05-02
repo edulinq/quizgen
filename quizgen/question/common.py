@@ -1,5 +1,6 @@
 import quizgen.common
 import quizgen.parser.common
+import quizgen.util.serial
 
 class ParsedTextWithFeedback(quizgen.parser.common.ParsedText):
     def __init__(self, parsed_text, feedback = None):
@@ -26,6 +27,10 @@ class ParsedTextWithFeedback(quizgen.parser.common.ParsedText):
         }
 
 class ParsedTextChoice(ParsedTextWithFeedback):
+    """
+    A multiple answer/choice option.
+    """
+
     def __init__(self, parsed_text_with_feedback, correct):
         super().__init__(parsed_text_with_feedback, feedback = parsed_text_with_feedback.feedback)
 
@@ -41,3 +46,39 @@ class ParsedTextChoice(ParsedTextWithFeedback):
         value = super().to_pod(force_dict = True, **kwargs)
         value['correct'] = self.correct
         return value
+
+class NumericChoice(quizgen.util.serial.PODSerializer):
+    """
+    Numeric choices have no parsed text (aside from optional feedback).
+    """
+
+    def __init__(self, type, margin = None, min = None, max = None, value = None, precision = None, feedback = None):
+        self.type = type
+        self.margin = margin
+        self.min = min
+        self.max = max
+        self.value = value
+        self.precision = precision
+
+        if ((feedback is not None) and (not isinstance(feedback, quizgen.parser.common.ParsedText))):
+            raise quizgen.common.QuizValidationError("Text feedback must be quizgen.parser.common.ParsedText, found '%s'." % (str(type(feedback))))
+
+        self.feedback = feedback
+
+    def has_feedback(self):
+        return (self.feedback is not None)
+
+    def to_pod(self, skip_feedback = False, **kwargs):
+        data = self.__dict__.copy()
+
+        for (key, value) in list(data.items()):
+            if (value is None):
+                del data[key]
+
+        if (skip_feedback and ('feedback' in data)):
+            del data['feedback']
+
+        if ('feedback' in data):
+            data['feedback'] = data['feedback'].to_pod()
+
+        return data

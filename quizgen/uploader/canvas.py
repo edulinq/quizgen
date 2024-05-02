@@ -370,8 +370,8 @@ def _serialize_matching_answers(data, question, instance):
         data["question[answers][%d][answer_match_left]" % (i)] = left_content
         data["question[answers][%d][answer_match_right]" % (i)] = right_content
 
-        if ('feedback' in question.answers['matches'][i]['left']):
-            text = question.answers['matches'][i]['left']['feedback'].document.to_html(canvas_instance = instance)
+        if (question.answers['matches'][i]['left'].has_feedback()):
+            text = question.answers['matches'][i]['left'].feedback.document.to_html(canvas_instance = instance)
             data["question[answers][%d][answer_comment_html]" % (i)] = text
 
     if (len(question.answers['distractors']) > 0):
@@ -391,8 +391,8 @@ def _serialize_fimb_answers(data, question, instance):
             data[f"question[answers][{index}][answer_weight]"] = 100
             data[f"question[answers][{index}][answer_text]"] = value_text
 
-            if ('feedback' in item['values'][i]):
-                feedback_text = item['values'][i]['feedback'].document.to_html(canvas_instance = instance)
+            if (item['values'][i].has_feedback()):
+                feedback_text = item['values'][i].feedback.document.to_html(canvas_instance = instance)
                 data[f"question[answers][{index}][answer_comment_html]"] = feedback_text
 
             index += 1
@@ -405,22 +405,22 @@ def _serialize_numeric_answers(data, answers, instance):
         answer = answers[i]
 
         data[f"question[answers][{i}][answer_weight]"] = 100
-        data[f"question[answers][{i}][numerical_answer_type]"] = answer['type'] + '_answer'
+        data[f"question[answers][{i}][numerical_answer_type]"] = answer.type + '_answer'
 
-        if (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_EXACT):
-            data[f"question[answers][{i}][answer_exact]"] = answer['value']
-            data[f"question[answers][{i}][answer_error_margin]"] = answer['margin']
-        elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_RANGE):
-            data[f"question[answers][{i}][answer_range_start]"] = answer['min']
-            data[f"question[answers][{i}][answer_range_end]"] = answer['max']
-        elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_PRECISION):
-            data[f"question[answers][{i}][answer_approximate]"] = answer['value']
-            data[f"question[answers][{i}][answer_precision]"] = answer['precision']
+        if (answer.type == quizgen.constants.NUMERICAL_ANSWER_TYPE_EXACT):
+            data[f"question[answers][{i}][answer_exact]"] = answer.value
+            data[f"question[answers][{i}][answer_error_margin]"] = answer.margin
+        elif (answer.type == quizgen.constants.NUMERICAL_ANSWER_TYPE_RANGE):
+            data[f"question[answers][{i}][answer_range_start]"] = answer.min
+            data[f"question[answers][{i}][answer_range_end]"] = answer.max
+        elif (answer.type == quizgen.constants.NUMERICAL_ANSWER_TYPE_PRECISION):
+            data[f"question[answers][{i}][answer_approximate]"] = answer.value
+            data[f"question[answers][{i}][answer_precision]"] = answer.precision
         else:
-            raise ValueError(f"Unknown numerical answer type: '{answer['type']}'.")
+            raise ValueError(f"Unknown numerical answer type: '{answer.type}'.")
 
-        if ('feedback' in answer):
-            feedback_text = answer['feedback'].document.to_html(canvas_instance = instance)
+        if (answer.has_feedback()):
+            feedback_text = answer.feedback.document.to_html(canvas_instance = instance)
             data[f"question[answers][{i}][answer_comment_html]"] = feedback_text
 
 def upload_file(path, canvas_path, instance):

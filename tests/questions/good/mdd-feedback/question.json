@@ -25,9 +25,7 @@
             {
                 "correct": false,
                 "text": "2",
-                "feedback": {
-                    "text": "Y"
-                }
+                "feedback": "Y"
             },
             {
                 "correct": false,

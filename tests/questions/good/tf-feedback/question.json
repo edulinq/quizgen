@@ -10,9 +10,7 @@
         {
             "correct": false,
             "text": "False",
-            "feedback": {
-                "text": "Y"
-            }
+            "feedback": "Y"
         }
     ]
 }

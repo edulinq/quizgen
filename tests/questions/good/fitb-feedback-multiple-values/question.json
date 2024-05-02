@@ -11,9 +11,7 @@
         },
         {
             "text": "3",
-            "feedback": {
-                "text": "Y"
-            }
+            "feedback": "Y"
         }
     ]
 }
