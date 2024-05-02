@@ -27,7 +27,7 @@ class JSONSerializer(PODSerializer):
     def __init__(self, validated = False, **kwargs):
         self._validated = validated
 
-    def validate(self):
+    def validate(self, **kwargs):
         """
         A wrapper for validation.
         This should be called by child classes in their constructor.
@@ -38,11 +38,11 @@ class JSONSerializer(PODSerializer):
         if (self._validated):
             return
 
-        self._validate()
+        self._validate(**kwargs)
         self._validated = True
 
     @abc.abstractmethod
-    def _validate(self):
+    def _validate(self, **kwargs):
         """
         The true validation implementation.
         """

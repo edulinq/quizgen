@@ -1,3 +1,4 @@
+# TEST
 import copy
 import datetime
 import json
@@ -9,8 +10,9 @@ import quizgen.question.base
 import quizgen.common
 import quizgen.parser.parse
 import quizgen.quiz
+import quizgen.util.serial
 
-DUMMY_DATA = {
+DUMMY_QUIZ_DATA = {
     'title': 'Dummy Title',
     'description': 'Dummy description.',
     'course_title': 'Dummy Course',
@@ -18,86 +20,47 @@ DUMMY_DATA = {
     'version': '0.0.0',
 }
 
-# TEST - ParsedText rework
-class Variant(object):
+DUMMY_GROUP_DATA = {
+    'name': 'Dummy Question',
+}
+
+class Variant(quizgen.quiz.Quiz):
     """
-    A quiz varint is an instantiation of a quiz with specific questions chosen for each group.
-    Variants no longer have groups, just questions
+    A quiz varint is an instantiation of a quiz with specific set of questions chosen for each group.
+    Variants still have question groups, but each group must only have the exact number of questions required for each group
+    (or it is a validation error).
 
-    Variants should be created from quizzes, and will therefore not be deeply validated,
-    just checked for null values.
+    Variants created directly from quizzes (as opposed to from a JSON file)
+    will already have all the correct components, and will therefore only be lightly validated.
+    Quizzes created from files will undergo full validation.
     """
 
-    def __init__(self,
-            title = None,
-            course_title = None, term_title = None,
-            description = None,
-            date = None,
-            questions = None,
-            version = None, seed = None,
-            **kwargs):
-        self.title = title
-        self.course_title = course_title
-        self.term_title = term_title
-        self.date = date
+    def __init__(self, skip_quiz_validation = False, **kwargs):
+        super().__init__(**kwargs)
+        self.validate(skip_quiz_validation = skip_quiz_validation)
 
-        self.description = description
+    def _validate(self, skip_quiz_validation = False, **kwargs):
+        # Potentially skip quiz validation.
+        if (not skip_quiz_validation):
+            super()._validate(**kwargs)
 
-        self.questions = questions
+        # Ensure that each group only has a single question.
+        for i in range(len(self.groups)):
+            group = self.groups[i]
 
-        self.version = version
-        self.seed = seed
-
-        self.validate()
-
-    def validate(self):
-        values = self.__dict__.copy()
-        for (key, value) in values.items():
-            if (value is None):
-                raise quizgen.common.QuizValidationError("Empty variant value: '%s'." % (key))
+            if (len(group.questions) != group.pick_count):
+                raise quizgen.common.QuizValidationError("Group at index %d (%s) has %d questions, expecting exactly %d." % (i, group.name, len(group.questions), group.pick_count))
 
     @staticmethod
-    def from_path(path, override_base_dir = False):
-        path = os.path.abspath(path)
-
-        with open(path, 'r') as file:
-            data = json5.load(file)
-
-        base_dir = None
-        if (override_base_dir):
-            base_dir = os.path.dirname(path)
-
-        # TEST - description and questions will need validations. Maybe just add this to the main validation. check is_validated (does not exist yet).
-
-        return Variant.from_dict(data, base_dir = base_dir)
-
-    @staticmethod
-    def from_dict(data, base_dir = None):
-        data = data.copy()
-
-        if (base_dir is not None):
-            data['base_dir'] = base_dir
-        elif ('base_dir' not in data):
-            data['base_dir'] = '.'
-
-        if ('date' in data):
-            data['date'] = datetime.datetime.fromisoformat(data['date'])
-
-        data['description_document'] = quizgen.parser.parse.parse_text(data['description'], base_dir = base_dir)
-        data['questions'] = [quizgen.question.base.Question.from_dict(question, base_dir = base_dir) for question in data['questions']]
-
-        return Variant(**data)
-
-    def num_questions(self):
-        return len(self.questions)
-
-    def copy(self):
-        return copy.deepcopy(self)
-
-    @staticmethod
-    def get_dummy():
+    def get_dummy(question):
         """
         Get a "dummy" variant that has no real information.
         """
 
-        return quizgen.quiz.Quiz(**DUMMY_DATA).create_variant()
+        quiz_data = DUMMY_QUIZ_DATA.copy()
+        group_data = DUMMY_GROUP_DATA.copy()
+
+        group_data['questions'] = [question]
+        quiz_data['groups'] = [quizgen.group.Group(**group_data)]
+
+        return Variant(skip_quiz_validation = True, **quiz_data)

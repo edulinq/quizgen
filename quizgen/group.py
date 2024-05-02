@@ -4,16 +4,19 @@ import os
 
 import quizgen.common
 import quizgen.question.base
+import quizgen.util.serial
 
 QUESTION_FILENAME = 'question.json'
 
-class Group(object):
+class Group(quizgen.util.serial.JSONSerializer):
     def __init__(self, name = '',
             pick_count = 1, points = 10,
             shuffle_answers = True, pick_with_replacement = True,
             custom_header = None, skip_numbering = None,
             hints = None, hints_first = None, hints_last = None,
             questions = [], **kwargs):
+        super().__init__(**kwargs)
+
         self.name = name
         self.pick_count = pick_count
         self.points = points
@@ -36,7 +39,7 @@ class Group(object):
         except Exception as ex:
             raise quizgen.common.QuizValidationError(f"Error while validating group (%s)." % (self.name)) from ex
 
-    def validate(self):
+    def _validate(self, **kwargs):
         if ((self.name is None) or (self.name == "")):
             raise quizgen.common.QuizValidationError("Name cannot be empty.")
 
@@ -61,11 +64,6 @@ class Group(object):
         for question in self.questions:
             question.inherit_from_group(self)
 
-    def to_dict(self, include_docs = True):
-        value = self.__dict__.copy()
-        value['questions'] = [question.to_dict(include_docs = include_docs) for question in self.questions]
-        return value
-
     def should_skip_numbering(self):
         return ((self.skip_numbering is not None) and (self.skip_numbering))
 
@@ -78,7 +76,7 @@ class Group(object):
         return paths
 
     @staticmethod
-    def from_dict(group_info, base_dir):
+    def from_dict(group_info, base_dir, **kwargs):
         group_info = group_info.copy()
 
         paths = []

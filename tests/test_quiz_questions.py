@@ -1,72 +1,45 @@
-import glob
 import os
 
-import quizgen.converter.htmltemplate
-import quizgen.converter.json
-import quizgen.converter.textemplate
-import quizgen.converter.qtitemplate
-import quizgen.quiz
+import quizgen.converter.convert
 import tests.base
 
-THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
-
-CONVERTERS = [
-    quizgen.converter.htmltemplate.HTMLTemplateConverter,
-    quizgen.converter.json.JSONConverter,
-    quizgen.converter.textemplate.TexTemplateConverter,
-    quizgen.converter.qtitemplate.QTITemplateConverter,
-]
-
-class QuizQuestionsTest(tests.base.BaseTest):
+class ConverterQuestionsTest(tests.base.BaseTest):
     """
-    Compile all the good test quiz question into a quiz and test that quiz.
+    Use each standard converter/format on each "good" quiz question.
     """
 
-    _quiz = None
-    _num_paths = -1
+    # Cache questions (by path) that have already been parased.
+    _question_cache = {}
 
-    @classmethod
-    def setUpClass(cls):
-        good_paths, _ = tests.base.discover_question_tests()
+    def _get_question(self, path):
+        path = os.path.abspath(path)
+        if (path in ConverterQuestionsTest._question_cache):
+            return ConverterQuestionsTest._question_cache[path]
 
-        quiz_info = {
-            'title': 'Test Quiz',
-            'course_title': "Test Course",
-            'term_title': "Test Term",
-            'description': 'testing',
-            'version': '0.0.0',
-            'groups': [],
-        }
+        question = quizgen.question.base.Question.from_path(path)
+        ConverterQuestionsTest._question_cache[path] = question
 
-        for path in good_paths:
-            name = os.path.basename(os.path.dirname(path))
-
-            quiz_info['groups'].append({
-                'name': name,
-                'questions': [path],
-            })
-
-        QuizQuestionsTest._quiz = quizgen.quiz.Quiz.from_dict(quiz_info, THIS_DIR)
-        QuizQuestionsTest._num_paths = len(good_paths)
-
-    def testNumQuestions(self):
-        self.assertEqual(QuizQuestionsTest._num_paths, QuizQuestionsTest._quiz.num_questions())
+        return question
 
 def _add_converter_tests():
-    for converter in CONVERTERS:
-        for key in [True, False]:
-            for shuffle in [True, False]:
-                test_name = 'test_converter__%s__key_%s__shuffle_%s' % (converter.__name__, str(key), str(shuffle))
-                setattr(QuizQuestionsTest, test_name, _get_template_test(converter, key, shuffle))
+    good_paths, _ = tests.base.discover_question_tests()
 
-def _get_template_test(converter_class, key, shuffle):
+    for path in good_paths:
+        base_test_name = os.path.splitext(os.path.basename(os.path.dirname(path)))[0]
+
+        for format_name in quizgen.converter.convert.SUPPORTED_FORMATS:
+            for key in [True, False]:
+                    test_name = 'test_converter_question__%s__%s__key_%s' % (base_test_name, format_name, str(key))
+                    setattr(ConverterQuestionsTest, test_name, _get_template_test(path, format_name, key))
+
+def _get_template_test(path, format_name, key):
     def __method(self):
-        converter = converter_class(answer_key = key)
+        constructor_args = {'answer_key': key}
 
-        variant = QuizQuestionsTest._quiz.create_variant(all_questions = True)
-        variant.shuffle_answers = shuffle
+        question = self._get_question(path)
+        content = quizgen.converter.convert.convert_question(question, format = format_name,
+                constructor_args = constructor_args)
 
-        content = converter.convert_variant(variant)
         self.assertTrue(len(content) > 10)
 
     return __method

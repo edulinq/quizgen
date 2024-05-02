@@ -1,3 +1,4 @@
+# TEST
 import datetime
 import json
 import logging
@@ -12,8 +13,13 @@ import quizgen.parser.parse
 import quizgen.uploader.canvas
 import quizgen.util.file
 import quizgen.util.git
+import quizgen.util.serial
 
-class Quiz(object):
+class Quiz(quizgen.util.serial.JSONSerializer):
+    """
+    A quiz object represents multiple possible assesments (called "variants").
+    """
+
     def __init__(self,
             title = '',
             course_title = '', term_title = '',
@@ -22,16 +28,17 @@ class Quiz(object):
             shuffle_answers = True, pick_with_replacement = True,
             groups = [],
             base_dir = '.',
-            version = None,
+            version = None, seed = None,
             canvas = {},
             **kwargs):
+        super().__init__(**kwargs)
+
         self.title = title
         self.course_title = course_title
         self.term_title = term_title
         self.date = date
 
         self.description = description
-        self.description_document = None
 
         self.time_limit_mins = time_limit_mins
 
@@ -40,24 +47,28 @@ class Quiz(object):
 
         self.groups = groups
 
-        self.version = version
         self.base_dir = base_dir
+        self.version = version
+
+        self.seed = seed
+        if (self.seed is None):
+            self.seed = random.randint(0, 2**64)
+        self._rng = random.Random(self.seed)
 
         self.canvas = canvas.copy()
 
         try:
-            self.validate(kwargs)
+            self.validate(**kwargs)
         except Exception as ex:
             raise quizgen.common.QuizValidationError("Error while validating quiz '%s'." % self.title) from ex
 
-    def validate(self, kwargs):
+    def _validate(self, **kwargs):
         if ((self.title is None) or (self.title == "")):
             raise quizgen.common.QuizValidationError("Title cannot be empty.")
 
         if ((self.description is None) or (self.description == "")):
             raise quizgen.common.QuizValidationError("Description cannot be empty.")
-        self.description_document = quizgen.parser.parse.parse_text(self.description,
-                base_dir = self.base_dir)
+        self.description = quizgen.parser.parse.parse_text(self.description, base_dir = self.base_dir)
 
         if (self.version is None):
             self.version = quizgen.util.git.get_version(self.base_dir, throw = False)
@@ -96,23 +107,8 @@ class Quiz(object):
         if (self.time_limit_mins == 0):
             self.time_limit_mins = None
 
-    def to_dict(self, include_docs = True, flatten_groups = False):
-        value = self.__dict__.copy()
-
-        if ('date' in value):
-            value['date'] = value['date'].isoformat()
-
-        value['groups'] = [group.to_dict(include_docs = include_docs) for group in self.groups]
-
-        if (include_docs):
-            value['description_document'] = self.description_document.to_pod()
-        else:
-            del value['description_document']
-
-        return value
-
     @staticmethod
-    def from_path(path, flatten_groups = False):
+    def from_path(path, **kwargs):
         path = os.path.abspath(path)
 
         with open(path, 'r') as file:
@@ -127,7 +123,7 @@ class Quiz(object):
 
         base_dir = os.path.dirname(path)
 
-        return Quiz.from_dict(quiz_info, base_dir, flatten_groups = flatten_groups)
+        return Quiz.from_dict(quiz_info, base_dir = base_dir, **kwargs)
 
     @staticmethod
     def from_dict(quiz_info, base_dir = None, flatten_groups = False):
@@ -158,9 +154,6 @@ class Quiz(object):
 
         return Quiz(**quiz_info)
 
-    def to_json(self, indent = 4, include_docs = True):
-        return json.dumps(self.to_dict(include_docs = include_docs), indent = indent)
-
     def num_questions(self):
         count = 0
 
@@ -171,19 +164,27 @@ class Quiz(object):
 
     def create_variant(self, identifier = None, seed = None, all_questions = False):
         if (seed is None):
-            seed = random.randint(0, 2**64)
+            seed = self._rng.randint(0, 2**64)
 
         logging.debug("Creating variant with seed %s.", str(seed))
         rng = random.Random(seed)
 
-        questions = []
+        new_groups = []
         for group in self.groups:
-            questions += group.choose_questions(all_questions = all_questions, rng = rng,
+            questions = group.choose_questions(all_questions = all_questions, rng = rng,
                     with_replacement = self.pick_with_replacement)
 
+            group_data = group.__data__.copy()
+            group_data['questions'] = questions
+            # Skip validation.
+            group_data['validated'] = True
+
+            new_groups.append(quizgen.group.Group(**group_data))
+
         if (self.shuffle_answers):
-            for question in questions:
-                question.shuffle(rng)
+            for group in new_groups:
+                for question in group.questions:
+                    question.shuffle(rng)
 
         title = self.title
         version = self.version
@@ -192,10 +193,11 @@ class Quiz(object):
             title = "%s - %s" % (title, identifier)
             version = "%s, Variant: %s" % (version, identifier)
 
-        return quizgen.variant.Variant(
-            title = title,
-            course_title = self.course_title, term_title = self.term_title,
-            description = self.description, description_document = self.description_document,
-            date = self.date,
-            questions = questions,
-            version = version, seed = seed)
+        data = self.__dict__.copy()
+
+        data['title'] = title
+        data['version'] = version
+        data['seed'] = seed
+        data['groups'] = new_groups
+
+        return quizgen.variant.Variant(skip_quiz_validation = True, **data)
