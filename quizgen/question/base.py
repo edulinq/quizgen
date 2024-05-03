@@ -157,7 +157,6 @@ class Question(quizgen.util.serial.JSONSerializer):
             if (override or (key not in self.hints)):
                 self.hints[key] = value
 
-    # TEST
     def collect_file_paths(self):
         paths = []
 
@@ -166,7 +165,6 @@ class Question(quizgen.util.serial.JSONSerializer):
 
         return paths
 
-    # TEST
     def _collect_documents(self, target):
         if (isinstance(target, dict)):
             return self._collect_documents(list(target.values()))
@@ -175,8 +173,8 @@ class Question(quizgen.util.serial.JSONSerializer):
             for value in target:
                 documents += self._collect_documents(value)
             return documents
-        elif (isinstance(target, quizgen.parser.node.ParseNode)):
-            return [target]
+        elif (isinstance(target, quizgen.parser.common.ParsedText)):
+            return [target.document]
         else:
             return []
 

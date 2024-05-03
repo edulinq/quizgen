@@ -1,16 +1,5 @@
-# TEST
-import copy
-import datetime
-import json
-import os
-
-import json5
-
-import quizgen.question.base
 import quizgen.common
-import quizgen.parser.parse
 import quizgen.quiz
-import quizgen.util.serial
 
 DUMMY_QUIZ_DATA = {
     'title': 'Dummy Title',
