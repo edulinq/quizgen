@@ -219,7 +219,7 @@ def create_quiz(quiz, instance):
     if (quiz.canvas['practice']):
         quiz_type = QUIZ_TYPE_PRACTICE
 
-    description = quiz.description_document.to_html(canvas_instance = instance)
+    description = quiz.description.document.to_html(canvas_instance = instance)
 
     data = {
         'quiz[title]': quiz.title,

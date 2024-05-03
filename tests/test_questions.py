@@ -70,10 +70,10 @@ def _get_question_reparse_test_method(path):
 
     def __method(self):
         question = quizgen.question.base.Question.from_path(path)
-        question_data = question.to_dict(include_docs = False)
+        question_data = question.to_dict()
 
         new_question = quizgen.question.base.Question.from_dict(question_data)
-        new_question_data = new_question.to_dict(include_docs = False)
+        new_question_data = new_question.to_dict()
 
         self.assertJSONDictEqual(question_data, new_question_data)
 

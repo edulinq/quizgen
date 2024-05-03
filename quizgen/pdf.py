@@ -77,7 +77,7 @@ def make(quiz,
         variants.append(variant)
 
         out_path = os.path.join(out_dir, "%s.json" % (variant.title))
-        quizgen.util.file.write(out_path, variant.to_json(include_docs = False))
+        quizgen.util.file.write(out_path, variant.to_json())
 
         make_pdf(variant, out_dir = out_dir, is_key = False, skip_tex = skip_tex, skip_pdf = skip_pdf)
 

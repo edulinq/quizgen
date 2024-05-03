@@ -120,7 +120,7 @@ class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
     def _convert_assessment_meta(self, quiz, out_dir):
         template = self.env.get_template(TEMPLATE_FILENAME_ASSESSMENT_META)
 
-        quiz_context = quiz.to_dict(include_docs = False)
+        quiz_context = quiz.to_dict()
 
         description_text = quiz.description.document.to_format(self.format)
         description_text = "<p>%s</p><br /><hr /><p>Version: %s</p>" % (description_text, quiz.version)
@@ -144,7 +144,7 @@ class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
         template = self.env.get_template(TEMPLATE_FILENAME_MANIFEST)
 
         data = {
-            'quiz': quiz.to_dict(include_docs = False),
+            'quiz': quiz.to_dict(),
             'files': [],
         }
 

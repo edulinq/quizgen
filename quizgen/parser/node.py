@@ -112,7 +112,7 @@ class DocumentNode(ParseNode):
 
     def to_pod(self, include_metadata = True, **kwargs):
         data = {
-            "type": "document",
+            "type": 'document',
             "root": self._root.to_pod(include_metadata = include_metadata),
         }
 

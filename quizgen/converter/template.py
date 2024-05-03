@@ -103,7 +103,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
         inner_text = self.create_groups(container)
 
-        inner_context = container.to_dict(include_docs = False)
+        inner_context = container.to_dict()
         inner_context['description_text'] = self._format_doc(container.description.document)
 
         context = {
@@ -151,7 +151,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         return "\n\n".join(result)
 
     def create_group(self, group_index, group_number, group, quiz):
-        data = group.to_dict(include_docs = False)
+        data = group.to_dict()
         data['id'] = group_index
         data['number'] = group_number
 
@@ -173,7 +173,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         if (question_type not in self.answer_functions):
             raise ValueError("Unsupported question type: '%s'." % (question_type))
 
-        data = question.to_dict(include_docs = False)
+        data = question.to_dict()
         data['prompt_text'] = self._format_doc(question.prompt.document)
         data['id'] = question_id
         data['number'] = question_number
