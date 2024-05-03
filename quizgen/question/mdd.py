@@ -21,10 +21,7 @@ class MDD(quizgen.question.base.Question, question_type = quizgen.constants.QUES
             values = self._validate_answer_list(answers, self.base_dir, min_correct = 1, max_correct = 1)
 
             self.answers[key] = {
-                'key': {
-                    'text': key,
-                    'document': quizgen.parser.parse.parse_text(key, base_dir = self.base_dir),
-                },
+                'key': quizgen.parser.parse.parse_text(key, base_dir = self.base_dir),
                 'values': values,
             }
 

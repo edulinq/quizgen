@@ -122,7 +122,7 @@ class QTITemplateConverter(quizgen.converter.template.TemplateConverter):
 
         quiz_context = quiz.to_dict(include_docs = False)
 
-        description_text = quiz.description_document.to_format(self.format)
+        description_text = quiz.description.document.to_format(self.format)
         description_text = "<p>%s</p><br /><hr /><p>Version: %s</p>" % (description_text, quiz.version)
 
         if (self.canvas):

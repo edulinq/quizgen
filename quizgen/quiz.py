@@ -58,7 +58,7 @@ class Quiz(quizgen.util.serial.JSONSerializer):
         self.canvas = canvas.copy()
 
         try:
-            self.validate(**kwargs)
+            self.validate(cls = Quiz, **kwargs)
         except Exception as ex:
             raise quizgen.common.QuizValidationError("Error while validating quiz '%s'." % self.title) from ex
 
@@ -174,10 +174,10 @@ class Quiz(quizgen.util.serial.JSONSerializer):
             questions = group.choose_questions(all_questions = all_questions, rng = rng,
                     with_replacement = self.pick_with_replacement)
 
-            group_data = group.__data__.copy()
+            group_data = group.__dict__.copy()
             group_data['questions'] = questions
             # Skip validation.
-            group_data['validated'] = True
+            group_data['_skip_all_validation'] = True
 
             new_groups.append(quizgen.group.Group(**group_data))
 
@@ -200,4 +200,7 @@ class Quiz(quizgen.util.serial.JSONSerializer):
         data['seed'] = seed
         data['groups'] = new_groups
 
-        return quizgen.variant.Variant(skip_quiz_validation = True, **data)
+        # Skip quiz validation.
+        data['_skip_class_validations'] = [Quiz]
+
+        return quizgen.variant.Variant(**data)

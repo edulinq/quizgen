@@ -91,20 +91,20 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         }
 
     def convert_quiz(self, quiz, **kwargs):
-        return self._convert_container(quiz, quizgen.quiz.Quiz, 'quiz', self.create_groups)
+        return self._convert_container(quiz, quizgen.quiz.Quiz, 'quiz')
 
     def convert_variant(self, variant, **kwargs):
-        return self._convert_container(variant, quizgen.variant.Variant, 'variant', self.create_questions)
+        return self._convert_container(variant, quizgen.variant.Variant, 'variant')
 
-    def _convert_container(self, container, container_type, container_label, container_creation_function):
+    def _convert_container(self, container, container_type, container_label):
         if (not isinstance(container, container_type)):
             raise ValueError("Template %s converter requires a %s, found %s." % (
                     container_label, str(container_type), type(container)))
 
-        inner_text = container_creation_function(container)
+        inner_text = self.create_groups(container)
 
         inner_context = container.to_dict(include_docs = False)
-        inner_context['description_text'] = self._format_doc(container.description_document)
+        inner_context['description_text'] = self._format_doc(container.description.document)
 
         context = {
             'quiz': inner_context,
@@ -119,9 +119,6 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
     def create_groups(self, quiz):
         return self._create_item_collection(quiz, 'groups', 'group', self.create_group)
-
-    def create_questions(self, variant):
-        return self._create_item_collection(variant, 'questions', 'question', self.create_question)
 
     def _create_item_collection(self, container, container_attr, label, item_creation_function, id_prefix = None):
         """
@@ -177,7 +174,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             raise ValueError("Unsupported question type: '%s'." % (question_type))
 
         data = question.to_dict(include_docs = False)
-        data['prompt_text'] = self._format_doc(question.prompt['document'])
+        data['prompt_text'] = self._format_doc(question.prompt.document)
         data['id'] = question_id
         data['number'] = question_number
 
@@ -188,7 +185,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
         data['feedback'] = {}
         for key, item in question.feedback.items():
-            data['feedback'][key] = self._format_doc(item['document'])
+            data['feedback'][key] = self._format_doc(item.document)
 
         context = {
             'quiz': variant,
@@ -245,22 +242,22 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             matches[len(lefts)] = len(rights)
 
             lefts.append({
-                'initial_text': items['left']['text'],
-                'raw_text': self._format_doc(items['left']['document'], doc_format = quizgen.constants.FORMAT_TEXT),
-                'text': self._format_doc(items['left']['document']),
+                'initial_text': items['left'].text,
+                'raw_text': self._format_doc(items['left'].document, doc_format = quizgen.constants.FORMAT_TEXT),
+                'text': self._format_doc(items['left'].document),
             })
 
             rights.append({
-                'initial_text': items['right']['text'],
-                'raw_text': self._format_doc(items['right']['document'], doc_format = quizgen.constants.FORMAT_TEXT),
-                'text': self._format_doc(items['right']['document']),
+                'initial_text': items['right'].text,
+                'raw_text': self._format_doc(items['right'].document, doc_format = quizgen.constants.FORMAT_TEXT),
+                'text': self._format_doc(items['right'].document),
             })
 
         for right in question.answers['distractors']:
             rights.append({
-                'initial_text': right['text'],
-                'raw_text': self._format_doc(right['document'], doc_format = quizgen.constants.FORMAT_TEXT),
-                'text': self._format_doc(right['document']),
+                'initial_text': right.text,
+                'raw_text': self._format_doc(right.document, doc_format = quizgen.constants.FORMAT_TEXT),
+                'text': self._format_doc(right.document),
             })
 
         left_ids = self.get_matching_left_ids()
@@ -341,7 +338,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         for i in range(len(answers)):
             answer = answers[i]
             choice = self._create_answers_text_value(answer)
-            choice['correct'] = answer['correct']
+            choice['correct'] = answer.is_correct()
 
             choices.append(choice)
 
@@ -353,19 +350,19 @@ class TemplateConverter(quizgen.converter.converter.Converter):
     def create_answers_numerical(self, question_id, question_number, question, variant):
         answer = question.answers[0]
 
-        if (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_EXACT):
-            if (math.isclose(answer['margin'], 0.0)):
-                content = "%s" % (str(answer['value']))
+        if (answer.type == quizgen.constants.NUMERICAL_ANSWER_TYPE_EXACT):
+            if (math.isclose(answer.margin, 0.0)):
+                content = "%s" % (str(answer.value))
             else:
-                content = "%s ± %f" % (str(answer['value']), answer['margin'])
-        elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_RANGE):
-            content = "[%s, %s]" % (str(answer['min']), str(answer['max']))
-        elif (answer['type'] == quizgen.constants.NUMERICAL_ANSWER_TYPE_PRECISION):
-            content = "%s (precision: %s)" % (str(answer['value']), str(answer['precision']))
+                content = "%s ± %f" % (str(answer.value), answer.margin)
+        elif (answer.type == quizgen.constants.NUMERICAL_ANSWER_TYPE_RANGE):
+            content = "[%s, %s]" % (str(answer.min), str(answer.max))
+        elif (answer.type == quizgen.constants.NUMERICAL_ANSWER_TYPE_PRECISION):
+            content = "%s (precision: %s)" % (str(answer.value), str(answer.precision))
         else:
-            raise ValueError(f"Unknown numerical answer type: '{answer['type']}'.")
+            raise ValueError(f"Unknown numerical answer type: '{answer.type}'.")
 
-        document = quizgen.parser.parse.parse_text(content)
+        document = quizgen.parser.parse.parse_text(content).document
 
         return {
             'solution': self.clean_solution_content(document),
@@ -379,9 +376,9 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
         for key, items in question.answers.items():
             answers.append({
-                'label': self._format_doc(items['key']['document']),
-                'initial_label': items['key']['text'],
-                'raw_label': self._format_doc(items['key']['document'], doc_format = quizgen.constants.FORMAT_TEXT),
+                'label': self._format_doc(items['key'].document),
+                'initial_label': items['key'].text,
+                'raw_label': self._format_doc(items['key'].document, doc_format = quizgen.constants.FORMAT_TEXT),
                 'choices': self._create_answers_mcq_list(items['values']),
             })
 
@@ -399,9 +396,9 @@ class TemplateConverter(quizgen.converter.converter.Converter):
                 solutions.append(self._create_answers_text_value(value))
 
             answers[key] = {
-                'label': self._format_doc(item['key']['document']),
-                'raw_label': self._format_doc(item['key']['document'], doc_format = quizgen.constants.FORMAT_TEXT),
-                'initial_label': item['key']['text'],
+                'label': self._format_doc(item['key'].document),
+                'raw_label': self._format_doc(item['key'].document, doc_format = quizgen.constants.FORMAT_TEXT),
+                'initial_label': item['key'].text,
                 'solutions': solutions,
             }
 
@@ -429,17 +426,17 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         """
 
         result = {
-            'text': self._format_doc(value['document']),
-            'raw_text': self._format_doc(value['document'], doc_format = quizgen.constants.FORMAT_TEXT),
-            'initial_text': value['text'],
-            'clean': self.clean_solution_content(value['document']),
+            'text': self._format_doc(value.document),
+            'raw_text': self._format_doc(value.document, doc_format = quizgen.constants.FORMAT_TEXT),
+            'initial_text': value.text,
+            'clean': self.clean_solution_content(value.document),
         }
 
-        if ('feedback' in value):
+        if (value.has_feedback()):
             result.update({
-                'feedback': self._format_doc(value['feedback']['document']),
-                'raw_feedback': self._format_doc(value['feedback']['document'], doc_format = quizgen.constants.FORMAT_TEXT),
-                'initial_feedback': value['feedback']['text'],
+                'feedback': self._format_doc(value.feedback.document),
+                'raw_feedback': self._format_doc(value.feedback.document, doc_format = quizgen.constants.FORMAT_TEXT),
+                'initial_feedback': value.feedback.text,
             })
 
         return result

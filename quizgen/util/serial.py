@@ -24,22 +24,36 @@ class JSONSerializer(PODSerializer):
     so will be left as abstract.
     """
 
-    def __init__(self, validated = False, **kwargs):
-        self._validated = validated
+    def __init__(self, _skip_all_validation = False, _skip_class_validations = [], **kwargs):
+        self._skip_all_validation = _skip_all_validation
 
-    def validate(self, **kwargs):
+        # Keep track of the classes that have been validated, so they can be skipped.
+        self._validated_classes = {}
+
+        for cls in _skip_class_validations:
+            self._validated_classes[cls] = True
+
+    def validate(self, cls = None, **kwargs):
         """
         A wrapper for validation.
         This should be called by child classes in their constructor.
+        If cls is provided, then that specific _validate will be called.
+        Otherwise, whatever default _validate() is registered for self's class will be called.
         This method should raise an exception if the object is invalid,
-        and set self._validated = True if the object is valid.
+        and set self._validated_classes[cls] = True if the object is valid.
         """
 
-        if (self._validated):
+        if (self._skip_all_validation):
             return
 
-        self._validate(**kwargs)
-        self._validated = True
+        if (cls is None):
+            cls = self.__class__
+
+        if (self._validated_classes.get(cls, False)):
+            return
+
+        cls._validate(self, **kwargs)
+        self._validated_classes[cls] = True
 
     @abc.abstractmethod
     def _validate(self, **kwargs):
@@ -48,9 +62,6 @@ class JSONSerializer(PODSerializer):
         """
 
         pass
-
-    def is_valid(self):
-        return self._validated
 
     def to_pod(self, **kwargs):
         return self.to_dict(**kwargs)

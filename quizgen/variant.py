@@ -35,15 +35,11 @@ class Variant(quizgen.quiz.Quiz):
     Quizzes created from files will undergo full validation.
     """
 
-    def __init__(self, skip_quiz_validation = False, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.validate(skip_quiz_validation = skip_quiz_validation)
+        self.validate(cls = Variant, **kwargs)
 
-    def _validate(self, skip_quiz_validation = False, **kwargs):
-        # Potentially skip quiz validation.
-        if (not skip_quiz_validation):
-            super()._validate(**kwargs)
-
+    def _validate(self, **kwargs):
         # Ensure that each group only has a single question.
         for i in range(len(self.groups)):
             group = self.groups[i]
@@ -61,6 +57,7 @@ class Variant(quizgen.quiz.Quiz):
         group_data = DUMMY_GROUP_DATA.copy()
 
         group_data['questions'] = [question]
+        group_data['_skip_class_validations'] = [quizgen.group.Group]
         quiz_data['groups'] = [quizgen.group.Group(**group_data)]
 
-        return Variant(skip_quiz_validation = True, **quiz_data)
+        return Variant(**quiz_data)
