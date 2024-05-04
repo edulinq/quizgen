@@ -1,0 +1,9 @@
+{
+    "cli": "quizgen.cli.parse.quiz",
+    "arguments": [
+        "ZZZ.json"
+    ],
+    "error": true
+}
+---
+Provided path 'ZZZ.json' does not exist.

@@ -1,0 +1,10 @@
+{
+    "cli": "quizgen.cli.parse.quiz",
+    "arguments": [
+        "__DATA_DIR__(simple-quiz/quiz.json)",
+        "--format", "ZZZ"
+    ],
+    "error": true
+}
+---
+argument --format: invalid choice: 'ZZZ' (choose from 'html', 'json', 'tex', 'qti')
