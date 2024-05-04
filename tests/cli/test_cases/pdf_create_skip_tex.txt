@@ -1,0 +1,10 @@
+{
+    "cli": "quizgen.cli.pdf.create",
+    "arguments": [
+        "__DATA_DIR__(simple-quiz/quiz.json)",
+        "--skip-pdf",
+        "--outdir", "__TEMP_DIR__()",
+        "--skip-tex"
+    ]
+}
+---

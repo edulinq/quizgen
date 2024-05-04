@@ -8,6 +8,7 @@ import re
 import sys
 
 import tests.base
+import quizgen.util.file
 
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 TEST_CASES_DIR = os.path.join(THIS_DIR, "test_cases")
@@ -15,6 +16,7 @@ DATA_DIR = os.path.join(THIS_DIR, "data")
 
 TEST_CASE_SEP = '---'
 DATA_DIR_ID = '__DATA_DIR__'
+TEMP_DIR_ID = '__TEMP_DIR__'
 
 DEFAULT_OUTPUT_CHECK = 'content_equals'
 
@@ -23,8 +25,16 @@ class CLITest(tests.base.BaseTest):
     Test CLI tools.
     """
 
-    def _get_test_info(self, path):
+    _base_temp_dir = None
+
+    @classmethod
+    def setUpClass(cls):
+        CLITest._base_temp_dir = quizgen.util.file.get_temp_path('quizgen_CLITest_', rm = False)
+
+    def _get_test_info(self, test_name, path):
         options, expected_output = _read_test_file(path)
+
+        temp_dir = os.path.join(CLITest._base_temp_dir, test_name)
 
         module_name = options['cli']
         exit_status = options.get('exit_status', 0)
@@ -50,17 +60,28 @@ class CLITest(tests.base.BaseTest):
         cli_arguments += options.get('arguments', [])
 
         # Make any substitutions.
-        expected_output = _prepare_string(expected_output)
+        expected_output = _prepare_string(expected_output, temp_dir)
         for i in range(len(cli_arguments)):
-            cli_arguments[i] = _prepare_string(cli_arguments[i])
+            cli_arguments[i] = _prepare_string(cli_arguments[i], temp_dir)
 
         return module_name, cli_arguments, expected_output, output_check, exit_status, is_error
 
     def get_base_arguments(self):
         return {}
 
-def _prepare_string(text):
-    match = re.search(r'%s\(([^)]*)\)' % (DATA_DIR_ID), text)
+def _prepare_string(text, temp_dir):
+    replacements = [
+        (DATA_DIR_ID, DATA_DIR),
+        (TEMP_DIR_ID, temp_dir),
+    ]
+
+    for (key, base_dir) in replacements:
+        text = _replace_path(text, key, base_dir)
+
+    return text
+
+def _replace_path(text, key, base_dir):
+    match = re.search(r'%s\(([^)]*)\)' % (key), text)
     if (match is not None):
         filename = match.group(1)
 
@@ -68,9 +89,9 @@ def _prepare_string(text):
         filename = os.path.join(*filename.split('/'))
 
         if (filename == ''):
-            path = DATA_DIR
+            path = base_dir
         else:
-            path = os.path.join(DATA_DIR, filename)
+            path = os.path.join(base_dir, filename)
 
         text = text.replace(match.group(0), path)
 
@@ -103,11 +124,11 @@ def _discover_test_cases():
 
 def _add_test_case(path):
     test_name = 'test_cli__' + os.path.splitext(os.path.basename(path))[0]
-    setattr(CLITest, test_name, _get_test_method(path))
+    setattr(CLITest, test_name, _get_test_method(test_name, path))
 
-def _get_test_method(path):
+def _get_test_method(test_name, path):
     def __method(self):
-        module_name, cli_arguments, expected_output, output_check, expected_exit_status, is_error = self._get_test_info(path)
+        module_name, cli_arguments, expected_output, output_check, expected_exit_status, is_error = self._get_test_info(test_name, path)
         module = importlib.import_module(module_name)
 
         old_args = sys.argv
