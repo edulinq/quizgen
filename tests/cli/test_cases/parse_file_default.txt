@@ -5,7 +5,7 @@
 ---
 {
     "context": {
-        "base_dir": "/home/eriq/code/quizgen/tests/cli/data"
+        "base_dir": "__DATA_DIR__()"
     },
     "root": {
         "nodes": [
