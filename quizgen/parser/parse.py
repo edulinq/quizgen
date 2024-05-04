@@ -89,6 +89,20 @@ GRAMMAR = r'''
     NEWLINE: /\n/
 '''
 
+# Module-shared parser/transformer.
+_parser = None
+_transformer = None
+
+def _get_parser():
+    global _parser
+    global _transformer
+
+    if (_parser is None):
+        _parser = lark.Lark(GRAMMAR, start = 'document')
+        _transformer = _DocTransformer()
+
+    return _parser, _transformer
+
 class _DocTransformer(lark.Transformer):
     def document(self, blocks):
         return quizgen.parser.node.DocumentNode(blocks[0])
@@ -231,10 +245,10 @@ def parse_text(text, base_dir = '.'):
 
     text = _clean_text(text)
 
-    parser = lark.Lark(GRAMMAR, start = 'document')
-    ast = parser.parse(text)
+    parser, transformer = _get_parser()
 
-    document = _DocTransformer().transform(ast)
+    ast = parser.parse(text)
+    document = transformer.transform(ast)
     document.set_base_dir(base_dir)
 
     return quizgen.parser.common.ParsedText(text.strip(), document)
