@@ -29,7 +29,7 @@ class CLITest(tests.base.BaseTest):
 
     @classmethod
     def setUpClass(cls):
-        CLITest._base_temp_dir = quizgen.util.file.get_temp_path('quizgen_CLITest_', rm = False)
+        CLITest._base_temp_dir = quizgen.util.file.get_temp_path('quizgen_CLITest_')
 
     def _get_test_info(self, test_name, path):
         options, expected_output = _read_test_file(path)
