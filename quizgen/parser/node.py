@@ -55,8 +55,8 @@ class ParseNode(abc.ABC):
     def is_empty(self):
         return False
 
-    def to_json(self, indent = 4, **kwargs):
-        return json.dumps(self.to_pod(**kwargs), indent = indent)
+    def to_json(self, indent = 4, sort_keys = True, **kwargs):
+        return json.dumps(self.to_pod(**kwargs), indent = indent, sort_keys = sort_keys)
 
     def to_format(self, format, **kwargs):
         if (format == quizgen.constants.FORMAT_HTML):

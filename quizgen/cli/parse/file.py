@@ -23,7 +23,7 @@ def _get_parser():
 
     parser.add_argument('--format',
         action = 'store', type = str, default = quizgen.constants.FORMAT_JSON,
-        choices = quizgen.constants.DOC_FORMATS,
+        choices = quizgen.constants.PARSER_FORMATS,
         help = 'Output the parsed document in this format (default: %(default)s).')
 
     quizgen.log.set_cli_args(parser)

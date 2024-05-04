@@ -1,0 +1,9 @@
+{
+    "cli": "quizgen.cli.parse.file",
+    "arguments": [
+        "__DATA_DIR__(simple.md)",
+        "--format", "text"
+    ]
+}
+---
+A simple file.

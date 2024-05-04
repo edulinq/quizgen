@@ -1,0 +1,13 @@
+{
+    "cli": "quizgen.cli.parse.file",
+    "arguments": [
+        "__DATA_DIR__(simple.md)",
+        "--format", "html"
+    ]
+}
+---
+<div class='document'>
+<div class='block' style='margin-bottom: 1em'>
+<span>A simple file.</span>
+</div>
+</div>

@@ -16,9 +16,12 @@ BAD_DOCUMENTS_DIR = os.path.join(DOCUMENTS_DIR, "bad")
 QUESTIONS_FILENAME = 'question.json'
 
 class BaseTest(unittest.TestCase):
+    # See full diffs regardless of size.
+    maxDiff = None
+
     def assertJSONDictEqual(self, expected, actual):
-        expected_json = json.dumps(expected, indent = 4)
-        actual_json = json.dumps(actual, indent = 4)
+        expected_json = json.dumps(expected, indent = 4, sort_keys = True)
+        actual_json = json.dumps(actual, indent = 4, sort_keys = True)
 
         message = f"\n---\nExpected: {expected_json}\n###\nActual: {actual_json}\n---\n"
         self.assertDictEqual(expected, actual, msg = message)

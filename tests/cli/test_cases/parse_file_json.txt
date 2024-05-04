@@ -1,0 +1,28 @@
+{
+    "cli": "quizgen.cli.parse.file",
+    "arguments": [
+        "__DATA_DIR__(simple.md)",
+        "--format", "json"
+    ]
+}
+---
+{
+    "context": {
+        "base_dir": "/home/eriq/code/quizgen/tests/cli/data"
+    },
+    "root": {
+        "nodes": [
+            {
+                "nodes": [
+                    {
+                        "text": "A simple file.",
+                        "type": "normal_text"
+                    }
+                ],
+                "type": "text"
+            }
+        ],
+        "type": "block"
+    },
+    "type": "document"
+}

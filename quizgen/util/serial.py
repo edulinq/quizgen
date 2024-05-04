@@ -79,9 +79,9 @@ class JSONSerializer(PODSerializer):
 
         return _serialize(data, **kwargs)
 
-    def to_json(self, indent = 4, **kwargs):
+    def to_json(self, indent = 4, sort_keys = True, **kwargs):
         data = self.to_dict(**kwargs)
-        return json.dumps(data, indent = indent)
+        return json.dumps(data, indent = indent, sort_keys = sort_keys)
 
     def to_path(self, path, **kwargs):
         quizgen.util.file.write(path, self.to_json(**kwargs))
