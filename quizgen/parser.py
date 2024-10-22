@@ -608,7 +608,7 @@ class ListNode(ParseNode):
 
         for item in self._items:
             text = item.to_tex(**kwargs)
-            lines.append(f"    \item {text}")
+            lines.append(r'    \item %s' % (text))
 
         lines += [
             r'\end{itemize}',
