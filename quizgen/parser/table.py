@@ -155,7 +155,7 @@ class TableRowNode(quizgen.parser.node.ParseNode):
         cells_text = [cell.to_tex(style = style, **kwargs) for cell in self._cells]
 
         if (self._head and quizgen.parser.style.get_boolean_style_key(style, quizgen.parser.style.KEY_TABLE_HEAD_BOLD, quizgen.parser.style.DEFAULT_TABLE_HEAD_BOLD)):
-            cells_text = [quizgen.parser.text.BoldNode.bold_tex(text) for text in cells_text]
+            cells_text = [quizgen.parser.text.BoldNode.bold_tex(text, escape = False) for text in cells_text]
 
         return " & ".join(cells_text) + r' \\'
 

@@ -13,6 +13,7 @@ TEX_REPLACEMENTS = {
     '$': '\\$',
     '#': '\\#',
     '%': '\\%',
+    '^': '\\^',
     '_': '\\_',
     'π': '$\\pi$',
     '`': '\\`{}',
@@ -250,7 +251,9 @@ class BoldNode(BaseTextNode):
 
     @classmethod
     def bold_tex(cls, text, escape = True):
-        text = tex_escape(text)
+        if (escape):
+            text = tex_escape(text)
+
         return rf"\textbf{{{text}}}"
 
 class CodeNode(BaseTextNode):

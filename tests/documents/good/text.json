@@ -237,5 +237,77 @@
                 ]
             }
         }
+    },
+
+    {
+        "name": "Bold with Tex Escape",
+        "text": "**|**",
+        "formats": {
+            "text": "|",
+            "html": "<div class='block' style='margin-bottom: 1em'><span><strong>|</strong></span></div>",
+            "tex": "\\textbf{\\textbar{}}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "text",
+                        "nodes": [
+                            {
+                                "type": "bold_text",
+                                "text": "|"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Tex Escape Carrot",
+        "text": "^",
+        "formats": {
+            "text": "^",
+            "html": "<div class='block' style='margin-bottom: 1em'><span>^</span></div>",
+            "tex": "\\^",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "text",
+                        "nodes": [
+                            {
+                                "type": "normal_text",
+                                "text": "^"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Bold with Tex Escape Carrot",
+        "text": "**^**",
+        "formats": {
+            "text": "^",
+            "html": "<div class='block' style='margin-bottom: 1em'><span><strong>^</strong></span></div>",
+            "tex": "\\textbf{\\^}",
+            "json": {
+                "type": "block",
+                "nodes": [
+                    {
+                        "type": "text",
+                        "nodes": [
+                            {
+                                "type": "bold_text",
+                                "text": "^"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
     }
 ]
