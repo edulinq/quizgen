@@ -1,6 +1,6 @@
 import quizgen.common
 import quizgen.constants
-import quizgen.parser.parse
+import quizgen.parser.public
 import quizgen.question.base
 
 class MDD(quizgen.question.base.Question, question_type = quizgen.constants.QUESTION_TYPE_MDD):
@@ -21,7 +21,7 @@ class MDD(quizgen.question.base.Question, question_type = quizgen.constants.QUES
             values = self._validate_answer_list(answers, self.base_dir, min_correct = 1, max_correct = 1)
 
             self.answers[key] = {
-                'key': quizgen.parser.parse.parse_text(key, base_dir = self.base_dir),
+                'key': quizgen.parser.public.parse_text(key, base_dir = self.base_dir),
                 'values': values,
             }
 

@@ -3,10 +3,10 @@ import sys
 
 import quizgen.constants
 import quizgen.log
-import quizgen.parser.parse
+import quizgen.parser.public
 
 def run(args):
-    document = quizgen.parser.parse.parse_file(args.path).document
+    document = quizgen.parser.public.parse_file(args.path).document
 
     content = document.to_format(args.format)
     print(content)

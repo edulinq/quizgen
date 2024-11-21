@@ -1,16 +1,12 @@
-import os
-
 import json5
 import lark
 import lark.visitors
 
-import quizgen.parser.common
 import quizgen.parser.image
 import quizgen.parser.list
 import quizgen.parser.node
 import quizgen.parser.table
 import quizgen.parser.text
-import quizgen.util.file
 
 GRAMMAR = r'''
     document: blocks
@@ -238,10 +234,11 @@ def _clean_text(text):
 
     return text
 
-def parse_text(text, base_dir = '.'):
+# Returns (transformed text, document).
+def _parse_text(text, base_dir = '.'):
     # Special case for empty documents.
     if (text.strip() == ''):
-        return quizgen.parser.common.ParsedText('', quizgen.parser.node.DocumentNode([]))
+        return ('', quizgen.parser.node.DocumentNode([]))
 
     text = _clean_text(text)
 
@@ -251,13 +248,4 @@ def parse_text(text, base_dir = '.'):
     document = transformer.transform(ast)
     document.set_base_dir(base_dir)
 
-    return quizgen.parser.common.ParsedText(text.strip(), document)
-
-def parse_file(path):
-    if (not os.path.isfile(path)):
-        raise ValueError(f"Path to parse ('{path}') is not a file.")
-
-    text = quizgen.util.file.read(path)
-    base_dir = os.path.dirname(path)
-
-    return parse_text(text, base_dir = base_dir)
+    return (text.strip(), document)

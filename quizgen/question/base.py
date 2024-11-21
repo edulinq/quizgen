@@ -12,8 +12,7 @@ import re
 import json5
 
 import quizgen.common
-import quizgen.parser.node
-import quizgen.parser.parse
+import quizgen.parser.public
 import quizgen.question.common
 import quizgen.util.file
 import quizgen.util.serial
@@ -173,7 +172,7 @@ class Question(quizgen.util.serial.JSONSerializer):
             for value in target:
                 documents += self._collect_documents(value)
             return documents
-        elif (isinstance(target, quizgen.parser.common.ParsedText)):
+        elif (isinstance(target, quizgen.parser.public.ParsedText)):
             return [target.document]
         else:
             return []
@@ -265,7 +264,7 @@ class Question(quizgen.util.serial.JSONSerializer):
         self.feedback = new_feedback
 
     def _validate_feedback_item(self, item, label):
-        if ((item is None) or isinstance(item, quizgen.parser.common.ParsedText)):
+        if ((item is None) or isinstance(item, quizgen.parser.public.ParsedText)):
             # Nothing to do.
             return item
 
@@ -275,7 +274,7 @@ class Question(quizgen.util.serial.JSONSerializer):
         if (len(item) == 0):
             return None
 
-        return quizgen.parser.parse.parse_text(item, base_dir = self.base_dir)
+        return quizgen.parser.public.parse_text(item, base_dir = self.base_dir)
 
     def _validate_self_answer_list(self, min_correct = 0, max_correct = math.inf):
         self.answers = self._validate_answer_list(self.answers, self.base_dir,
@@ -346,7 +345,7 @@ class Question(quizgen.util.serial.JSONSerializer):
          - quizgen.question.common.ParsedTextWithFeedback (will be passed back without any checks).
          - Dict with required key 'text' and optional key 'feedback'.
 
-        If no exception is raised, a quizgen.question.common.ParsedTextWithFeedback (child of quizgen.parser.common.ParsedText)
+        If no exception is raised, a quizgen.question.common.ParsedTextWithFeedback (child of quizgen.parser.public.ParsedText)
         will be returned, even if there is no feedback.
         """
 
@@ -381,7 +380,7 @@ class Question(quizgen.util.serial.JSONSerializer):
         if (check_feedback):
             feedback = self._validate_feedback_item(item.get('feedback', None), label)
 
-        return quizgen.question.common.ParsedTextWithFeedback(quizgen.parser.parse.parse_text(text, base_dir = self.base_dir), feedback = feedback)
+        return quizgen.question.common.ParsedTextWithFeedback(quizgen.parser.public.parse_text(text, base_dir = self.base_dir), feedback = feedback)
 
     def _validate_fimb_answers(self):
         self._check_type(self.answers, dict, "'answers' key")
@@ -410,7 +409,7 @@ class Question(quizgen.util.serial.JSONSerializer):
                 new_values.append(self._validate_text_item(values[i], label))
 
             new_answers[key] = {
-                'key': quizgen.parser.parse.parse_text(key, base_dir = self.base_dir),
+                'key': quizgen.parser.public.parse_text(key, base_dir = self.base_dir),
                 'values': new_values,
             }
 

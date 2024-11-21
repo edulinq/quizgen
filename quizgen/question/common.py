@@ -1,13 +1,13 @@
 import quizgen.common
-import quizgen.parser.common
+import quizgen.parser.public
 import quizgen.util.serial
 
-class ParsedTextWithFeedback(quizgen.parser.common.ParsedText):
+class ParsedTextWithFeedback(quizgen.parser.public.ParsedText):
     def __init__(self, parsed_text, feedback = None):
         super().__init__(parsed_text.text, parsed_text.document)
 
-        if ((feedback is not None) and (not isinstance(feedback, quizgen.parser.common.ParsedText))):
-            raise quizgen.common.QuizValidationError("Text feedback must be quizgen.parser.common.ParsedText, found '%s'." % (str(type(feedback))))
+        if ((feedback is not None) and (not isinstance(feedback, quizgen.parser.public.ParsedText))):
+            raise quizgen.common.QuizValidationError("Text feedback must be quizgen.parser.public.ParsedText, found '%s'." % (str(type(feedback))))
 
         self.feedback = feedback
 
@@ -60,8 +60,8 @@ class NumericChoice(quizgen.util.serial.PODSerializer):
         self.value = value
         self.precision = precision
 
-        if ((feedback is not None) and (not isinstance(feedback, quizgen.parser.common.ParsedText))):
-            raise quizgen.common.QuizValidationError("Text feedback must be quizgen.parser.common.ParsedText, found '%s'." % (str(type(feedback))))
+        if ((feedback is not None) and (not isinstance(feedback, quizgen.parser.public.ParsedText))):
+            raise quizgen.common.QuizValidationError("Text feedback must be quizgen.parser.public.ParsedText, found '%s'." % (str(type(feedback))))
 
         self.feedback = feedback
 
