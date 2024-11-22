@@ -22,7 +22,7 @@ class ParsedText(quizgen.util.serial.PODSerializer):
         return self.text
 
 def parse_text(text, base_dir = '.'):
-    text, document = quizgen.parser.parse._parse_text(text, base_dir = base_dir)
+    text, document = quizgen.parser.parse._parse_text(text, base_dir)
     return ParsedText(text, document)
 
 def parse_file(path):

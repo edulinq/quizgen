@@ -3,6 +3,8 @@ Jinja2>=3.1.0
 beautifulsoup4>=4.10
 lark>=1.1.8
 json5>=0.9.14
+markdown-it-py>=3.0.0
+mdformat>=0.7.19
 requests>=2.31.0
 
 build
