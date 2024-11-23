@@ -1,3 +1,5 @@
+import markdown_it
+
 import json
 
 import quizgen.constants
@@ -16,7 +18,7 @@ class ParsedDocument(object):
         self._context[key] = value
 
     def to_markdown(self, **kwargs):
-        # TEST -- Existed for all to_*() methods.
+        # TEST -- Existed for all to_*() methods. Used when dealing with Canvas images.
         # context = copy.deepcopy(self._context)
         # context.update(kwargs)
 
@@ -36,7 +38,7 @@ class ParsedDocument(object):
     def to_pod(self, include_metadata = True, **kwargs):
         data = {
             'type': 'document',
-            'tokens': [token.as_dict() for token in self._tokens],
+            'ast': self.get_ast(),
         }
 
         if (include_metadata):
@@ -71,3 +73,24 @@ class ParsedDocument(object):
             return self.to_text(**kwargs)
         else:
             raise ValueError(f"Unknown format '{format}'.")
+
+    def get_ast(self):
+        """
+        Get an approximate represetation of this document's AST.
+        """
+
+        tree = markdown_it.tree.SyntaxTreeNode(self._tokens)
+        return _walk_ast(tree)
+
+def _walk_ast(node):
+    result = {
+        'type': node.type,
+    }
+
+    if (node.type in ('text', 'text_special')):
+        result['text'] = node.content
+
+    if (len(node.children) > 0):
+        result['children'] = [_walk_ast(child) for child in node.children]
+
+    return result

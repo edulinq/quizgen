@@ -3,17 +3,17 @@
         "name": "Single Word",
         "text": "Text",
         "formats": {
-            "text": "Text",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Text</span></div>",
+            "md": "Text",
+            "html": "<p>Text</p>",
             "tex": "Text",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": "Text"
                             }
                         ]
@@ -27,17 +27,17 @@
         "name": "Text with Spaces",
         "text": "Foo Bar",
         "formats": {
-            "text": "Foo Bar",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Foo Bar</span></div>",
+            "md": "Foo Bar",
+            "html": "<p>Foo Bar</p>",
             "tex": "Foo Bar",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": "Foo Bar"
                             }
                         ]
@@ -51,26 +51,24 @@
         "name": "Text with Implicit Newlines",
         "text": "\nFoo\nBar\n",
         "formats": {
-            "text": "Foo\nBar",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Foo</span><span>Bar</span></div>",
+            "md": "Foo\nBar",
+            "html": "<p>Foo\nBar</p>",
             "tex": "Foo\nBar",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": "Foo"
-                            }
-                        ]
-                    },
-                    {
-                        "type": "text",
-                        "nodes": [
+                            },
                             {
-                                "type": "normal_text",
+                                "type": "softbreak"
+                            },
+                            {
+                                "type": "text",
                                 "text": "Bar"
                             }
                         ]
@@ -82,26 +80,26 @@
 
     {
         "name": "Text with Explicit Linebreak",
-        "text": "\nFoo\\nBar\n",
+        "text": "\nFoo\\\nBar\n",
         "formats": {
-            "text": "Foo\n\nBar",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Foo</span><br /><span>Bar</span></div>",
+            "md": "Foo\\\nBar",
+            "html": "<p>Foo<br />Bar</p>",
             "tex": "Foo \\newline\nBar",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": "Foo"
                             },
                             {
-                                "type": "linebreak"
+                                "type": "hardbreak"
                             },
                             {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": "Bar"
                             }
                         ]
@@ -115,25 +113,30 @@
         "name": "Basic Italics",
         "text": "Some *italics* text.",
         "formats": {
-            "text": "Some italics text.",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Some</span><span><emph>italics</emph></span><span>text.</span></div>",
+            "md": "Some *italics* text.",
+            "html": "<p>Some <em>italics</em> text.</p>",
             "tex": "Some \\textit{italics} text.",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": "Some "
                             },
                             {
-                                "type": "italics_text",
-                                "text": "italics"
+                                "type": "em",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "italics"
+                                    }
+                                ]
                             },
                             {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": " text."
                             }
                         ]
@@ -144,29 +147,21 @@
     },
 
     {
-        "name": "Italics with Spaces",
-        "text": "Some * spaced  italics   * text.",
+        "name": "Non-Italics Stars",
+        "text": "Some * spaced  non-italics   * text.",
         "formats": {
-            "text": "Some  spaced  italics    text.",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Some</span><span><emph>spaced  italics</emph></span><span>text.</span></div>",
-            "tex": "Some \\textit{ spaced  italics   } text.",
+            "md": "Some * spaced non-italics * text.",
+            "html": "<p>Some * spaced  non-italics   * text.</p>",
+            "tex": "Some * spaced  non-italics   * text.",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "normal_text",
-                                "text": "Some "
-                            },
-                            {
-                                "type": "italics_text",
-                                "text": " spaced  italics   "
-                            },
-                            {
-                                "type": "normal_text",
-                                "text": " text."
+                                "type": "text",
+                                "text": "Some * spaced  non-italics   * text."
                             }
                         ]
                     }
@@ -179,25 +174,30 @@
         "name": "Basic Bold",
         "text": "Some **bold** text.",
         "formats": {
-            "text": "Some bold text.",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Some</span><span><strong>bold</strong></span><span>text.</span></div>",
+            "md": "Some **bold** text.",
+            "html": "<p>Some <strong>bold</strong> text.</p>",
             "tex": "Some \\textbf{bold} text.",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": "Some "
                             },
                             {
-                                "type": "bold_text",
-                                "text": "bold"
+                                "type": "strong",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "bold"
+                                    }
+                                ]
                             },
                             {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": " text."
                             }
                         ]
@@ -209,27 +209,32 @@
 
     {
         "name": "Bold with Spaces",
-        "text": "Some ** spaced  bold   ** text.",
+        "text": "Some **spaced  bold** text.",
         "formats": {
-            "text": "Some  spaced  bold    text.",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Some</span><span><strong>spaced  bold</strong></span><span>text.</span></div>",
+            "md": "Some **spaced bold** text.",
+            "html": "<p>Some <strong>spaced  bold</strong> text.</p>",
             "tex": "Some \\textbf{ spaced  bold   } text.",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": "Some "
                             },
                             {
-                                "type": "bold_text",
-                                "text": " spaced  bold   "
+                                "type": "strong",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "spaced  bold"
+                                    }
+                                ]
                             },
                             {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": " text."
                             }
                         ]
@@ -243,18 +248,31 @@
         "name": "Bold with Tex Escape",
         "text": "**|**",
         "formats": {
-            "text": "|",
-            "html": "<div class='block' style='margin-bottom: 1em'><span><strong>|</strong></span></div>",
+            "md": "**|**",
+            "html": "<p><strong>|</strong></p>",
             "tex": "\\textbf{\\textbar{}}",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "bold_text",
-                                "text": "|"
+                                "type": "text",
+                                "text": ""
+                            },
+                            {
+                                "type": "strong",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "|"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "text",
+                                "text": ""
                             }
                         ]
                     }
@@ -267,17 +285,17 @@
         "name": "Tex Escape Carrot",
         "text": "^",
         "formats": {
-            "text": "^",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>^</span></div>",
+            "md": "^",
+            "html": "<p>^</p>",
             "tex": "\\^",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": "^"
                             }
                         ]
@@ -291,18 +309,31 @@
         "name": "Bold with Tex Escape Carrot",
         "text": "**^**",
         "formats": {
-            "text": "^",
-            "html": "<div class='block' style='margin-bottom: 1em'><span><strong>^</strong></span></div>",
+            "md": "**^**",
+            "html": "<p><strong>^</strong></p>",
             "tex": "\\textbf{\\^}",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "bold_text",
-                                "text": "^"
+                                "type": "text",
+                                "text": ""
+                            },
+                            {
+                                "type": "strong",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "^"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "text",
+                                "text": ""
                             }
                         ]
                     }

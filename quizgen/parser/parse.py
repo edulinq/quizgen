@@ -2,6 +2,15 @@ import markdown_it
 
 import quizgen.parser.document
 
+_parser = None
+_options = None
+
+def _get_parser():
+    _parser = markdown_it.MarkdownIt('js-default')
+    _options = _parser.options
+
+    return _parser, _options
+
 def _clean_text(text):
     # Remove carriage returns.
     text = text.replace("\r", '')
@@ -23,8 +32,8 @@ def _parse_text(text, base_dir):
 
     text = _clean_text(text)
 
-    # TEST -- Cache parser?
-    parser = markdown_it.MarkdownIt('js-default')
+    parser, _ = _get_parser()
+
     tokens = parser.parse(text)
     document = quizgen.parser.document.ParsedDocument(tokens, base_dir = base_dir)
 

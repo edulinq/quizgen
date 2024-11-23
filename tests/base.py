@@ -26,6 +26,10 @@ class BaseTest(unittest.TestCase):
         message = f"\n---\nExpected: {expected_json}\n###\nActual: {actual_json}\n---\n"
         self.assertDictEqual(expected, actual, msg = message)
 
+    def assertLongStringEqual(self, expected, actual):
+        message = f"\n--- expected ---\n{expected}\n--- actual ---\n{actual}\n---\n"
+        self.assertEqual(expected, actual, msg = message)
+
 def discover_question_tests():
     good_paths = list(sorted(glob.glob(os.path.join(GOOD_QUESTIONS_DIR, "**", QUESTIONS_FILENAME), recursive = True)))
     bad_paths = list(sorted(glob.glob(os.path.join(BAD_QUESTIONS_DIR, "**", QUESTIONS_FILENAME), recursive = True)))
