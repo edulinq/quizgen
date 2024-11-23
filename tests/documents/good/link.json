@@ -3,19 +3,24 @@
         "name": "Basic Link",
         "text": "[text](url)",
         "formats": {
-            "text": "text (url)",
-            "html": "<div class='block' style='margin-bottom: 1em'><a href='url'>text</a></div>",
+            "md": "[text](url)",
+            "html": "<p><a href='url'>text</a></p>",
             "tex": "\\href{url}{text}",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
                                 "type": "link",
-                                "text": "text",
-                                "link": "url"
+                                "href": "url",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "text"
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -28,19 +33,24 @@
         "name": "Link with No URL",
         "text": "[text]( )",
         "formats": {
-            "text": "text ()",
-            "html": "<div class='block' style='margin-bottom: 1em'><a href=''>text</a></div>",
+            "md": "[text](<>)",
+            "html": "<p><a href=''>text</a></p>",
             "tex": "\\href{}{text}",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
                                 "type": "link",
-                                "text": "text",
-                                "link": ""
+                                "href": "",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "text"
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -53,19 +63,24 @@
         "name": "Link with No Text",
         "text": "[ ](url)",
         "formats": {
-            "text": "(url)",
-            "html": "<div class='block' style='margin-bottom: 1em'><a href='url'>url</a></div>",
+            "md": "[ ](url)",
+            "html": "<p><a href='url'></a></p>",
             "tex": "\\url{url}",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
                                 "type": "link",
-                                "text": "",
-                                "link": "url"
+                                "href": "url",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": " "
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -76,21 +91,26 @@
 
     {
         "name": "Link with Extra Whitesspace",
-        "text": "[ some text ]( some url )",
+        "text": "[ some text ](< some url >)",
         "formats": {
-            "text": "some text (some url)",
-            "html": "<div class='block' style='margin-bottom: 1em'><a href='some url'>some text</a></div>",
+            "md": "[ some text ](some%20url)",
+            "html": "<p><a href='some%20url'>some text</a></p>",
             "tex": "\\href{some url}{some text}",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
                                 "type": "link",
-                                "text": "some text",
-                                "link": "some url"
+                                "href": "some%20url",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": " some text "
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -101,21 +121,26 @@
 
     {
         "name": "Link with Escaped Characters",
-        "text": "[ some [\\] text ]( some (\\) url )",
+        "text": "[ some \\* text ](< some (\\\\) url >)",
         "formats": {
-            "text": "some [] text (some () url)",
-            "html": "<div class='block' style='margin-bottom: 1em'><a href='some () url'>some [] text</a></div>",
+            "md": "[ some * text ](<some%20(%5C)%20url>)",
+            "html": "<p><a href='some%20(%5C)%20url'>some * text</a></p>",
             "tex": "\\href{some () url}{some [] text}",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
                                 "type": "link",
-                                "text": "some [] text",
-                                "link": "some () url"
+                                "href": "some%20(%5C)%20url",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": " some * text "
+                                    }
+                                ]
                             }
                         ]
                     }

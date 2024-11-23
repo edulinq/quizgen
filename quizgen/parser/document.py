@@ -96,6 +96,9 @@ def _walk_ast(node):
     if (node.type in CONTENT_NODES):
         result['text'] = node.content
 
+    if (node.type == 'link'):
+        result['href'] = node.attrGet('href')
+
     if (len(node.children) > 0):
         result['children'] = [_walk_ast(child) for child in node.children]
 

@@ -85,9 +85,6 @@ Links are done the same as in markdown: `[text](url)`.
 ```
 // A normal link.
 [Normal Link](https://linqs.org)
-
-// A link with no text (the url will be used as the text).
-[ ](https://some.link/with/no.text
 ```
 
 ## Images
