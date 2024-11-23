@@ -6,6 +6,12 @@ import quizgen.constants
 import quizgen.parser.render
 
 BASE_DIR_KEY = 'base_dir'
+CONTENT_NODES = {
+    'code_inline',
+    'fence',
+    'text',
+    'text_special',
+}
 
 class ParsedDocument(object):
     def __init__(self, tokens, base_dir = '.'):
@@ -87,7 +93,7 @@ def _walk_ast(node):
         'type': node.type,
     }
 
-    if (node.type in ('text', 'text_special')):
+    if (node.type in CONTENT_NODES):
         result['text'] = node.content
 
     if (len(node.children) > 0):
