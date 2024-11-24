@@ -3,19 +3,24 @@
         "name": "Basic Remote Image",
         "text": "![alt text](http://test.edulinq.org/image.png)",
         "formats": {
-            "text": "alt text (http://test.edulinq.org/image.png)",
-            "html": "<div class='block' style='margin-bottom: 1em'><img alt='alt text' src='http://test.edulinq.org/image.png' width='100.00%' /></div>",
+            "md": "![alt text](http://test.edulinq.org/image.png)",
+            "html": "<p><img alt='alt text' src='http://test.edulinq.org/image.png' width='100.00%' /></p>",
             "tex": "\\includegraphics[width=1.00\\textwidth]{http://test.edulinq.org/image.png}",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
                                 "type": "image",
-                                "text": "alt text",
-                                "link": "http://test.edulinq.org/image.png"
+                                "src": "http://test.edulinq.org/image.png",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "alt text"
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -28,19 +33,24 @@
         "name": "Basic Local Image",
         "text": "![alt text](../../data/tiny.png)",
         "formats": {
-            "text": "alt text (../../data/tiny.png)",
-            "html": "<div class='block' style='margin-bottom: 1em'><img alt='alt text' src='data:image/.png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAEUlEQVQI12NgYGD4z4AE/gMADwMB/4OExBQAAAAASUVORK5CYII=' width='100.00%' /></div>",
+            "md": "![alt text](../../data/tiny.png)",
+            "html": "<p><img alt='alt text' src='data:image/.png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAEUlEQVQI12NgYGD4z4AE/gMADwMB/4OExBQAAAAASUVORK5CYII=' width='100.00%' /></p>",
             "tex": "\\includegraphics[width=1.00\\textwidth]{../../data/tiny.png}",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
                                 "type": "image",
-                                "text": "alt text",
-                                "link": "../../data/tiny.png"
+                                "src": "../../data/tiny.png",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "alt text"
+                                    }
+                                ]
                             }
                         ]
                     }

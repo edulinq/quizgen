@@ -1,11 +1,13 @@
 import markdown_it
 
+import copy
 import json
+import types
 
 import quizgen.constants
 import quizgen.parser.render
+import quizgen.parser.common
 
-BASE_DIR_KEY = 'base_dir'
 CONTENT_NODES = {
     'code_inline',
     'fence',
@@ -13,22 +15,31 @@ CONTENT_NODES = {
     'text_special',
 }
 
+# Pull these attributes out of these specific token types when building the AST.
+AST_TOKEN_ATTRS = {
+    'link': [
+        'href'
+    ],
+    'image': [
+        'src'
+    ]
+}
+
+# TODO -- Rename 'qg' to 'qc'.
+
 class ParsedDocument(object):
     def __init__(self, tokens, base_dir = '.'):
         self._tokens = tokens
         self._context = {
-            BASE_DIR_KEY: base_dir,
+            quizgen.parser.common.BASE_DIR_KEY: base_dir,
         }
 
     def set_context_value(self, key, value):
         self._context[key] = value
 
     def to_markdown(self, **kwargs):
-        # TEST -- Existed for all to_*() methods. Used when dealing with Canvas images.
-        # context = copy.deepcopy(self._context)
-        # context.update(kwargs)
-
-        return quizgen.parser.render.markdown(self._tokens)
+        env = {quizgen.parser.common.CONTEXT_ENV_KEY: self._prep_context(kwargs)}
+        return quizgen.parser.render.markdown(self._tokens, env = env)
 
     def to_tex(self, **kwargs):
         # TEST
@@ -36,10 +47,12 @@ class ParsedDocument(object):
 
     def to_text(self, **kwargs):
         # TODO: Make more simple than markdown.
-        return quizgen.parser.render.markdown(self._tokens)
+        env = {quizgen.parser.common.CONTEXT_ENV_KEY: self._prep_context(kwargs)}
+        return quizgen.parser.render.markdown(self._tokens, env = env)
 
     def to_html(self, **kwargs):
-        return quizgen.parser.render.html(self._tokens)
+        env = {quizgen.parser.common.CONTEXT_ENV_KEY: self._prep_context(kwargs)}
+        return quizgen.parser.render.html(self._tokens, env = env)
 
     def to_pod(self, include_metadata = True, **kwargs):
         data = {
@@ -88,6 +101,19 @@ class ParsedDocument(object):
         tree = markdown_it.tree.SyntaxTreeNode(self._tokens)
         return _walk_ast(tree)
 
+    def _prep_context(self, options = {}):
+        """
+        Prep an immutable copy/reference to the context to be passed for rendering.
+        """
+
+        # Make a copy of the context only if we need to.
+        context = self._context
+        if (len(options) > 0):
+            context = copy.deepcopy(context)
+            context.update(options)
+
+        return types.MappingProxyType(context)
+
 def _walk_ast(node):
     result = {
         'type': node.type,
@@ -96,8 +122,8 @@ def _walk_ast(node):
     if (node.type in CONTENT_NODES):
         result['text'] = node.content
 
-    if (node.type == 'link'):
-        result['href'] = node.attrGet('href')
+    for name in AST_TOKEN_ATTRS.get(node.type, []):
+        result[name] = node.attrGet(name)
 
     if (len(node.children) > 0):
         result['children'] = [_walk_ast(child) for child in node.children]

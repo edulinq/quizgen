@@ -84,7 +84,7 @@ Links are done the same as in markdown: `[text](url)`.
 
 ```
 // A normal link.
-[Normal Link](https://linqs.org)
+[Normal Link](https://edulinq.org)
 ```
 
 ## Images
