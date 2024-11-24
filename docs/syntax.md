@@ -36,13 +36,9 @@ Text is generally written the same way as markdown.
 The following characters need to be escaped with a backslash when they appear in inline text:
  - `/` - Slash / Forward Slash
  - `\` - Backslash
- - `-` - Dash
  - `*` - Star / Asterisk
- - `|` - Pipe
  - `$` - Dollar Sign
- - `{` - Open Brace
  - `[` - Open Bracket
- - `!` - Bang / Exclamation Point
  - `` ` `` - Backtick
 
 These characters do not need to be escaped inside code, equations, and comments.

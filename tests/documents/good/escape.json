@@ -1,19 +1,43 @@
 [
     {
+        "name": "Escaped Slash",
+        "text": "Escape \\/ slash.",
+        "formats": {
+            "md": "Escape / slash.",
+            "html": "<p>Escape / slash.</p>",
+            "tex": "Escape / slash.",
+            "json": {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "text",
+                                "text": "Escape / slash."
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
         "name": "Escaped Backslash",
         "text": "Escape \\\\ backslash.",
         "formats": {
-            "text": "Escape \\ backslash.",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Escape \\ backslash.</span></div>",
+            "md": "Escape \\\\ backslash.",
+            "html": "<p>Escape \\ backslash.</p>",
             "tex": "Escape \\textbackslash{} backslash.",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": "Escape \\ backslash."
                             }
                         ]
@@ -27,17 +51,17 @@
         "name": "Escaped Asterisk",
         "text": "Escape \\* asterisk.",
         "formats": {
-            "text": "Escape * asterisk.",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Escape * asterisk.</span></div>",
+            "md": "Escape * asterisk.",
+            "html": "<p>Escape * asterisk.</p>",
             "tex": "Escape * asterisk.",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": "Escape * asterisk."
                             }
                         ]
@@ -48,93 +72,21 @@
     },
 
     {
-        "name": "Escaped Pipe",
-        "text": "Escape \\| pipe.",
+        "name": "Escaped Dollar Sign",
+        "text": "Escape \\$ dollar sign.",
         "formats": {
-            "text": "Escape | pipe.",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Escape | pipe.</span></div>",
-            "tex": "Escape \\textbar{} pipe.",
+            "md": "Escape $ dollar sign.",
+            "html": "<p>Escape $ dollar sign.</p>",
+            "tex": "Escape $ dollar sign.",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "normal_text",
-                                "text": "Escape | pipe."
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
-    },
-
-    {
-        "name": "Escaped Backtick",
-        "text": "Escape \\` backtick.",
-        "formats": {
-            "text": "Escape ` backtick.",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Escape ` backtick.</span></div>",
-            "tex": "Escape \\`{} backtick.",
-            "json": {
-                "type": "block",
-                "nodes": [
-                    {
-                        "type": "text",
-                        "nodes": [
-                            {
-                                "type": "normal_text",
-                                "text": "Escape ` backtick."
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
-    },
-
-    {
-        "name": "Escaped Dash",
-        "text": "Escape \\- dash.",
-        "formats": {
-            "text": "Escape - dash.",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Escape - dash.</span></div>",
-            "tex": "Escape - dash.",
-            "json": {
-                "type": "block",
-                "nodes": [
-                    {
-                        "type": "text",
-                        "nodes": [
-                            {
-                                "type": "normal_text",
-                                "text": "Escape - dash."
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
-    },
-
-    {
-        "name": "Escaped Bang",
-        "text": "Escape \\! bang.",
-        "formats": {
-            "text": "Escape ! bang.",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Escape ! bang.</span></div>",
-            "tex": "Escape ! bang.",
-            "json": {
-                "type": "block",
-                "nodes": [
-                    {
-                        "type": "text",
-                        "nodes": [
-                            {
-                                "type": "normal_text",
-                                "text": "Escape ! bang."
+                                "type": "text",
+                                "text": "Escape $ dollar sign."
                             }
                         ]
                     }
@@ -147,17 +99,17 @@
         "name": "Escaped Open Bracket",
         "text": "Escape \\[ open bracket.",
         "formats": {
-            "text": "Escape [ open bracket.",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Escape [ open bracket.</span></div>",
+            "md": "Escape \\[ open bracket.",
+            "html": "<p>Escape [ open bracket.</p>",
             "tex": "Escape [ open bracket.",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": "Escape [ open bracket."
                             }
                         ]
@@ -168,45 +120,21 @@
     },
 
     {
-        "name": "Escaped Open Brace",
-        "text": "Escape \\{ open brace.",
+        "name": "Escaped Backtick",
+        "text": "Escape \\` backtick.",
         "formats": {
-            "text": "Escape { open brace.",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Escape { open brace.</span></div>",
-            "tex": "Escape \\{ open brace.",
+            "md": "Escape \\` backtick.",
+            "html": "<p>Escape ` backtick.</p>",
+            "tex": "Escape \\`{} backtick.",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "normal_text",
-                                "text": "Escape { open brace."
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
-    },
-
-    {
-        "name": "Escaped Slash",
-        "text": "Escape \\/ slash.",
-        "formats": {
-            "text": "Escape / slash.",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Escape / slash.</span></div>",
-            "tex": "Escape / slash.",
-            "json": {
-                "type": "block",
-                "nodes": [
-                    {
-                        "type": "text",
-                        "nodes": [
-                            {
-                                "type": "normal_text",
-                                "text": "Escape / slash."
+                                "type": "text",
+                                "text": "Escape ` backtick."
                             }
                         ]
                     }
