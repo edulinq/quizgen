@@ -11,6 +11,8 @@ import quizgen.parser.common
 CONTENT_NODES = {
     'code_inline',
     'fence',
+    'math_block',
+    'math_inline',
     'text',
     'text_special',
 }

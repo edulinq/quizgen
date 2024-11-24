@@ -5,9 +5,8 @@ import re
 import bs4
 
 import quizgen.constants
+import quizgen.parser.math
 import quizgen.parser.public
-# TEST
-# import quizgen.parser.text
 import tests.base
 
 class TestParser(tests.base.BaseTest):
@@ -22,14 +21,12 @@ class TestParser(tests.base.BaseTest):
     @classmethod
     def setUpClass(cls):
         # Disable KaTeX for testing.
-        # TEST
-        # quizgen.parser.text.EquationNode.katex_available = False
+        quizgen.parser.math._katex_available = False
         pass
 
     @classmethod
     def tearDownClass(cls):
-        # TEST
-        # quizgen.parser.text.EquationNode.katex_available = None
+        quizgen.parser.math._katex_available = None
         pass
 
 def _add_good_parse_questions():

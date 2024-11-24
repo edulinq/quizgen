@@ -248,7 +248,7 @@
         "text": "| 1 | -2 | 3^ |\n|-----|-------|-------------------|\n| *a* | **b** | `c()` and $ d() $ |",
         "formats": {
             "md": "| 1   | -2    | 3^                |\n| --- | ----- | ----------------- |\n| *a* | **b** | `c()` and $ d() $ |",
-            "html": "<table><thead><tr><th>1</th><th>-2</th><th>3^</th></tr></thead><tbody><tr><td><em>a</em></td><td><strong>b</strong></td><td><code>c()</code>and $ d() $</td></tr></tbody></table>",
+            "html": "<table><thead><tr><th>1</th><th>-2</th><th>3^</th></tr></thead><tbody><tr><td><em>a</em></td><td><strong>b</strong></td><td><code>c()</code>and <span><code>d()</code></span></td></tr></tbody></table>",
             "tex": "",
             "json": {
                 "type": "table",
@@ -369,7 +369,11 @@
                                                     },
                                                     {
                                                         "type": "text",
-                                                        "text": " and $ d() $"
+                                                        "text": " and "
+                                                    },
+                                                    {
+                                                        "type": "math_inline",
+                                                        "text": " d() "
                                                     }
                                                 ]
                                             }

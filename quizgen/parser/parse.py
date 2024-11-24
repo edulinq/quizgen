@@ -1,4 +1,5 @@
 import markdown_it
+import mdit_py_plugins.dollarmath
 
 import quizgen.parser.document
 
@@ -9,8 +10,10 @@ EXTRA_ENABLES = [
     'table',
 ]
 
+# TEST - We may be able to use the containers plugin for style blocks.
+
 def _get_parser():
-    _parser = markdown_it.MarkdownIt('commonmark').enable(EXTRA_ENABLES)
+    _parser = markdown_it.MarkdownIt('commonmark').enable(EXTRA_ENABLES).use(mdit_py_plugins.dollarmath.dollarmath_plugin)
     _options = _parser.options
 
     return _parser, _options
