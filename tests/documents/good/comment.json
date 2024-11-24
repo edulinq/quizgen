@@ -1,72 +1,35 @@
 [
     {
-        "name": "Basic Slash Comment",
-        "text": "// Some comment.",
+        "name": "Basic Comment",
+        "text": "<!-- Some comment. -->",
         "formats": {
-            "text": "",
-            "html": "<div class='block' style='margin-bottom: 1em'></div>",
+            "md": "",
+            "html": "",
             "tex": "",
-            "json": {
-                "type": "block",
-                "nodes": [
-                    {
-                        "type": "text",
-                        "nodes": [
-                            {
-                                "type": "comment",
-                                "text": "Some comment."
-                            }
-                        ]
-                    }
-                ]
-            }
+            "json": {}
         }
     },
 
     {
-        "name": "Slash Comment with Slashes",
-        "text": "// Some // comment. \\\\ * | ` - ! [ / ",
+        "name": "Inline Comment",
+        "text": "Some <!-- Some comment. --> Text",
         "formats": {
-            "text": "",
-            "html": "<div class='block' style='margin-bottom: 1em'></div>",
+            "md": "Some  Text",
+            "html": "<p>Some  Text</p>",
             "tex": "",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "inline",
+                        "children": [
                             {
-                                "type": "comment",
-                                "text": "Some // comment. \\\\ * | ` - ! [ /"
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
-    },
-
-    {
-        "name": "Mid-Line Slash Comment",
-        "text": "Some // comment.",
-        "formats": {
-            "text": "Some",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Some</span></div>",
-            "tex": "Some",
-            "json": {
-                "type": "block",
-                "nodes": [
-                    {
-                        "type": "text",
-                        "nodes": [
-                            {
-                                "type": "normal_text",
+                                "type": "text",
                                 "text": "Some "
                             },
                             {
-                                "type": "comment",
-                                "text": "comment."
+                                "type": "text",
+                                "text": " Text"
                             }
                         ]
                     }

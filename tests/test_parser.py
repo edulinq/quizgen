@@ -63,11 +63,11 @@ def _get_good_parse_test(text, doc_format, base_expected, base_dir, options):
                 'type': 'document',
                 'ast': {
                     'type': 'root',
-                    'children': [
-                        base_expected,
-                    ],
                 },
             }
+
+            if (len(base_expected) > 0):
+                expected['ast']['children'] = [base_expected]
 
             self.assertJSONDictEqual(expected, result)
         elif (doc_format == quizgen.constants.FORMAT_HTML):
