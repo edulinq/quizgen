@@ -6,7 +6,7 @@ _parser = None
 _options = None
 
 def _get_parser():
-    _parser = markdown_it.MarkdownIt('js-default')
+    _parser = markdown_it.MarkdownIt('js-default').enable('table')
     _options = _parser.options
 
     return _parser, _options

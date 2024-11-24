@@ -18,11 +18,17 @@ CONTENT_NODES = {
 # Pull these attributes out of these specific token types when building the AST.
 AST_TOKEN_ATTRS = {
     'link': [
-        'href'
+        'href',
     ],
     'image': [
-        'src'
-    ]
+        'src',
+    ],
+    'th': [
+        'style',
+    ],
+    'td': [
+        'style',
+    ],
 }
 
 # TODO -- Rename 'qg' to 'qc'.
@@ -123,7 +129,9 @@ def _walk_ast(node):
         result['text'] = node.content
 
     for name in AST_TOKEN_ATTRS.get(node.type, []):
-        result[name] = node.attrGet(name)
+        value = node.attrGet(name)
+        if (value is not None):
+            result[name] = value
 
     if (len(node.children) > 0):
         result['children'] = [_walk_ast(child) for child in node.children]

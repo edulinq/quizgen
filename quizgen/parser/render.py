@@ -1,4 +1,5 @@
 import markdown_it.renderer
+import mdformat.plugins
 import mdformat.renderer
 
 import quizgen.constants
@@ -25,6 +26,10 @@ def html(tokens, env = {}):
 
 def markdown(tokens, env = {}):
     _, options = quizgen.parser.parse._get_parser()
+
+    extensions = options.get('parser_extension', [])
+    extensions.append(mdformat.plugins.PARSER_EXTENSIONS['tables'])
+    options['parser_extension'] = extensions
 
     renderer = mdformat.renderer.MDRenderer()
     return renderer.render(tokens, options, env)

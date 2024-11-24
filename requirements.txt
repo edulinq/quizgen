@@ -5,6 +5,7 @@ lark>=1.1.8
 json5>=0.9.14
 markdown-it-py>=3.0.0
 mdformat>=0.7.19
+mdformat_tables>=1.0.0
 requests>=2.31.0
 
 build
