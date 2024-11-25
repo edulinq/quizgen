@@ -337,10 +337,6 @@
                                                 "type": "inline",
                                                 "children": [
                                                     {
-                                                        "type": "text",
-                                                        "text": ""
-                                                    },
-                                                    {
                                                         "type": "strong",
                                                         "children": [
                                                             {
@@ -348,10 +344,6 @@
                                                                 "text": "b"
                                                             }
                                                         ]
-                                                    },
-                                                    {
-                                                        "type": "text",
-                                                        "text": ""
                                                     }
                                                 ]
                                             }

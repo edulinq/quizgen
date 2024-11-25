@@ -8,15 +8,6 @@ import quizgen.constants
 import quizgen.parser.render
 import quizgen.parser.common
 
-CONTENT_NODES = {
-    'code_inline',
-    'fence',
-    'math_block',
-    'math_inline',
-    'text',
-    'text_special',
-}
-
 # Pull these attributes out of these specific token types when building the AST.
 AST_TOKEN_ATTRS = {
     'link': [
@@ -127,7 +118,7 @@ def _walk_ast(node):
         'type': node.type,
     }
 
-    if (node.type in CONTENT_NODES):
+    if (node.type in quizgen.parser.common.CONTENT_NODES):
         result['text'] = node.content
 
     for name in AST_TOKEN_ATTRS.get(node.type, []):

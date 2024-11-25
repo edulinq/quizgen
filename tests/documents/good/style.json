@@ -1,14 +1,14 @@
 [
     {
         "name": "Empty Root Style",
-        "text": "{{ \"font-size\": 12 }}",
+        "text": "<style> \"font-size\": 12 </style>",
         "formats": {
-            "text": "",
+            "md": "",
             "html": "",
             "tex": "",
             "json": {
-                "type": "block",
-                "nodes": [],
+                "type": "paragraph",
+                "children": [],
                 "style": {
                     "font-size": 12
                 }
@@ -20,20 +20,20 @@
         "name": "Root Style Alongside Text",
         "text": "Base Style\n{{ \"font-size\": 12 }}",
         "formats": {
-            "text": "Base Style",
+            "md": "Base Style",
             "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; font-size: 12.00pt'><span>Base Style</span></div>",
             "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\nBase Style\n\\endgroup",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "block",
-                        "nodes": [
+                        "type": "paragraph",
+                        "children": [
                             {
                                 "type": "text",
-                                "nodes": [
+                                "children": [
                                     {
-                                        "type": "normal_text",
+                                        "type": "text",
                                         "text": "Base Style"
                                     }
                                 ]
@@ -52,32 +52,32 @@
         "name": "Nest Override Style",
         "text": "Root\n{{ \"font-size\": 12 }}\n{-\nChild\n{{ \"font-size\": 10 }}\n-}",
         "formats": {
-            "text": "Root\nChild",
+            "md": "Root\nChild",
             "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; font-size: 12.00pt'><span>Root</span><div class='block' style='margin-bottom: 1em; font-size: 10.00pt'><span>Child</span></div></div></div>",
             "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\nRoot\n\\begingroup\\fontsize{10.00pt}{12.00pt}\\selectfont\nChild\n\\endgroup\n\\endgroup",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "block",
-                        "nodes": [
+                        "type": "paragraph",
+                        "children": [
                             {
                                 "type": "text",
-                                "nodes": [
+                                "children": [
                                     {
-                                        "type": "normal_text",
+                                        "type": "text",
                                         "text": "Root"
                                     }
                                 ]
                             },
                             {
-                                "type": "block",
-                                "nodes": [
+                                "type": "paragraph",
+                                "children": [
                                     {
                                         "type": "text",
-                                        "nodes": [
+                                        "children": [
                                             {
-                                                "type": "normal_text",
+                                                "type": "text",
                                                 "text": "Child"
                                             }
                                         ]
@@ -102,32 +102,32 @@
         "comment": "Clearing style is not actually useful for font size, since it is set and applies to the parent block.",
         "text": "Root\n{{ \"font-size\": 12 }}\n{-\nChild\n{{ \"font-size\": null }}\n-}",
         "formats": {
-            "text": "Root\nChild",
+            "md": "Root\nChild",
             "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; font-size: 12.00pt'><span>Root</span><div class='block' style='margin-bottom: 1em'><span>Child</span></div></div></div>",
             "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\nRoot\nChild\n\\endgroup",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "block",
-                        "nodes": [
+                        "type": "paragraph",
+                        "children": [
                             {
                                 "type": "text",
-                                "nodes": [
+                                "children": [
                                     {
-                                        "type": "normal_text",
+                                        "type": "text",
                                         "text": "Root"
                                     }
                                 ]
                             },
                             {
-                                "type": "block",
-                                "nodes": [
+                                "type": "paragraph",
+                                "children": [
                                     {
                                         "type": "text",
-                                        "nodes": [
+                                        "children": [
                                             {
-                                                "type": "normal_text",
+                                                "type": "text",
                                                 "text": "Child"
                                             }
                                         ]

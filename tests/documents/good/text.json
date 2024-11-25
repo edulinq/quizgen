@@ -258,10 +258,6 @@
                         "type": "inline",
                         "children": [
                             {
-                                "type": "text",
-                                "text": ""
-                            },
-                            {
                                 "type": "strong",
                                 "children": [
                                     {
@@ -269,10 +265,6 @@
                                         "text": "|"
                                     }
                                 ]
-                            },
-                            {
-                                "type": "text",
-                                "text": ""
                             }
                         ]
                     }
@@ -319,10 +311,6 @@
                         "type": "inline",
                         "children": [
                             {
-                                "type": "text",
-                                "text": ""
-                            },
-                            {
                                 "type": "strong",
                                 "children": [
                                     {
@@ -330,10 +318,6 @@
                                         "text": "^"
                                     }
                                 ]
-                            },
-                            {
-                                "type": "text",
-                                "text": ""
                             }
                         ]
                     }
