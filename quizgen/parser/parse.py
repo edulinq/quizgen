@@ -1,5 +1,6 @@
 import re
 
+import json5
 import markdown_it
 import mdit_py_plugins.container
 import mdit_py_plugins.dollarmath
@@ -18,7 +19,10 @@ PLUGINS = [
     (mdit_py_plugins.container.container_plugin, {'name': 'block'}),
 ]
 
-# TEST - We may be able to use the containers plugin for style blocks.
+HTML_TOKENS = {
+    'html_block',
+    'html_inline',
+}
 
 def _get_parser():
     _parser = markdown_it.MarkdownIt('commonmark')
@@ -70,6 +74,7 @@ def _post_process(tokens):
     """
 
     tokens = _add_root_block(tokens)
+    tokens = _process_style(tokens)
     tokens = _remove_html(tokens)
     tokens = _remove_empty_tokens(tokens)
 
@@ -80,13 +85,80 @@ def _add_root_block(tokens):
     Add a root block element to the document.
     """
 
+    if (len(tokens) == 0):
+        return []
+
     open_token = markdown_it.token.Token('container_block_open', 'div', 1)
+    open_token.block = True
+    open_token.map = list(tokens[0].map)
     open_token.attrJoin('class', 'qg-root-block')
-    open_token.meta['qg_root'] = True
+    open_token.meta[quizgen.parser.common.TOKEN_META_KEY_ROOT] = True
 
     close_token = markdown_it.token.Token('container_block_close', 'div', -1)
 
     return [open_token] + tokens + [close_token]
+
+def _process_style(tokens, containing_block = None):
+    """
+    Locate any style nodes, parse them, remove them, and hoist their content to the containing block.
+    """
+
+    remove_indexes = []
+    for i in range(len(tokens)):
+        token = tokens[i]
+
+        # If this is a block, then mark it as the current block.
+        # Any discovered style get's hoisted to the containing block.
+        if (token.type == 'container_block_open'):
+            containing_block = token
+        elif ((token.type in HTML_TOKENS) and (token.content.strip().startswith('<style>'))):
+            # Style nodes are HTML with a 'style' tag.
+
+            if (containing_block is None):
+                raise ValueError("Found a style node that does not have a containing block.")
+
+            style = _process_style_content(token.content)
+            containing_block.meta[quizgen.parser.common.TOKEN_META_KEY_STYLE] = style
+
+            # Mark this token for removal.
+            remove_indexes.append(i)
+
+        # Check all children.
+        if (_has_children(token)):
+            token.children = _process_style(token.children, containing_block = containing_block)
+
+    for remove_index in sorted(list(set(remove_indexes)), reverse = True):
+        tokens.pop(remove_index)
+
+    return tokens
+
+def _process_style_content(raw_content):
+    raw_content = raw_content.strip()
+
+    # Get content without tags ('<style>', '</style>').
+    content = re.sub(r'\s+', ' ', raw_content)
+    content = re.sub(r'^<style>(.*)</style>$', r'\1', content).strip()
+
+    # Ignore empty style.
+    if (len(content) == 0):
+        return {}
+
+    # If the content does not start with a '{', then assume the braces were left out and add them.
+    # We will also ignore content that starts with a '[' (a JSON list), that will be handled later.
+    if (content[0] not in ['{', '[']):
+        content = "{%s}" % (content)
+
+    try:
+        style = json5.loads(content)
+        if (not isinstance(style, dict)):
+            raise ValueError("Style is not a JSON object, found: '%s'." % (type(style)))
+    except Exception as ex:
+        raise ValueError(('Failed to load style tag.'
+                + ' Style content must be a JSON object (start/end braces may be omitted).'
+                + " Original exception message: '%s'." % (ex)
+                + " Found:\n---\n%s\n---" % (raw_content)))
+
+    return style
 
 def _remove_empty_tokens(tokens):
     """
@@ -105,7 +177,6 @@ def _remove_empty_tokens(tokens):
 
             # Check children for removal.
             if (_has_children(token)):
-                child_count = len(token.children)
                 token.children = _remove_empty_tokens(token.children)
 
                 # Remove nodes that have been emptied out.
@@ -142,7 +213,7 @@ def _remove_html(tokens):
     for i in range(len(tokens)):
         token = tokens[i]
 
-        if (token.type in ['html_block', 'html_inline']):
+        if (token.type in HTML_TOKENS):
             remove_indexes.append(i)
 
         if (_has_children(token)):

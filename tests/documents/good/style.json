@@ -6,19 +6,13 @@
             "md": "",
             "html": "",
             "tex": "",
-            "json": {
-                "type": "paragraph",
-                "children": [],
-                "style": {
-                    "font-size": 12
-                }
-            }
+            "json": {}
         }
     },
 
     {
         "name": "Empty Explicit Block with Style",
-        "text": ":::block\n{{\n\"font-size\": 12\n}}\n:::",
+        "text": ":::block\n<style>\n\"font-size\": 12\n</style>\n:::",
         "formats": {
             "md": "",
             "html": "",
@@ -28,31 +22,78 @@
     },
 
     {
-        "name": "Root Style Alongside Text",
-        "text": "Base Style\n{{ \"font-size\": 12 }}",
+        "name": "Explicit Block with Style",
+        "text": ":::block\n<style>\n\"font-size\": 12\n</style>\ntext\n:::",
         "formats": {
-            "md": "Base Style",
-            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; font-size: 12.00pt'><span>Base Style</span></div>",
-            "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\nBase Style\n\\endgroup",
+            "md": "text",
+            "html": "<div class='qg-block' style='font-size: 12.00pt'><p>text</p></div>",
+            "tex": "",
             "json": {
-                "type": "paragraph",
+                "type": "container_block",
+                "qg_style": {
+                    "font-size": 12
+                },
                 "children": [
                     {
                         "type": "paragraph",
                         "children": [
                             {
-                                "type": "text",
+                                "type": "inline",
                                 "children": [
                                     {
                                         "type": "text",
-                                        "text": "Base Style"
+                                        "text": "text"
                                     }
                                 ]
                             }
-                        ],
-                        "style": {
-                            "font-size": 12
-                        }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Root Style Alongside Text",
+        "text": "before\n<style>\n\"font-size\": 12\n</style>\nafter",
+        "formats": {
+            "md": "before\n\nafter",
+            "html": "<div class='qg-root-block qg-block' style='font-size: 12.00pt'><p>before</p><p>after</p></div>",
+            "tex": "",
+            "json": {
+                "type": "container_block",
+                "qg_root": true,
+                "qg_style": {
+                    "font-size": 12
+                },
+                "children": [
+                    {
+                        "type": "paragraph",
+                        "children": [
+                            {
+                                "type": "inline",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "before"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "paragraph",
+                        "children": [
+                            {
+                                "type": "inline",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "after"
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ]
             }
@@ -61,31 +102,43 @@
 
     {
         "name": "Nest Override Style",
-        "text": "Root\n{{ \"font-size\": 12 }}\n{-\nChild\n{{ \"font-size\": 10 }}\n-}",
+        "text": "Root\n<style> \"font-size\": 12 </style>\n:::block\nChild\n<style> \"font-size\": 10 </style>\n:::",
         "formats": {
-            "md": "Root\nChild",
-            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; font-size: 12.00pt'><span>Root</span><div class='block' style='margin-bottom: 1em; font-size: 10.00pt'><span>Child</span></div></div></div>",
+            "md": "Root\n\nChild",
+            "html": "<div class='qg-root-block qg-block' style='font-size: 12.00pt'><p>Root</p><div class='qg-block' style='font-size: 10.00pt'><p>Child</p></div></div>",
             "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\nRoot\n\\begingroup\\fontsize{10.00pt}{12.00pt}\\selectfont\nChild\n\\endgroup\n\\endgroup",
             "json": {
-                "type": "paragraph",
+                "type": "container_block",
+                "qg_root": true,
+                "qg_style": {
+                    "font-size": 12
+                },
                 "children": [
                     {
                         "type": "paragraph",
                         "children": [
                             {
-                                "type": "text",
+                                "type": "inline",
                                 "children": [
                                     {
                                         "type": "text",
                                         "text": "Root"
                                     }
                                 ]
-                            },
+                            }
+                        ]
+                    },
+                    {
+                        "type": "container_block",
+                        "qg_style": {
+                            "font-size": 10
+                        },
+                        "children": [
                             {
                                 "type": "paragraph",
                                 "children": [
                                     {
-                                        "type": "text",
+                                        "type": "inline",
                                         "children": [
                                             {
                                                 "type": "text",
@@ -93,15 +146,9 @@
                                             }
                                         ]
                                     }
-                                ],
-                                "style": {
-                                    "font-size": 10
-                                }
+                                ]
                             }
-                        ],
-                        "style": {
-                            "font-size": 12
-                        }
+                        ]
                     }
                 ]
             }
@@ -111,31 +158,43 @@
     {
         "name": "Nest Clear Style",
         "comment": "Clearing style is not actually useful for font size, since it is set and applies to the parent block.",
-        "text": "Root\n{{ \"font-size\": 12 }}\n{-\nChild\n{{ \"font-size\": null }}\n-}",
+        "text": "Root\n<style> \"font-size\": 12 </style>\n:::block\nChild\n<style> \"font-size\": null </style>\n:::",
         "formats": {
-            "md": "Root\nChild",
-            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; font-size: 12.00pt'><span>Root</span><div class='block' style='margin-bottom: 1em'><span>Child</span></div></div></div>",
+            "md": "Root\n\nChild",
+            "html": "<div class='qg-root-block qg-block' style='font-size: 12.00pt'><p>Root</p><div class='qg-block'><p>Child</p></div></div>",
             "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\nRoot\nChild\n\\endgroup",
             "json": {
-                "type": "paragraph",
+                "type": "container_block",
+                "qg_root": true,
+                "qg_style": {
+                    "font-size": 12
+                },
                 "children": [
                     {
                         "type": "paragraph",
                         "children": [
                             {
-                                "type": "text",
+                                "type": "inline",
                                 "children": [
                                     {
                                         "type": "text",
                                         "text": "Root"
                                     }
                                 ]
-                            },
+                            }
+                        ]
+                    },
+                    {
+                        "type": "container_block",
+                        "qg_style": {
+                            "font-size": null
+                        },
+                        "children": [
                             {
                                 "type": "paragraph",
                                 "children": [
                                     {
-                                        "type": "text",
+                                        "type": "inline",
                                         "children": [
                                             {
                                                 "type": "text",
@@ -143,15 +202,9 @@
                                             }
                                         ]
                                     }
-                                ],
-                                "style": {
-                                    "font-size": null
-                                }
+                                ]
                             }
-                        ],
-                        "style": {
-                            "font-size": 12
-                        }
+                        ]
                     }
                 ]
             }

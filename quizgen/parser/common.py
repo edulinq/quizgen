@@ -6,6 +6,9 @@ CONTEXT_ENV_KEY = 'qg_context'
 CONTEXT_KEY_IMAGE_CALLBACK = 'image_path_callback'
 CONTEXT_KEY_FORCE_RAW_IMAGE_SRC = 'force_raw_image_src'
 
+TOKEN_META_KEY_ROOT = 'qg_root'
+TOKEN_META_KEY_STYLE = 'qg_style'
+
 CONTENT_NODES = {
     'code_inline',
     'fence',

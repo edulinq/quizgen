@@ -28,6 +28,18 @@ ALLOWED_VALUES_ALIGNMENT = [
     ALLOWED_VALUES_ALIGNMENT_RIGHT
 ]
 
+FLEXBOX_ALIGNMENT = {
+    ALLOWED_VALUES_ALIGNMENT_LEFT: 'flex-start',
+    ALLOWED_VALUES_ALIGNMENT_CENTER: 'center',
+    ALLOWED_VALUES_ALIGNMENT_RIGHT: 'flex-end',
+}
+
+TEX_BLOCK_ALIGNMENT = {
+    ALLOWED_VALUES_ALIGNMENT_LEFT: 'flushleft',
+    ALLOWED_VALUES_ALIGNMENT_CENTER: 'center',
+    ALLOWED_VALUES_ALIGNMENT_RIGHT: 'flushright',
+}
+
 def get_alignment(style, key, default_value = None):
     alignment = style.get(key, None)
     if (alignment is None):
@@ -52,3 +64,26 @@ def get_image_width(style):
         width = DEFAULT_IMAGE_WIDTH
 
     return float(width)
+
+def compute_html_style_string(style):
+    attributes = []
+
+    content_align = get_alignment(style, KEY_CONTENT_ALIGN)
+    if (content_align is not None):
+        attributes.append("display: flex")
+        attributes.append("flex-direction: column")
+        attributes.append("justify-content: flex-start")
+        attributes.append("align-items: %s" % (FLEXBOX_ALIGNMENT[content_align]))
+
+    text_align = get_alignment(style, KEY_TEXT_ALIGN)
+    if (text_align is not None):
+        attributes.append("text-align: %s" % (text_align))
+
+    font_size = style.get(KEY_FONT_SIZE, None)
+    if (font_size is not None):
+        attributes.append("font-size: %.2fpt" % (float(font_size)))
+
+    if (len(attributes) == 0):
+        return ''
+
+    return '; '.join(attributes)

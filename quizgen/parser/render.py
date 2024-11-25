@@ -7,10 +7,9 @@ import quizgen.parser.common
 import quizgen.parser.image
 import quizgen.parser.math
 import quizgen.parser.parse
+import quizgen.parser.style
 
 # TEST - Cache renderers and options?
-
-# TEST - node.info shuold give fence info, which will allow for style using fences.
 
 class QuizgenRendererHTML(markdown_it.renderer.RendererHTML):
     def image(self, tokens, idx, options, env):
@@ -21,6 +20,12 @@ class QuizgenRendererHTML(markdown_it.renderer.RendererHTML):
     def container_block_open(self, tokens, idx, options, env):
         # Add on a specific class and send back to super for full rendering.
         tokens[idx].attrJoin('class', 'qg-block')
+
+        style = tokens[idx].meta.get(quizgen.parser.common.TOKEN_META_KEY_STYLE, {})
+        style_string = quizgen.parser.style.compute_html_style_string(style)
+        if (style_string != ''):
+            tokens[idx].attrSet('style', style_string)
+
         return super().renderToken(tokens, idx, options, env)
 
     def math_inline(self, tokens, idx, options, env):

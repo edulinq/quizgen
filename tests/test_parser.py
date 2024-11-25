@@ -5,6 +5,7 @@ import re
 import bs4
 
 import quizgen.constants
+import quizgen.parser.common
 import quizgen.parser.math
 import quizgen.parser.public
 import tests.base
@@ -74,10 +75,10 @@ def _get_good_parse_test(text, doc_format, base_expected, base_dir, options):
 
             if (len(expected_children) > 0):
                 # If the first node is not the root block, then automatically insert it.
-                if (not expected_children[0].get('root', False)):
+                if (not expected_children[0].get(quizgen.parser.common.TOKEN_META_KEY_ROOT, False)):
                     expected_children = [{
                         'type': 'container_block',
-                        'root': True,
+                        quizgen.parser.common.TOKEN_META_KEY_ROOT: True,
                         'children': expected_children,
                     }]
 
@@ -85,9 +86,9 @@ def _get_good_parse_test(text, doc_format, base_expected, base_dir, options):
 
             self.assertJSONDictEqual(expected, result)
         elif (doc_format == quizgen.constants.FORMAT_HTML):
-            # If the HTML does not start with a root block, then add one.
+            # If the HTML does not have a root block, then add one.
             raw_expected = base_expected.strip()
-            if ((raw_expected != '') and (not raw_expected.startswith('<div class="qg-root-block qg-block">'))):
+            if ((raw_expected != '') and ('qg-root-block' not in raw_expected)):
                 raw_expected = '<div class="qg-root-block qg-block">' + raw_expected + '</div>'
 
             document = bs4.BeautifulSoup(raw_expected, 'html.parser')

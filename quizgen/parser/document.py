@@ -24,6 +24,14 @@ AST_TOKEN_ATTRS = {
     ],
 }
 
+# Like AST_TOKEN_ATTRS, but for the `meta` property.
+AST_TOKEN_METAS = {
+    'container_block': [
+        quizgen.parser.common.TOKEN_META_KEY_ROOT,
+        quizgen.parser.common.TOKEN_META_KEY_STYLE,
+    ]
+}
+
 # TODO -- Rename 'qg' to 'qc'.
 
 class ParsedDocument(object):
@@ -121,12 +129,13 @@ def _walk_ast(node):
     if (node.type in quizgen.parser.common.CONTENT_NODES):
         result['text'] = node.content
 
-    # Check for the root node.
-    if ((node.nester_tokens is not None) and (node.nester_tokens.opening.meta.get('qg_root', False))):
-        result['root'] = True
-
     for name in AST_TOKEN_ATTRS.get(node.type, []):
         value = node.attrGet(name)
+        if (value is not None):
+            result[name] = value
+
+    for name in AST_TOKEN_METAS.get(node.type, []):
+        value = node.meta.get(name, None)
         if (value is not None):
             result[name] = value
 
