@@ -63,12 +63,34 @@ def _get_good_parse_test(text, doc_format, base_expected, base_dir, options):
                 },
             }
 
+            expected_children = []
             if (len(base_expected) > 0):
-                expected['ast']['children'] = [base_expected]
+                if (isinstance(base_expected, list)):
+                    expected_children += base_expected
+                elif (isinstance(base_expected, dict)):
+                    expected_children.append(base_expected)
+                else:
+                    raise ValueError("Unkown type for expected children: '%s'.", type(base_expected))
+
+            if (len(expected_children) > 0):
+                # If the first node is not the root block, then automatically insert it.
+                if (not expected_children[0].get('root', False)):
+                    expected_children = [{
+                        'type': 'container_block',
+                        'root': True,
+                        'children': expected_children,
+                    }]
+
+                expected['ast']['children'] = expected_children
 
             self.assertJSONDictEqual(expected, result)
         elif (doc_format == quizgen.constants.FORMAT_HTML):
-            document = bs4.BeautifulSoup(base_expected, 'html.parser')
+            # If the HTML does not start with a root block, then add one.
+            raw_expected = base_expected.strip()
+            if ((raw_expected != '') and (not raw_expected.startswith('<div class="qg-root-block qg-block">'))):
+                raw_expected = '<div class="qg-root-block qg-block">' + raw_expected + '</div>'
+
+            document = bs4.BeautifulSoup(raw_expected, 'html.parser')
             expected = document.prettify(formatter = bs4.formatter.HTMLFormatter(indent = 4))
 
             document = bs4.BeautifulSoup(result, 'html.parser')

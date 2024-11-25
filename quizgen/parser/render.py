@@ -18,6 +18,11 @@ class QuizgenRendererHTML(markdown_it.renderer.RendererHTML):
         quizgen.parser.image.render(quizgen.constants.FORMAT_HTML, tokens, idx, options, env)
         return super().image(tokens, idx, options, env)
 
+    def container_block_open(self, tokens, idx, options, env):
+        # Add on a specific class and send back to super for full rendering.
+        tokens[idx].attrJoin('class', 'qg-block')
+        return super().renderToken(tokens, idx, options, env)
+
     def math_inline(self, tokens, idx, options, env):
         return quizgen.parser.math.render(quizgen.constants.FORMAT_HTML, True, tokens, idx, options, env)
 
@@ -38,7 +43,21 @@ class QuizgenMDformatExtension(mdformat.plugins.ParserExtensionInterface):
         qg_context = context.env.get(quizgen.parser.common.CONTEXT_ENV_KEY, {})
         return quizgen.parser.math._render_md(node.content, False, qg_context)
 
+    @staticmethod
+    def container_block(node, context):
+        # We can ignore blocks when outputting markdown (since it is non-standard).
+        # Just render the child node (there should only be one).
+        if ((node.children is None) or (len(node.children) == 0)):
+            return ''
+
+        parts = []
+        for child in node.children:
+            parts.append(child.render(context))
+
+        return "\n\n".join(parts)
+
     RENDERERS = {
+        'container_block': container_block,
         'math_block': math_block,
         'math_inline': math_inline,
     }

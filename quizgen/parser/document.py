@@ -121,6 +121,10 @@ def _walk_ast(node):
     if (node.type in quizgen.parser.common.CONTENT_NODES):
         result['text'] = node.content
 
+    # Check for the root node.
+    if ((node.nester_tokens is not None) and (node.nester_tokens.opening.meta.get('qg_root', False))):
+        result['root'] = True
+
     for name in AST_TOKEN_ATTRS.get(node.type, []):
         value = node.attrGet(name)
         if (value is not None):

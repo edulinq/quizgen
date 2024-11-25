@@ -1,5 +1,7 @@
 # Styling
 
+TEST - Nested blocks require different number of colons. For templating, we should use like 12, then in docs say they can use 10 - 3.
+
 Styling can be used in the QuizGen to change the visual appearance of content.
 If you want to change the location or flow of information,
 then you are looking for [template hints](/docs/builtin-templates.md).

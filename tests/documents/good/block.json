@@ -1,35 +1,36 @@
 [
     {
         "name": "Empty Explicit Block",
-        "text": "{-\n-}",
+        "text": ":::block\n:::",
         "formats": {
-            "text": "",
+            "md": "",
             "html": "",
             "tex": "",
-            "json": {
-                "type": "block",
-                "nodes": [
-                ]
-            }
+            "json": {}
         }
     },
 
     {
         "name": "Explicit Block",
-        "text": "{-\nText\n-}",
+        "text": ":::block\nText\n:::",
         "formats": {
-            "text": "Text",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Text</span></div>",
+            "md": "Text",
+            "html": "<div class='qg-block'><p>Text</p></div>",
             "tex": "Text",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "container_block",
+                "children": [
                     {
-                        "type": "text",
-                        "nodes": [
+                        "type": "paragraph",
+                        "children": [
                             {
-                                "type": "normal_text",
-                                "text": "Text"
+                                "type": "inline",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "Text"
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -40,124 +41,121 @@
 
     {
         "name": "Explicit Block in Text",
-        "text": "Root Block\n{-\nExplicit Block\n-}",
+        "text": "Root Block\n:::block\nExplicit Block\n:::",
         "formats": {
-            "text": "Root Block\nExplicit Block",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Root Block</span><span>Explicit Block</span></div>",
+            "md": "Root Block\n\nExplicit Block",
+            "html": "<p>Root Block</p><div class='qg-block'><p>Explicit Block</p></div>",
             "tex": "Root Block\nExplicit Block",
-            "json": {
-                "type": "block",
-                "nodes": [
-                    {
-                        "type": "text",
-                        "nodes": [
-                            {
-                                "type": "normal_text",
-                                "text": "Root Block"
-                            }
-                        ]
-                    },
-                    {
-                        "type": "text",
-                        "nodes": [
-                            {
-                                "type": "normal_text",
-                                "text": "Explicit Block"
-                            }
-                        ]
-                    }
-                ]
-            }
+            "json": [
+                {
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "type": "inline",
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "text": "Root Block"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "container_block",
+                    "children": [
+                        {
+                            "type": "paragraph",
+                            "children": [
+                                {
+                                    "type": "inline",
+                                    "children": [
+                                        {
+                                            "type": "text",
+                                            "text": "Explicit Block"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
         }
     },
 
     {
-        "name": "Empty Explicit Block with Style",
-        "text": "{-\n{{\n\"font-size\": 12\n}}\n-}",
+        "name": "Nested Empty Blocks",
+        "text": "::::block\n:::block\n:::\n::::",
         "formats": {
-            "text": "",
+            "md": "",
             "html": "",
             "tex": "",
-            "json": {
-                "type": "block",
-                "nodes": [
-                ]
-            }
+            "json": {}
         }
     },
 
     {
-        "name": "Nested Empty Blocks",
-        "text": "{-\n{-\n{-\n-}\n{-\n-}\n-}\n-}",
+        "name": "Nested Non-Empty Blocks",
+        "text": "root\n::::block\ninner 1\n:::block\ninner 2\n:::\n::::",
         "formats": {
-            "text": "",
-            "html": "<div class='block' style='margin-bottom: 1em'></div>",
+            "md": "root\n\ninner 1\n\ninner 2",
+            "html": "<p>root</p><div class='qg-block'><p>inner 1</p><div class='qg-block'><p>inner 2</p></div></div>",
             "tex": "",
-            "json": {
-                "type": "block",
-                "nodes": [
-                ]
-            }
-        }
-    },
-
-    {
-        "name": "Nested Empty Blocks",
-        "text": "Root\n{-\nRoot.A\n{-\nRoot.A.A\n{-\nRoot.A.A.A\n-}\n{-\nRoot.A.A.B\n-}\n-}\n-}",
-        "formats": {
-            "text": "Root\nRoot.A\nRoot.A.A\nRoot.A.A.A\nRoot.A.A.B",
-            "html": "<div class='block' style='margin-bottom: 1em'><span>Root</span><span>Root.A</span><span>Root.A.A</span><span>Root.A.A.A</span><span>Root.A.A.B</span></div>",
-            "tex": "Root\nRoot.A\nRoot.A.A\nRoot.A.A.A\nRoot.A.A.B",
-            "json": {
-                "type": "block",
-                "nodes": [
-                    {
-                        "type": "text",
-                        "nodes": [
-                            {
-                                "type": "normal_text",
-                                "text": "Root"
-                            }
-                        ]
-                    },
-                    {
-                        "type": "text",
-                        "nodes": [
-                            {
-                                "type": "normal_text",
-                                "text": "Root.A"
-                            }
-                        ]
-                    },
-                    {
-                        "type": "text",
-                        "nodes": [
-                            {
-                                "type": "normal_text",
-                                "text": "Root.A.A"
-                            }
-                        ]
-                    },
-                    {
-                        "type": "text",
-                        "nodes": [
-                            {
-                                "type": "normal_text",
-                                "text": "Root.A.A.A"
-                            }
-                        ]
-                    },
-                    {
-                        "type": "text",
-                        "nodes": [
-                            {
-                                "type": "normal_text",
-                                "text": "Root.A.A.B"
-                            }
-                        ]
-                    }
-                ]
-            }
+            "json": [
+                {
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "type": "inline",
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "text": "root"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "container_block",
+                    "children": [
+                        {
+                            "type": "paragraph",
+                            "children": [
+                                {
+                                    "type": "inline",
+                                    "children": [
+                                        {
+                                            "type": "text",
+                                            "text": "inner 1"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "container_block",
+                            "children": [
+                                {
+                                    "type": "paragraph",
+                                    "children": [
+                                        {
+                                            "type": "inline",
+                                            "children": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "inner 2"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
         }
     }
 

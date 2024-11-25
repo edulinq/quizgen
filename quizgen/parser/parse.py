@@ -15,6 +15,7 @@ EXTRA_OPTIONS = [
 
 PLUGINS = [
     (mdit_py_plugins.dollarmath.dollarmath_plugin, {}),
+    (mdit_py_plugins.container.container_plugin, {'name': 'block'}),
 ]
 
 # TEST - We may be able to use the containers plugin for style blocks.
@@ -68,10 +69,24 @@ def _post_process(tokens):
     This allows us to edit the AST without needing the change the parser.
     """
 
+    tokens = _add_root_block(tokens)
     tokens = _remove_html(tokens)
     tokens = _remove_empty_tokens(tokens)
 
     return tokens
+
+def _add_root_block(tokens):
+    """
+    Add a root block element to the document.
+    """
+
+    open_token = markdown_it.token.Token('container_block_open', 'div', 1)
+    open_token.attrJoin('class', 'qg-root-block')
+    open_token.meta['qg_root'] = True
+
+    close_token = markdown_it.token.Token('container_block_close', 'div', -1)
+
+    return [open_token] + tokens + [close_token]
 
 def _remove_empty_tokens(tokens):
     """

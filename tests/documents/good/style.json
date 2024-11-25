@@ -17,6 +17,17 @@
     },
 
     {
+        "name": "Empty Explicit Block with Style",
+        "text": ":::block\n{{\n\"font-size\": 12\n}}\n:::",
+        "formats": {
+            "md": "",
+            "html": "",
+            "tex": "",
+            "json": {}
+        }
+    },
+
+    {
         "name": "Root Style Alongside Text",
         "text": "Base Style\n{{ \"font-size\": 12 }}",
         "formats": {
