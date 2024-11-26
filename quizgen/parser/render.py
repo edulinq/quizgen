@@ -1,3 +1,6 @@
+import copy
+import types
+
 import markdown_it.renderer
 import mdformat.plugins
 import mdformat.renderer
@@ -18,13 +21,26 @@ class QuizgenRendererHTML(markdown_it.renderer.RendererHTML):
         return super().image(tokens, idx, options, env)
 
     def container_block_open(self, tokens, idx, options, env):
+        context = env.get(quizgen.parser.common.CONTEXT_ENV_KEY, {})
+
         # Add on a specific class and send back to super for full rendering.
         tokens[idx].attrJoin('class', 'qg-block')
 
-        style = tokens[idx].meta.get(quizgen.parser.common.TOKEN_META_KEY_STYLE, {})
-        style_string = quizgen.parser.style.compute_html_style_string(style)
+        # Attatch any style specific to this block.
+        block_style = tokens[idx].meta.get(quizgen.parser.common.TOKEN_META_KEY_STYLE, {})
+        style_string = quizgen.parser.style.compute_html_style_string(block_style)
         if (style_string != ''):
             tokens[idx].attrSet('style', style_string)
+
+        # Pass on any new style though the env.
+        if (len(block_style) > 0):
+            env_style = context.get('style', {})
+            env_style.update(block_style)
+
+            # Make a readonly copy of the updated context.
+            context = copy.deepcopy(dict(context))
+            context['style'] = env_style
+            env[quizgen.parser.common.CONTEXT_ENV_KEY] = types.MappingProxyType(context)
 
         return super().renderToken(tokens, idx, options, env)
 
