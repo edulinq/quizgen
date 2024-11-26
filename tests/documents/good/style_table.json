@@ -648,6 +648,135 @@
                 ]
             }
         }
+    },
+
+    {
+        "name": "Table With Content and Text Alignment",
+        "text": "<style>\n\"content-align\": \"center\",\n\"text-align\": \"right\"\n</style>\n| 1 | 2 | 3 |\n|---|---|---|\n| a | b | c |",
+        "formats": {
+            "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
+            "html": "<table><thead><tr><th>1</th><th>2</th><th>3</th></tr></thead><tbody><tr><td>a</td><td>b</td><td>c</td></tr></tbody></table>",
+            "tex": "",
+            "json": {
+                "type": "container_block",
+                "qg_root": true,
+                "qg_style": {
+                    "content-align": "center",
+                    "text-align": "right"
+                },
+                "children": [
+                    {
+                        "type": "table",
+                        "children": [
+                            {
+                                "type": "thead",
+                                "children": [
+                                    {
+                                        "type": "tr",
+                                        "children": [
+                                            {
+                                                "type": "th",
+                                                "children": [
+                                                    {
+                                                        "type": "inline",
+                                                        "children": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "1"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "th",
+                                                "children": [
+                                                    {
+                                                        "type": "inline",
+                                                        "children": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "2"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "th",
+                                                "children": [
+                                                    {
+                                                        "type": "inline",
+                                                        "children": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "3"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "tbody",
+                                "children": [
+                                    {
+                                        "type": "tr",
+                                        "children": [
+                                            {
+                                                "type": "td",
+                                                "children": [
+                                                    {
+                                                        "type": "inline",
+                                                        "children": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "a"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "td",
+                                                "children": [
+                                                    {
+                                                        "type": "inline",
+                                                        "children": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "b"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "td",
+                                                "children": [
+                                                    {
+                                                        "type": "inline",
+                                                        "children": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "c"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
     }
 
 ]

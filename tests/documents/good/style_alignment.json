@@ -1,30 +1,31 @@
 [
     {
         "name": "Basic Content Align Center",
-        "text": "{{\n\"content-align\": \"center\"\n}}\nText",
+        "text": "<style>\n\"content-align\": \"center\"\n</style>\nText",
         "formats": {
-            "text": "Text",
-            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; display: flex; flex-direction: column; justify-content: flex-start; align-items: center'><span>Text</span></div></div>",
+            "md": "Text",
+            "html": "<div class='qg-root-block qg-block' style='display: flex; flex-direction: column; justify-content: flex-start; align-items: center'><p>Text</p></div>",
             "tex": "\\begin{center}\nText\n\\end{center}",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "container_block",
+                "qg_root": true,
+                "qg_style": {
+                    "content-align": "center"
+                },
+                "children": [
                     {
-                        "type": "block",
-                        "nodes": [
+                        "type": "paragraph",
+                        "children": [
                             {
-                                "type": "text",
-                                "nodes": [
+                                "type": "inline",
+                                "children": [
                                     {
-                                        "type": "normal_text",
+                                        "type": "text",
                                         "text": "Text"
                                     }
                                 ]
                             }
-                        ],
-                        "style": {
-                            "content-align": "center"
-                        }
+                        ]
                     }
                 ]
             }
@@ -33,30 +34,31 @@
 
     {
         "name": "Basic Content Align Left",
-        "text": "{{\n\"content-align\": \"left\"\n}}\nText",
+        "text": "<style>\n\"content-align\": \"left\"\n</style>\nText",
         "formats": {
-            "text": "Text",
-            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start'><span>Text</span></div></div>",
+            "md": "Text",
+            "html": "<div class='qg-root-block qg-block' style='display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start'><p>Text</p></div>",
             "tex": "\\begin{flushleft}\nText\n\\end{flushleft}",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "container_block",
+                "qg_root": true,
+                "qg_style": {
+                    "content-align": "left"
+                },
+                "children": [
                     {
-                        "type": "block",
-                        "nodes": [
+                        "type": "paragraph",
+                        "children": [
                             {
-                                "type": "text",
-                                "nodes": [
+                                "type": "inline",
+                                "children": [
                                     {
-                                        "type": "normal_text",
+                                        "type": "text",
                                         "text": "Text"
                                     }
                                 ]
                             }
-                        ],
-                        "style": {
-                            "content-align": "left"
-                        }
+                        ]
                     }
                 ]
             }
@@ -65,30 +67,31 @@
 
     {
         "name": "Basic Content Align Right",
-        "text": "{{\n\"content-align\": \"right\"\n}}\nText",
+        "text": "<style>\n\"content-align\": \"right\"\n</style>\nText",
         "formats": {
-            "text": "Text",
-            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-end'><span>Text</span></div></div>",
+            "md": "Text",
+            "html": "<div class='qg-root-block qg-block' style='display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-end'><p>Text</p></div>",
             "tex": "\\begin{flushright}\nText\n\\end{flushright}",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "container_block",
+                "qg_root": true,
+                "qg_style": {
+                    "content-align": "right"
+                },
+                "children": [
                     {
-                        "type": "block",
-                        "nodes": [
+                        "type": "paragraph",
+                        "children": [
                             {
-                                "type": "text",
-                                "nodes": [
+                                "type": "inline",
+                                "children": [
                                     {
-                                        "type": "normal_text",
+                                        "type": "text",
                                         "text": "Text"
                                     }
                                 ]
                             }
-                        ],
-                        "style": {
-                            "content-align": "right"
-                        }
+                        ]
                     }
                 ]
             }
@@ -97,22 +100,22 @@
 
     {
         "name": "Basic Text Align Center",
-        "text": "{{\n\"text-align\": \"center\"\n}}\nText",
+        "text": "<style>\n\"text-align\": \"center\"\n</style>\nText",
         "formats": {
-            "text": "Text",
-            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; text-align: center'><span>Text</span></div></div>",
+            "md": "Text",
+            "html": "<div class='qg-block'><div class='qg-block' style='margin-bottom: 1em; text-align: center'><span>Text</span></div></div>",
             "tex": "Text",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "paragraph",
+                "children": [
                     {
-                        "type": "block",
-                        "nodes": [
+                        "type": "paragraph",
+                        "children": [
                             {
                                 "type": "text",
-                                "nodes": [
+                                "children": [
                                     {
-                                        "type": "normal_text",
+                                        "type": "text",
                                         "text": "Text"
                                     }
                                 ]
@@ -128,125 +131,65 @@
     },
 
     {
+        "name": "Basic Text Align Center",
+        "text": "<style>\n\"text-align\": \"center\"\n</style>\nText",
+        "formats": {
+            "md": "Text",
+            "html": "<div class='qg-root-block qg-block' style='text-align: center'><p>Text</p></div>",
+            "tex": "Text",
+            "json": {
+                "type": "container_block",
+                "qg_root": true,
+                "qg_style": {
+                    "text-align": "center"
+                },
+                "children": [
+                    {
+                        "type": "paragraph",
+                        "children": [
+                            {
+                                "type": "inline",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "Text"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
         "name": "Basic Text Align Left",
-        "text": "{{\n\"text-align\": \"left\"\n}}\nText",
+        "text": "<style>\n\"text-align\": \"left\"\n</style>\nText",
         "formats": {
-            "text": "Text",
-            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; text-align: left'><span>Text</span></div></div>",
+            "md": "Text",
+            "html": "<div class='qg-root-block qg-block' style='text-align: left'><p>Text</p></div>",
             "tex": "Text",
             "json": {
-                "type": "block",
-                "nodes": [
+                "type": "container_block",
+                "qg_root": true,
+                "qg_style": {
+                    "text-align": "left"
+                },
+                "children": [
                     {
-                        "type": "block",
-                        "nodes": [
+                        "type": "paragraph",
+                        "children": [
                             {
-                                "type": "text",
-                                "nodes": [
+                                "type": "inline",
+                                "children": [
                                     {
-                                        "type": "normal_text",
+                                        "type": "text",
                                         "text": "Text"
                                     }
                                 ]
                             }
-                        ],
-                        "style": {
-                            "text-align": "left"
-                        }
-                    }
-                ]
-            }
-        }
-    },
-
-    {
-        "name": "Basic Text Align Right",
-        "text": "{{\n\"text-align\": \"right\"\n}}\nText",
-        "formats": {
-            "text": "Text",
-            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; text-align: right'><span>Text</span></div></div>",
-            "tex": "Text",
-            "json": {
-                "type": "block",
-                "nodes": [
-                    {
-                        "type": "block",
-                        "nodes": [
-                            {
-                                "type": "text",
-                                "nodes": [
-                                    {
-                                        "type": "normal_text",
-                                        "text": "Text"
-                                    }
-                                ]
-                            }
-                        ],
-                        "style": {
-                            "text-align": "right"
-                        }
-                    }
-                ]
-            }
-        }
-    },
-
-    {
-        "name": "Table With Content and Text Alignment",
-        "text": "{{\n\"content-align\": \"center\",\n\"text-align\": \"right\"\n}}\n| a | b | c |",
-        "formats": {
-            "text": "| a | b | c |",
-            "html": "<div class='block' style='margin-bottom: 1em'><div class='block' style='margin-bottom: 1em; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; text-align: right'><table style='border-collapse: collapse; border-style: hidden; text-align: right'><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><span>a</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><span>b</span></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><span>c</span></td></tr></table></div></div>",
-            "tex": "\\begin{center}\n\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ rrr }\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup\n\\end{center}",
-            "json": {
-                "type": "block",
-                "nodes": [
-                    {
-                        "type": "block",
-                        "nodes": [
-                            {
-                                "type": "table",
-                                "rows": [
-                                    {
-                                        "type": "table-row",
-                                        "head": false,
-                                        "cells": [
-                                            {
-                                                "type": "text",
-                                                "nodes": [
-                                                    {
-                                                        "type": "normal_text",
-                                                        "text": "a"
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "type": "text",
-                                                "nodes": [
-                                                    {
-                                                        "type": "normal_text",
-                                                        "text": "b"
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "type": "text",
-                                                "nodes": [
-                                                    {
-                                                        "type": "normal_text",
-                                                        "text": "c"
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ],
-                        "style": {
-                            "content-align": "center",
-                            "text-align": "right"
-                        }
+                        ]
                     }
                 ]
             }
