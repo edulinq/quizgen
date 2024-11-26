@@ -44,10 +44,6 @@ def _clean_text(text):
     # Trim whitespace.
     text = text.strip();
 
-    # TEST -- Is this necessary.
-    # Replace the final newline and add one additional one (for tables).
-    text += "\n\n"
-
     return text
 
 # Returns (transformed text, tokens).
@@ -74,6 +70,7 @@ def _post_process(tokens):
     """
 
     tokens = _add_root_block(tokens)
+    tokens = _process_placeholders(tokens)
     tokens = _process_style(tokens)
     tokens = _remove_html(tokens)
     tokens = _remove_empty_tokens(tokens)
@@ -202,6 +199,86 @@ def _remove_empty_tokens(tokens):
 
     return tokens
 
+def _process_placeholders(tokens):
+    """
+    Find any placeholder HTML tags and replace them with a placeholder token.
+    plceholder tags must either be an HTML block or inline with the same parent.
+    """
+
+    remove_indexes = []
+
+    # Use a non-standard loop so that we can manually advance the index within the loop.
+    i = -1
+    while (i < (len(tokens) - 1)):
+        i += 1
+        token = tokens[i]
+
+        if (token.type == 'html_block'):
+            if ((not token.content) or (not token.content.strip().startswith('<placeholder'))):
+                continue
+
+            # Replace the HTML block token with a placeholder token.
+            tokens[i] = _create_placeholder_token(token)
+        elif (token.type == 'html_inline'):
+            if ((not token.content) or (not token.content.strip().startswith('<placeholder'))):
+                continue
+
+            open_tag_index = i
+            close_tag_index = None
+
+            # Look for the close tag at this same level (under the same parent).
+            for j in range(i + 1, len(tokens)):
+                other_token = tokens[j]
+                if (other_token.type != 'html_inline'):
+                    continue
+
+                if ((not other_token.content) or (not other_token.content.strip() == '</placeholder>')):
+                    continue
+
+                close_tag_index = j
+                break
+
+            if (close_tag_index is None):
+                raise ValueError("Could not find closing tag for <placeholder>.")
+
+            if ((close_tag_index - open_tag_index) < 2):
+                raise ValueError("Did not find any content inside a <placeholder> tag.")
+
+            if ((close_tag_index - open_tag_index) > 2):
+                raise ValueError("Found too much content inside a <placeholder> tag, it shoud have only plain text.")
+
+            text_token_index = open_tag_index + 1
+            text_token = tokens[text_token_index]
+            if (text_token.type != 'text'):
+                raise ValueError("Found non-text content inside a <placeholder> tag, it shoud have only plain text.")
+
+            # All tokens (open, content/label, close) are accounted for.
+            # Replace the content node and remove the open/close tags.
+            tokens[text_token_index] = _create_placeholder_token(text_token)
+            remove_indexes += [open_tag_index, close_tag_index]
+
+            # Advance to the close token.
+            i = close_tag_index
+
+        if (_has_children(token)):
+            token.children = _process_placeholders(token.children)
+
+    for remove_index in sorted(list(set(remove_indexes)), reverse = True):
+        tokens.pop(remove_index)
+
+    return tokens
+
+def _create_placeholder_token(token):
+    # Fetch the label in the tag.
+    label = re.sub(r'\s+', ' ', token.content.strip())
+    label = re.sub(r'^<placeholder.*>(.*)</placeholder>$', r'\1', label).strip()
+    if (len(label) == 0):
+        raise ValueError("Found an empty '<placeholder>' tag.")
+
+    return markdown_it.token.Token(
+            type = 'placeholder', tag = '', nesting = 0,
+            map = token.map, content = label)
+
 def _remove_html(tokens):
     """
     Remove all HTML tags.
@@ -219,7 +296,7 @@ def _remove_html(tokens):
         if (_has_children(token)):
             token.children = _remove_html(token.children)
 
-    for remove_index in reversed(remove_indexes):
+    for remove_index in sorted(list(set(remove_indexes)), reverse = True):
         tokens.pop(remove_index)
 
     return tokens

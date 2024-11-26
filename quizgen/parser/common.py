@@ -14,6 +14,7 @@ CONTENT_NODES = {
     'fence',
     'math_block',
     'math_inline',
+    'placeholder',
     'text',
     'text_special',
 }

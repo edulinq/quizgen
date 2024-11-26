@@ -50,6 +50,9 @@ class QuizgenRendererHTML(markdown_it.renderer.RendererHTML):
     def math_block(self, tokens, idx, options, env):
         return quizgen.parser.math.render(quizgen.constants.FORMAT_HTML, False, tokens, idx, options, env)
 
+    def placeholder(self, tokens, idx, options, env):
+        return "<placeholder>%s</placeholder>" % (tokens[idx].content)
+
 class QuizgenMDformatExtension(mdformat.plugins.ParserExtensionInterface):
     CHANGES_AST = False
     POSTPROCESSORS = {}
@@ -63,6 +66,10 @@ class QuizgenMDformatExtension(mdformat.plugins.ParserExtensionInterface):
     def math_block(node, context):
         qg_context = context.env.get(quizgen.parser.common.CONTEXT_ENV_KEY, {})
         return quizgen.parser.math._render_md(node.content, False, qg_context)
+
+    @staticmethod
+    def placeholder(node, context):
+        return "<placeholder>%s</placeholder>" % (node.content)
 
     @staticmethod
     def container_block(node, context):
@@ -81,6 +88,7 @@ class QuizgenMDformatExtension(mdformat.plugins.ParserExtensionInterface):
         'container_block': container_block,
         'math_block': math_block,
         'math_inline': math_inline,
+        'placeholder': placeholder,
     }
 
 def html(tokens, env = {}):

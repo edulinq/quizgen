@@ -1,0 +1,112 @@
+[
+    {
+        "name": "HTML Block",
+        "text": "<placeholder>\nanswer\n</placeholder>",
+        "formats": {
+            "md": "<placeholder>answer</placeholder>",
+            "html": "<placeholder>answer</placeholder>",
+            "tex": "\\textsc{<answer>}",
+            "json": {
+                "type": "placeholder",
+                "text": "answer"
+            }
+        }
+    },
+
+    {
+        "name": "HTML Inline",
+        "text": "<placeholder>answer</placeholder>",
+        "formats": {
+            "md": "<placeholder>answer</placeholder>",
+            "html": "<p><placeholder>answer</placeholder></p>",
+            "tex": "\\textsc{<answer>}",
+            "json": {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "placeholder",
+                                "text": "answer"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Underscore",
+        "text": "<placeholder>answer_reference</placeholder>",
+        "formats": {
+            "md": "<placeholder>answer_reference</placeholder>",
+            "html": "<p><placeholder>answer_reference</placeholder></p>",
+            "tex": "\\textsc{<answer_reference>}",
+            "json": {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "placeholder",
+                                "text": "answer_reference"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Space",
+        "text": "<placeholder>answer reference</placeholder>",
+        "formats": {
+            "md": "<placeholder>answer reference</placeholder>",
+            "html": "<p><placeholder>answer reference</placeholder></p>",
+            "tex": "\\textsc{<answer reference>}",
+            "json": {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "placeholder",
+                                "text": "answer reference"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "One Character",
+        "text": "<placeholder>A</placeholder>",
+        "formats": {
+            "md": "<placeholder>A</placeholder>",
+            "html": "<p><placeholder>A</placeholder></p>",
+            "tex": "\\textsc{<A>}",
+            "json": {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "placeholder",
+                                "text": "A"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+
+]

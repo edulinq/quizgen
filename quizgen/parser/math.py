@@ -20,7 +20,7 @@ def render(format, inline, tokens, idx, options, env):
         raise ValueError(f"Unknown format '{format}'.")
 
 def _render_tex(text, inline, context):
-    text = text.replace('$', '\$')
+    text = text.replace('$', r'\$')
 
     if (inline):
         text = text.strip()
