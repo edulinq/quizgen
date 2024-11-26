@@ -1,0 +1,18 @@
+[
+    {
+        "name": "Empty",
+        "text": "<placeholder></placeholder>"
+    },
+    {
+        "name": "Only Space",
+        "text": "<placeholder> </placeholder>"
+    },
+    {
+        "name": "Not Plain Text",
+        "text": "<placeholder>**answer**</placeholder>"
+    },
+    {
+        "name": "No Closing Tag",
+        "text": "<placeholder>answer</placeholderZZZ>"
+    }
+]
