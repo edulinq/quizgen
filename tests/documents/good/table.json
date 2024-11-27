@@ -4,7 +4,7 @@
         "text": "| 1 | 2 | 3 |\n|---|---|---|\n| a | b | c |",
         "formats": {
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
-            "html": "<table><thead><tr><th>1</th><th>2</th><th>3</th></tr></thead><tbody><tr><td>a</td><td>b</td><td>c</td></tr></tbody></table>",
+            "html": "<table style='border-collapse: collapse; border-style: hidden'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>c</td></tr></tbody></table>",
             "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "json": {
                 "type": "table",
@@ -123,7 +123,7 @@
         "text": "| 1 | 2 | 3 |\n|:---|:---:|---:|\n| a | b | c |",
         "formats": {
             "md": "| 1   |  2  |   3 |\n| :-- | :-: | --: |\n| a   |  b  |   c |",
-            "html": "<table><thead><tr><th style='text-align:left'>1</th><th style='text-align:center'>2</th><th style='text-align:right'>3</th></tr></thead><tbody><tr><td style='text-align:left'>a</td><td style='text-align:center'>b</td><td style='text-align:right'>c</td></tr></tbody></table>",
+            "html": "<table style='border-collapse: collapse; border-style: hidden'><thead style='border-bottom: 1px solid black'><tr><th style='text-align:left; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>1</th><th style='text-align:center; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>2</th><th style='text-align:right; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='text-align:left; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>a</td><td style='text-align:center; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>b</td><td style='text-align:right; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>c</td></tr></tbody></table>",
             "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "json": {
                 "type": "table",
@@ -248,7 +248,7 @@
         "text": "| 1 | -2 | 3^ |\n|-----|-------|-------------------|\n| *a* | **b** | `c()` and $ d() $ |",
         "formats": {
             "md": "| 1   | -2    | 3^                |\n| --- | ----- | ----------------- |\n| *a* | **b** | `c()` and $ d() $ |",
-            "html": "<table><thead><tr><th>1</th><th>-2</th><th>3^</th></tr></thead><tbody><tr><td><em>a</em></td><td><strong>b</strong></td><td><code>c()</code>and <span><code>d()</code></span></td></tr></tbody></table>",
+            "html": "<table style='border-collapse: collapse; border-style: hidden'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>-2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>3^</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><em>a</em></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><strong>b</strong></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><code>c()</code>and<span><code>d()</code></span></td></tr></tbody></table>",
             "tex": "",
             "json": {
                 "type": "table",

@@ -1,6 +1,7 @@
 import copy
 import types
 
+import bs4
 import markdown_it.renderer
 import mdformat.plugins
 import mdformat.renderer
@@ -11,8 +12,7 @@ import quizgen.parser.image
 import quizgen.parser.math
 import quizgen.parser.parse
 import quizgen.parser.style
-
-# TEST - Cache renderers and options?
+import quizgen.parser.table
 
 class QuizgenRendererHTML(markdown_it.renderer.RendererHTML):
     def image(self, tokens, idx, options, env):
@@ -53,6 +53,23 @@ class QuizgenRendererHTML(markdown_it.renderer.RendererHTML):
     def placeholder(self, tokens, idx, options, env):
         return "<placeholder>%s</placeholder>" % (tokens[idx].content)
 
+    def table_open(self, tokens, idx, options, env):
+        return self._table_elements(tokens, idx, options, env)
+
+    def thead_open(self, tokens, idx, options, env):
+        return self._table_elements(tokens, idx, options, env)
+
+    def th_open(self, tokens, idx, options, env):
+        return self._table_elements(tokens, idx, options, env)
+
+    def td_open(self, tokens, idx, options, env):
+        return self._table_elements(tokens, idx, options, env)
+
+    def _table_elements(self, tokens, idx, options, env):
+        # Do custom rendering and then pass onto super.
+        quizgen.parser.table.render_html(tokens, idx, options, env)
+        return super().renderToken(tokens, idx, options, env)
+
 class QuizgenMDformatExtension(mdformat.plugins.ParserExtensionInterface):
     CHANGES_AST = False
     POSTPROCESSORS = {}
@@ -91,13 +108,17 @@ class QuizgenMDformatExtension(mdformat.plugins.ParserExtensionInterface):
         'placeholder': placeholder,
     }
 
-def html(tokens, env = {}):
+def html(tokens, env = {}, pretty = True, **kwargs):
     _, options = quizgen.parser.parse._get_parser()
 
     renderer = QuizgenRendererHTML()
-    return renderer.render(tokens, options, env)
+    raw_html = renderer.render(tokens, options, env)
 
-def markdown(tokens, env = {}):
+    # Clean up the HTML we output.
+    document = bs4.BeautifulSoup(raw_html, 'html.parser')
+    return document.prettify(formatter = bs4.formatter.HTMLFormatter(indent = 4))
+
+def markdown(tokens, env = {}, **kwargs):
     _, options = quizgen.parser.parse._get_parser()
 
     extensions = options.get('parser_extension', [])

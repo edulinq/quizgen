@@ -8,7 +8,7 @@ import quizgen.parser.public
 def run(args):
     document = quizgen.parser.public.parse_file(args.path).document
 
-    content = document.to_format(args.format)
+    content = document.to_format(args.format, pretty = True)
     print(content)
 
     return 0

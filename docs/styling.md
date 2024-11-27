@@ -210,6 +210,7 @@ Use half the available width:
 | Key                  | Type    | Default Value | Allowed Values    | Notes |
 |----------------------|---------|---------------|-------------------|-------|
 | `table-head-bold`    | boolean | `true`        | {`true`, `false`} | Bold table headers. |
+| `table-head-rule`    | boolean | `true`        | {`true`, `false`} | Insert a rule (line) after the header row. |
 | `table-cell-height`  | float   | `1.5`         | [1.0, infinity]   | In [em](https://en.wikipedia.org/wiki/Em_(typography)). Set the vertical size in a cell. |
 | `table-cell-width`   | float   | `1.5`         | [1.0, infinity]   | In [em](https://en.wikipedia.org/wiki/Em_(typography)). Set the horizontal size in a cell. |
 | `table-border-table` | boolean | `false`       | {`true`, `false`} | Sets the border *around* the table. |

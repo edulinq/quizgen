@@ -46,7 +46,7 @@ class ParsedDocument(object):
 
     def to_markdown(self, **kwargs):
         env = {quizgen.parser.common.CONTEXT_ENV_KEY: self._prep_context(kwargs)}
-        return quizgen.parser.render.markdown(self._tokens, env = env)
+        return quizgen.parser.render.markdown(self._tokens, env = env, **kwargs)
 
     def to_tex(self, **kwargs):
         # TEST
@@ -55,11 +55,11 @@ class ParsedDocument(object):
     def to_text(self, **kwargs):
         # TODO: Make more simple than markdown.
         env = {quizgen.parser.common.CONTEXT_ENV_KEY: self._prep_context(kwargs)}
-        return quizgen.parser.render.markdown(self._tokens, env = env)
+        return quizgen.parser.render.markdown(self._tokens, env = env, **kwargs)
 
     def to_html(self, **kwargs):
         env = {quizgen.parser.common.CONTEXT_ENV_KEY: self._prep_context(kwargs)}
-        return quizgen.parser.render.html(self._tokens, env = env)
+        return quizgen.parser.render.html(self._tokens, env = env, **kwargs)
 
     def to_pod(self, include_metadata = True, **kwargs):
         data = {
