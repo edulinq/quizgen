@@ -44,12 +44,13 @@ def _add_good_parse_questions():
             for (doc_format, expected) in document['formats'].items():
                 test_name = _make_name('good_parse', path, name, doc_format)
                 options = document.get('options', {}).get(doc_format, {})
-                setattr(TestParser, test_name, _get_good_parse_test(text, doc_format, expected, base_dir, options))
+                context = document.get('context', {})
+                setattr(TestParser, test_name, _get_good_parse_test(text, doc_format, expected, base_dir, options, context))
 
-def _get_good_parse_test(text, doc_format, base_expected, base_dir, options):
+def _get_good_parse_test(text, doc_format, base_expected, base_dir, options, context):
     def __method(self):
         document = quizgen.parser.public.parse_text(text).document
-        result = document.to_format(doc_format, base_dir = base_dir, include_metadata = False)
+        result = document.to_format(doc_format, base_dir = base_dir, include_metadata = False, **context)
 
         if (doc_format == quizgen.constants.FORMAT_JSON):
             result = json.loads(result)

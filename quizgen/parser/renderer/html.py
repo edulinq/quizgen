@@ -19,25 +19,24 @@ class QuizgenRendererHTML(markdown_it.renderer.RendererHTML):
     def container_block_open(self, tokens, idx, options, env):
         context = env.get(quizgen.parser.common.CONTEXT_ENV_KEY, {})
 
-        # Add on a specific class and send back to super for full rendering.
+        # Add on a specific class.
         tokens[idx].attrJoin('class', 'qg-block')
 
-        # Attatch any style specific to this block.
-        block_style = tokens[idx].meta.get(quizgen.parser.common.TOKEN_META_KEY_STYLE, {})
-        style_string = quizgen.parser.style.compute_html_style_string(block_style)
+        # Pull any style attatched to this block and put it in a copy of the context.
+        context, full_style, block_style = quizgen.parser.common.handle_block_style(tokens[idx].meta, context)
+        env[quizgen.parser.common.CONTEXT_ENV_KEY] = context
+
+        # Attatch style based on if we are the root block.
+        # If root use all style, otherwise just use the style for this block.
+        active_style = block_style
+        if (tokens[idx].meta.get(quizgen.parser.common.TOKEN_META_KEY_ROOT, False)):
+            active_style = full_style
+
+        style_string = quizgen.parser.style.compute_html_style_string(active_style)
         if (style_string != ''):
             tokens[idx].attrSet('style', style_string)
 
-        # Pass on any new style though the env.
-        if (len(block_style) > 0):
-            env_style = context.get('style', {})
-            env_style.update(block_style)
-
-            # Make a readonly copy of the updated context.
-            context = copy.deepcopy(dict(context))
-            context['style'] = env_style
-            env[quizgen.parser.common.CONTEXT_ENV_KEY] = types.MappingProxyType(context)
-
+        # Send to super for further rendering.
         return super().renderToken(tokens, idx, options, env)
 
     def math_inline(self, tokens, idx, options, env):

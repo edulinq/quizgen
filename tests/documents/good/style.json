@@ -220,6 +220,73 @@
                 ]
             }
         }
+    },
+
+    {
+        "name": "Context Style",
+        "text": "text",
+        "context": {
+            "style": {
+                "font-size": 12
+            }
+        },
+        "formats": {
+            "md": "text",
+            "html": "<div class='qg-root-block qg-block' style='font-size: 12.00pt'><p>text</p></div>",
+            "tex": "",
+            "json": {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "text",
+                                "text": "text"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Context Style Override",
+        "text": "<style>\n\"font-size\": 10\n</style>\ntext",
+        "context": {
+            "style": {
+                "font-size": 12
+            }
+        },
+        "formats": {
+            "md": "text",
+            "html": "<div class='qg-root-block qg-block' style='font-size: 10.00pt'><p>text</p></div>",
+            "tex": "",
+            "json": {
+                "type": "container_block",
+                "qg_root": true,
+                "qg_style": {
+                    "font-size": 10
+                },
+                "children": [
+                    {
+                        "type": "paragraph",
+                        "children": [
+                            {
+                                "type": "inline",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "text"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
     }
 
 ]

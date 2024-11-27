@@ -68,6 +68,10 @@ def get_image_width(style):
     return float(width)
 
 def compute_html_style_string(style):
+    """
+    Compute the attribute style string for an HTML tag.
+    """
+
     attributes = []
 
     content_align = get_alignment(style, KEY_CONTENT_ALIGN)
@@ -89,3 +93,33 @@ def compute_html_style_string(style):
         return ''
 
     return '; '.join(attributes)
+
+def compute_tex_fixes(style):
+    """
+    Compute the fixes (prefixes, suffixes) for a portion of TeX.
+    These are things like `\\begin{center}`/`\\end{center}`.
+    The returned lists have matching indexes.
+    """
+
+    # The beginning and ends of groups.
+    # These will match 1-1.
+    prefixes = []
+    suffixes = []
+
+    content_align = get_alignment(style, KEY_CONTENT_ALIGN)
+    if (content_align is not None):
+        env_name = TEX_BLOCK_ALIGNMENT[content_align]
+        prefixes.append("\\begin{%s}" % (env_name))
+        suffixes.append("\\end{%s}" % (env_name))
+
+    font_size = style.get(KEY_FONT_SIZE, None)
+    if (font_size is not None):
+        font_size = float(font_size)
+        # 1.2 is the default size for baseline skip relative to font size.
+        # See: https://ctan.math.illinois.edu/macros/latex/contrib/fontsize/fontsize.pdf
+        baseline_skip = 1.2 * font_size
+
+        prefixes.append('\\begingroup\\fontsize{%.2fpt}{%.2fpt}\\selectfont' % (font_size, baseline_skip))
+        suffixes.append('\\endgroup')
+
+    return prefixes, suffixes

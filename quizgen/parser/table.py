@@ -15,7 +15,7 @@ def render_html(tokens, idx, options, env):
 
     token = tokens[idx]
     context = env.get(quizgen.parser.common.CONTEXT_ENV_KEY, {})
-    style = context.get('style', {})
+    style = context.get(quizgen.parser.common.CONTEXT_KEY_STYLE, {})
 
     if (token.type == 'table_open'):
         _table_html(token, style)

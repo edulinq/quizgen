@@ -18,20 +18,24 @@ class ParsedDocument(object):
         self._context[key] = value
 
     def to_markdown(self, **kwargs):
-        env = {quizgen.parser.common.CONTEXT_ENV_KEY: self._prep_context(kwargs)}
+        context = quizgen.parser.common.prep_context(self._context, options = kwargs)
+        env = {quizgen.parser.common.CONTEXT_ENV_KEY: context}
         return quizgen.parser.render.markdown(self._tokens, env = env, **kwargs)
 
     def to_tex(self, **kwargs):
-        env = {quizgen.parser.common.CONTEXT_ENV_KEY: self._prep_context(kwargs)}
+        context = quizgen.parser.common.prep_context(self._context, options = kwargs)
+        env = {quizgen.parser.common.CONTEXT_ENV_KEY: context}
         return quizgen.parser.render.tex(self._tokens, env = env, **kwargs)
 
     def to_text(self, **kwargs):
         # TODO: Make more simple than markdown.
-        env = {quizgen.parser.common.CONTEXT_ENV_KEY: self._prep_context(kwargs)}
+        context = quizgen.parser.common.prep_context(self._context, options = kwargs)
+        env = {quizgen.parser.common.CONTEXT_ENV_KEY: context}
         return quizgen.parser.render.markdown(self._tokens, env = env, **kwargs)
 
     def to_html(self, **kwargs):
-        env = {quizgen.parser.common.CONTEXT_ENV_KEY: self._prep_context(kwargs)}
+        context = quizgen.parser.common.prep_context(self._context, options = kwargs)
+        env = {quizgen.parser.common.CONTEXT_ENV_KEY: context}
         return quizgen.parser.render.html(self._tokens, env = env, **kwargs)
 
     def to_pod(self, include_metadata = True, **kwargs):
@@ -79,16 +83,3 @@ class ParsedDocument(object):
         """
 
         return quizgen.parser.ast.build(self._tokens)
-
-    def _prep_context(self, options = {}):
-        """
-        Prep an immutable copy/reference to the context to be passed for rendering.
-        """
-
-        # Make a copy of the context only if we need to.
-        context = self._context
-        if (len(options) > 0):
-            context = copy.deepcopy(context)
-            context.update(options)
-
-        return types.MappingProxyType(context)

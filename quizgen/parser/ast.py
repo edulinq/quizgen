@@ -26,6 +26,16 @@ AST_TOKEN_METAS = {
     ]
 }
 
+class ASTNode(dict):
+    def type(self):
+        return self['type']
+
+    def children(self):
+        return self.get('children', [])
+
+    def text(self):
+        return self.get('text', '')
+
 def build(tokens):
     tree = markdown_it.tree.SyntaxTreeNode(tokens)
     return _walk_ast(tree)
@@ -51,4 +61,4 @@ def _walk_ast(node):
     if (len(node.children) > 0):
         result['children'] = [_walk_ast(child) for child in node.children]
 
-    return result
+    return ASTNode(result)

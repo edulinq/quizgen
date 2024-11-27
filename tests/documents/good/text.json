@@ -208,12 +208,54 @@
     },
 
     {
+        "name": "Bold and Italics",
+        "text": "Some ***bold and italics*** text.",
+        "formats": {
+            "md": "Some ***bold and italics*** text.",
+            "html": "<p>Some <em><strong>bold and italics</strong></em> text.</p>",
+            "tex": "Some \\textit{\\textbf{bold and italics}} text.",
+            "json": {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "text",
+                                "text": "Some "
+                            },
+                            {
+                                "type": "em",
+                                "children": [
+                                    {
+                                        "type": "strong",
+                                        "children": [
+                                            {
+                                                "type": "text",
+                                                "text": "bold and italics"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "text",
+                                "text": " text."
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
         "name": "Bold with Spaces",
         "text": "Some **spaced  bold** text.",
         "formats": {
             "md": "Some **spaced bold** text.",
             "html": "<p>Some <strong>spaced  bold</strong> text.</p>",
-            "tex": "Some \\textbf{ spaced  bold   } text.",
+            "tex": "Some \\textbf{spaced  bold} text.",
             "json": {
                 "type": "paragraph",
                 "children": [

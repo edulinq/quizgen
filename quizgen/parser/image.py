@@ -13,7 +13,7 @@ _callback_cache = {}
 
 def render(format, tokens, idx, options, env):
     context = env.get(quizgen.parser.common.CONTEXT_ENV_KEY, {})
-    style = context.get('style', {})
+    style = context.get(quizgen.parser.common.CONTEXT_KEY_STYLE, {})
 
     src = tokens[idx].attrGet('src')
     base_dir = context.get(quizgen.parser.common.BASE_DIR_KEY, '.')
