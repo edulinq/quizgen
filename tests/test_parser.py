@@ -48,10 +48,6 @@ def _add_good_parse_questions():
 
 def _get_good_parse_test(text, doc_format, base_expected, base_dir, options):
     def __method(self):
-        if (doc_format == quizgen.constants.FORMAT_TEX):
-            # TEST - Skip for now.
-            self.skipTest('Skipping TeX')
-
         document = quizgen.parser.public.parse_text(text).document
         result = document.to_format(doc_format, base_dir = base_dir, include_metadata = False)
 
@@ -99,9 +95,6 @@ def _get_good_parse_test(text, doc_format, base_expected, base_dir, options):
 
             expected, result = _apply_text_options(options, expected, result)
             self.assertLongStringEqual(expected, result)
-        elif (doc_format == quizgen.constants.FORMAT_TEX):
-            # TEST - Skip for now.
-            self.skipTest('Skipping TeX')
         else:
             expected = base_expected.strip()
             result = result.strip()
