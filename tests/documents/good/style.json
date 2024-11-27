@@ -11,6 +11,17 @@
     },
 
     {
+        "name": "Optional Braces",
+        "text": "<style> {\"font-size\": 12} </style>",
+        "formats": {
+            "md": "",
+            "html": "",
+            "tex": "",
+            "json": {}
+        }
+    },
+
+    {
         "name": "Empty Explicit Block with Style",
         "text": ":::block\n<style>\n\"font-size\": 12\n</style>\n:::",
         "formats": {

@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Missing JSON Brace",
+        "text": "<style>{\"font-size\": 12</style>"
+    },
+    {
+        "name": "JSON List",
+        "text": "<style>[\"font-size\": 12]</style>"
+    },
+    {
+        "name": "Missing JSON Key Quote",
+        "text": "<style>font-size\": 12</style>"
+    }
+]
