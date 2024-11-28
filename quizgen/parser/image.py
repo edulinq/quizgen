@@ -11,26 +11,25 @@ import quizgen.parser.style
 # Cache the results of any image callbacks using (original src, base dir) as the key.
 _callback_cache = {}
 
-def render(format, tokens, idx, options, env):
+def update_token_html(tokens, idx, options, env):
+    """
+    Update the token knowing the it will render as HTML.
+    """
+
     context = env.get(quizgen.parser.common.CONTEXT_ENV_KEY, {})
     style = context.get(quizgen.parser.common.CONTEXT_KEY_STYLE, {})
 
-    src = tokens[idx].attrGet('src')
     base_dir = context.get(quizgen.parser.common.BASE_DIR_KEY, '.')
     callback = context.get(quizgen.parser.common.CONTEXT_KEY_IMAGE_CALLBACK, None)
 
+    src = tokens[idx].attrGet('src')
     src = _handle_callback(callback, src, base_dir)
     tokens[idx].attrSet('src', src)
 
-    if (format == quizgen.constants.FORMAT_HTML):
-        _render_html(context, style, base_dir, tokens, idx, options, env)
-
-def _render_html(context, style, base_dir, tokens, idx, options, env):
     # Set width.
     width_float = quizgen.parser.style.get_image_width(style)
     tokens[idx].attrSet('width', "%0.2f%%" % (width_float * 100.0))
 
-    src = tokens[idx].attrGet('src')
     path = os.path.realpath(os.path.join(base_dir, src))
     force_raw_image_src = context.get(quizgen.parser.common.CONTEXT_KEY_FORCE_RAW_IMAGE_SRC, False)
 
@@ -41,6 +40,19 @@ def _render_html(context, style, base_dir, tokens, idx, options, env):
         # Otherwise, do a base64 encoding of the image and embed it.
         mime, content = _encode_image(path)
         tokens[idx].attrSet('src', f"data:{mime};base64,{content}")
+
+def render_tex(node, context):
+    style = context.get(quizgen.parser.common.CONTEXT_KEY_STYLE, {})
+    base_dir = context.get(quizgen.parser.common.BASE_DIR_KEY, '.')
+    callback = context.get(quizgen.parser.common.CONTEXT_KEY_IMAGE_CALLBACK, None)
+
+    src = node.get('src', '')
+    src = _handle_callback(callback, src, base_dir)
+
+    width_float = quizgen.parser.style.get_image_width(style)
+    path = os.path.realpath(os.path.join(base_dir, src))
+
+    return r"\includegraphics[width=%0.2f\textwidth]{%s}" % (width_float, src)
 
 def _handle_callback(callback, original_src, base_dir):
     key = (original_src, base_dir)

@@ -31,7 +31,7 @@
 
     {
         "name": "Link with No URL",
-        "text": "[text]( )",
+        "text": "[text]()",
         "formats": {
             "md": "[text](<>)",
             "html": "<p><a href=''>text</a></p>",
@@ -95,7 +95,7 @@
         "formats": {
             "md": "[ some text ](some%20url)",
             "html": "<p><a href='some%20url'>some text</a></p>",
-            "tex": "\\href{some url}{some text}",
+            "tex": "\\href{some%20url}{some text}",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -125,7 +125,7 @@
         "formats": {
             "md": "[ some * text ](<some%20(%5C)%20url>)",
             "html": "<p><a href='some%20(%5C)%20url'>some * text</a></p>",
-            "tex": "\\href{some () url}{some [] text}",
+            "tex": "\\href{some%20(%5C)%20url}{some * text}",
             "json": {
                 "type": "paragraph",
                 "children": [

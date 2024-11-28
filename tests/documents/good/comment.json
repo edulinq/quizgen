@@ -16,7 +16,7 @@
         "formats": {
             "md": "Some  Text",
             "html": "<p>Some  Text</p>",
-            "tex": "",
+            "tex": "Some  Text",
             "json": {
                 "type": "paragraph",
                 "children": [

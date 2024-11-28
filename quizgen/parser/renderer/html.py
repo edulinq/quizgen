@@ -13,7 +13,7 @@ import quizgen.parser.table
 class QuizgenRendererHTML(markdown_it.renderer.RendererHTML):
     def image(self, tokens, idx, options, env):
         # Do custom rendering and then pass onto super.
-        quizgen.parser.image.render(quizgen.constants.FORMAT_HTML, tokens, idx, options, env)
+        quizgen.parser.image.update_token_html(tokens, idx, options, env)
         return super().image(tokens, idx, options, env)
 
     def container_block_open(self, tokens, idx, options, env):

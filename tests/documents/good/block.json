@@ -45,7 +45,7 @@
         "formats": {
             "md": "Root Block\n\nExplicit Block",
             "html": "<p>Root Block</p><div class='qg-block'><p>Explicit Block</p></div>",
-            "tex": "Root Block\nExplicit Block",
+            "tex": "Root Block\n\nExplicit Block",
             "json": [
                 {
                     "type": "paragraph",
@@ -101,7 +101,7 @@
         "formats": {
             "md": "root\n\ninner 1\n\ninner 2",
             "html": "<p>root</p><div class='qg-block'><p>inner 1</p><div class='qg-block'><p>inner 2</p></div></div>",
-            "tex": "",
+            "tex": "root\n\ninner 1\n\ninner 2",
             "json": [
                 {
                     "type": "paragraph",

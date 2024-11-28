@@ -34,6 +34,8 @@ TEX_REPLACEMENTS = {
     'ZZZzzz  BACKSLASH REPLACEMENT  zzzZZZ': '\\textbackslash{}',
 }
 
+VERB_CHARACTERS = ['|', '!', '@', '#', '$', '^', '&', '-', '_', '=', '+']
+
 class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
     def render(self, tokens, options, env):
         context = env.get(quizgen.parser.common.CONTEXT_ENV_KEY, {})
@@ -42,7 +44,17 @@ class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
         ast = quizgen.parser.ast.build(tokens)
 
         # TEST
+        print('@@@')
+        def walk(token):
+            print(token)
+            if ((token.children is not None) and (len(token.children) > 0)):
+                for child in token.children:
+                    walk(child)
+        for token in tokens:
+            walk(token)
+        print('###')
         print(json.dumps(ast, indent = 4))
+        print('@@@')
 
         return self._render_node(ast, context)
 
@@ -78,7 +90,7 @@ class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
 
         content = prefixes + child_content + list(reversed(suffixes))
 
-        return "\n".join(content)
+        return "\n\n".join(content)
 
     def _paragraph(self, node, context):
         return "\n".join([self._render_node(child, context) for child in node.children()])
@@ -102,6 +114,43 @@ class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
     def _strong(self, node, context):
         content = ''.join([self._render_node(child, context) for child in node.children()])
         return r"\textbf{%s}" % (content)
+
+    def _fence(self, node, context):
+        return "\\begin{lstlisting}\n%s\n\\end{lstlisting}" % node.text().rstrip()
+
+    def _code_inline(self, node, context):
+        text = node.text()
+
+        delim = None
+        for char in VERB_CHARACTERS:
+            if (char not in text):
+                delim = char
+                break
+
+        if (delim is None):
+            raise ValueError("Could not find a delimiter to use with TeX's `\verb'.")
+
+        return r"\verb%s%s%s" % (delim, text, delim)
+
+    def _math_block(self, node, context):
+        text = node.text().strip()
+        return f"$$\n{text}\n$$"
+
+    def _math_inline(self, node, context):
+        text = node.text().strip()
+        return f"$ {text} $"
+
+    def _image(self, node, context):
+        return quizgen.parser.image.render_tex(node, context)
+
+    def _link(self, node, context):
+        text = ''.join([self._render_node(child, context) for child in node.children()]).strip()
+        url = node.get('href', '')
+
+        if (len(text) == 0):
+            return r"\url{%s}" % (url)
+
+        return r"\href{%s}{%s}" % (url, text)
 
 def get_renderer(options):
     return QuizgenRendererTex(), options

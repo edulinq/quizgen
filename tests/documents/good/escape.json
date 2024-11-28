@@ -77,7 +77,7 @@
         "formats": {
             "md": "Escape $ dollar sign.",
             "html": "<p>Escape $ dollar sign.</p>",
-            "tex": "Escape $ dollar sign.",
+            "tex": "Escape \\$ dollar sign.",
             "json": {
                 "type": "paragraph",
                 "children": [

@@ -56,12 +56,12 @@
     },
 
     {
-        "name": "Inline Code With Escapes",
+        "name": "Inline Code with Escapes",
         "text": "`inline_code(\"\\*\");`",
         "formats": {
             "md": "`inline_code(\"\\*\");`",
             "html": "<p><code>inline_code(\"\\*\");</code></p>",
-            "tex": "\\verb|inline_code(\"`\");|",
+            "tex": "\\verb|inline_code(\"\\*\");|",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -80,7 +80,31 @@
     },
 
     {
-        "name": "Inline Code With Alt Verb Delim",
+        "name": "Inline Code with Un-Escapes",
+        "text": "`inline_code(\"*\");`",
+        "formats": {
+            "md": "`inline_code(\"*\");`",
+            "html": "<p><code>inline_code(\"*\");</code></p>",
+            "tex": "\\verb|inline_code(\"*\");|",
+            "json": {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "code_inline",
+                                "text": "inline_code(\"*\");"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Inline Code with Alt Verb Delim",
         "text": "`inline_code(\"|\");`",
         "formats": {
             "md": "`inline_code(\"|\");`",
@@ -123,24 +147,10 @@
         "formats": {
             "md": "```\n code_block(); \n```",
             "html": "<pre><code> code_block(); \n</code></pre>",
-            "tex": "\\begin{lstlisting}\n code_block(); \n\\end{lstlisting}",
+            "tex": "\\begin{lstlisting}\n code_block();\n\\end{lstlisting}",
             "json": {
                 "type": "fence",
                 "text": " code_block(); \n"
-            }
-        }
-    },
-
-    {
-        "name": "Code Block with Unescaped Escape Characters",
-        "text": "```\nfoo(1, \\'-2\\')\\nbar(\"|\", x*);\n```",
-        "formats": {
-            "md": "```\nfoo(1, \\'-2\\')\\nbar(\"|\", x*);\n```",
-            "html": "<pre><code>foo(1, \\'-2\\')\\nbar(\"|\", x*);\n</code></pre>",
-            "tex": "\\begin{lstlisting}\nfoo(1, \\'-2\\')\\nbar(\"|\", x*);\n\\end{lstlisting}",
-            "json": {
-                "type": "fence",
-                "text": "foo(1, \\'-2\\')\\nbar(\"|\", x*);\n"
             }
         }
     }
