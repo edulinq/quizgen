@@ -5,7 +5,7 @@
         "formats": {
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<table style='border-collapse: collapse; border-style: hidden'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>c</td></tr></tbody></table>",
-            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\n1 & 2 & 3 \\\\\n\\hline\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "json": {
                 "type": "table",
                 "children": [
@@ -124,7 +124,7 @@
         "formats": {
             "md": "| 1   |  2  |   3 |\n| :-- | :-: | --: |\n| a   |  b  |   c |",
             "html": "<table style='border-collapse: collapse; border-style: hidden'><thead style='border-bottom: 1px solid black'><tr><th style='text-align:left; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>1</th><th style='text-align:center; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>2</th><th style='text-align:right; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='text-align:left; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>a</td><td style='text-align:center; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>b</td><td style='text-align:right; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>c</td></tr></tbody></table>",
-            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ lcr }\n1 & 2 & 3 \\\\\n\\hline\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "json": {
                 "type": "table",
                 "children": [
@@ -249,7 +249,7 @@
         "formats": {
             "md": "| 1   | -2    | 3^                |\n| --- | ----- | ----------------- |\n| *a* | **b** | `c()` and $ d() $ |",
             "html": "<table style='border-collapse: collapse; border-style: hidden'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>-2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>3^</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><em>a</em></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><strong>b</strong></td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'><code>c()</code>and<span><code>d()</code></span></td></tr></tbody></table>",
-            "tex": "",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\n1 & -2 & 3\\^ \\\\\n\\hline\n\\textit{a} & \\textbf{b} & \\verb|c()| and $ d() $ \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "json": {
                 "type": "table",
                 "children": [

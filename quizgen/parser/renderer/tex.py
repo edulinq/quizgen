@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 
 import markdown_it.renderer
@@ -29,6 +30,12 @@ TEX_REPLACEMENTS = {
 }
 
 VERB_CHARACTERS = ['|', '!', '@', '#', '$', '^', '&', '-', '_', '=', '+']
+
+TEX_TEXT_TABLE_ALIGNMENT = {
+    quizgen.parser.style.ALLOWED_VALUES_ALIGNMENT_LEFT: 'l',
+    quizgen.parser.style.ALLOWED_VALUES_ALIGNMENT_CENTER: 'c',
+    quizgen.parser.style.ALLOWED_VALUES_ALIGNMENT_RIGHT: 'r',
+}
 
 class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
     def render(self, tokens, options, env):
@@ -160,6 +167,76 @@ class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
         text = tex_escape(node.text())
         return r"\textsc{<%s>}" % (text)
 
+    def _table(self, node, context):
+        style = context.get(quizgen.parser.common.CONTEXT_KEY_STYLE, {})
+
+        border_table = quizgen.parser.style.get_boolean_style_key(style, quizgen.parser.style.KEY_TABLE_BORDER_TABLE, quizgen.parser.style.DEFAULT_TABLE_BORDER_TABLE)
+        border_cells = quizgen.parser.style.get_boolean_style_key(style, quizgen.parser.style.KEY_TABLE_BORDER_CELLS, quizgen.parser.style.DEFAULT_TABLE_BORDER_CELLS)
+        default_alignment = quizgen.parser.style.get_alignment(style, quizgen.parser.style.KEY_TEXT_ALIGN, default_value = quizgen.parser.style.ALLOWED_VALUES_ALIGNMENT_CENTER)
+
+        column_infos = _discover_column_info(node)
+
+        column_join = ''
+        if (border_cells):
+            column_join = '|'
+
+        # Build column specifiers.
+        column_specifiers = []
+        for column_info in column_infos:
+            raw_alignment = column_info.get('text-align', default_alignment)
+            column_specifiers.append(TEX_TEXT_TABLE_ALIGNMENT[raw_alignment])
+        column_spec = column_join.join(column_specifiers)
+
+        if (border_table):
+            column_spec = '|' + column_spec + '|'
+
+        lines = [
+            r'\begin{tabular}{ ' + column_spec + ' }',
+        ]
+
+        if (border_table):
+            lines.append(r'\hline')
+
+        lines.append("\n".join([self._render_node(child, context) for child in node.children()]))
+
+        if (border_table):
+            lines.append(r'\hline')
+
+        lines += [
+            r'\end{tabular}',
+        ]
+
+        lines = _apply_tex_table_style(style, lines)
+
+        return "\n".join(lines)
+
+    def _thead(self, node, context):
+        style = context.get(quizgen.parser.common.CONTEXT_KEY_STYLE, {})
+        head_rule = quizgen.parser.style.get_boolean_style_key(style, quizgen.parser.style.KEY_TABLE_HEAD_RULE, quizgen.parser.style.DEFAULT_TABLE_HEAD_RULE)
+
+        content = "\n".join([self._render_node(child, context) for child in node.children()])
+
+        if (head_rule):
+            content += '\n\\hline'
+
+        return content
+
+    def _tbody(self, node, context):
+        content = "\n".join([self._render_node(child, context) for child in node.children()])
+        return content
+
+    def _tr(self, node, context):
+        content = ' & '.join([self._render_node(child, context) for child in node.children()])
+        return content + ' \\\\'
+
+    def _th(self, node, context):
+        content = ''.join([self._render_node(child, context) for child in node.children()])
+        return content
+
+    def _td(self, node, context):
+        content = ''.join([self._render_node(child, context) for child in node.children()])
+        return content
+
 def get_renderer(options):
     return QuizgenRendererTex(), options
 
@@ -172,3 +249,73 @@ def tex_escape(text):
         text = text.replace(key, value)
 
     return text
+
+def _apply_tex_table_style(style, lines):
+    # Height
+    height = max(1.0, float(style.get(quizgen.parser.style.KEY_TABLE_CELL_HEIGHT, quizgen.parser.style.DEFAULT_TABLE_CELL_HEIGHT)))
+    prefix = [
+        r'\begingroup',
+        r'\renewcommand{\arraystretch}{%0.2f}' % (height),
+    ]
+    lines = prefix + lines
+    lines.append(r'\endgroup')
+
+    # Width
+    width = max(1.0, float(style.get(quizgen.parser.style.KEY_TABLE_CELL_WIDTH, quizgen.parser.style.DEFAULT_TABLE_CELL_WIDTH)))
+    prefix = [
+        r'\begingroup',
+        r'\setlength{\tabcolsep}{%0.2fem}' % (width),
+    ]
+    lines = prefix + lines
+    lines.append(r'\endgroup')
+
+    return lines
+
+def _discover_column_info(node, info = None):
+    """
+    Descend into a table to figure out how many columns there are and if a column has alignment information.
+    We will not make assumptions about symmetric rows or existence of headers.
+    The largest row will determine width, and the last instance of styling information in a column will determine alignment.
+    """
+
+    if (info is None):
+        info = []
+
+    type = node.type()
+    if (type not in {'table', 'thead', 'tbody', 'tr', 'td', 'th'}):
+        return info
+
+    children = node.children()
+
+    if (type in {'table', 'thead', 'tbody'}):
+        for child in children:
+            info = _discover_column_info(child, info = info)
+        return info
+
+    if (type == 'tr'):
+        for i in range(len(children)):
+            if (i >= len(info)):
+                info.append({})
+
+            info[i] = _discover_column_info_cells(children[i], style = info[i])
+
+        return info
+
+    logging.warning("Unexpected table node type '%s'." % (type))
+    return info
+
+def _discover_column_info_cells(node, style = {}):
+    type = node.type()
+    if (type not in {'td', 'th'}):
+        return style
+
+    raw_style = node.get('style', '').strip()
+    if (len(raw_style) == 0):
+        return style
+
+    rules = [part.strip() for part in raw_style.split(';')]
+    for raw_rule in rules:
+        key, value = [part.strip() for part in raw_rule.split(':', maxsplit = 1)]
+        style[key] = value
+
+    return style
