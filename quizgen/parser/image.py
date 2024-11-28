@@ -1,60 +1,12 @@
 import base64
 import os
-import re
 
-import quizgen.constants
 import quizgen.parser.common
-import quizgen.parser.style
-
-# TEST - Canvas (html) images require special handling.
 
 # Cache the results of any image callbacks using (original src, base dir) as the key.
 _callback_cache = {}
 
-def update_token_html(tokens, idx, options, env):
-    """
-    Update the token knowing the it will render as HTML.
-    """
-
-    context = env.get(quizgen.parser.common.CONTEXT_ENV_KEY, {})
-    style = context.get(quizgen.parser.common.CONTEXT_KEY_STYLE, {})
-
-    base_dir = context.get(quizgen.parser.common.BASE_DIR_KEY, '.')
-    callback = context.get(quizgen.parser.common.CONTEXT_KEY_IMAGE_CALLBACK, None)
-
-    src = tokens[idx].attrGet('src')
-    src = _handle_callback(callback, src, base_dir)
-    tokens[idx].attrSet('src', src)
-
-    # Set width.
-    width_float = quizgen.parser.style.get_image_width(style)
-    tokens[idx].attrSet('width', "%0.2f%%" % (width_float * 100.0))
-
-    path = os.path.realpath(os.path.join(base_dir, src))
-    force_raw_image_src = context.get(quizgen.parser.common.CONTEXT_KEY_FORCE_RAW_IMAGE_SRC, False)
-
-    if (force_raw_image_src or re.match(r'^http(s)?://', src)):
-        # Do not further modify the src if it is a http URL or we are explicitly directed not to.
-        pass
-    else:
-        # Otherwise, do a base64 encoding of the image and embed it.
-        mime, content = _encode_image(path)
-        tokens[idx].attrSet('src', f"data:{mime};base64,{content}")
-
-def render_tex(node, context):
-    style = context.get(quizgen.parser.common.CONTEXT_KEY_STYLE, {})
-    base_dir = context.get(quizgen.parser.common.BASE_DIR_KEY, '.')
-    callback = context.get(quizgen.parser.common.CONTEXT_KEY_IMAGE_CALLBACK, None)
-
-    src = node.get('src', '')
-    src = _handle_callback(callback, src, base_dir)
-
-    width_float = quizgen.parser.style.get_image_width(style)
-    path = os.path.realpath(os.path.join(base_dir, src))
-
-    return r"\includegraphics[width=%0.2f\textwidth]{%s}" % (width_float, src)
-
-def _handle_callback(callback, original_src, base_dir):
+def handle_callback(callback, original_src, base_dir):
     key = (original_src, base_dir)
 
     computed_src = _callback_cache.get(key, None)
@@ -69,7 +21,7 @@ def _handle_callback(callback, original_src, base_dir):
 
     return computed_src
 
-def _encode_image(path):
+def encode_image(path):
     ext = os.path.splitext(path)[-1].lower()
     mime = f"image/{ext}"
 
