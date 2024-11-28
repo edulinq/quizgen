@@ -38,7 +38,7 @@
         "formats": {
             "md": "text",
             "html": "<div class='qg-block' style='font-size: 12.00pt'><p>text</p></div>",
-            "tex": "",
+            "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\n\ntext\n\n\\endgroup",
             "json": {
                 "type": "container_block",
                 "qg_style": {
@@ -70,7 +70,7 @@
         "formats": {
             "md": "before\n\nafter",
             "html": "<div class='qg-root-block qg-block' style='font-size: 12.00pt'><p>before</p><p>after</p></div>",
-            "tex": "",
+            "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\n\nbefore\n\nafter\n\n\\endgroup",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -117,7 +117,7 @@
         "formats": {
             "md": "Root\n\nChild",
             "html": "<div class='qg-root-block qg-block' style='font-size: 12.00pt'><p>Root</p><div class='qg-block' style='font-size: 10.00pt'><p>Child</p></div></div>",
-            "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\nRoot\n\\begingroup\\fontsize{10.00pt}{12.00pt}\\selectfont\nChild\n\\endgroup\n\\endgroup",
+            "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\n\nRoot\n\n\\begingroup\\fontsize{10.00pt}{12.00pt}\\selectfont\n\nChild\n\n\\endgroup\n\n\\endgroup",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -173,7 +173,7 @@
         "formats": {
             "md": "Root\n\nChild",
             "html": "<div class='qg-root-block qg-block' style='font-size: 12.00pt'><p>Root</p><div class='qg-block'><p>Child</p></div></div>",
-            "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\nRoot\nChild\n\\endgroup",
+            "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\n\nRoot\n\nChild\n\n\\endgroup",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -233,7 +233,7 @@
         "formats": {
             "md": "text",
             "html": "<div class='qg-root-block qg-block' style='font-size: 12.00pt'><p>text</p></div>",
-            "tex": "",
+            "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\n\ntext\n\n\\endgroup",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -262,7 +262,7 @@
         "formats": {
             "md": "text",
             "html": "<div class='qg-root-block qg-block' style='font-size: 10.00pt'><p>text</p></div>",
-            "tex": "",
+            "tex": "\\begingroup\\fontsize{10.00pt}{12.00pt}\\selectfont\n\ntext\n\n\\endgroup",
             "json": {
                 "type": "container_block",
                 "qg_root": true,

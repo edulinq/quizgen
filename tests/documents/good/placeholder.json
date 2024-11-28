@@ -43,7 +43,7 @@
         "formats": {
             "md": "<placeholder>answer_reference</placeholder>",
             "html": "<p><placeholder>answer_reference</placeholder></p>",
-            "tex": "\\textsc{<answer_reference>}",
+            "tex": "\\textsc{<answer\\_reference>}",
             "json": {
                 "type": "paragraph",
                 "children": [

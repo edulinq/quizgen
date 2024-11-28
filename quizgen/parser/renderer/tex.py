@@ -1,18 +1,12 @@
 import json
+import os
 
 import markdown_it.renderer
 
-# TEST
-import quizgen.constants
 import quizgen.parser.ast
 import quizgen.parser.common
 import quizgen.parser.image
-import quizgen.parser.math
-import quizgen.parser.renderer.html
-import quizgen.parser.renderer.markdown
-import quizgen.parser.renderer.tex
 import quizgen.parser.style
-import quizgen.parser.table
 
 TEX_REPLACEMENTS = {
     # Specially handle braces and slashes to avoid clobbering other replacements.
@@ -141,7 +135,17 @@ class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
         return f"$ {text} $"
 
     def _image(self, node, context):
-        return quizgen.parser.image.render_tex(node, context)
+        style = context.get(quizgen.parser.common.CONTEXT_KEY_STYLE, {})
+        base_dir = context.get(quizgen.parser.common.BASE_DIR_KEY, '.')
+        callback = context.get(quizgen.parser.common.CONTEXT_KEY_IMAGE_CALLBACK, None)
+
+        src = node.get('src', '')
+        src = quizgen.parser.image.handle_callback(callback, src, base_dir)
+
+        width_float = quizgen.parser.style.get_image_width(style)
+        path = os.path.realpath(os.path.join(base_dir, src))
+
+        return r"\includegraphics[width=%0.2f\textwidth]{%s}" % (width_float, src)
 
     def _link(self, node, context):
         text = ''.join([self._render_node(child, context) for child in node.children()]).strip()
@@ -151,6 +155,10 @@ class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
             return r"\url{%s}" % (url)
 
         return r"\href{%s}{%s}" % (url, text)
+
+    def _placeholder(self, node, context):
+        text = tex_escape(node.text())
+        return r"\textsc{<%s>}" % (text)
 
 def get_renderer(options):
     return QuizgenRendererTex(), options
