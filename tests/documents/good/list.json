@@ -1,0 +1,146 @@
+[
+    {
+        "name": "Basic Unordered List",
+        "text": "- A\n- B\n- C",
+        "formats": {
+            "md": "- A\n- B\n- C",
+            "html": "<ul><li>A</li><li>B</li><li>C</li></ul>",
+            "tex": "\\begin{itemize}\n    \\item A\n    \\item B\n    \\item C\n\\end{itemize}",
+            "json": {
+                "type": "bullet_list",
+                "children": [
+                    {
+                        "type": "list_item",
+                        "children": [
+                            {
+                                "type": "paragraph",
+                                "children": [
+                                    {
+                                        "type": "inline",
+                                        "children": [
+                                            {
+                                                "type": "text",
+                                                "text": "A"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "list_item",
+                        "children": [
+                            {
+                                "type": "paragraph",
+                                "children": [
+                                    {
+                                        "type": "inline",
+                                        "children": [
+                                            {
+                                                "type": "text",
+                                                "text": "B"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "list_item",
+                        "children": [
+                            {
+                                "type": "paragraph",
+                                "children": [
+                                    {
+                                        "type": "inline",
+                                        "children": [
+                                            {
+                                                "type": "text",
+                                                "text": "C"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Basic Ordered List",
+        "text": "1. A\n2. B\n3. C",
+        "formats": {
+            "md": "1. A\n1. B\n1. C",
+            "html": "<ol><li>A</li><li>B</li><li>C</li></ol>",
+            "tex": "\\begin{enumerate}\n    \\item A\n    \\item B\n    \\item C\n\\end{enumerate}",
+            "json": {
+                "type": "ordered_list",
+                "children": [
+                    {
+                        "type": "list_item",
+                        "children": [
+                            {
+                                "type": "paragraph",
+                                "children": [
+                                    {
+                                        "type": "inline",
+                                        "children": [
+                                            {
+                                                "type": "text",
+                                                "text": "A"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "list_item",
+                        "children": [
+                            {
+                                "type": "paragraph",
+                                "children": [
+                                    {
+                                        "type": "inline",
+                                        "children": [
+                                            {
+                                                "type": "text",
+                                                "text": "B"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "list_item",
+                        "children": [
+                            {
+                                "type": "paragraph",
+                                "children": [
+                                    {
+                                        "type": "inline",
+                                        "children": [
+                                            {
+                                                "type": "text",
+                                                "text": "C"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+
+]

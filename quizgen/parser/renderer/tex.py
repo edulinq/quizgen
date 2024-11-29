@@ -237,6 +237,18 @@ class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
         content = ''.join([self._render_node(child, context) for child in node.children()])
         return content
 
+    def _bullet_list(self, node, context):
+        items = '\n'.join([self._render_node(child, context) for child in node.children()])
+        return "\\begin{itemize}\n" + items + "\n\\end{itemize}"
+
+    def _ordered_list(self, node, context):
+        items = '\n'.join([self._render_node(child, context) for child in node.children()])
+        return "\\begin{enumerate}\n" + items + "\n\\end{enumerate}"
+
+    def _list_item(self, node, context):
+        content = ''.join([self._render_node(child, context) for child in node.children()])
+        return "    \\item " + content
+
 def get_renderer(options):
     return QuizgenRendererTex(), options
 
