@@ -44,7 +44,7 @@
         "formats": {
             "md": "![root](http://test.edulinq.org/image.png)\n\n![child](http://test.edulinq.org/image.png)",
             "html": "<p><img alt='root' src='http://test.edulinq.org/image.png' width='50.00%' /></p><div class='qg-block'><p><img alt='child' src='http://test.edulinq.org/image.png' width='50.00%' /></p></div>",
-            "tex": "\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}\n\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}",
+            "tex": "\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}\n\n\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -108,7 +108,7 @@
         "formats": {
             "md": "![root](http://test.edulinq.org/image.png)\n\n![child](http://test.edulinq.org/image.png)",
             "html": "<p><img alt='root' src='http://test.edulinq.org/image.png' width='50.00%' /></p><div class='qg-block'><p><img alt='child' src='http://test.edulinq.org/image.png' width='75.00%' /></p></div>",
-            "tex": "\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}\n\\includegraphics[width=0.75\\textwidth]{http://test.edulinq.org/image.png}",
+            "tex": "\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}\n\n\\includegraphics[width=0.75\\textwidth]{http://test.edulinq.org/image.png}",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -175,7 +175,7 @@
         "formats": {
             "md": "![root](http://test.edulinq.org/image.png)\n\n![child](http://test.edulinq.org/image.png)",
             "html": "<p><img alt='root' src='http://test.edulinq.org/image.png' width='50.00%' /></p><div class='qg-block'><p><img alt='child' src='http://test.edulinq.org/image.png' width='100.00%' /></p></div>",
-            "tex": "\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}\n\\includegraphics[width=1.00\\textwidth]{http://test.edulinq.org/image.png}",
+            "tex": "\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}\n\n\\includegraphics[width=1.00\\textwidth]{http://test.edulinq.org/image.png}",
             "json": {
                 "type": "container_block",
                 "qg_root": true,

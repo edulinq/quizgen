@@ -5,7 +5,7 @@
         "formats": {
             "md": "Text",
             "html": "<div class='qg-root-block qg-block' style='display: flex; flex-direction: column; justify-content: flex-start; align-items: center'><p>Text</p></div>",
-            "tex": "\\begin{center}\nText\n\\end{center}",
+            "tex": "\\begin{center}\n\nText\n\n\\end{center}",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -38,7 +38,7 @@
         "formats": {
             "md": "Text",
             "html": "<div class='qg-root-block qg-block' style='display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start'><p>Text</p></div>",
-            "tex": "\\begin{flushleft}\nText\n\\end{flushleft}",
+            "tex": "\\begin{flushleft}\n\nText\n\n\\end{flushleft}",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -71,7 +71,7 @@
         "formats": {
             "md": "Text",
             "html": "<div class='qg-root-block qg-block' style='display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-end'><p>Text</p></div>",
-            "tex": "\\begin{flushright}\nText\n\\end{flushright}",
+            "tex": "\\begin{flushright}\n\nText\n\n\\end{flushright}",
             "json": {
                 "type": "container_block",
                 "qg_root": true,

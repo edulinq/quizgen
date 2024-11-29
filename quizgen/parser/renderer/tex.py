@@ -44,19 +44,6 @@ class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
         # Work with an AST instead of tokens.
         ast = quizgen.parser.ast.build(tokens)
 
-        # TEST
-        print('@@@')
-        def walk(token):
-            print(token)
-            if ((token.children is not None) and (len(token.children) > 0)):
-                for child in token.children:
-                    walk(child)
-        for token in tokens:
-            walk(token)
-        print('###')
-        print(json.dumps(ast, indent = 4))
-        print('@@@')
-
         return self._render_node(ast, context)
 
     def _render_node(self, node, context):
