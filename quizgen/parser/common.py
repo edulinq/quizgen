@@ -14,6 +14,7 @@ TOKEN_META_KEY_ROOT = 'qg_root'
 TOKEN_META_KEY_STYLE = 'qg_style'
 
 CONTENT_NODES = {
+    'code_block',
     'code_inline',
     'fence',
     'math_block',

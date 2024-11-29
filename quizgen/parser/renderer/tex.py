@@ -119,6 +119,14 @@ class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
     def _fence(self, node, context):
         return "\\begin{lstlisting}\n%s\n\\end{lstlisting}" % node.text().rstrip()
 
+    def _code_block(self, node, context):
+        """
+        This token is poorly named, it is actually an indented code block.
+        Treat it like a fence with no info string.
+        """
+
+        return self._fence(node, context)
+
     def _code_inline(self, node, context):
         text = node.text()
 

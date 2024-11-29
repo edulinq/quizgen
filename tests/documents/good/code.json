@@ -153,6 +153,52 @@
                 "text": " code_block(); \n"
             }
         }
+    },
+
+    {
+        "name": "Code Block with Info String",
+        "text": "```golang\ncode_block();\n```",
+        "formats": {
+            "md": "```golang\ncode_block();\n```",
+            "html": "<pre><code class='language-golang'>code_block();\n</code></pre>",
+            "tex": "\\begin{lstlisting}[language=golang]\ncode_block();\n\\end{lstlisting}",
+            "json": {
+                "type": "fence",
+                "info": "golang",
+                "text": "code_block();\n"
+            }
+        }
+    },
+
+    {
+        "name": "Indented Code Block",
+        "comment": "Because of stripping, we need a paragraph before the indented block.",
+        "text": "a\n\n    code_block();",
+        "formats": {
+            "md": "a\n\n```\ncode_block();\n```",
+            "html": "<p>a</p><pre><code>code_block();\n</code></pre>",
+            "tex": "a\n\n\\begin{lstlisting}\ncode_block();\n\\end{lstlisting}",
+            "json": [
+                {
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "type": "inline",
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "text": "a"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "code_block",
+                    "text": "code_block();\n"
+                }
+            ]
+        }
     }
 
 ]

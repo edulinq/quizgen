@@ -2,6 +2,19 @@ import markdown_it
 
 import quizgen.parser.common
 
+# Pull specific attributes from nodes of these specified types.
+AST_NODE_ATTRIBUTES = {
+    'code_block': [
+        'info',
+    ],
+    'fence': [
+        'info',
+    ],
+    'heading': [
+        'tag',
+    ],
+}
+
 # Pull these attributes out of these specific token types when building the AST.
 AST_TOKEN_ATTRS = {
     'image': [
@@ -16,11 +29,6 @@ AST_TOKEN_ATTRS = {
     'th': [
         'style',
     ],
-}
-
-# Grab the 'tags' field for these node types.
-AST_NODE_TAG_TYPES = {
-    'heading',
 }
 
 # Like AST_TOKEN_ATTRS, but for the `meta` property.
@@ -53,8 +61,8 @@ def _walk_ast(node):
     if (node.type in quizgen.parser.common.CONTENT_NODES):
         result['text'] = node.content
 
-    if (node.type in AST_NODE_TAG_TYPES):
-        result['tag'] = node.tag
+    for name in AST_NODE_ATTRIBUTES.get(node.type, []):
+        result[name] = getattr(node, name)
 
     for name in AST_TOKEN_ATTRS.get(node.type, []):
         value = node.attrGet(name)
