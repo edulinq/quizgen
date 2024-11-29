@@ -4,18 +4,23 @@ import quizgen.parser.common
 
 # Pull these attributes out of these specific token types when building the AST.
 AST_TOKEN_ATTRS = {
-    'link': [
-        'href',
-    ],
     'image': [
         'src',
     ],
-    'th': [
-        'style',
+    'link': [
+        'href',
     ],
     'td': [
         'style',
     ],
+    'th': [
+        'style',
+    ],
+}
+
+# Grab the 'tags' field for these node types.
+AST_NODE_TAG_TYPES = {
+    'heading',
 }
 
 # Like AST_TOKEN_ATTRS, but for the `meta` property.
@@ -47,6 +52,9 @@ def _walk_ast(node):
 
     if (node.type in quizgen.parser.common.CONTENT_NODES):
         result['text'] = node.content
+
+    if (node.type in AST_NODE_TAG_TYPES):
+        result['tag'] = node.tag
 
     for name in AST_TOKEN_ATTRS.get(node.type, []):
         value = node.attrGet(name)

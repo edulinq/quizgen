@@ -366,5 +366,171 @@
                 ]
             }
         }
+    },
+
+    {
+        "name": "Single Heading",
+        "text": "# A",
+        "formats": {
+            "md": "# A",
+            "html": "<h1>A</h1>",
+            "tex": "\\chapter{A}",
+            "json": {
+                "type": "heading",
+                "tag": "h1",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "text",
+                                "text": "A"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Multiple Headings",
+        "text": "# 1\n## 2\n### 3\n#### 4\n##### 5\n###### 6\n####### 7",
+        "formats": {
+            "md": "# 1\n\n## 2\n\n### 3\n\n#### 4\n\n##### 5\n\n###### 6\n\n####### 7",
+            "html": "<h1>1</h1><h2>2</h2><h3>3</h3><h4>4</h4><h5>5</h5><h6>6</h6><p>####### 7</p>",
+            "tex": "\\chapter{1}\n\n\\section{2}\n\n\\subsection{3}\n\n\\subsubsection{4}\n\n\\paragraph{5}\n\n\\subparagraph{6}\n\n\\#\\#\\#\\#\\#\\#\\# 7",
+            "json": [
+                {
+                    "type": "heading",
+                    "tag": "h1",
+                    "children": [
+                        {
+                            "type": "inline",
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "text": "1"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "heading",
+                    "tag": "h2",
+                    "children": [
+                        {
+                            "type": "inline",
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "text": "2"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "heading",
+                    "tag": "h3",
+                    "children": [
+                        {
+                            "type": "inline",
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "text": "3"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "heading",
+                    "tag": "h4",
+                    "children": [
+                        {
+                            "type": "inline",
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "text": "4"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "heading",
+                    "tag": "h5",
+                    "children": [
+                        {
+                            "type": "inline",
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "text": "5"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "heading",
+                    "tag": "h6",
+                    "children": [
+                        {
+                            "type": "inline",
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "text": "6"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "type": "inline",
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "text": "####### 7"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+
+    {
+        "name": "Setext Heading",
+        "text": "A\n===",
+        "formats": {
+            "md": "# A",
+            "html": "<h1>A</h1>",
+            "tex": "\\chapter{A}",
+            "json": {
+                "type": "heading",
+                "tag": "h1",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "text",
+                                "text": "A"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
     }
 ]

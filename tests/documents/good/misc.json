@@ -1,0 +1,58 @@
+[
+    {
+        "name": "Thematic Break",
+        "text": "***",
+        "formats": {
+            "md": "______________________________________________________________________",
+            "html": "<hr />",
+            "tex": "\\hrulefill",
+            "json": {
+                "type": "hr"
+            }
+        }
+    },
+
+    {
+        "name": "Thematic Break with Text",
+        "text": "a\n***\nb",
+        "formats": {
+            "md": "a\n\n______________________________________________________________________\n\nb",
+            "html": "<p>a</p><hr /><p>b</p>",
+            "tex": "a\n\n\\hrulefill\n\nb",
+            "json": [
+                {
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "type": "inline",
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "text": "a"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "hr"
+                },
+                {
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "type": "inline",
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "text": "b"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+
+]

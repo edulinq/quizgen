@@ -37,6 +37,19 @@ TEX_TEXT_TABLE_ALIGNMENT = {
     quizgen.parser.style.ALLOWED_VALUES_ALIGNMENT_RIGHT: 'r',
 }
 
+# HTML and CommonMark support six levels of headings,
+# we will use these analogues for TeX.
+# The only standard TeX heading we are not using is \part{},
+# which is before \chapter{}.
+HEADINGS = [
+    'chapter',
+    'section',
+    'subsection',
+    'subsubsection',
+    'paragraph',
+    'subparagraph',
+]
+
 class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
     def render(self, tokens, options, env):
         context = env.get(quizgen.parser.common.CONTEXT_ENV_KEY, {})
@@ -235,6 +248,29 @@ class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
     def _list_item(self, node, context):
         content = ''.join([self._render_node(child, context) for child in node.children()])
         return "    \\item " + content
+
+    def _hr(self, node, context):
+        return "\\hrulefill"
+
+    def _heading(self, node, context):
+        # Parse the level out of the HTML tag.
+        tag = node.get('tag', None)
+        if (tag is None):
+            raise ValueError("Failed to find a heading's level.")
+
+        try:
+            level = int(tag[1])
+            index = level - 1
+        except Exception as ex:
+            raise ValueError("Failed to parse heading level from '%s'." % (tag)) from ex
+
+        if ((index < 0) or (index >= len(HEADINGS))):
+            raise ValueError("Heading index is out of range: %d." % (index))
+
+        heading = HEADINGS[index]
+        content = ''.join([self._render_node(child, context) for child in node.children()])
+
+        return "\\%s{%s}" % (heading, content)
 
 def get_renderer(options):
     return QuizgenRendererTex(), options
