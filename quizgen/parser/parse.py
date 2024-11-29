@@ -48,10 +48,6 @@ def _clean_text(text):
 
 # Returns (transformed text, tokens).
 def _parse_text(text, base_dir):
-    # Special case for empty documents.
-    if (text.strip() == ''):
-        return ('', [])
-
     text = _clean_text(text)
 
     parser, _ = _get_parser()

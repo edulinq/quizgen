@@ -15,9 +15,4 @@ class HTMLTemplateConverter(quizgen.converter.template.TemplateConverter):
         super().__init__(quizgen.constants.FORMAT_HTML, template_dir, **kwargs)
 
     def clean_solution_content(self, document):
-        """
-        An opportunity for children to clean the text of a solution before it is entered into a key.
-        For example, tex solutions are hacky and cannot use certain functions.
-        """
-
         return document.to_text()

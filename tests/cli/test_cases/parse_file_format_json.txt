@@ -7,22 +7,33 @@
 }
 ---
 {
-    "context": {
-        "base_dir": "__DATA_DIR__()"
-    },
-    "root": {
-        "nodes": [
+    "ast": {
+        "children": [
             {
-                "nodes": [
+                "children": [
                     {
-                        "text": "A simple file.",
-                        "type": "normal_text"
+                        "children": [
+                            {
+                                "children": [
+                                    {
+                                        "text": "A simple file.",
+                                        "type": "text"
+                                    }
+                                ],
+                                "type": "inline"
+                            }
+                        ],
+                        "type": "paragraph"
                     }
                 ],
-                "type": "text"
+                "qg_root": true,
+                "type": "container_block"
             }
         ],
-        "type": "block"
+        "type": "root"
+    },
+    "context": {
+        "base_dir": "__DATA_DIR__()"
     },
     "type": "document"
 }

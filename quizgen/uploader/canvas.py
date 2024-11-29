@@ -219,7 +219,7 @@ def create_quiz(quiz, instance):
     if (quiz.canvas['practice']):
         quiz_type = QUIZ_TYPE_PRACTICE
 
-    description = quiz.description.document.to_html(canvas_instance = instance)
+    description = quiz.description.document.to_html(canvas_instance = instance, pretty = False)
 
     data = {
         'quiz[title]': quiz.title,
@@ -291,7 +291,7 @@ def _create_question_json(group_id, question, index, instance = None):
         # but put in a one here so people don't get scared when they see a zero.
         'question[points_possible]': 1,
         'question[position]': index,
-        'question[question_text]': question.prompt.document.to_html(canvas_instance = instance),
+        'question[question_text]': question.prompt.document.to_html(canvas_instance = instance, pretty = False),
     }
 
     # Handle question-level feedback.
@@ -300,7 +300,7 @@ def _create_question_json(group_id, question, index, instance = None):
             continue
 
         data_key = "question[%s]" % (canvas_key)
-        text = question.feedback[key].document.to_html(canvas_instance = instance)
+        text = question.feedback[key].document.to_html(canvas_instance = instance, pretty = False)
         data[data_key] = text
 
     _serialize_answers(data, question, instance)
@@ -352,14 +352,14 @@ def _serialize_answer(data, answer, index, instance, blank_id = None, use_text =
         text = answer.document.to_text()
         data["question[answers][%d][answer_text]" % (index)] = text
     else:
-        html = answer.document.to_html(canvas_instance = instance)
+        html = answer.document.to_html(canvas_instance = instance, pretty = False)
         data["question[answers][%d][answer_html]" % (index)] = html
 
     if (blank_id is not None):
         data["question[answers][%d][blank_id]" % (index)] = blank_id
 
     if (answer.has_feedback()):
-        feedback_html = answer.feedback.document.to_html(canvas_instance = instance)
+        feedback_html = answer.feedback.document.to_html(canvas_instance = instance, pretty = False)
         data["question[answers][%d][answer_comment_html]" % (index)] = feedback_html
 
 def _serialize_matching_answers(data, question, instance):
@@ -371,7 +371,7 @@ def _serialize_matching_answers(data, question, instance):
         data["question[answers][%d][answer_match_right]" % (i)] = right_content
 
         if (question.answers['matches'][i]['left'].has_feedback()):
-            text = question.answers['matches'][i]['left'].feedback.document.to_html(canvas_instance = instance)
+            text = question.answers['matches'][i]['left'].feedback.document.to_html(canvas_instance = instance, pretty = False)
             data["question[answers][%d][answer_comment_html]" % (i)] = text
 
     if (len(question.answers['distractors']) > 0):
@@ -392,7 +392,7 @@ def _serialize_fimb_answers(data, question, instance):
             data[f"question[answers][{index}][answer_text]"] = value_text
 
             if (item['values'][i].has_feedback()):
-                feedback_text = item['values'][i].feedback.document.to_html(canvas_instance = instance)
+                feedback_text = item['values'][i].feedback.document.to_html(canvas_instance = instance, pretty = False)
                 data[f"question[answers][{index}][answer_comment_html]"] = feedback_text
 
             index += 1
@@ -420,7 +420,7 @@ def _serialize_numeric_answers(data, answers, instance):
             raise ValueError(f"Unknown numerical answer type: '{answer.type}'.")
 
         if (answer.has_feedback()):
-            feedback_text = answer.feedback.document.to_html(canvas_instance = instance)
+            feedback_text = answer.feedback.document.to_html(canvas_instance = instance, pretty = False)
             data[f"question[answers][{i}][answer_comment_html]"] = feedback_text
 
 def upload_file(path, canvas_path, instance):
