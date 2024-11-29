@@ -53,6 +53,42 @@
                 }
             ]
         }
+    },
+
+    {
+        "name": "Basic Blockquote",
+        "text": "> Some\n> Quote",
+        "formats": {
+            "md": "> Some\n> Quote",
+            "html": "<blockquote><p>Some\nQuote</p></blockquote>",
+            "tex": "\\begin{quote}\nSome\nQuote\n\\end{quote}",
+            "json": {
+                "type": "blockquote",
+                "children": [
+                    {
+                        "type": "paragraph",
+                        "children": [
+                            {
+                                "type": "inline",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "Some"
+                                    },
+                                    {
+                                        "type": "softbreak"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "Quote"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
     }
 
 ]

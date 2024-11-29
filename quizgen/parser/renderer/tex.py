@@ -272,6 +272,10 @@ class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
 
         return "\\%s{%s}" % (heading, content)
 
+    def _blockquote(self, node, context):
+        content = ''.join([self._render_node(child, context) for child in node.children()])
+        return "\\begin{quote}\n%s\n\\end{quote}" % (content)
+
 def get_renderer(options):
     return QuizgenRendererTex(), options
 
