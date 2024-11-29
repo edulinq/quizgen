@@ -10,6 +10,10 @@ import quizgen.parser.math
 import quizgen.parser.public
 import tests.base
 
+SKIP_COMMONMARK_TESTS = {
+    176,  # Has non-JSON HTML style.
+}
+
 class TestParser(tests.base.BaseTest):
     """
     Test parsing.
@@ -132,9 +136,43 @@ def _get_bad_parse_test(text, base_dir, options):
 
     return __method
 
+def _add_commonmark_tests():
+    """
+    Add test cases that come directly from the CommonMark spec.
+    We won't try to validate the output, we just want to make sure they parse and render cleanly.
+    The main thing with these tests is ensuring that our custom rendering does not fail.
+    """
+
+    with open(tests.base.COMMONMARK_TEST_DATA_PATH, 'r') as file:
+        test_data = json.load(file)
+
+    for test_case in test_data:
+        id = test_case['example']
+
+        if (id in SKIP_COMMONMARK_TESTS):
+            continue
+
+        text = test_case['markdown']
+        section = _clean_name_part(test_case['section'])
+
+        for format in quizgen.constants.PARSER_FORMATS:
+            name = "test_commonmark__%04d__%s__%s" % (id, section, format)
+            setattr(TestParser, name, _get_commonmark_test(text, format))
+
+def _get_commonmark_test(text, format):
+    def __method(self):
+        parsed_text = quizgen.parser.public.parse_text(text)
+
+        options = {
+            # The examples use paths that we would try and encode.
+            'force_raw_image_src': True,
+        }
+        parsed_text.document.to_format(format, **options)
+
+    return __method
+
 def _make_name(prefix, path, name, doc_format = None):
-    clean_name = name.lower().strip().replace(' ', '_')
-    clean_name = re.sub(r'\W+', '', clean_name)
+    clean_name = _clean_name_part(name)
 
     filename = os.path.splitext(os.path.basename(path))[0]
 
@@ -145,6 +183,11 @@ def _make_name(prefix, path, name, doc_format = None):
 
     return test_name
 
+def _clean_name_part(text):
+    clean_text = text.lower().strip().replace(' ', '_')
+    clean_text = re.sub(r'\W+', '', clean_text)
+    return clean_text
+
 def _apply_text_options(options, a, b):
     if (options.get("ignore-whitespace", False)):
         a = re.sub(r'\s+', '', a)
@@ -154,3 +197,4 @@ def _apply_text_options(options, a, b):
 
 _add_bad_parse_questions()
 _add_good_parse_questions()
+_add_commonmark_tests()

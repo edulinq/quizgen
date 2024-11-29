@@ -13,6 +13,9 @@ DOCUMENTS_DIR = os.path.join(THIS_DIR, 'documents')
 GOOD_DOCUMENTS_DIR = os.path.join(DOCUMENTS_DIR, "good")
 BAD_DOCUMENTS_DIR = os.path.join(DOCUMENTS_DIR, "bad")
 
+DATA_DIR = os.path.join(THIS_DIR, 'data')
+COMMONMARK_TEST_DATA_PATH = os.path.join(DATA_DIR, 'commonmark_test_cases.json')
+
 QUESTIONS_FILENAME = 'question.json'
 
 class BaseTest(unittest.TestCase):

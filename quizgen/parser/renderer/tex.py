@@ -117,7 +117,13 @@ class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
         return r"\textbf{%s}" % (content)
 
     def _fence(self, node, context):
-        return "\\begin{lstlisting}\n%s\n\\end{lstlisting}" % node.text().rstrip()
+        language_string = ''
+
+        info = node.get('info', None)
+        if ((info is not None) and (len(info) > 0)):
+            language_string = "[language=%s]" % (info)
+
+        return "\\begin{lstlisting}%s\n%s\n\\end{lstlisting}" % (language_string, node.text().rstrip())
 
     def _code_block(self, node, context):
         """

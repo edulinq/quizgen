@@ -62,7 +62,9 @@ def _walk_ast(node):
         result['text'] = node.content
 
     for name in AST_NODE_ATTRIBUTES.get(node.type, []):
-        result[name] = getattr(node, name)
+        value = getattr(node, name)
+        if ((value is not None) and (value != '')):
+            result[name] = value
 
     for name in AST_TOKEN_ATTRS.get(node.type, []):
         value = node.attrGet(name)
