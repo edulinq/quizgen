@@ -7,6 +7,7 @@ import quizgen.parser.renderer.canvas
 import quizgen.parser.renderer.html
 import quizgen.parser.renderer.markdown
 import quizgen.parser.renderer.tex
+import quizgen.parser.renderer.text
 
 def canvas(tokens, env = {}, pretty = True, **kwargs):
     _, options = quizgen.parser.parse._get_parser()
@@ -40,9 +41,13 @@ def tex(tokens, env = {}, **kwargs):
 
     return content.strip()
 
-# TODO: Make more simple than markdown.
 def text(tokens, env = {}, **kwargs):
-    return md(tokens, env = env, **kwargs)
+    _, options = quizgen.parser.parse._get_parser()
+
+    renderer, options = quizgen.parser.renderer.text.get_renderer(options)
+    content = renderer.render(tokens, options, env)
+
+    return content.strip()
 
 def render(format, tokens, env = {}, **kwargs):
     """

@@ -1,12 +1,9 @@
-import json
 import logging
 import os
 
-import markdown_it.renderer
-
-import quizgen.parser.ast
 import quizgen.parser.common
 import quizgen.parser.image
+import quizgen.parser.renderer.base
 import quizgen.parser.style
 
 TEX_REPLACEMENTS = {
@@ -50,55 +47,7 @@ HEADINGS = [
     'subparagraph',
 ]
 
-class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
-    def render(self, tokens, options, env):
-        context = env.get(quizgen.parser.common.CONTEXT_ENV_KEY, {})
-
-        # Work with an AST instead of tokens.
-        ast = quizgen.parser.ast.build(tokens)
-
-        return self._render_node(ast, context)
-
-    def _render_node(self, node, context):
-        """
-        Route rendering to a the method '_<type>(self, node, context)', e.g.: '_image'.
-        """
-
-        method_name = '_' + node.type()
-        method = getattr(self, method_name, None)
-        if (method is None):
-            raise TypeError("Could not find TeX render method: '%s'." % (method_name))
-
-        return method(node, context)
-
-    def _root(self, node, context):
-        return "\n\n".join([self._render_node(child, context) for child in node.children()])
-
-    def _container_block(self, node, context):
-        # Pull any style attatched to this block and put it in a copy of the context.
-        context, full_style, block_style = quizgen.parser.common.handle_block_style(node, context)
-
-        # Compute fixes using different styles depending on if this block is root.
-        # If we are root, then we need to use all style.
-        # If we are not root, then earlier blocks would have already applied other style,
-        # and we only need the block style.
-        active_style = block_style
-        if (node.get(quizgen.parser.common.TOKEN_META_KEY_ROOT, False)):
-            active_style = full_style
-
-        prefixes, suffixes = quizgen.parser.style.compute_tex_fixes(active_style)
-        child_content = [self._render_node(child, context) for child in node.children()]
-
-        content = prefixes + child_content + list(reversed(suffixes))
-
-        return "\n\n".join(content)
-
-    def _paragraph(self, node, context):
-        return "\n".join([self._render_node(child, context) for child in node.children()])
-
-    def _inline(self, node, context):
-        return ''.join([self._render_node(child, context) for child in node.children()])
-
+class QuizgenRendererTex(quizgen.parser.renderer.base.QuizgenRendererBase):
     def _text(self, node, context):
         return tex_escape(node.text())
 
@@ -267,17 +216,9 @@ class QuizgenRendererTex(markdown_it.renderer.RendererProtocol):
         return "\\hrulefill"
 
     def _heading(self, node, context):
-        # Parse the level out of the HTML tag.
-        tag = node.get('tag', None)
-        if (tag is None):
-            raise ValueError("Failed to find a heading's level.")
+        level = self.parse_heading_level(node)
 
-        try:
-            level = int(tag[1])
-            index = level - 1
-        except Exception as ex:
-            raise ValueError("Failed to parse heading level from '%s'." % (tag)) from ex
-
+        index = level - 1
         if ((index < 0) or (index >= len(HEADINGS))):
             raise ValueError("Heading index is out of range: %d." % (index))
 
