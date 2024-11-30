@@ -12,7 +12,7 @@ name = "eq-quizgen"
 version = "0.2.9"
 description = "A tool that can generate multiple types of quizzes from a common configuration."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = {file = "LICENSE"}
 
 authors = [

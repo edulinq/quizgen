@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.9', '3.10', '3.11', '3.12']
         os: ['ubuntu-22.04']
 
     runs-on: ${{ matrix.os }}
@@ -39,7 +39,7 @@ jobs:
 
       - name: Check Python Version Compatibility
         shell: bash
-        run: vermin --no-tips --no-parse-comments --exclude ast.unparse --target=3.8- --violations quizgen
+        run: vermin --no-tips --no-parse-comments --exclude ast.unparse --target=3.9- --violations quizgen
 
       - name: Set Up NodeJS
         uses: actions/setup-node@v4
