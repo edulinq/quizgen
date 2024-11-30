@@ -1,20 +1,29 @@
 # Styling
 
-TEST - Nested blocks require different number of colons. For templating, we should use like 12, then in docs say they can use 10 - 3.
-
 Styling can be used in the QuizGen to change the visual appearance of content.
 If you want to change the location or flow of information,
 then you are looking for [template hints](/docs/builtin-templates.md).
 
 Styling in the Quiz Generator is done via *style blocks* where specific options can be set.
-Style blocks are surrounded by double braces (`{{` and `}}`).
-Internally, style blocks use JSON object syntax.
-For example, the following style block will set the font size.
+Style blocks are specified with HTML `<style>` tags.
+The content inside the `<style>` tags must be a JSON object.
+However, the opening and closing braces of the JSON object may also be omitted.
+(Note the this is different than the traditional CSS that would usually be inside an HTML `<style>` tag.
 
+For example, the following style block will set the font size.
 ```
-{{
+<style>
     "font-size": 12
-}}
+</style>
+```
+
+The alternative, full version:
+```
+<style>
+    {
+        "font-size": 12
+    }
+</style>
 ```
 
 By default, a style block will apply to all content in the document,
@@ -40,6 +49,7 @@ Table of Contents:
  - [Blocks & Style Blocks](#blocks--style-blocks)
    - [Overriding Style](#overriding-style)
    - [Clearing Style](#clearing-style)
+   - [Nesting Blocks](#nesting-blocks)
 
 ## FAQ
 
@@ -63,9 +73,9 @@ For example, by default the following will get you a non-aligned image:
 
 To center align this image, you can do:
 ```
-{{
+<style>
     "content-align": "center"
-}}
+</style>
 
 ![Great Dane](../tests/data/great-dane.jpg)
 ```
@@ -74,10 +84,10 @@ To center align this image, you can do:
 
 To center align a table, but right align the text inside the table, you can do:
 ```
-{{
+<style>
     "content-align": "center",
     "text-align": "right"
-}}
+</style>
 
 | ID | Value |
 |----|-------|
@@ -94,7 +104,7 @@ See the [alignment documentation](#alignment) for more information.
 
 The size of an image can be controlled using the `image-width` value.
 Only the width of an image can be explicitly set,
-and the aspect ratio of the image will be preserved.
+the aspect ratio of the image will be preserved.
 Image width is provided as a proportion of the image container's width.
 
 For example, you can start with the following image:
@@ -106,9 +116,9 @@ For example, you can start with the following image:
 
 To make this image 50% smaller, you can use:
 ```
-{{
+<style>
     "image-width": 0.5
-}}
+</style>
 
 ![Great Dane](../tests/data/great-dane.jpg)
 ```
@@ -142,10 +152,10 @@ When not specified, the output format/converter determines alignment.
 
 For example, to center align a table but right align the text inside the table:
 ```
-{{
+<style>
     "content-align": "center",
     "text-align": "right"
-}}
+</style>
 
 | ID | Value |
 |----|-------|
@@ -170,9 +180,9 @@ but the exact support depends on the output format.
 
 For example, a 12 point font can be set with:
 ```
-{{
+<style>
     "font-size": 12
-}}
+</style>
 ```
 
 ### Image Width
@@ -189,18 +199,18 @@ Values above 1.0 are allowed, but the behavior is undefined.
 
 Use the full width:
 ```
-{{
+<style>
     "image-width": 1.0
-}}
+</style>
 ```
 
 ![Default Image](/docs/resources/default-image.png)
 
 Use half the available width:
 ```
-{{
+<style>
     "image-width": 0.5
-}}
+</style>
 ```
 
 ![Smaller Image](/docs/resources/smaller-image.png)
@@ -227,9 +237,9 @@ and typically are the maximum of all the cells in a column/row.
 
 To demonstrate, start with the following table:
 ```
-{{
+<style>
     "text-align": "center"
-}}
+</style>
 
 | ID | Value |
 |----|-------|
@@ -243,11 +253,11 @@ The text alignment is not necessary, but makes the example easier to see.
 
 To make a very tight table, you can use 1.0:
 ```
-{{
+<style>
     "text-align": "center",
     "table-cell-height": 1.0,
     "table-cell-width": 1.0
-}}
+</style>
 
 | ID | Value |
 |----|-------|
@@ -259,11 +269,11 @@ To make a very tight table, you can use 1.0:
 
 To make a very spacious table, you can use something larger (like 2.0):
 ```
-{{
+<style>
     "text-align": "center",
     "table-cell-height": 2.0,
     "table-cell-width": 2.0
-}}
+</style>
 
 | ID | Value |
 |----|-------|
@@ -285,10 +295,10 @@ Note that any cell border that overlaps with the border of the actual table
 
 To get a table with full borders, use:
 ```
-{{
+<style>
     "table-border-table": true,
     "table-border-cells": true
-}}
+</style>
 
 | ID | Value |
 |----|-------|
@@ -300,10 +310,10 @@ To get a table with full borders, use:
 
 To get a table that only has dividers/borders between cells and not around the table itself, use:
 ```
-{{
+<style>
     "table-border-table": false,
     "table-border-cells": true
-}}
+</style>
 
 | ID | Value |
 |----|-------|
@@ -315,10 +325,10 @@ To get a table that only has dividers/borders between cells and not around the t
 
 To get a table that only has an outer border, user:
 ```
-{{
+<style>
     "table-border-table": true,
     "table-border-cells": false
-}}
+</style>
 
 | ID | Value |
 |----|-------|
@@ -334,51 +344,52 @@ A styling rule applies within the *block* it was declared in,
 and all children of that block.
 By default, any QuizGen document starts out in a default block (called the "root" block).
 
-Further blocks can be explicitly defined by surrounding content with the `{-` and `-}` symbols.
-These symbols should appear on their own lines.
+Further blocks can be explicitly defined by surrounding content with the `:::block` and `:::` notation
+(using the [Markdown container](https://ref.coddy.tech/markdown/markdown-custom-containers) extended syntax).
+These values should appear on their own lines.
 
 For example, here we have the root block with a single child block:
 ```
 Root Block
 
-{-
+:::block
 
 Child Block
 
--}
+:::
 
 Still Root Block
 ```
 
 A styling option set in the root block will apply to all children (and descendants).
 ```
-{{
+<style>
     "font-size": 13
-}}
+</style>
 
 Root Block, will use 13pt font.
 
-{-
+:::block
 
 Child Block, will also use 13pt font.
 
--}
+:::
 ```
 
 However, style defined in a child block will not apply to any parents, ancestors, or siblings.
 ```
 Root Block, will use the default font size.
 
-{-
+:::block
 
-{{
+<style>
     "font-size": 13
-}}
+</style>
 
 
 Child Block, will use 13pt font.
 
--}
+:::
 ```
 
 ### Overriding Style
@@ -387,22 +398,22 @@ If the same styling rule is defined in a child block,
 the value defined in the child will override the parent's value.
 
 ```
-{{
+<style>
     "font-size": 13
-}}
+</style>
 
 Root Block, will use 13pt font.
 
-{-
+:::block
 
-{{
+<style>
     "font-size": 24
-}}
+</style>
 
 
 Child Block, will use 24pt font.
 
--}
+:::
 ```
 
 ### Clearing Style
@@ -412,19 +423,44 @@ To clear an option set by a parent block
 an option can be set to the `null` value.
 
 ```
-{{
+<style>
     "font-size": 13
-}}
+</style>
 
 Root Block, will use 13pt font.
 
-{-
+:::block
 
-{{
+<style>
     "font-size": null
-}}
+</style>
 
 
 Child Block, will use the default font size.
 
--}
+:::
+```
+
+### Nesting Blocks
+
+Blocks can be nested within one another.
+To do so, parent and child blocks must use a different number of colons
+(with the beginning and ending markers for a block having the same number).
+You can use anywhere from 3 - 10 colons for marking a block.
+The outer block **must** have more colons than any inner blocks.
+
+```
+This text is in the root (implicit) block.
+
+::::block
+
+This text is inside the outter block (with four colons).
+
+:::block
+
+This text is inside the inner block (with three colons).
+
+:::
+
+::::
+```

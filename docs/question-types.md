@@ -213,12 +213,12 @@ Question Type: `multiple_dropdowns`
 Multiple Drop-Down questions are questions that contain one or more parts,
 where each part is a multiple choice question.
 In a digital medium, each part could be represented with a drop-down selection list.
-The question prompt should contain an [answer reference](/docs/syntax.md#answer-references) for the location of each question part.
-The answers definition then maps each answer reference to a multiple choice-style answers definition.
+The question prompt should contain a [placeholder](/docs/syntax.md#placeholder) for the location of each question part.
+The answers definition then maps each placeholder to a multiple choice-style answers definition.
 
 For example, a question may have the following prompt and answers definition:
 ```json
-    "prompt": "[[part1]] and [[part2]] wait for no one.",
+    "prompt": "<placeholder>part1</placeholder> and <placeholder>part2</placeholder> wait for no one.",
     "answers": {
         "part1": [
             {"correct": true,  "text": "Time"},
@@ -235,7 +235,7 @@ For example, a question may have the following prompt and answers definition:
 
 Feedback can be used in the same way as MC questions:
 ```json
-    "prompt": "[[part1]] and [[part2]] wait for no one.",
+    "prompt": "<placeholder>part1</placeholder> and <placeholder>part2</placeholder> wait for no one.",
     "answers": {
         "part1": [
             {
@@ -390,14 +390,14 @@ Feedback can be attached to each possible choice:
 Question Type: `fill_in_multiple_blanks`
 
 Fill in multiple blank questions are an extension of FITB questions that allows for multiple blanks to occur anywhere in the prompt.
-Like MDD questions, the question prompt should include an answer reference for each blank.
+Like MDD questions, the question prompt should include a placeholder for each blank.
 FIMB questions come with the same warnings as FITB questions (multiplied by the number of blanks).
 
 Answers map each blank to a list of possible options.
 
 Example Answers Definition:
 ```json
-    "prompt": "Nothing can be said to be certain, except [[first]] and [[second]].",
+    "prompt": "Nothing can be said to be certain, except <placeholder>first</placeholder> and <placeholder>second</placeholder>.",
     "answers": {
         "first": ["death", "Death", "DEATH"],
         "second": ["taxes", "taxs", "Taxes", "Taxs," "TAXES", "TAXS"],
@@ -406,7 +406,7 @@ Example Answers Definition:
 
 Like FITB, feedback can be attached to each possible choice:
 ```json
-    "prompt": "Nothing can be said to be certain, except [[first]] and [[second]].",
+    "prompt": "Nothing can be said to be certain, except <placeholder>first</placeholder> and <placeholder>second</placeholder>.",
     "answers": {
         "first": [
             "death",
