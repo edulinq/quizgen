@@ -31,7 +31,7 @@
             "md": "Inline `code()`.",
             "html": "<p>Inline <code>code()</code>.</p>",
             "tex": "Inline \\verb|code()|.",
-            "text": "Inline .",
+            "text": "Inline",
             "json": {
                 "type": "paragraph",
                 "children": [

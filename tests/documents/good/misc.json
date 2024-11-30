@@ -20,7 +20,7 @@
             "md": "a\n\n______________________________________________________________________\n\nb",
             "html": "<p>a</p><hr /><p>b</p>",
             "tex": "a\n\n\\hrulefill\n\nb",
-            "text": "a\n\n\n\nb",
+            "text": "a b",
             "json": [
                 {
                     "type": "paragraph",
@@ -64,7 +64,7 @@
             "md": "> Some\n> Quote",
             "html": "<blockquote><p>Some\nQuote</p></blockquote>",
             "tex": "\\begin{quote}\nSome\nQuote\n\\end{quote}",
-            "text": "Some\nQuote",
+            "text": "Some Quote",
             "json": {
                 "type": "blockquote",
                 "children": [

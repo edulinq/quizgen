@@ -6,7 +6,7 @@
             "md": "Escape / slash.",
             "html": "<p>Escape / slash.</p>",
             "tex": "Escape / slash.",
-            "text": "Escape / slash.",
+            "text": "Escape slash",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -31,7 +31,7 @@
             "md": "Escape \\\\ backslash.",
             "html": "<p>Escape \\ backslash.</p>",
             "tex": "Escape \\textbackslash{} backslash.",
-            "text": "Escape \\ backslash.",
+            "text": "Escape backslash",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -56,7 +56,7 @@
             "md": "Escape * asterisk.",
             "html": "<p>Escape * asterisk.</p>",
             "tex": "Escape * asterisk.",
-            "text": "Escape * asterisk.",
+            "text": "Escape asterisk",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -81,7 +81,7 @@
             "md": "Escape $ dollar sign.",
             "html": "<p>Escape $ dollar sign.</p>",
             "tex": "Escape \\$ dollar sign.",
-            "text": "Escape $ dollar sign.",
+            "text": "Escape dollar sign",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -106,7 +106,7 @@
             "md": "Escape \\[ open bracket.",
             "html": "<p>Escape [ open bracket.</p>",
             "tex": "Escape [ open bracket.",
-            "text": "Escape [ open bracket.",
+            "text": "Escape open bracket",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -131,7 +131,7 @@
             "md": "Escape \\` backtick.",
             "html": "<p>Escape ` backtick.</p>",
             "tex": "Escape \\`{} backtick.",
-            "text": "Escape ` backtick.",
+            "text": "Escape backtick",
             "json": {
                 "type": "paragraph",
                 "children": [

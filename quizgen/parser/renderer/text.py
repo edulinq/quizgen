@@ -2,11 +2,25 @@ import re
 
 import quizgen.parser.renderer.base
 
+DISALLOWED_CHARACTERS = re.compile(r'[^\w -]')
+
 class QuizgenRendererText(quizgen.parser.renderer.base.QuizgenRendererBase):
     """
     The text renderer tries to output plan text that will then be used for special purposes like keys and identifiers.
     The output here is not meant to represent full documents or be sent to users.
     """
+
+    def clean_final(self, text):
+        # Clean up whitespace.
+        text = re.sub(r'\s+', ' ', text).strip()
+
+        # Remove bad disallowed characters.
+        text = re.sub(DISALLOWED_CHARACTERS, '', text)
+
+        # Clean up whitespace once more.
+        text = re.sub(r'\s+', ' ', text).strip()
+
+        return text
 
     def _text(self, node, context):
         return _clean_text(node.text())
@@ -15,7 +29,7 @@ class QuizgenRendererText(quizgen.parser.renderer.base.QuizgenRendererBase):
         return "\n"
 
     def _hardbreak(self, node, context):
-        return "\n\n"
+        return "\n"
 
     def _em(self, node, context):
         return ''.join([self._render_node(child, context) for child in node.children()])

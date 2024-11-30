@@ -15,6 +15,13 @@ class QuizgenRendererBase(markdown_it.renderer.RendererProtocol, abc.ABC):
 
         return self._render_node(ast, context)
 
+    def clean_final(self, text):
+        """
+        Last chance for cleaning before leaving the renderer.
+        """
+
+        return text.strip()
+
     def _render_node(self, node, context):
         """
         Route rendering to a the method '_render_<type>(self, node, context)', e.g.: '_image'.
@@ -28,7 +35,7 @@ class QuizgenRendererBase(markdown_it.renderer.RendererProtocol, abc.ABC):
         return method(node, context)
 
     def _root(self, node, context):
-        return "\n\n".join([self._render_node(child, context) for child in node.children()])
+        return self.clean_final("\n\n".join([self._render_node(child, context) for child in node.children()]))
 
     def _container_block(self, node, context):
         # Pull any style attatched to this block and put it in a copy of the context.

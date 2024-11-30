@@ -6,4 +6,4 @@
     ]
 }
 ---
-A simple file.
+A simple file

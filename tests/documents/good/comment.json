@@ -18,7 +18,7 @@
             "md": "Some  Text",
             "html": "<p>Some  Text</p>",
             "tex": "Some  Text",
-            "text": "Some  Text",
+            "text": "Some Text",
             "json": {
                 "type": "paragraph",
                 "children": [

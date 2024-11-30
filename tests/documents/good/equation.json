@@ -31,7 +31,7 @@
             "md": "Inline$ \\text{equation} $.",
             "html": "<p>Inline<span><code>\\text{equation}</code></span>.</p>",
             "tex": "Inline$ \\text{equation} $.",
-            "text": "Inline.",
+            "text": "Inline",
             "json": {
                 "type": "paragraph",
                 "children": [
