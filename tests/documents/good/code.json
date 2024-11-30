@@ -6,6 +6,7 @@
             "md": "`inline_code();`",
             "html": "<p><code>inline_code();</code></p>",
             "tex": "\\verb|inline_code();|",
+            "text": "",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -30,6 +31,7 @@
             "md": "Inline `code()`.",
             "html": "<p>Inline <code>code()</code>.</p>",
             "tex": "Inline \\verb|code()|.",
+            "text": "Inline .",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -62,6 +64,7 @@
             "md": "`inline_code(\"\\*\");`",
             "html": "<p><code>inline_code(\"\\*\");</code></p>",
             "tex": "\\verb|inline_code(\"\\*\");|",
+            "text": "",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -86,6 +89,7 @@
             "md": "`inline_code(\"*\");`",
             "html": "<p><code>inline_code(\"*\");</code></p>",
             "tex": "\\verb|inline_code(\"*\");|",
+            "text": "",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -110,6 +114,7 @@
             "md": "`inline_code(\"|\");`",
             "html": "<p><code>inline_code(\"|\");</code></p>",
             "tex": "\\verb!inline_code(\"|\");!",
+            "text": "",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -134,6 +139,7 @@
             "md": "```\ncode_block();\n```",
             "html": "<pre><code>code_block();\n</code></pre>",
             "tex": "\\begin{lstlisting}\ncode_block();\n\\end{lstlisting}",
+            "text": "",
             "json": {
                 "type": "fence",
                 "text": "code_block();\n"
@@ -148,6 +154,7 @@
             "md": "```\n code_block(); \n```",
             "html": "<pre><code> code_block(); \n</code></pre>",
             "tex": "\\begin{lstlisting}\n code_block();\n\\end{lstlisting}",
+            "text": "",
             "json": {
                 "type": "fence",
                 "text": " code_block(); \n"
@@ -162,6 +169,7 @@
             "md": "```golang\ncode_block();\n```",
             "html": "<pre><code class='language-golang'>code_block();\n</code></pre>",
             "tex": "\\begin{lstlisting}[language=golang]\ncode_block();\n\\end{lstlisting}",
+            "text": "",
             "json": {
                 "type": "fence",
                 "info": "golang",
@@ -178,6 +186,7 @@
             "md": "a\n\n```\ncode_block();\n```",
             "html": "<p>a</p><pre><code>code_block();\n</code></pre>",
             "tex": "a\n\n\\begin{lstlisting}\ncode_block();\n\\end{lstlisting}",
+            "text": "a",
             "json": [
                 {
                     "type": "paragraph",

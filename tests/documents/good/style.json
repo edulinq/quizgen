@@ -6,6 +6,7 @@
             "md": "",
             "html": "",
             "tex": "",
+            "text": "",
             "json": {}
         }
     },
@@ -17,6 +18,7 @@
             "md": "",
             "html": "",
             "tex": "",
+            "text": "",
             "json": {}
         }
     },
@@ -28,6 +30,7 @@
             "md": "",
             "html": "",
             "tex": "",
+            "text": "",
             "json": {}
         }
     },
@@ -39,6 +42,7 @@
             "md": "text",
             "html": "<div class='qg-block' style='font-size: 12.00pt'><p>text</p></div>",
             "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\n\ntext\n\n\\endgroup",
+            "text": "text",
             "json": {
                 "type": "container_block",
                 "qg_style": {
@@ -71,6 +75,7 @@
             "md": "before\n\nafter",
             "html": "<div class='qg-root-block qg-block' style='font-size: 12.00pt'><p>before</p><p>after</p></div>",
             "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\n\nbefore\n\nafter\n\n\\endgroup",
+            "text": "before\n\nafter",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -118,6 +123,7 @@
             "md": "Root\n\nChild",
             "html": "<div class='qg-root-block qg-block' style='font-size: 12.00pt'><p>Root</p><div class='qg-block' style='font-size: 10.00pt'><p>Child</p></div></div>",
             "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\n\nRoot\n\n\\begingroup\\fontsize{10.00pt}{12.00pt}\\selectfont\n\nChild\n\n\\endgroup\n\n\\endgroup",
+            "text": "Root\n\nChild",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -174,6 +180,7 @@
             "md": "Root\n\nChild",
             "html": "<div class='qg-root-block qg-block' style='font-size: 12.00pt'><p>Root</p><div class='qg-block'><p>Child</p></div></div>",
             "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\n\nRoot\n\nChild\n\n\\endgroup",
+            "text": "Root\n\nChild",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -234,6 +241,7 @@
             "md": "text",
             "html": "<div class='qg-root-block qg-block' style='font-size: 12.00pt'><p>text</p></div>",
             "tex": "\\begingroup\\fontsize{12.00pt}{14.40pt}\\selectfont\n\ntext\n\n\\endgroup",
+            "text": "text",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -263,6 +271,7 @@
             "md": "text",
             "html": "<div class='qg-root-block qg-block' style='font-size: 10.00pt'><p>text</p></div>",
             "tex": "\\begingroup\\fontsize{10.00pt}{12.00pt}\\selectfont\n\ntext\n\n\\endgroup",
+            "text": "text",
             "json": {
                 "type": "container_block",
                 "qg_root": true,

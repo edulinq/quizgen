@@ -6,6 +6,7 @@
             "md": "![alt text](http://test.edulinq.org/image.png)",
             "html": "<p><img alt='alt text' src='http://test.edulinq.org/image.png' width='50.00%' /></p>",
             "tex": "\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}",
+            "text": "",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -45,6 +46,7 @@
             "md": "![root](http://test.edulinq.org/image.png)\n\n![child](http://test.edulinq.org/image.png)",
             "html": "<p><img alt='root' src='http://test.edulinq.org/image.png' width='50.00%' /></p><div class='qg-block'><p><img alt='child' src='http://test.edulinq.org/image.png' width='50.00%' /></p></div>",
             "tex": "\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}\n\n\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}",
+            "text": "",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -109,6 +111,7 @@
             "md": "![root](http://test.edulinq.org/image.png)\n\n![child](http://test.edulinq.org/image.png)",
             "html": "<p><img alt='root' src='http://test.edulinq.org/image.png' width='50.00%' /></p><div class='qg-block'><p><img alt='child' src='http://test.edulinq.org/image.png' width='75.00%' /></p></div>",
             "tex": "\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}\n\n\\includegraphics[width=0.75\\textwidth]{http://test.edulinq.org/image.png}",
+            "text": "",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -176,6 +179,7 @@
             "md": "![root](http://test.edulinq.org/image.png)\n\n![child](http://test.edulinq.org/image.png)",
             "html": "<p><img alt='root' src='http://test.edulinq.org/image.png' width='50.00%' /></p><div class='qg-block'><p><img alt='child' src='http://test.edulinq.org/image.png' width='100.00%' /></p></div>",
             "tex": "\\includegraphics[width=0.50\\textwidth]{http://test.edulinq.org/image.png}\n\n\\includegraphics[width=1.00\\textwidth]{http://test.edulinq.org/image.png}",
+            "text": "",
             "json": {
                 "type": "container_block",
                 "qg_root": true,

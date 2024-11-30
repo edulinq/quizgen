@@ -6,6 +6,7 @@
             "md": "![alt text](http://test.edulinq.org/image.png)",
             "html": "<p><img alt='alt text' src='http://test.edulinq.org/image.png' width='100.00%' /></p>",
             "tex": "\\includegraphics[width=1.00\\textwidth]{http://test.edulinq.org/image.png}",
+            "text": "",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -36,6 +37,7 @@
             "md": "![alt text](../../data/tiny.png)",
             "html": "<p><img alt='alt text' src='data:image/.png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAEUlEQVQI12NgYGD4z4AE/gMADwMB/4OExBQAAAAASUVORK5CYII=' width='100.00%' /></p>",
             "tex": "\\includegraphics[width=1.00\\textwidth]{../../data/tiny.png}",
+            "text": "",
             "json": {
                 "type": "paragraph",
                 "children": [

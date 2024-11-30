@@ -32,22 +32,8 @@ class QuizgenRendererBase(markdown_it.renderer.RendererProtocol, abc.ABC):
 
     def _container_block(self, node, context):
         # Pull any style attatched to this block and put it in a copy of the context.
-        context, full_style, block_style = quizgen.parser.common.handle_block_style(node, context)
-
-        # Compute fixes using different styles depending on if this block is root.
-        # If we are root, then we need to use all style.
-        # If we are not root, then earlier blocks would have already applied other style,
-        # and we only need the block style.
-        active_style = block_style
-        if (node.get(quizgen.parser.common.TOKEN_META_KEY_ROOT, False)):
-            active_style = full_style
-
-        prefixes, suffixes = quizgen.parser.style.compute_tex_fixes(active_style)
-        child_content = [self._render_node(child, context) for child in node.children()]
-
-        content = prefixes + child_content + list(reversed(suffixes))
-
-        return "\n\n".join(content)
+        context, _, _ = quizgen.parser.common.handle_block_style(node, context)
+        return "\n\n".join([self._render_node(child, context) for child in node.children()])
 
     def _paragraph(self, node, context):
         return "\n".join([self._render_node(child, context) for child in node.children()])

@@ -6,6 +6,7 @@
             "md": "$ f(x) = x_i + x^2 \\alpha $",
             "html": "<p><span><code>f(x) = x_i + x^2 \\alpha</code></span></p>",
             "tex": "$ f(x) = x_i + x^2 \\alpha $",
+            "text": "",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -30,6 +31,7 @@
             "md": "Inline$ \\text{equation} $.",
             "html": "<p>Inline<span><code>\\text{equation}</code></span>.</p>",
             "tex": "Inline$ \\text{equation} $.",
+            "text": "Inline.",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -62,6 +64,7 @@
             "md": "$ f(\\$a) $",
             "html": "<p><span><code>f(\\$a)</code></span></p>",
             "tex": "$ f(\\$a) $",
+            "text": "",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -86,6 +89,7 @@
             "md": "$$\nequation + block\n$$",
             "html": "<p><code>equation + block</code></p>",
             "tex": "$$\nequation + block\n$$",
+            "text": "",
             "json": {
                 "type": "math_block",
                 "text": "equation + block"
@@ -100,6 +104,7 @@
             "md": "$$\n equation + - * / block() \n$$",
             "html": "<p><code>equation + - * / block()</code></p>",
             "tex": "$$\nequation + - * / block()\n$$",
+            "text": "",
             "json": {
                 "type": "math_block",
                 "text": " equation + - * / block() "
@@ -114,6 +119,7 @@
             "md": "$$\n\nf(x)\n\n$$",
             "html": "<p><code>f(x)</code></p>",
             "tex": "$$\nf(x)\n$$",
+            "text": "",
             "json": {
                 "type": "math_block",
                 "text": "\nf(x)\n"
@@ -128,6 +134,7 @@
             "md": "$$\n f(x)\ng(x) \n$$",
             "html": "<p><code>f(x)\ng(x)</code></p>",
             "tex": "$$\nf(x)\ng(x)\n$$",
+            "text": "",
             "json": {
                 "type": "math_block",
                 "text": " f(x)\ng(x) "

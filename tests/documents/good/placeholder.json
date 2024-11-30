@@ -7,6 +7,7 @@
             "md": "<placeholder>answer</placeholder>",
             "html": "<placeholder>answer</placeholder>",
             "tex": "\\textsc{<answer>}",
+            "text": "answer",
             "json": {
                 "type": "placeholder",
                 "text": "answer"
@@ -22,6 +23,7 @@
             "md": "<placeholder>answer</placeholder>",
             "html": "<p><placeholder>answer</placeholder></p>",
             "tex": "\\textsc{<answer>}",
+            "text": "answer",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -47,6 +49,7 @@
             "md": "<placeholder>answer_reference</placeholder>",
             "html": "<p><placeholder>answer_reference</placeholder></p>",
             "tex": "\\textsc{<answer\\_reference>}",
+            "text": "answer_reference",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -72,6 +75,7 @@
             "md": "<placeholder>answer reference</placeholder>",
             "html": "<p><placeholder>answer reference</placeholder></p>",
             "tex": "\\textsc{<answer reference>}",
+            "text": "answer reference",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -97,6 +101,7 @@
             "md": "<placeholder>A</placeholder>",
             "html": "<p><placeholder>A</placeholder></p>",
             "tex": "\\textsc{<A>}",
+            "text": "A",
             "json": {
                 "type": "paragraph",
                 "children": [

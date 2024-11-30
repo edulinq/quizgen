@@ -6,6 +6,7 @@
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<table style='border-collapse: collapse; border-style: hidden'><thead><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>c</td></tr></tbody></table>",
             "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\n1 & 2 & 3 \\\\\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "text": "",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -134,6 +135,7 @@
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<table style='border-collapse: collapse; border-style: hidden'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: normal'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: normal'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: normal'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>c</td></tr></tbody></table>",
             "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\n1 & 2 & 3 \\\\\n\\hline\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "text": "",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -262,6 +264,7 @@
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<table style='border-collapse: collapse; border-style: hidden'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>c</td></tr></tbody></table>",
             "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ c|c|c }\n1 & 2 & 3 \\\\\n\\hline\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "text": "",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -390,6 +393,7 @@
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<table style='border-collapse: collapse; border: 1px solid black'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>c</td></tr></tbody></table>",
             "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ |ccc| }\n\\hline\n1 & 2 & 3 \\\\\n\\hline\na & b & c \\\\\n\\hline\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "text": "",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -518,6 +522,7 @@
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<table style='border-collapse: collapse; border: 1px solid black'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>c</td></tr></tbody></table>",
             "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ |c|c|c| }\n\\hline\n1 & 2 & 3 \\\\\n\\hline\na & b & c \\\\\n\\hline\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "text": "",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -647,6 +652,7 @@
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<table style='border-collapse: collapse; border-style: hidden'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>1</th><th style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>2</th><th style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em'>a</td><td style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em'>b</td><td style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em'>c</td></tr></tbody></table>",
             "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.00}\n\\begin{tabular}{ ccc }\n1 & 2 & 3 \\\\\n\\hline\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "text": "",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -775,6 +781,7 @@
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<table style='border-collapse: collapse; border-style: hidden'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em; font-weight: bold'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em'>c</td></tr></tbody></table>",
             "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.00em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\n1 & 2 & 3 \\\\\n\\hline\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "text": "",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -903,6 +910,7 @@
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<div class='qg-root-block qg-block' style='display: flex; flex-direction: column; justify-content: flex-start; align-items: center; text-align: right'><table style='border-collapse: collapse; border-style: hidden; text-align: right'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>c</td></tr></tbody></table></div>",
             "tex": "\\begin{center}\n\n\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ rrr }\n1 & 2 & 3 \\\\\n\\hline\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup\n\n\\end{center}",
+            "text": "",
             "json": {
                 "type": "container_block",
                 "qg_root": true,

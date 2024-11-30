@@ -6,6 +6,7 @@
             "md": "- A\n- B\n- C",
             "html": "<ul><li>A</li><li>B</li><li>C</li></ul>",
             "tex": "\\begin{itemize}\n    \\item A\n    \\item B\n    \\item C\n\\end{itemize}",
+            "text": "",
             "json": {
                 "type": "bullet_list",
                 "children": [
@@ -78,6 +79,7 @@
             "md": "1. A\n1. B\n1. C",
             "html": "<ol><li>A</li><li>B</li><li>C</li></ol>",
             "tex": "\\begin{enumerate}\n    \\item A\n    \\item B\n    \\item C\n\\end{enumerate}",
+            "text": "",
             "json": {
                 "type": "ordered_list",
                 "children": [

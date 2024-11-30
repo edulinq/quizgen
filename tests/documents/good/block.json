@@ -6,6 +6,7 @@
             "md": "",
             "html": "",
             "tex": "",
+            "text": "",
             "json": {}
         }
     },
@@ -17,6 +18,7 @@
             "md": "Text",
             "html": "<div class='qg-block'><p>Text</p></div>",
             "tex": "Text",
+            "text": "Text",
             "json": {
                 "type": "container_block",
                 "children": [
@@ -46,6 +48,7 @@
             "md": "Root Block\n\nExplicit Block",
             "html": "<p>Root Block</p><div class='qg-block'><p>Explicit Block</p></div>",
             "tex": "Root Block\n\nExplicit Block",
+            "text": "Root Block\n\nExplicit Block",
             "json": [
                 {
                     "type": "paragraph",
@@ -91,6 +94,7 @@
             "md": "",
             "html": "",
             "tex": "",
+            "text": "",
             "json": {}
         }
     },
@@ -102,6 +106,7 @@
             "md": "root\n\ninner 1\n\ninner 2",
             "html": "<p>root</p><div class='qg-block'><p>inner 1</p><div class='qg-block'><p>inner 2</p></div></div>",
             "tex": "root\n\ninner 1\n\ninner 2",
+            "text": "root\n\ninner 1\n\ninner 2",
             "json": [
                 {
                     "type": "paragraph",

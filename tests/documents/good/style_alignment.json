@@ -6,6 +6,7 @@
             "md": "Text",
             "html": "<div class='qg-root-block qg-block' style='display: flex; flex-direction: column; justify-content: flex-start; align-items: center'><p>Text</p></div>",
             "tex": "\\begin{center}\n\nText\n\n\\end{center}",
+            "text": "Text",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -39,6 +40,7 @@
             "md": "Text",
             "html": "<div class='qg-root-block qg-block' style='display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start'><p>Text</p></div>",
             "tex": "\\begin{flushleft}\n\nText\n\n\\end{flushleft}",
+            "text": "Text",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -72,6 +74,7 @@
             "md": "Text",
             "html": "<div class='qg-root-block qg-block' style='display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-end'><p>Text</p></div>",
             "tex": "\\begin{flushright}\n\nText\n\n\\end{flushright}",
+            "text": "Text",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -105,6 +108,7 @@
             "md": "Text",
             "html": "<div class='qg-block'><div class='qg-block' style='margin-bottom: 1em; text-align: center'><span>Text</span></div></div>",
             "tex": "Text",
+            "text": "Text",
             "json": {
                 "type": "paragraph",
                 "children": [
@@ -137,6 +141,7 @@
             "md": "Text",
             "html": "<div class='qg-root-block qg-block' style='text-align: center'><p>Text</p></div>",
             "tex": "Text",
+            "text": "Text",
             "json": {
                 "type": "container_block",
                 "qg_root": true,
@@ -170,6 +175,7 @@
             "md": "Text",
             "html": "<div class='qg-root-block qg-block' style='text-align: left'><p>Text</p></div>",
             "tex": "Text",
+            "text": "Text",
             "json": {
                 "type": "container_block",
                 "qg_root": true,

@@ -3,6 +3,11 @@ import re
 import quizgen.parser.renderer.base
 
 class QuizgenRendererText(quizgen.parser.renderer.base.QuizgenRendererBase):
+    """
+    The text renderer tries to output plan text that will then be used for special purposes like keys and identifiers.
+    The output here is not meant to represent full documents or be sent to users.
+    """
+
     def _text(self, node, context):
         return _clean_text(node.text())
 
@@ -19,55 +24,55 @@ class QuizgenRendererText(quizgen.parser.renderer.base.QuizgenRendererBase):
         return ''.join([self._render_node(child, context) for child in node.children()])
 
     def _fence(self, node, context):
-        return node.text().strip()
+        return ''
 
     def _code_block(self, node, context):
-        return self._fence(node, context)
+        return ''
 
     def _code_inline(self, node, context):
-        return node.text().strip()
+        return ''
 
     def _math_block(self, node, context):
-        return node.text().strip()
+        return ''
 
     def _math_inline(self, node, context):
-        return node.text().strip()
+        return ''
 
     def _image(self, node, context):
         return ''
 
     def _link(self, node, context):
-        return node.get('href', '')
+        return ''
 
     def _placeholder(self, node, context):
         return _clean_text(node.text())
 
     def _table(self, node, context):
-        return ''.join([self._render_node(child, context) for child in node.children()])
+        return ''
 
     def _thead(self, node, context):
-        return "\n".join([self._render_node(child, context) for child in node.children()])
+        return ''
 
     def _tbody(self, node, context):
-        return "\n".join([self._render_node(child, context) for child in node.children()])
+        return ''
 
     def _tr(self, node, context):
-        return ' '.join([self._render_node(child, context) for child in node.children()])
+        return ''
 
     def _th(self, node, context):
-        return ''.join([self._render_node(child, context) for child in node.children()])
+        return ''
 
     def _td(self, node, context):
-        return ''.join([self._render_node(child, context) for child in node.children()])
+        return ''
 
     def _bullet_list(self, node, context):
-        return "\n".join([self._render_node(child, context) for child in node.children()])
+        return ''
 
     def _ordered_list(self, node, context):
-        return "\n".join([self._render_node(child, context) for child in node.children()])
+        return ''
 
     def _list_item(self, node, context):
-        return ''.join([self._render_node(child, context) for child in node.children()])
+        return ''
 
     def _hr(self, node, context):
         return ''
