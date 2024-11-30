@@ -23,6 +23,7 @@ def handle_callback(callback, original_src, base_dir):
 
 def encode_image(path):
     ext = os.path.splitext(path)[-1].lower()
+    ext = ext.removeprefix('.')
     mime = f"image/{ext}"
 
     with open(path, 'rb') as file:

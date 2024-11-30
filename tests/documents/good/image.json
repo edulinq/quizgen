@@ -35,7 +35,7 @@
         "text": "![alt text](../../data/tiny.png)",
         "formats": {
             "md": "![alt text](../../data/tiny.png)",
-            "html": "<p><img alt='alt text' src='data:image/.png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAEUlEQVQI12NgYGD4z4AE/gMADwMB/4OExBQAAAAASUVORK5CYII=' width='100.00%' /></p>",
+            "html": "<p><img alt='alt text' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAEUlEQVQI12NgYGD4z4AE/gMADwMB/4OExBQAAAAASUVORK5CYII=' width='100.00%' /></p>",
             "tex": "\\includegraphics[width=1.00\\textwidth]{../../data/tiny.png}",
             "text": "",
             "json": {
@@ -47,6 +47,37 @@
                             {
                                 "type": "image",
                                 "src": "../../data/tiny.png",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "alt text"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Data URL",
+        "text": "![alt text](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAEUlEQVQI12NgYGD4z4AE/gMADwMB/4OExBQAAAAASUVORK5CYII=)",
+        "formats": {
+            "md": "![alt text](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAEUlEQVQI12NgYGD4z4AE/gMADwMB/4OExBQAAAAASUVORK5CYII=)",
+            "html": "<p><img alt='alt text' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAEUlEQVQI12NgYGD4z4AE/gMADwMB/4OExBQAAAAASUVORK5CYII=' width='100.00%' /></p>",
+            "tex": "\\includegraphics[width=1.00\\textwidth]{data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAEUlEQVQI12NgYGD4z4AE/gMADwMB/4OExBQAAAAASUVORK5CYII=}",
+            "text": "",
+            "json": {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "image",
+                                "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAEUlEQVQI12NgYGD4z4AE/gMADwMB/4OExBQAAAAASUVORK5CYII=",
                                 "children": [
                                     {
                                         "type": "text",
