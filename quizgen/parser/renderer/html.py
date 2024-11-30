@@ -23,26 +23,32 @@ class QuizgenRendererHTML(markdown_it.renderer.RendererHTML):
         base_dir = context.get(quizgen.parser.common.BASE_DIR_KEY, '.')
         callback = context.get(quizgen.parser.common.CONTEXT_KEY_IMAGE_CALLBACK, None)
 
-        src = tokens[idx].attrGet('src')
-        src = quizgen.parser.image.handle_callback(callback, src, base_dir)
-        tokens[idx].attrSet('src', src)
-
         # Set width.
         width_float = quizgen.parser.style.get_image_width(style)
         tokens[idx].attrSet('width', "%0.2f%%" % (width_float * 100.0))
 
+        original_src = tokens[idx].attrGet('src')
+        src = quizgen.parser.image.handle_callback(callback, original_src, base_dir)
+        tokens[idx].attrSet('src', src)
+
         path = os.path.realpath(os.path.join(base_dir, src))
         force_raw_image_src = context.get(quizgen.parser.common.CONTEXT_KEY_FORCE_RAW_IMAGE_SRC, False)
 
-        if (force_raw_image_src or re.match(r'^http(s)?://', src)):
-            # Do not further modify the src if it is a http URL or we are explicitly directed not to.
+        if (force_raw_image_src or re.match(r'^http(s)?://', src) or src.startswith('data:image')):
+            # Do not further modify the src if we are explicitly directed not to
+            # or if it is an http or data URL.
             pass
         else:
             # Otherwise, do a base64 encoding of the image and embed it.
             mime, content = quizgen.parser.image.encode_image(path)
             tokens[idx].attrSet('src', f"data:{mime};base64,{content}")
 
-        return super().image(tokens, idx, options, env)
+        result = super().image(tokens, idx, options, env)
+
+        # Reset the src so that future callback hits have the proper cache key.
+        tokens[idx].attrSet('src', original_src)
+
+        return result
 
     def container_block_open(self, tokens, idx, options, env):
         context = env.get(quizgen.parser.common.CONTEXT_ENV_KEY, {})

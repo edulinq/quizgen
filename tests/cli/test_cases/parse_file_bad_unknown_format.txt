@@ -7,4 +7,4 @@
     "error": true
 }
 ---
-argument --format: invalid choice: 'ZZZ' (choose from 'html', 'json', 'md', 'tex', 'text')
+argument --format: invalid choice: 'ZZZ' (choose from 'canvas', 'html', 'json', 'md', 'tex', 'text')
