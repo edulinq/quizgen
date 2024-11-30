@@ -120,6 +120,6 @@ indented code blocks must not appear as the first or last pieces of text in a do
 Instead of indented code blocks, we recommend using the more standard code fences:
 ````
 ```
-This is a code block because it is inside a fence of backquotes.
+This is a code block because it is inside a fence of backticks.
 ```
 ````

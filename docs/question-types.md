@@ -213,7 +213,7 @@ Question Type: `multiple_dropdowns`
 Multiple Drop-Down questions are questions that contain one or more parts,
 where each part is a multiple choice question.
 In a digital medium, each part could be represented with a drop-down selection list.
-The question prompt should contain a [placeholder](/docs/syntax.md#placeholder) for the location of each question part.
+The question prompt should contain a [placeholder](/docs/syntax.md#placeholders) for the location of each question part.
 The answers definition then maps each placeholder to a multiple choice-style answers definition.
 
 For example, a question may have the following prompt and answers definition:
