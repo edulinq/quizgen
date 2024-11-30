@@ -11,8 +11,6 @@ import quizgen.parser.image
 import quizgen.parser.math
 import quizgen.parser.style
 
-# TEST - Canvas (html) images require special handling.
-
 HTML_BORDER_SPEC = '1px solid black'
 
 class QuizgenRendererHTML(markdown_it.renderer.RendererHTML):

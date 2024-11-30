@@ -17,26 +17,25 @@ class ParsedDocument(object):
     def set_context_value(self, key, value):
         self._context[key] = value
 
-    def to_markdown(self, **kwargs):
-        context = quizgen.parser.common.prep_context(self._context, options = kwargs)
-        env = {quizgen.parser.common.CONTEXT_ENV_KEY: context}
-        return quizgen.parser.render.markdown(self._tokens, env = env, **kwargs)
+    def to_canvas(self, **kwargs):
+        return self._render(quizgen.constants.FORMAT_CANVAS, **kwargs)
+
+    def to_md(self, **kwargs):
+        return self._render(quizgen.constants.FORMAT_MD, **kwargs)
 
     def to_tex(self, **kwargs):
-        context = quizgen.parser.common.prep_context(self._context, options = kwargs)
-        env = {quizgen.parser.common.CONTEXT_ENV_KEY: context}
-        return quizgen.parser.render.tex(self._tokens, env = env, **kwargs)
+        return self._render(quizgen.constants.FORMAT_TEX, **kwargs)
 
     def to_text(self, **kwargs):
-        # TODO: Make more simple than markdown.
-        context = quizgen.parser.common.prep_context(self._context, options = kwargs)
-        env = {quizgen.parser.common.CONTEXT_ENV_KEY: context}
-        return quizgen.parser.render.markdown(self._tokens, env = env, **kwargs)
+        return self._render(quizgen.constants.FORMAT_TEXT, **kwargs)
 
     def to_html(self, **kwargs):
+        return self._render(quizgen.constants.FORMAT_HTML, **kwargs)
+
+    def _render(self, format, **kwargs):
         context = quizgen.parser.common.prep_context(self._context, options = kwargs)
         env = {quizgen.parser.common.CONTEXT_ENV_KEY: context}
-        return quizgen.parser.render.html(self._tokens, env = env, **kwargs)
+        return quizgen.parser.render.render(format, self._tokens, env = env, **kwargs)
 
     def to_pod(self, include_metadata = True, **kwargs):
         data = {
@@ -64,18 +63,11 @@ class ParsedDocument(object):
         return json.dumps(self.to_pod(**kwargs), indent = indent, sort_keys = sort_keys)
 
     def to_format(self, format, **kwargs):
-        if (format == quizgen.constants.FORMAT_HTML):
-            return self.to_html(**kwargs)
-        elif (format == quizgen.constants.FORMAT_JSON):
-            return self.to_json(**kwargs)
-        elif (format == quizgen.constants.FORMAT_MD):
-            return self.to_markdown(**kwargs)
-        elif (format == quizgen.constants.FORMAT_TEX):
-            return self.to_tex(**kwargs)
-        elif (format == quizgen.constants.FORMAT_TEXT):
-            return self.to_text(**kwargs)
-        else:
+        formatter = getattr(self, 'to_' + format)
+        if (formatter is None):
             raise ValueError(f"Unknown format '{format}'.")
+
+        return formatter(**kwargs)
 
     def get_ast(self):
         """
