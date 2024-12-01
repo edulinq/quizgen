@@ -1,0 +1,11 @@
+{
+    "prompt": "Multiple Drop Downs: Equations <placeholder>part1</placeholder>",
+    "question_type": "multiple_dropdowns",
+    "answers": {
+        "part1": [
+            {"correct": true,  "text": "$ a $"},
+            {"correct": false, "text": "$ f(x) = x + 2 $"},
+            {"correct": false, "text": "$$ c $$"}
+        ]
+    }
+}

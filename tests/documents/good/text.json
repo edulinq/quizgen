@@ -547,5 +547,33 @@
                 ]
             }
         }
+    },
+
+    {
+        "name": "Allow Text All Characters",
+        "text": "some * text",
+        "context": {
+            "text_allow_all_characters": true
+        },
+        "formats": {
+            "md": "some * text",
+            "html": "<p>some * text</p>",
+            "tex": "some * text",
+            "text": "some * text",
+            "json": {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "text",
+                                "text": "some * text"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
     }
 ]

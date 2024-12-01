@@ -140,6 +140,35 @@
                 "text": " f(x)\ng(x) "
             }
         }
+    },
+
+    {
+        "name": "Allow Text Math",
+        "text": "$ f(x) = x + 2 $",
+        "context": {
+            "text_allow_all_characters": true,
+            "text_allow_math": true
+        },
+        "formats": {
+            "md": "$ f(x) = x + 2 $",
+            "html": "<p><span><code>f(x) = x + 2</code></span></p>",
+            "tex": "$ f(x) = x + 2 $",
+            "text": "f(x) = x + 2",
+            "json": {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "math_inline",
+                                "text": " f(x) = x + 2 "
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
     }
 
 ]

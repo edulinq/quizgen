@@ -1,5 +1,6 @@
 import re
 
+import quizgen.parser.common
 import quizgen.parser.renderer.base
 
 DISALLOWED_CHARACTERS = re.compile(r'[^\w -]')
@@ -10,15 +11,18 @@ class QuizgenRendererText(quizgen.parser.renderer.base.QuizgenRendererBase):
     The output here is not meant to represent full documents or be sent to users.
     """
 
-    def clean_final(self, text):
+    def clean_final(self, text, context):
+        allow_all_characters = context.get(quizgen.parser.common.CONTEXT_KEY_TEXT_ALLOW_ALL_CHARACTERS, False)
+
         # Clean up whitespace.
         text = re.sub(r'\s+', ' ', text).strip()
 
         # Remove bad disallowed characters.
-        text = re.sub(DISALLOWED_CHARACTERS, '', text)
+        if (not allow_all_characters):
+            text = re.sub(DISALLOWED_CHARACTERS, '', text)
 
-        # Clean up whitespace once more.
-        text = re.sub(r'\s+', ' ', text).strip()
+            # Clean up whitespace once more.
+            text = re.sub(r'\s+', ' ', text).strip()
 
         return text
 
@@ -47,9 +51,15 @@ class QuizgenRendererText(quizgen.parser.renderer.base.QuizgenRendererBase):
         return ''
 
     def _math_block(self, node, context):
+        if (context.get(quizgen.parser.common.CONTEXT_KEY_TEXT_ALLOW_MATH, False)):
+            return node.text().strip()
+
         return ''
 
     def _math_inline(self, node, context):
+        if (context.get(quizgen.parser.common.CONTEXT_KEY_TEXT_ALLOW_MATH, False)):
+            return node.text().strip()
+
         return ''
 
     def _image(self, node, context):

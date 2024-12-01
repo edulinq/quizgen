@@ -9,6 +9,8 @@ CONTEXT_ENV_KEY = 'qg_context'
 CONTEXT_KEY_STYLE = 'style'
 CONTEXT_KEY_IMAGE_CALLBACK = 'image_path_callback'
 CONTEXT_KEY_FORCE_RAW_IMAGE_SRC = 'force_raw_image_src'
+CONTEXT_KEY_TEXT_ALLOW_ALL_CHARACTERS = 'text_allow_all_characters'
+CONTEXT_KEY_TEXT_ALLOW_MATH = 'text_allow_math'
 
 TOKEN_META_KEY_ROOT = 'qg_root'
 TOKEN_META_KEY_STYLE = 'qg_style'
