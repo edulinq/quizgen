@@ -82,8 +82,49 @@
     },
 
     {
+        "name": "Text with Implicit Hardbreak",
+        "text": "\nFoo\n\nBar\n",
+        "formats": {
+            "md": "Foo\n\nBar",
+            "html": "<p>Foo</p><p>Bar</p>",
+            "tex": "Foo\n\nBar",
+            "text": "Foo Bar",
+            "json": [
+                {
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "type": "inline",
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "text": "Foo"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "paragraph",
+                    "children": [
+                        {
+                            "type": "inline",
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "text": "Bar"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+
+    {
         "name": "Text with Explicit Linebreak",
-        "text": "\nFoo\\\nBar\n",
+        "text": "\nFoo<br>Bar\n",
         "formats": {
             "md": "Foo\\\nBar",
             "html": "<p>Foo<br />Bar</p>",

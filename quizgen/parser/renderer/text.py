@@ -33,7 +33,7 @@ class QuizgenRendererText(quizgen.parser.renderer.base.QuizgenRendererBase):
         return "\n"
 
     def _hardbreak(self, node, context):
-        return "\n"
+        return "\n\n"
 
     def _em(self, node, context):
         return ''.join([self._render_node(child, context) for child in node.children()])

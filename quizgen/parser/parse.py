@@ -68,7 +68,7 @@ def _post_process(tokens):
     tokens = _add_root_block(tokens)
     tokens = _process_placeholders(tokens)
     tokens = _process_style(tokens)
-    tokens = _remove_html(tokens)
+    tokens = _process_html(tokens)
     tokens = _remove_empty_tokens(tokens)
 
     return tokens
@@ -275,11 +275,11 @@ def _create_placeholder_token(token):
             type = 'placeholder', tag = '', nesting = 0,
             map = token.map, content = label)
 
-def _remove_html(tokens):
+def _process_html(tokens):
     """
-    Remove all HTML tags.
+    Remove or replacec all HTML tags.
     This will recursively descend to find all tags.
-    We want to allow HTML for comments and styling, but generally remove all HTML before rendering.
+    Line breaks will be replaced with hard breaks.
     """
 
     remove_indexes = []
@@ -287,10 +287,15 @@ def _remove_html(tokens):
         token = tokens[i]
 
         if (token.type in HTML_TOKENS):
-            remove_indexes.append(i)
+            if (token.content.strip().startswith('<br')):
+                tokens[i] = markdown_it.token.Token(
+                        type = 'hardbreak', tag = 'br', nesting = 0,
+                        map = token.map)
+            else:
+                remove_indexes.append(i)
 
         if (_has_children(token)):
-            token.children = _remove_html(token.children)
+            token.children = _process_html(token.children)
 
     for remove_index in sorted(list(set(remove_indexes)), reverse = True):
         tokens.pop(remove_index)

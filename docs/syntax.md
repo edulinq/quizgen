@@ -32,7 +32,7 @@ Note that these tables require a header row.
 ```
 | Some | Header | Row |
 |------|--------|-----|
-| 1    | -2    | N/A |
+| 1    | -2     | N/A |
 | *a*  | **b**  | $x$ |
 ```
 
