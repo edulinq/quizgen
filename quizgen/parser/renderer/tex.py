@@ -204,7 +204,14 @@ class QuizgenRendererTex(quizgen.parser.renderer.base.QuizgenRendererBase):
         return content
 
     def _tbody(self, node, context):
-        content = "\n".join([self._render_node(child, context) for child in node.children()])
+        style = context.get(quizgen.parser.common.CONTEXT_KEY_STYLE, {})
+        border_cells = quizgen.parser.style.get_boolean_style_key(style, quizgen.parser.style.KEY_TABLE_BORDER_CELLS, quizgen.parser.style.DEFAULT_TABLE_BORDER_CELLS)
+
+        delim = "\n"
+        if (border_cells):
+            delim = "\n\\hline\n"
+
+        content = delim.join([self._render_node(child, context) for child in node.children()])
         return content
 
     def _tr(self, node, context):
@@ -212,7 +219,14 @@ class QuizgenRendererTex(quizgen.parser.renderer.base.QuizgenRendererBase):
         return content + ' \\\\'
 
     def _th(self, node, context):
+        style = context.get(quizgen.parser.common.CONTEXT_KEY_STYLE, {})
+        bold = quizgen.parser.style.get_boolean_style_key(style, quizgen.parser.style.KEY_TABLE_HEAD_BOLD, quizgen.parser.style.DEFAULT_TABLE_HEAD_BOLD)
+
         content = ''.join([self._render_node(child, context) for child in node.children()])
+
+        if (bold):
+            content = "\\textbf{%s}" % (content)
+
         return content
 
     def _td(self, node, context):

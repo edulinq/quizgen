@@ -5,7 +5,7 @@
         "formats": {
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<table style='border-collapse: collapse; border-style: hidden'><thead><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>c</td></tr></tbody></table>",
-            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\n1 & 2 & 3 \\\\\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\n\\textbf{1} & \\textbf{2} & \\textbf{3} \\\\\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "text": "",
             "json": {
                 "type": "container_block",
@@ -263,7 +263,7 @@
         "formats": {
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<table style='border-collapse: collapse; border-style: hidden'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>c</td></tr></tbody></table>",
-            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ c|c|c }\n1 & 2 & 3 \\\\\n\\hline\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ c|c|c }\n\\textbf{1} & \\textbf{2} & \\textbf{3} \\\\\n\\hline\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "text": "",
             "json": {
                 "type": "container_block",
@@ -387,12 +387,188 @@
     },
 
     {
+        "name": "Border Cells Multirow",
+        "text": "<style>{\"table-border-cells\": true}</style>\n| 1 | 2 | 3 |\n|---|---|---|\n| a | b | c |\n| d | e | f |",
+        "formats": {
+            "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |\n| d   | e   | f   |",
+            "html": "<table style='border-collapse: collapse; border-style: hidden'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>c</td></tr><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>d</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>e</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>f</td></tr></tbody></table>",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ c|c|c }\n\\textbf{1} & \\textbf{2} & \\textbf{3} \\\\\n\\hline\na & b & c \\\\\n\\hline\nd & e & f \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "text": "",
+            "json": {
+                "type": "container_block",
+                "qg_root": true,
+                "qg_style": {
+                    "table-border-cells": true
+                },
+                "children": [
+                    {
+                        "type": "table",
+                        "children": [
+                            {
+                                "type": "thead",
+                                "children": [
+                                    {
+                                        "type": "tr",
+                                        "children": [
+                                            {
+                                                "type": "th",
+                                                "children": [
+                                                    {
+                                                        "type": "inline",
+                                                        "children": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "1"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "th",
+                                                "children": [
+                                                    {
+                                                        "type": "inline",
+                                                        "children": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "2"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "th",
+                                                "children": [
+                                                    {
+                                                        "type": "inline",
+                                                        "children": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "3"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "tbody",
+                                "children": [
+                                    {
+                                        "type": "tr",
+                                        "children": [
+                                            {
+                                                "type": "td",
+                                                "children": [
+                                                    {
+                                                        "type": "inline",
+                                                        "children": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "a"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "td",
+                                                "children": [
+                                                    {
+                                                        "type": "inline",
+                                                        "children": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "b"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "td",
+                                                "children": [
+                                                    {
+                                                        "type": "inline",
+                                                        "children": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "c"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "tr",
+                                        "children": [
+                                            {
+                                                "type": "td",
+                                                "children": [
+                                                    {
+                                                        "type": "inline",
+                                                        "children": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "d"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "td",
+                                                "children": [
+                                                    {
+                                                        "type": "inline",
+                                                        "children": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "e"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "td",
+                                                "children": [
+                                                    {
+                                                        "type": "inline",
+                                                        "children": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "f"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
         "name": "Border Table",
         "text": "<style>{\"table-border-table\": true}</style>\n| 1 | 2 | 3 |\n|---|---|---|\n| a | b | c |",
         "formats": {
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<table style='border-collapse: collapse; border: 1px solid black'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>c</td></tr></tbody></table>",
-            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ |ccc| }\n\\hline\n1 & 2 & 3 \\\\\n\\hline\na & b & c \\\\\n\\hline\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ |ccc| }\n\\hline\n\\textbf{1} & \\textbf{2} & \\textbf{3} \\\\\n\\hline\na & b & c \\\\\n\\hline\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "text": "",
             "json": {
                 "type": "container_block",
@@ -521,7 +697,7 @@
         "formats": {
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<table style='border-collapse: collapse; border: 1px solid black'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; border: 1px solid black'>c</td></tr></tbody></table>",
-            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ |c|c|c| }\n\\hline\n1 & 2 & 3 \\\\\n\\hline\na & b & c \\\\\n\\hline\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ |c|c|c| }\n\\hline\n\\textbf{1} & \\textbf{2} & \\textbf{3} \\\\\n\\hline\na & b & c \\\\\n\\hline\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "text": "",
             "json": {
                 "type": "container_block",
@@ -651,7 +827,7 @@
         "formats": {
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<table style='border-collapse: collapse; border-style: hidden'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>1</th><th style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>2</th><th style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em'>a</td><td style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em'>b</td><td style='padding-top: 0.00em; padding-bottom: 0.00em; padding-left: 0.25em; padding-right: 0.25em'>c</td></tr></tbody></table>",
-            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.00}\n\\begin{tabular}{ ccc }\n1 & 2 & 3 \\\\\n\\hline\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.00}\n\\begin{tabular}{ ccc }\n\\textbf{1} & \\textbf{2} & \\textbf{3} \\\\\n\\hline\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "text": "",
             "json": {
                 "type": "container_block",
@@ -780,7 +956,7 @@
         "formats": {
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<table style='border-collapse: collapse; border-style: hidden'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em; font-weight: bold'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.00em; padding-right: 0.00em'>c</td></tr></tbody></table>",
-            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.00em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\n1 & 2 & 3 \\\\\n\\hline\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
+            "tex": "\\begingroup\n\\setlength{\\tabcolsep}{1.00em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ ccc }\n\\textbf{1} & \\textbf{2} & \\textbf{3} \\\\\n\\hline\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup",
             "text": "",
             "json": {
                 "type": "container_block",
@@ -909,7 +1085,7 @@
         "formats": {
             "md": "| 1   | 2   | 3   |\n| --- | --- | --- |\n| a   | b   | c   |",
             "html": "<div class='qg-root-block qg-block' style='display: flex; flex-direction: column; justify-content: flex-start; align-items: center; text-align: right'><table style='border-collapse: collapse; border-style: hidden; text-align: right'><thead style='border-bottom: 1px solid black'><tr><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>1</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>2</th><th style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em; font-weight: bold'>3</th></tr></thead><tbody><tr><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>a</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>b</td><td style='padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.25em; padding-right: 0.25em'>c</td></tr></tbody></table></div>",
-            "tex": "\\begin{center}\n\n\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ rrr }\n1 & 2 & 3 \\\\\n\\hline\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup\n\n\\end{center}",
+            "tex": "\\begin{center}\n\n\\begingroup\n\\setlength{\\tabcolsep}{1.50em}\n\\begingroup\n\\renewcommand{\\arraystretch}{1.50}\n\\begin{tabular}{ rrr }\n\\textbf{1} & \\textbf{2} & \\textbf{3} \\\\\n\\hline\na & b & c \\\\\n\\end{tabular}\n\\endgroup\n\\endgroup\n\n\\end{center}",
             "text": "",
             "json": {
                 "type": "container_block",

@@ -17,6 +17,7 @@ Any variations from the CommonMark specification are listed in this document.
 Table of Contents:
  - [Tables](#tables)
  - [HTML](#html)
+ - [Blocks](#blocks)
  - [Comments](#comments)
  - [Placeholders](#placeholders)
  - [Style](#style)
