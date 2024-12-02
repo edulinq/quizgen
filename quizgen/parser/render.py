@@ -15,7 +15,7 @@ def canvas(tokens, env = {}, pretty = True, **kwargs):
     renderer, options = quizgen.parser.renderer.canvas.get_renderer(options)
     raw_html = renderer.render(tokens, options, env)
 
-    return _clean_html(raw_html, pretty = pretty)
+    return clean_html(raw_html, pretty = pretty)
 
 def html(tokens, env = {}, pretty = True, **kwargs):
     _, options = quizgen.parser.parse._get_parser()
@@ -23,7 +23,7 @@ def html(tokens, env = {}, pretty = True, **kwargs):
     renderer, options = quizgen.parser.renderer.html.get_renderer(options)
     raw_html = renderer.render(tokens, options, env)
 
-    return _clean_html(raw_html, pretty = pretty)
+    return clean_html(raw_html, pretty = pretty)
 
 def md(tokens, env = {}, **kwargs):
     _, options = quizgen.parser.parse._get_parser()
@@ -60,13 +60,14 @@ def render(format, tokens, env = {}, **kwargs):
 
     return render_function(tokens, env = env, **kwargs)
 
-def _clean_html(raw_html, pretty = True):
+def clean_html(raw_html, pretty = True):
     document = bs4.BeautifulSoup(raw_html, 'html.parser')
 
+    formatter = bs4.formatter.HTMLFormatter(indent = 4, entity_substitution = bs4.dammit.EntitySubstitution.substitute_xml)
     if (pretty):
-        content = document.prettify(formatter = bs4.formatter.HTMLFormatter(indent = 4))
+        content = document.prettify(formatter = formatter)
     else:
         # Remove whitespace adjacent to tags.
-        content = re.sub(r'(>)\s+|\s+(<)', r'\1\2', document.prettify())
+        content = re.sub(r'(>)\s+|\s+(<)', r'\1\2', document.prettify(formatter = formatter))
 
     return content.strip()

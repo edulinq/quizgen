@@ -208,6 +208,31 @@
                 }
             ]
         }
+    },
+
+    {
+        "name": "Code with Less Than",
+        "text": "`<test`",
+        "formats": {
+            "md": "`<test`",
+            "html": "<p><code>&lt;test</code></p>",
+            "tex": "\\verb|<test|",
+            "text": "",
+            "json": {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "code_inline",
+                                "text": "<test"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
     }
 
 ]

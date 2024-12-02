@@ -2,12 +2,11 @@ import json
 import os
 import re
 
-import bs4
-
 import quizgen.constants
 import quizgen.parser.common
 import quizgen.parser.math
 import quizgen.parser.public
+import quizgen.parser.renderer
 import tests.base
 
 SKIP_COMMONMARK_TESTS = {
@@ -92,11 +91,8 @@ def _get_good_parse_test(text, doc_format, base_expected, base_dir, options, con
             if ((raw_expected != '') and ('qg-root-block' not in raw_expected)):
                 raw_expected = '<div class="qg-root-block qg-block">' + raw_expected + '</div>'
 
-            document = bs4.BeautifulSoup(raw_expected, 'html.parser')
-            expected = document.prettify(formatter = bs4.formatter.HTMLFormatter(indent = 4))
-
-            document = bs4.BeautifulSoup(result, 'html.parser')
-            result = document.prettify(formatter = bs4.formatter.HTMLFormatter(indent = 4))
+            expected = quizgen.parser.render.clean_html(raw_expected)
+            result = quizgen.parser.render.clean_html(result)
 
             expected, result = _apply_text_options(options, expected, result)
             self.assertLongStringEqual(expected, result)
