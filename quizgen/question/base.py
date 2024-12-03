@@ -415,6 +415,30 @@ class Question(quizgen.util.serial.JSONSerializer):
 
         self.answers = new_answers
 
+        self._check_placeholders(self.answers.keys())
+
     def _check_type(self, value, expected_type, label):
         if (not isinstance(value, expected_type)):
             raise quizgen.common.QuizValidationError(f"{label} must be a {expected_type}, found '{value}' ({type(value)}).")
+
+    def _check_placeholders(self, answer_placeholders):
+        """
+        Check placeholders from the answers against placeholders in the prompt.
+        """
+
+        answer_placeholders = set(list(answer_placeholders))
+        document_placeholders = self.prompt.document.collect_placeholders()
+
+        # Special case for FITB documents.
+        if ((len(answer_placeholders) == 1) and (list(answer_placeholders)[0] == '')):
+            if (len(document_placeholders) != 0):
+                output_answer_placeholders = list(sorted(answer_placeholders))
+                raise quizgen.common.QuizValidationError("Found placeholders (%s) in the question prompt when none were expected." % (output_answer_placeholders))
+
+            return
+
+        if (answer_placeholders != document_placeholders):
+            output_answer_placeholders = list(sorted(answer_placeholders))
+            output_document_placeholders = list(sorted(document_placeholders))
+
+            raise quizgen.common.QuizValidationError("Mismatch between the placeholders found in the question prompt (%s) and answers config (%s)." % (output_document_placeholders, output_answer_placeholders))

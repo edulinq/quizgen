@@ -1,5 +1,6 @@
 {
     "prompt": "Hints: Inline",
+    "prompt": "Hints: Inline -- <placeholder>A</placeholder> <placeholder>B</placeholder> <placeholder>C</placeholder> <placeholder>D</placeholder>",
     "question_type": "fill_in_multiple_blanks",
     "hints": {
         "inline": true

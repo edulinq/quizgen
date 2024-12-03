@@ -1,0 +1,11 @@
+{
+    "prompt": "Multiple Drop Downs: Mismatch Placeholder <placeholder>AAA</placeholder>",
+    "question_type": "multiple_dropdowns",
+    "answers": {
+        "ZZZ": [
+            {"correct": true,  "text": "a"},
+            {"correct": false, "text": "b"},
+            {"correct": false, "text": "c"}
+        ]
+    }
+}

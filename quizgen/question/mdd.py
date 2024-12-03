@@ -25,6 +25,8 @@ class MDD(quizgen.question.base.Question, question_type = quizgen.constants.QUES
                 'values': values,
             }
 
+        self._check_placeholders(self.answers.keys())
+
     def _shuffle(self, rng):
         for key in self.answers:
             rng.shuffle(self.answers[key]['values'])

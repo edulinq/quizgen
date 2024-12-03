@@ -48,6 +48,27 @@ class ParsedDocument(object):
 
         return data
 
+    def collect_placeholders(self):
+        """
+        Fetch all the answer placeholders in this document.
+        """
+
+        return set(self._collect_placeholders_helper(self._tokens))
+
+    def _collect_placeholders_helper(self, tokens):
+        placeholders = []
+
+        if ((tokens is None) or (len(tokens) == 0)):
+            return placeholders
+
+        for token in tokens:
+            if (token.type == 'placeholder'):
+                placeholders.append(token.content)
+
+            placeholders += self._collect_placeholders_helper(token.children)
+
+        return placeholders
+
     def collect_file_paths(self, base_dir):
         # TEST
         raise NotImplementedError('collect_file_paths()')
