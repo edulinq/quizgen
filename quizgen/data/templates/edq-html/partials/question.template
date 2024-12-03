@@ -9,7 +9,7 @@
 
     <div class='qg-quiz-question-prompt'>
         {{ question.prompt_text }}
-    <div>
+    </div>
 
     <p class='qg-quiz-question-directions'>
         {% block directions %}
