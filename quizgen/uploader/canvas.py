@@ -169,7 +169,6 @@ def upload_canvas_files(quiz, instance):
         file_id = upload_file(path, canvas_path, instance)
         file_ids[path] = file_id
 
-
     return file_ids
 
 def get_matching_quiz_ids(title, instance):
@@ -349,7 +348,7 @@ def _serialize_answer(data, answer, index, instance, blank_id = None, use_text =
     data["question[answers][%d][answer_weight]" % (index)] = weight
 
     if (use_text):
-        text = answer.document.to_text(text_allow_math = True, text_allow_all_characters = True)
+        text = answer.document.to_text(text_allow_special_text = True, text_allow_all_characters = True)
         data["question[answers][%d][answer_text]" % (index)] = text
     else:
         html = answer.document.to_canvas(canvas_instance = instance, pretty = False)
@@ -364,8 +363,8 @@ def _serialize_answer(data, answer, index, instance, blank_id = None, use_text =
 
 def _serialize_matching_answers(data, question, instance):
     for i in range(len(question.answers['matches'])):
-        left_content = question.answers['matches'][i]['left'].document.to_text(text_allow_math = True, text_allow_all_characters = True)
-        right_content = question.answers['matches'][i]['right'].document.to_text(text_allow_math = True, text_allow_all_characters = True)
+        left_content = question.answers['matches'][i]['left'].document.to_text(text_allow_special_text = True, text_allow_all_characters = True)
+        right_content = question.answers['matches'][i]['right'].document.to_text(text_allow_special_text = True, text_allow_all_characters = True)
 
         data["question[answers][%d][answer_match_left]" % (i)] = left_content
         data["question[answers][%d][answer_match_right]" % (i)] = right_content
@@ -375,7 +374,7 @@ def _serialize_matching_answers(data, question, instance):
             data["question[answers][%d][answer_comment_html]" % (i)] = text
 
     if (len(question.answers['distractors']) > 0):
-        distractors = [distractor.document.to_text(text_allow_math = True, text_allow_all_characters = True) for distractor in question.answers['distractors']]
+        distractors = [distractor.document.to_text(text_allow_special_text = True, text_allow_all_characters = True) for distractor in question.answers['distractors']]
         data["question[matching_answer_incorrect_matches]"] = "\n".join(distractors)
 
 def _serialize_fimb_answers(data, question, instance):

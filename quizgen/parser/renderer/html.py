@@ -13,8 +13,44 @@ import quizgen.parser.style
 
 HTML_BORDER_SPEC = '1px solid black'
 
+ADDITIONAL_STYLE = {
+    'paragraph_open': [
+        'margin-top: 0',
+    ],
+    'fence_open': [
+        'margin-top: 0',
+    ],
+    'code_block_open': [
+        'margin-top: 0',
+    ],
+    'code_inline': [
+        'margin-left: 0.25em',
+        'margin-right: 0.25em',
+    ],
+    'math_inline': [
+        'margin-left: 0.25em',
+        'margin-right: 0.25em',
+    ],
+}
+
 class QuizgenRendererHTML(markdown_it.renderer.RendererHTML):
-    def image(self, tokens, idx, options, env):
+    def render(self, tokens, options, env):
+        # Override the main rendering function to attatch style.
+        self._style_override_helper(tokens)
+        return super().render(tokens, options, env)
+
+    def _style_override_helper(self, tokens):
+        if (tokens is None):
+            return
+
+        for token in tokens:
+            if (token.type in ADDITIONAL_STYLE):
+                _join_html_style(token, ADDITIONAL_STYLE.get(token.type, []))
+
+            self._style_override_helper(token.children)
+
+    def image(self, tokens, idx, options, env,
+            force_raw_image_src = False, process_token = None):
         # Do custom rendering and then pass onto super.
 
         context = env.get(quizgen.parser.common.CONTEXT_ENV_KEY, {})
@@ -29,10 +65,11 @@ class QuizgenRendererHTML(markdown_it.renderer.RendererHTML):
 
         original_src = tokens[idx].attrGet('src')
         src = quizgen.parser.image.handle_callback(callback, original_src, base_dir)
+        path = os.path.realpath(os.path.join(base_dir, src))
         tokens[idx].attrSet('src', src)
 
-        path = os.path.realpath(os.path.join(base_dir, src))
-        force_raw_image_src = context.get(quizgen.parser.common.CONTEXT_KEY_FORCE_RAW_IMAGE_SRC, False)
+        # Check the env to see if we need to force raw images.
+        force_raw_image_src = force_raw_image_src or context.get(quizgen.parser.common.CONTEXT_KEY_FORCE_RAW_IMAGE_SRC, False)
 
         if (force_raw_image_src or re.match(r'^http(s)?://', src) or src.startswith('data:image')):
             # Do not further modify the src if we are explicitly directed not to
@@ -42,6 +79,10 @@ class QuizgenRendererHTML(markdown_it.renderer.RendererHTML):
             # Otherwise, do a base64 encoding of the image and embed it.
             mime, content = quizgen.parser.image.encode_image(path)
             tokens[idx].attrSet('src', f"data:{mime};base64,{content}")
+
+        # Last chance to change the token before HTML rendering.
+        if (process_token is not None):
+            tokens[idx] = process_token(tokens[idx], context, path)
 
         result = super().image(tokens, idx, options, env)
 
@@ -169,6 +210,9 @@ def _join_html_style(token, rules):
     """
     Take all style rules to apply, add in any existing style, and set the style attribute.
     """
+
+    if (len(rules) == 0):
+        return
 
     existing_style = token.attrGet('style')
     if (existing_style is not None):

@@ -1,5 +1,7 @@
 import copy
 import json
+import os
+import re
 import types
 
 import quizgen.constants
@@ -70,12 +72,27 @@ class ParsedDocument(object):
         return placeholders
 
     def collect_file_paths(self, base_dir):
-        # TEST
-        raise NotImplementedError('collect_file_paths()')
+        """
+        Fetch all the file paths in this document.
+        """
 
-    def trim(self, left = True, right = True):
-        # TEST
-        raise NotImplementedError('trim()')
+        return set(self._collect_file_paths_helper(self._tokens, base_dir))
+
+    def _collect_file_paths_helper(self, tokens, base_dir):
+        file_paths = []
+
+        if ((tokens is None) or (len(tokens) == 0)):
+            return file_paths
+
+        for token in tokens:
+            if (token.type == 'image'):
+                src = token.attrGet('src')
+                if ((not re.match(r'^http(s)?://', src)) and (not src.startswith('data:image'))):
+                    file_paths.append(os.path.realpath(os.path.join(base_dir, src)))
+
+            file_paths += self._collect_file_paths_helper(token.children, base_dir)
+
+        return file_paths
 
     def is_empty(self):
         return (len(self._tokens) == 0)

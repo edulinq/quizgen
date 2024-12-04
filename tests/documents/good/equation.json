@@ -4,7 +4,7 @@
         "text": "$ f(x) = x_i + x^2 \\alpha $",
         "formats": {
             "md": "$ f(x) = x_i + x^2 \\alpha $",
-            "html": "<p><span><code>f(x) = x_i + x^2 \\alpha</code></span></p>",
+            "html": "<p style=\"margin-top: 0\"><span style=\"margin-left: 0.25em; margin-right: 0.25em\"><code>f(x) = x_i + x^2 \\alpha</code></span></p>",
             "tex": "$ f(x) = x_i + x^2 \\alpha $",
             "text": "",
             "json": {
@@ -29,7 +29,7 @@
         "text": "Inline$\\text{equation}$.",
         "formats": {
             "md": "Inline$ \\text{equation} $.",
-            "html": "<p>Inline<span><code>\\text{equation}</code></span>.</p>",
+            "html": "<p style=\"margin-top: 0\">Inline<span style=\"margin-left: 0.25em; margin-right: 0.25em\"><code>\\text{equation}</code></span>.</p>",
             "tex": "Inline$ \\text{equation} $.",
             "text": "Inline",
             "json": {
@@ -62,7 +62,7 @@
         "text": "$f(\\$a)$",
         "formats": {
             "md": "$ f(\\$a) $",
-            "html": "<p><span><code>f(\\$a)</code></span></p>",
+            "html": "<p style=\"margin-top: 0\"><span style=\"margin-left: 0.25em; margin-right: 0.25em\"><code>f(\\$a)</code></span></p>",
             "tex": "$ f(\\$a) $",
             "text": "",
             "json": {
@@ -87,7 +87,7 @@
         "text": "$$equation + block$$",
         "formats": {
             "md": "$$\nequation + block\n$$",
-            "html": "<p><code>equation + block</code></p>",
+            "html": "<p style=\"margin-top: 0\"><code>equation + block</code></p>",
             "tex": "$$\nequation + block\n$$",
             "text": "",
             "json": {
@@ -102,7 +102,7 @@
         "text": "$$ equation + - * / block() $$",
         "formats": {
             "md": "$$\n equation + - * / block() \n$$",
-            "html": "<p><code>equation + - * / block()</code></p>",
+            "html": "<p style=\"margin-top: 0\"><code>equation + - * / block()</code></p>",
             "tex": "$$\nequation + - * / block()\n$$",
             "text": "",
             "json": {
@@ -117,7 +117,7 @@
         "text": "$$\nf(x)\n$$",
         "formats": {
             "md": "$$\n\nf(x)\n\n$$",
-            "html": "<p><code>f(x)</code></p>",
+            "html": "<p style=\"margin-top: 0\"><code>f(x)</code></p>",
             "tex": "$$\nf(x)\n$$",
             "text": "",
             "json": {
@@ -132,7 +132,7 @@
         "text": "$$ f(x)\ng(x) $$",
         "formats": {
             "md": "$$\n f(x)\ng(x) \n$$",
-            "html": "<p><code>f(x)\ng(x)</code></p>",
+            "html": "<p style=\"margin-top: 0\"><code>f(x)\ng(x)</code></p>",
             "tex": "$$\nf(x)\ng(x)\n$$",
             "text": "",
             "json": {
@@ -147,11 +147,11 @@
         "text": "$ f(x) = x + 2 $",
         "context": {
             "text_allow_all_characters": true,
-            "text_allow_math": true
+            "text_allow_special_text": true
         },
         "formats": {
             "md": "$ f(x) = x + 2 $",
-            "html": "<p><span><code>f(x) = x + 2</code></span></p>",
+            "html": "<p style=\"margin-top: 0\"><span style=\"margin-left: 0.25em; margin-right: 0.25em\"><code>f(x) = x + 2</code></span></p>",
             "tex": "$ f(x) = x + 2 $",
             "text": "f(x) = x + 2",
             "json": {

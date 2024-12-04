@@ -38,11 +38,13 @@ def _render_html(text, inline, context):
     if (_katex_available):
         content = quizgen.katex.to_html(text)
 
-    element = 'p'
-    if (inline):
-        element = 'span'
+    element = 'span'
+    attributes = 'style="margin-left: 0.25em; margin-right: 0.25em"'
+    if (not inline):
+        element = 'p'
+        attributes = 'style="margin-top: 0"'
 
-    return f"<{element}>{content}</{element}>"
+    return f"<{element} {attributes}>{content}</{element}>"
 
 def _render_md(text, inline, context):
     if (inline):

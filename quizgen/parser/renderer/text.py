@@ -42,25 +42,19 @@ class QuizgenRendererText(quizgen.parser.renderer.base.QuizgenRendererBase):
         return ''.join([self._render_node(child, context) for child in node.children()])
 
     def _fence(self, node, context):
-        return ''
+        return self._handle_special_text(node, context)
 
     def _code_block(self, node, context):
-        return ''
+        return self._handle_special_text(node, context)
 
     def _code_inline(self, node, context):
-        return ''
+        return self._handle_special_text(node, context)
 
     def _math_block(self, node, context):
-        if (context.get(quizgen.parser.common.CONTEXT_KEY_TEXT_ALLOW_MATH, False)):
-            return node.text().strip()
-
-        return ''
+        return self._handle_special_text(node, context)
 
     def _math_inline(self, node, context):
-        if (context.get(quizgen.parser.common.CONTEXT_KEY_TEXT_ALLOW_MATH, False)):
-            return node.text().strip()
-
-        return ''
+        return self._handle_special_text(node, context)
 
     def _image(self, node, context):
         return ''
@@ -106,6 +100,17 @@ class QuizgenRendererText(quizgen.parser.renderer.base.QuizgenRendererBase):
 
     def _blockquote(self, node, context):
         return ''.join([self._render_node(child, context) for child in node.children()])
+
+    def _handle_special_text(self, node, context):
+        """
+        Special text is usually not allowed,
+        but can be enabled with quizgen.parser.common.CONTEXT_KEY_TEXT_ALLOW_SPECIAL_TEXT.
+        """
+
+        if (context.get(quizgen.parser.common.CONTEXT_KEY_TEXT_ALLOW_SPECIAL_TEXT, False)):
+            return node.text().strip()
+
+        return ''
 
 def get_renderer(options):
     return QuizgenRendererText(), options
