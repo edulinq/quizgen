@@ -3,6 +3,8 @@ import json
 import os
 import unittest
 
+import quizgen.parser.math
+
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
 QUESTIONS_DIR = os.path.join(THIS_DIR, "questions")
@@ -21,6 +23,17 @@ QUESTIONS_FILENAME = 'question.json'
 class BaseTest(unittest.TestCase):
     # See full diffs regardless of size.
     maxDiff = None
+
+    @classmethod
+    def setUpClass(cls):
+        # Disable KaTeX for testing.
+        quizgen.parser.math._katex_available = False
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        quizgen.parser.math._katex_available = None
+        pass
 
     def assertJSONDictEqual(self, expected, actual):
         expected_json = json.dumps(expected, indent = 4, sort_keys = True)

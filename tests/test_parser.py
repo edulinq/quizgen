@@ -4,9 +4,7 @@ import re
 
 import quizgen.constants
 import quizgen.parser.common
-import quizgen.parser.math
 import quizgen.parser.public
-import quizgen.parser.renderer
 import tests.base
 
 SKIP_COMMONMARK_TESTS = {
@@ -19,19 +17,7 @@ class TestParser(tests.base.BaseTest):
     Good and bad situations will be loaded below into individual test cases.
     """
 
-    # Show full output on large string diffs.
-    maxDiff = None
-
-    @classmethod
-    def setUpClass(cls):
-        # Disable KaTeX for testing.
-        quizgen.parser.math._katex_available = False
-        pass
-
-    @classmethod
-    def tearDownClass(cls):
-        quizgen.parser.math._katex_available = None
-        pass
+    pass
 
 def _add_good_parse_questions():
     for path in tests.base.discover_good_document_files():
