@@ -1,11 +1,12 @@
 import quizgen.constants
-import quizgen.converter.htmltemplate
+import quizgen.converter.html
 import quizgen.converter.json
 import quizgen.converter.textemplate
 import quizgen.converter.qtitemplate
 import quizgen.variant
 
 SUPPORTED_FORMATS = [
+    quizgen.constants.FORMAT_CANVAS,
     quizgen.constants.FORMAT_HTML,
     quizgen.constants.FORMAT_JSON,
     quizgen.constants.FORMAT_TEX,
@@ -16,7 +17,9 @@ def get_converter_class(format = quizgen.constants.FORMAT_JSON):
     if (format == quizgen.constants.FORMAT_JSON):
         return quizgen.converter.json.JSONConverter
     elif (format == quizgen.constants.FORMAT_HTML):
-        return quizgen.converter.htmltemplate.HTMLTemplateConverter
+        return quizgen.converter.html.HTMLTemplateConverter
+    elif (format == quizgen.constants.FORMAT_CANVAS):
+        return quizgen.converter.html.CanvasTemplateConverter
     elif (format == quizgen.constants.FORMAT_TEX):
         return quizgen.converter.textemplate.TexTemplateConverter
     elif (format == quizgen.constants.FORMAT_QTI):

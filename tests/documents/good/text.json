@@ -127,7 +127,7 @@
         "text": "\nFoo<br>Bar\n",
         "formats": {
             "md": "Foo\\\nBar",
-            "html": "<p style=\"margin-top: 0\">Foo<br />Bar</p>",
+            "html": "<p style=\"margin-top: 0\">Foo<br />\nBar</p>",
             "tex": "Foo \\newline\nBar",
             "text": "Foo Bar",
             "json": {
@@ -610,6 +610,50 @@
                             {
                                 "type": "text",
                                 "text": "some * text"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+
+    {
+        "name": "Inline Spacing",
+        "text": "Some **bold** text.",
+        "comment": "Ensure that inline spacing is correct when not outputting pretty HTML.",
+        "options": {
+            "html": {
+                "pretty": false
+            }
+        },
+        "formats": {
+            "md": "Some **bold** text.",
+            "html": "<p style=\"margin-top: 0\">Some <strong>bold</strong> text.</p>",
+            "tex": "Some \\textbf{bold} text.",
+            "text": "Some bold text",
+            "json": {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "text",
+                                "text": "Some "
+                            },
+                            {
+                                "type": "strong",
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "text": "bold"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "text",
+                                "text": " text."
                             }
                         ]
                     }

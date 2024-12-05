@@ -1,6 +1,6 @@
 import re
 
-import bs4
+import lxml.etree
 
 import quizgen.parser.parse
 import quizgen.parser.renderer.canvas
@@ -9,7 +9,7 @@ import quizgen.parser.renderer.markdown
 import quizgen.parser.renderer.tex
 import quizgen.parser.renderer.text
 
-def canvas(tokens, env = {}, pretty = True, **kwargs):
+def canvas(tokens, env = {}, pretty = False, **kwargs):
     _, options = quizgen.parser.parse._get_parser()
 
     renderer, options = quizgen.parser.renderer.canvas.get_renderer(options)
@@ -17,7 +17,7 @@ def canvas(tokens, env = {}, pretty = True, **kwargs):
 
     return clean_html(raw_html, pretty = pretty)
 
-def html(tokens, env = {}, pretty = True, **kwargs):
+def html(tokens, env = {}, pretty = False, **kwargs):
     _, options = quizgen.parser.parse._get_parser()
 
     renderer, options = quizgen.parser.renderer.html.get_renderer(options)
@@ -60,14 +60,19 @@ def render(format, tokens, env = {}, **kwargs):
 
     return render_function(tokens, env = env, **kwargs)
 
-def clean_html(raw_html, pretty = True):
-    document = bs4.BeautifulSoup(raw_html, 'html.parser')
+def clean_html(raw_html, pretty = False):
+    """
+    Clean up and standardize the HTML.
+    If |pretty|, then the output will be indented properly, and extra space will be stripped (which may mess with some inline spacing).
+    |pretty| should only be used when being read by a human for visual inspection.
+    """
 
-    formatter = bs4.formatter.HTMLFormatter(indent = 4, entity_substitution = bs4.dammit.EntitySubstitution.substitute_xml)
-    if (pretty):
-        content = document.prettify(formatter = formatter)
-    else:
-        # Remove whitespace adjacent to tags.
-        content = re.sub(r'(>)\s+|\s+(<)', r'\1\2', document.prettify(formatter = formatter))
+    raw_html = raw_html.strip()
+    if (len(raw_html) == 0):
+        return raw_html
+
+    parser = lxml.etree.XMLParser(remove_blank_text = True)
+    root = lxml.etree.fromstring(raw_html, parser)
+    content = lxml.etree.tostring(root, pretty_print = pretty, encoding = 'unicode')
 
     return content.strip()

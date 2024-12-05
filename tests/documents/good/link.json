@@ -66,7 +66,7 @@
         "text": "[ ](url)",
         "formats": {
             "md": "[ ](url)",
-            "html": "<p style=\"margin-top: 0\"><a href='url'></a></p>",
+            "html": "<p style=\"margin-top: 0\"><a href='url'> </a></p>",
             "tex": "\\url{url}",
             "text": "",
             "json": {
@@ -97,7 +97,7 @@
         "text": "[ some text ](< some url >)",
         "formats": {
             "md": "[ some text ](some%20url)",
-            "html": "<p style=\"margin-top: 0\"><a href='some%20url'>some text</a></p>",
+            "html": "<p style=\"margin-top: 0\"><a href='some%20url'> some text </a></p>",
             "tex": "\\href{some%20url}{some text}",
             "text": "",
             "json": {
@@ -128,7 +128,7 @@
         "text": "[ some \\* text ](< some (\\\\) url >)",
         "formats": {
             "md": "[ some * text ](<some%20(%5C)%20url>)",
-            "html": "<p style=\"margin-top: 0\"><a href='some%20(%5C)%20url'>some * text</a></p>",
+            "html": "<p style=\"margin-top: 0\"><a href='some%20(%5C)%20url'> some * text </a></p>",
             "tex": "\\href{some%20(%5C)%20url}{some * text}",
             "text": "",
             "json": {

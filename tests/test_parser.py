@@ -73,12 +73,15 @@ def _get_good_parse_test(text, doc_format, base_expected, base_dir, options, con
             self.assertJSONDictEqual(expected, result)
         elif (doc_format in {quizgen.constants.FORMAT_CANVAS, quizgen.constants.FORMAT_HTML}):
             # If the HTML does not have a root block, then add one.
-            raw_expected = base_expected.strip()
+            raw_expected = base_expected
+            if (options.get('strip', True)):
+                raw_expected = raw_expected.strip()
+
             if ((raw_expected != '') and ('qg-root-block' not in raw_expected)):
                 raw_expected = '<div class="qg-root-block qg-block">' + raw_expected + '</div>'
 
-            expected = quizgen.parser.render.clean_html(raw_expected)
-            result = quizgen.parser.render.clean_html(result)
+            expected = quizgen.parser.render.clean_html(raw_expected, pretty = options.get('pretty', True))
+            result = quizgen.parser.render.clean_html(result, pretty = options.get('pretty', True))
 
             expected, result = _apply_text_options(options, expected, result)
             self.assertLongStringEqual(expected, result)

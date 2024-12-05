@@ -102,7 +102,7 @@
         "text": "$$ equation + - * / block() $$",
         "formats": {
             "md": "$$\n equation + - * / block() \n$$",
-            "html": "<p style=\"margin-top: 0\"><code>equation + - * / block()</code></p>",
+            "html": "<p style=\"margin-top: 0\"><code> equation + - * / block() </code></p>",
             "tex": "$$\nequation + - * / block()\n$$",
             "text": "",
             "json": {
@@ -117,7 +117,7 @@
         "text": "$$\nf(x)\n$$",
         "formats": {
             "md": "$$\n\nf(x)\n\n$$",
-            "html": "<p style=\"margin-top: 0\"><code>f(x)</code></p>",
+            "html": "<p style=\"margin-top: 0\"><code>\nf(x)\n</code></p>",
             "tex": "$$\nf(x)\n$$",
             "text": "",
             "json": {
@@ -132,7 +132,7 @@
         "text": "$$ f(x)\ng(x) $$",
         "formats": {
             "md": "$$\n f(x)\ng(x) \n$$",
-            "html": "<p style=\"margin-top: 0\"><code>f(x)\ng(x)</code></p>",
+            "html": "<p style=\"margin-top: 0\"><code> f(x)\ng(x) </code></p>",
             "tex": "$$\nf(x)\ng(x)\n$$",
             "text": "",
             "json": {

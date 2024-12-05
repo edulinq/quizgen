@@ -2,8 +2,13 @@
     {
         "name": "HTML Block",
         "text": "<placeholder>\nanswer\n</placeholder>",
+        "options": {
+            "canvas": {
+                "strip": false
+            }
+        },
         "formats": {
-            "canvas": "[answer]",
+            "canvas": "\n[answer]",
             "md": "<placeholder>answer</placeholder>",
             "html": "<placeholder>answer</placeholder>",
             "tex": "\\textsc{<answer>}",

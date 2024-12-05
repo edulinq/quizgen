@@ -34,6 +34,9 @@ def _render_html(text, inline, context):
     if (_katex_available is None):
         _katex_available = quizgen.katex.is_available()
 
+    if (inline):
+        text = text.strip()
+
     content = f"<code>{text}</code>"
     if (_katex_available):
         content = quizgen.katex.to_html(text)
