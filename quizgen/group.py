@@ -64,6 +64,11 @@ class Group(quizgen.util.serial.JSONSerializer):
         for question in self.questions:
             question.inherit_from_group(self)
 
+        if (self.pick_count > len(self.questions)):
+            logging.warning("Group '%s' was asked to pick more questions than available (pick_count: %d, group size: %d)." % (
+                    self.name, self.pick_count, len(self.questions)))
+            self.pick_count = len(self.questions)
+
     def should_skip_numbering(self):
         return ((self.skip_numbering is not None) and (self.skip_numbering))
 
@@ -109,11 +114,6 @@ class Group(quizgen.util.serial.JSONSerializer):
 
         count = self.pick_count
         if (all_questions):
-            count = len(self.questions)
-
-        if (count > len(self.questions)):
-            logging.warning("Group '%s' was asked to pick more questions than available (pick_count: %d, group size: %d)." % (
-                    self.name, count, len(self.questions)))
             count = len(self.questions)
 
         questions = self._choose_questions(count, rng, with_replacement)

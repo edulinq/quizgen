@@ -128,7 +128,7 @@
         "formats": {
             "md": "Foo\\\nBar",
             "html": "<p style=\"margin-top: 0\">Foo<br />\nBar</p>",
-            "tex": "Foo \\newline\nBar",
+            "tex": "Foo~\\newline\nBar",
             "text": "Foo Bar",
             "json": {
                 "type": "paragraph",

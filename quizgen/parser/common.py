@@ -53,7 +53,22 @@ def prep_context(context, options = {}):
 
     context = dict(context)
     if (len(options) > 0):
-        context = copy.deepcopy(context)
+        context = _partial_deep_copy(context)
         context.update(options)
 
     return types.MappingProxyType(context)
+
+def _partial_deep_copy(source_dict):
+    """
+    Only deep copy values that are dicts or lists, shallow copy the rest.
+    This is especially important for types that are fully or mostly imutable or callables.
+    """
+
+    result = {}
+    for (key, value) in source_dict.items():
+        if (isinstance(value, (dict, list))):
+            value = copy.deepcopy(value)
+
+        result[key] = value
+
+    return result

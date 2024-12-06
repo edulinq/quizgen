@@ -29,7 +29,7 @@ class Variant(quizgen.quiz.Quiz):
         self.validate(cls = Variant, **kwargs)
 
     def _validate(self, **kwargs):
-        # Ensure that each group only has a single question.
+        # Ensure that each group has the correct number of questions.
         for i in range(len(self.groups)):
             group = self.groups[i]
 

@@ -74,7 +74,7 @@ class QuizgenRendererTex(quizgen.parser.renderer.base.QuizgenRendererBase):
         return "\n"
 
     def _hardbreak(self, node, context):
-        return ' \\newline\n'
+        return '~\\newline\n'
 
     def _em(self, node, context):
         content = ''.join([self._render_node(child, context) for child in node.children()])
