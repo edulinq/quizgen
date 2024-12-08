@@ -9,7 +9,7 @@ import quizgen.common
 import quizgen.group
 import quizgen.parser.public
 import quizgen.uploader.canvas
-import quizgen.util.file
+import quizgen.util.dirent
 import quizgen.util.git
 import quizgen.util.serial
 
@@ -116,7 +116,7 @@ class Quiz(quizgen.util.serial.JSONSerializer):
         description_filename = os.path.splitext(os.path.basename(path))[0]
         description_path = os.path.join(os.path.dirname(path), description_filename + '.md')
         if (os.path.exists(description_path)):
-            quiz_info['description'] = quizgen.util.file.read(description_path)
+            quiz_info['description'] = quizgen.util.dirent.read_file(description_path)
             logging.debug("Loading quiz description from '%s'.", description_path)
 
         base_dir = os.path.dirname(path)

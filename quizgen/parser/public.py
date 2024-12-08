@@ -7,7 +7,7 @@ import os
 
 import quizgen.parser.parse
 import quizgen.util.serial
-import quizgen.util.file
+import quizgen.util.dirent
 
 class ParsedText(quizgen.util.serial.PODSerializer):
     """
@@ -29,7 +29,7 @@ def parse_file(path):
     if (not os.path.isfile(path)):
         raise ValueError(f"Path to parse ('{path}') is not a file.")
 
-    text = quizgen.util.file.read(path)
+    text = quizgen.util.dirent.read_file(path)
     base_dir = os.path.dirname(path)
 
     return parse_text(text, base_dir = base_dir)

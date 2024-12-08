@@ -6,7 +6,7 @@ import os
 
 import json5
 
-import quizgen.util.file
+import quizgen.util.dirent
 
 class PODSerializer(abc.ABC):
     @abc.abstractmethod
@@ -84,7 +84,7 @@ class JSONSerializer(PODSerializer):
         return json.dumps(data, indent = indent, sort_keys = sort_keys)
 
     def to_path(self, path, **kwargs):
-        quizgen.util.file.write(path, self.to_json(**kwargs))
+        quizgen.util.dirent.write_file(path, self.to_json(**kwargs))
 
     @classmethod
     def from_dict(cls, data, copy = True, extra_fields = {}, **kwargs):

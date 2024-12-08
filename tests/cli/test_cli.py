@@ -8,7 +8,7 @@ import re
 import sys
 
 import tests.base
-import quizgen.util.file
+import quizgen.util.dirent
 
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 TEST_CASES_DIR = os.path.join(THIS_DIR, "test_cases")
@@ -29,7 +29,7 @@ class CLITest(tests.base.BaseTest):
 
     @classmethod
     def setUpClass(cls):
-        CLITest._base_temp_dir = quizgen.util.file.get_temp_path('quizgen_CLITest_')
+        CLITest._base_temp_dir = quizgen.util.dirent.get_temp_path('quizgen_CLITest_')
 
     def _get_test_info(self, test_name, path):
         options, expected_output = _read_test_file(path)

@@ -4,17 +4,17 @@ import shutil
 import tempfile
 import uuid
 
-def read_if_exists(path, **kwargs):
+def read_file_if_exists(path, **kwargs):
     """
     Read the file if it exists, otherwise return None.
     """
 
     if (os.path.exists(path)):
-        return read(path, **kwargs)
+        return read_file(path, **kwargs)
 
     return None
 
-def read(path, strip = True, rstrip = True):
+def read_file(path, strip = True, rstrip = True):
     with open(path, 'r') as file:
         contents = file.read()
 
@@ -26,7 +26,7 @@ def read(path, strip = True, rstrip = True):
 
     return contents
 
-def write(path, contents):
+def write_file(path, contents):
     with open(path, 'w') as file:
         file.write(contents)
 

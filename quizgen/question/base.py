@@ -14,7 +14,7 @@ import json5
 import quizgen.common
 import quizgen.parser.public
 import quizgen.question.common
-import quizgen.util.file
+import quizgen.util.dirent
 import quizgen.util.serial
 
 PROMPT_FILENAME = 'prompt.md'
@@ -129,7 +129,7 @@ class Question(quizgen.util.serial.JSONSerializer):
 
             logging.debug("Loading question prompt from '%s'.", path)
             self._prompt_path = path
-            return quizgen.util.file.read(path)
+            return quizgen.util.dirent.read_file(path)
 
         raise quizgen.common.QuizValidationError("Could not find any non-empty prompt.")
 

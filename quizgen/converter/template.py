@@ -8,7 +8,7 @@ import quizgen.constants
 import quizgen.converter.converter
 import quizgen.parser.public
 import quizgen.quiz
-import quizgen.util.file
+import quizgen.util.dirent
 import quizgen.util.http
 import quizgen.variant
 
@@ -452,12 +452,12 @@ class TemplateConverter(quizgen.converter.converter.Converter):
 
     def _store_images(self, link, base_dir):
         if (self.image_base_dir is None):
-            self.image_base_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-images-', rm = self.cleanup_images)
+            self.image_base_dir = quizgen.util.dirent.get_temp_path(prefix = 'quizgen-images-', rm = self.cleanup_images)
 
         os.makedirs(self.image_base_dir, exist_ok = True)
 
         if (re.match(r'^http(s)?://', link)):
-            temp_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-image-dl-')
+            temp_dir = quizgen.util.dirent.get_temp_path(prefix = 'quizgen-image-dl-')
             in_path = quizgen.util.http.get_file(link, temp_dir)
             image_id = link
         else:
@@ -468,7 +468,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         filename = "%03d%s" % (len(self.image_paths), ext)
         out_path = os.path.join(self.image_base_dir, filename)
 
-        quizgen.util.file.copy_dirent(in_path, out_path)
+        quizgen.util.dirent.copy_dirent(in_path, out_path)
 
         if (self.image_relative_root is not None):
             out_path = os.path.join(self.image_relative_root, filename)

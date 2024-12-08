@@ -13,7 +13,7 @@ import requests
 
 import quizgen.constants
 import quizgen.variant
-import quizgen.util.file
+import quizgen.util.dirent
 
 URL_HOMEPAGE = 'https://www.gradescope.com'
 URL_LOGIN = 'https://www.gradescope.com/login'
@@ -86,7 +86,7 @@ class GradeScopeUploader(object):
             raise ValueError("GradeScope quiz uploader requires a quizgen.variant.Variant type, found %s." % (type(variant)))
 
         if (base_dir is None):
-            base_dir = quizgen.util.file.get_temp_path(prefix = 'quizgen-gradescope-')
+            base_dir = quizgen.util.dirent.get_temp_path(prefix = 'quizgen-gradescope-')
 
         boxes, special_boxes = self.get_bounding_boxes(variant, base_dir)
         return self.upload(variant, base_dir, boxes, special_boxes)

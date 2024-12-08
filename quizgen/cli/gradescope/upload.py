@@ -11,7 +11,7 @@ import sys
 import quizgen.log
 import quizgen.pdf
 import quizgen.uploader.gradescope
-import quizgen.util.file
+import quizgen.util.dirent
 
 def run(args):
     quiz, variants, options = quizgen.pdf.make_with_args(args, write_options = False)

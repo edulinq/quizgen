@@ -1,6 +1,6 @@
 import os
 
-import quizgen.util.file
+import quizgen.util.dirent
 import quizgen.util.git
 import tests.base
 
@@ -19,6 +19,6 @@ class TestGit(tests.base.BaseTest):
 
     def test_not_in_repo(self):
         # A new temp dir should not be in a git repo.
-        path = quizgen.util.file.get_temp_path(prefix = 'quizgen-test-git-')
+        path = quizgen.util.dirent.get_temp_path(prefix = 'quizgen-test-git-')
         version = quizgen.util.git.get_version(path)
         self.assertEqual(quizgen.util.git.UNKNOWN_VERSION, version)
