@@ -1,0 +1,55 @@
+"""
+Read (an optionally save) a QuizGen project.
+"""
+
+import argparse
+import sys
+
+import quizgen.log
+import quizgen.project
+
+def run(args):
+    project = quizgen.project.Project.from_path(args.path)
+
+    quizzes, questions = project.load_resources()
+
+    print("Found %d quizzes." % (len(quizzes)))
+    for (path, quiz) in quizzes:
+        print("    %s (%s)" % (path, quiz.title))
+
+    print("Found %d question." % (len(questions)))
+    for (path, question) in questions:
+        text = "    %s" % (path)
+        if (question.name != ''):
+            text += " (%s)" % (question.name)
+
+        print(text)
+
+    if (args.out_dir is not None):
+        project.save(args.out_dir)
+
+    return 0
+
+def _get_parser():
+    parser = argparse.ArgumentParser(description =
+        __doc__.strip())
+
+    parser.add_argument('path', metavar = 'PATH',
+        type = str,
+        help = 'The path to a project dir or config file.')
+
+    parser.add_argument('--outdir', dest = 'out_dir',
+        action = 'store', type = str, default = None,
+        help = 'Save the project to this directory.')
+
+    quizgen.log.set_cli_args(parser)
+
+    return parser
+
+def main():
+    args = _get_parser().parse_args()
+    quizgen.log.init_from_args(args)
+    return run(args)
+
+if (__name__ == '__main__'):
+    sys.exit(main())
