@@ -3,6 +3,7 @@ import json
 import os
 import unittest
 
+import quizgen.constants
 import quizgen.parser.math
 
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
@@ -17,8 +18,6 @@ BAD_DOCUMENTS_DIR = os.path.join(DOCUMENTS_DIR, "bad")
 
 DATA_DIR = os.path.join(THIS_DIR, 'data')
 COMMONMARK_TEST_DATA_PATH = os.path.join(DATA_DIR, 'commonmark_test_cases.json')
-
-QUESTIONS_FILENAME = 'question.json'
 
 class BaseTest(unittest.TestCase):
     # See full diffs regardless of size.
@@ -47,8 +46,8 @@ class BaseTest(unittest.TestCase):
         self.assertEqual(expected, actual, msg = message)
 
 def discover_question_tests():
-    good_paths = list(sorted(glob.glob(os.path.join(GOOD_QUESTIONS_DIR, "**", QUESTIONS_FILENAME), recursive = True)))
-    bad_paths = list(sorted(glob.glob(os.path.join(BAD_QUESTIONS_DIR, "**", QUESTIONS_FILENAME), recursive = True)))
+    good_paths = list(sorted(glob.glob(os.path.join(GOOD_QUESTIONS_DIR, "**", quizgen.constants.QUESTION_FILENAME), recursive = True)))
+    bad_paths = list(sorted(glob.glob(os.path.join(BAD_QUESTIONS_DIR, "**", quizgen.constants.QUESTION_FILENAME), recursive = True)))
 
     return good_paths, bad_paths
 

@@ -91,14 +91,29 @@ class JSONSerializer(PODSerializer):
         return _from_dict(cls, data, copy = copy, extra_fields = extra_fields, **kwargs)
 
     @classmethod
-    def from_path(cls, path, add_base_dir = True, **kwargs):
-        with open(path, 'r') as file:
-            data = json5.load(file)
+    def from_path(cls, path, add_base_dir = True, data_callback = None, **kwargs):
+        path = os.path.abspath(path)
+        ids = {
+            'path': path,
+        }
 
+        if (not os.path.isfile(path)):
+            raise quizgen.common.QuizValidationError('Path does not exist or is not a file.', ids = ids)
+
+        try:
+            with open(path, 'r') as file:
+                data = json5.load(file)
+        except Exception as ex:
+            raise quizgen.common.QuizValidationError('Failed to read JSON file (invalid JSON?).', ids = ids) from ex
+
+        base_dir = os.path.dirname(os.path.abspath(path))
         if (('base_dir' not in data) and add_base_dir):
-            data['base_dir'] = os.path.dirname(os.path.abspath(path))
+            data['base_dir'] = base_dir
 
-        return cls.from_dict(data, copy = False, **kwargs)
+        if (data_callback is not None):
+            data = data_callback(path, data)
+
+        return cls.from_dict(data, copy = False, base_dir = base_dir, ids = ids, **kwargs)
 
 def _from_dict(cls, data, copy = True, extra_fields = {}, **kwargs):
     if (copy):

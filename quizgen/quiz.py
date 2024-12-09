@@ -6,6 +6,7 @@ import random
 import json5
 
 import quizgen.common
+import quizgen.constants
 import quizgen.group
 import quizgen.parser.public
 import quizgen.uploader.canvas
@@ -28,6 +29,7 @@ class Quiz(quizgen.util.serial.JSONSerializer):
             base_dir = '.',
             version = None, seed = None,
             canvas = {},
+            ids = {},
             **kwargs):
         super().__init__(**kwargs)
 
@@ -58,7 +60,10 @@ class Quiz(quizgen.util.serial.JSONSerializer):
         try:
             self.validate(cls = Quiz, **kwargs)
         except Exception as ex:
-            raise quizgen.common.QuizValidationError("Error while validating quiz '%s'." % self.title) from ex
+            ids = ids.copy()
+            ids['title'] = self.title
+
+            raise quizgen.common.QuizValidationError('Error while validating quiz.', ids = ids) from ex
 
     def _validate(self, **kwargs):
         if ((self.title is None) or (self.title == "")):
@@ -105,27 +110,28 @@ class Quiz(quizgen.util.serial.JSONSerializer):
         if (self.time_limit_mins == 0):
             self.time_limit_mins = None
 
-    @staticmethod
-    def from_path(path, **kwargs):
-        path = os.path.abspath(path)
-
-        with open(path, 'r') as file:
-            quiz_info = json5.load(file)
-
+    @classmethod
+    def from_path(cls, path, **kwargs):
         # Check for a description file.
-        description_filename = os.path.splitext(os.path.basename(path))[0]
-        description_path = os.path.join(os.path.dirname(path), description_filename + '.md')
-        if (os.path.exists(description_path)):
-            quiz_info['description'] = quizgen.util.dirent.read_file(description_path)
-            logging.debug("Loading quiz description from '%s'.", description_path)
+        def _check_description_file(path, data):
+            description_filename = os.path.splitext(os.path.basename(path))[0]
+            description_path = os.path.join(os.path.dirname(path), description_filename + '.md')
+            if (os.path.exists(description_path)):
+                data['description'] = quizgen.util.dirent.read_file(description_path)
+                logging.debug("Loading quiz description from '%s'.", description_path)
 
-        base_dir = os.path.dirname(path)
+            return data
 
-        return Quiz.from_dict(quiz_info, base_dir = base_dir, **kwargs)
+        return super().from_path(path, data_callback = _check_description_file)
 
     @staticmethod
-    def from_dict(quiz_info, base_dir = None, flatten_groups = False):
-        groups = [quizgen.group.Group.from_dict(group_info, base_dir) for group_info in quiz_info.get('groups', [])]
+    def from_dict(quiz_info, base_dir = None, flatten_groups = False, ids = {}, **kwargs):
+        groups = []
+        group_infos = quiz_info.get('groups', [])
+        for i in range(len(group_infos)):
+            ids = ids.copy()
+            ids['index'] = i
+            groups.append(quizgen.group.Group.from_dict(group_infos[i], base_dir, ids = ids))
 
         if (flatten_groups):
             new_groups = []
@@ -150,7 +156,7 @@ class Quiz(quizgen.util.serial.JSONSerializer):
         elif ('base_dir' not in quiz_info):
             quiz_info['base_dir'] = '.'
 
-        return Quiz(**quiz_info)
+        return Quiz(**quiz_info, ids = ids)
 
     def num_questions(self):
         count = 0

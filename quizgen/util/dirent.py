@@ -61,14 +61,15 @@ def remove_dirent(path):
     else:
         raise ValueError("Unknown type of dirent: '%s'." % (path))
 
-def copy_dirent(source, dest):
+def copy_dirent(source, dest, **kwargs):
     """
     Copy a file or directory into dest.
-    If source is a file, then dest can be a file or dir.
-    If source is a dir, then dest must be a non-existent dir.
+    kwargs will be passed along to the underlying function:
+    shutil.copy2 for files and shutil.copytree for dirs.
+    See each specific function for semantics.
     """
 
     if (os.path.isfile(source)):
-        shutil.copy2(source, dest)
+        shutil.copy2(source, dest, **kwargs)
     else:
-        shutil.copytree(source, dest)
+        shutil.copytree(source, dest, **kwargs)

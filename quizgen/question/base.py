@@ -12,12 +12,12 @@ import re
 import json5
 
 import quizgen.common
+import quizgen.constants
 import quizgen.parser.public
 import quizgen.question.common
 import quizgen.util.dirent
 import quizgen.util.serial
 
-PROMPT_FILENAME = 'prompt.md'
 BASE_MODULE_NAME = 'quizgen.question'
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
@@ -46,6 +46,7 @@ class Question(quizgen.util.serial.JSONSerializer):
             shuffle_answers = True,
             custom_header = None, skip_numbering = None,
             hints = None, feedback = None,
+            ids = {},
             **kwargs):
         super().__init__(**kwargs)
 
@@ -72,7 +73,11 @@ class Question(quizgen.util.serial.JSONSerializer):
         try:
             self.validate()
         except Exception as ex:
-            raise quizgen.common.QuizValidationError(f"Error while validating question (type: '%s', directory: '%s')." % (self.question_type, self.base_dir)) from ex
+            ids = ids.copy()
+            ids['name'] = self.name
+            ids['question_type'] = self.question_type
+
+            raise quizgen.common.QuizValidationError('Error while validating question.', ids = ids) from ex
 
     def _validate(self):
         self._validate_prompt()
@@ -91,7 +96,7 @@ class Question(quizgen.util.serial.JSONSerializer):
     def _validate_prompt(self):
         """
         The prompt is allowed to appear (in order of priority):
-        in the prompt field, be pointed to by the _prompt_path member, or be in ./PROMPT_FILENAME.
+        in the prompt field, be pointed to by the _prompt_path member, or be in ./quizgen.constants.PROMPT_FILENAME.
         Both None and empty/white strings are ignored.
 
         Will raise an exception on an empty prompt.
@@ -115,7 +120,7 @@ class Question(quizgen.util.serial.JSONSerializer):
 
         # Next, check for prompt files.
 
-        check_paths = [self._prompt_path, PROMPT_FILENAME]
+        check_paths = [self._prompt_path, quizgen.constants.PROMPT_FILENAME]
         for path in check_paths:
             if ((path is None) or (path.strip() == '')):
                 continue
@@ -211,17 +216,20 @@ class Question(quizgen.util.serial.JSONSerializer):
     # Override the class method JSONSerializer.from_dict() with a static method
     # so that we can select the correct child class.
     @staticmethod
-    def from_dict(data, base_dir = None, **kwargs):
+    def from_dict(data, base_dir = None, ids = {}, **kwargs):
         if (base_dir is not None):
             data['base_dir'] = base_dir
         elif ('base_dir' not in data):
             data['base_dir'] = '.'
 
-        question_class = Question._fetch_question_class(data.get('question_type'))
-        return quizgen.util.serial._from_dict(question_class, data, **kwargs)
+        if ('question_type' not in data):
+            raise quizgen.common.QuizValidationError("Question does not contain a 'question_type' field.", ids = ids)
+
+        question_class = Question._fetch_question_class(data.get('question_type'), ids = ids, **kwargs)
+        return quizgen.util.serial._from_dict(question_class, data, ids = ids, **kwargs)
 
     @staticmethod
-    def _fetch_question_class(question_type):
+    def _fetch_question_class(question_type, ids = {}, **kwargs):
         if (not Question._imported_this_package):
             for _, name, is_package in pkgutil.iter_modules([THIS_DIR]):
                 if (is_package):
@@ -233,7 +241,10 @@ class Question(quizgen.util.serial.JSONSerializer):
             _imported_this_package = True
 
         if (question_type not in Question._types):
-            raise quizgen.common.QuizValidationError("Unknown question type: '%s'." % (str(question_type)))
+            ids = ids.copy()
+            ids['question_type'] = question_type
+
+            raise quizgen.common.QuizValidationError("Unknown question type.", ids = ids)
 
         return Question._types[question_type]
 

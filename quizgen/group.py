@@ -3,10 +3,9 @@ import logging
 import os
 
 import quizgen.common
+import quizgen.constants
 import quizgen.question.base
 import quizgen.util.serial
-
-QUESTION_FILENAME = 'question.json'
 
 class Group(quizgen.util.serial.JSONSerializer):
     def __init__(self, name = '',
@@ -14,7 +13,9 @@ class Group(quizgen.util.serial.JSONSerializer):
             shuffle_answers = True, pick_with_replacement = True,
             custom_header = None, skip_numbering = None,
             hints = None, hints_first = None, hints_last = None,
-            questions = [], **kwargs):
+            questions = [],
+            ids = {},
+            **kwargs):
         super().__init__(**kwargs)
 
         self.name = name
@@ -37,7 +38,10 @@ class Group(quizgen.util.serial.JSONSerializer):
         try:
             self.validate()
         except Exception as ex:
-            raise quizgen.common.QuizValidationError(f"Error while validating group (%s)." % (self.name)) from ex
+            ids = ids.copy()
+            ids[name] = self.name
+
+            raise quizgen.common.QuizValidationError('Error while validating group.', ids = ids) from ex
 
     def _validate(self, **kwargs):
         if ((self.name is None) or (self.name == "")):
@@ -81,7 +85,7 @@ class Group(quizgen.util.serial.JSONSerializer):
         return paths
 
     @staticmethod
-    def from_dict(group_info, base_dir, **kwargs):
+    def from_dict(group_info, base_dir, ids = {}, **kwargs):
         group_info = group_info.copy()
 
         paths = []
@@ -98,7 +102,7 @@ class Group(quizgen.util.serial.JSONSerializer):
 
         group_info['questions'] = questions
 
-        return Group(**group_info)
+        return Group(**group_info, ids = ids)
 
     def choose_questions(self, all_questions = False, rng = None, with_replacement = True):
         if ((self.pick_count == 0) or (len(self.questions) == 0)):
@@ -157,7 +161,7 @@ def _parse_questions(path):
         return [quizgen.question.base.Question.from_path(path)]
 
     questions = []
-    for subpath in sorted(glob.glob(os.path.join(path, '**', QUESTION_FILENAME), recursive = True)):
+    for subpath in sorted(glob.glob(os.path.join(path, '**', quizgen.constants.QUESTION_FILENAME), recursive = True)):
         questions.append(quizgen.question.base.Question.from_path(subpath))
 
     return questions

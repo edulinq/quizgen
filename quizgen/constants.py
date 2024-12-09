@@ -1,3 +1,8 @@
+PROJECT_FILENAME = 'project.json'
+QUIZ_FILENAME = 'quiz.json'
+QUESTION_FILENAME = 'question.json'
+PROMPT_FILENAME = 'prompt.md'
+
 FORMAT_CANVAS = 'canvas'
 FORMAT_HTML = 'html'
 FORMAT_JSON = 'json'
