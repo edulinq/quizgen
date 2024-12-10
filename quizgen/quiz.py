@@ -122,7 +122,7 @@ class Quiz(quizgen.util.serial.JSONSerializer):
 
             return data
 
-        return super().from_path(path, data_callback = _check_description_file)
+        return super().from_path(path, data_callback = _check_description_file, **kwargs)
 
     @staticmethod
     def from_dict(quiz_info, base_dir = None, flatten_groups = False, ids = {}, **kwargs):
