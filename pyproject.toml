@@ -9,7 +9,7 @@ requires = [
 
 [project]
 name = "eq-quizgen"
-version = "0.2.9"
+version = "0.3.0"
 description = "A tool that can generate multiple types of quizzes from a common configuration."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -33,7 +33,7 @@ dependencies = [
     "lxml>=5.3.0",
     "json5>=0.9.14",
     "markdown-it-py>=3.0.0",
-    "mdformat>=0.7.19"<
+    "mdformat>=0.7.19",
     "mdformat_tables>=1.0.0",
     "mdit-py-plugins>=0.4.2",
     "requests>=2.31.0",
