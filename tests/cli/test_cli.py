@@ -151,7 +151,7 @@ def _get_test_method(test_name, path):
 
                 ex = ex.__context__
 
-            self.assertEqual(expected_output, str(ex))
+            output_check(self, expected_output, str(ex))
             return
         finally:
             sys.argv = old_args
@@ -164,6 +164,23 @@ def _get_test_method(test_name, path):
 
 def content_equals(test_case, expected, actual, **kwargs):
     test_case.assertEqual(expected, actual)
+
+def content_equals_choices(test_case, expected, actual, **kwargs):
+    """
+    Deal with a 3.12.8 update in argparse that quotes choices.
+    """
+
+    expected = _remove_choices_quotes(expected)
+    actual = _remove_choices_quotes(actual)
+
+    test_case.assertEqual(expected, actual)
+
+def _remove_choices_quotes(text):
+    matches = re.findall(r"\(choose from '[^)]+'\)", text)
+    for match in matches:
+        text = text.replace(match, match.replace("'", ''))
+
+    return text
 
 def has_content_100(test_case, expected, actual, **kwargs):
     return has_content(test_case, expected, actual, min_length = 100)
