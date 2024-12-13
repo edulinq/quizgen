@@ -1,6 +1,5 @@
 import contextlib
 import glob
-import json
 import importlib
 import io
 import os
@@ -9,6 +8,7 @@ import sys
 
 import tests.base
 import quizgen.util.dirent
+import quizgen.util.json
 
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 TEST_CASES_DIR = os.path.join(THIS_DIR, "test_cases")
@@ -110,7 +110,7 @@ def _read_test_file(path):
 
             accumulator.append(line)
 
-    options = json.loads(''.join(json_lines))
+    options = quizgen.util.json.loads(''.join(json_lines))
     output = ''.join(output_lines)
 
     return options, output

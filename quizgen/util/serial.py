@@ -1,12 +1,10 @@
 import abc
 import copy as pycopy
 import datetime
-import json
 import os
 
-import json5
-
 import quizgen.util.dirent
+import quizgen.util.json
 
 class PODSerializer(abc.ABC):
     @abc.abstractmethod
@@ -24,7 +22,10 @@ class JSONSerializer(PODSerializer):
     so will be left as abstract.
     """
 
-    def __init__(self, _skip_all_validation = False, _skip_class_validations = [], **kwargs):
+    def __init__(self, type = 'unknown', _skip_all_validation = False, _skip_class_validations = [], **kwargs):
+        # A marked type that can be useful for deserialization.
+        self.type = type
+
         self._skip_all_validation = _skip_all_validation
 
         # Keep track of the classes that have been validated, so they can be skipped.
@@ -81,7 +82,7 @@ class JSONSerializer(PODSerializer):
 
     def to_json(self, indent = 4, sort_keys = True, **kwargs):
         data = self.to_dict(**kwargs)
-        return json.dumps(data, indent = indent, sort_keys = sort_keys)
+        return quizgen.util.json.dumps(data, indent = indent, sort_keys = sort_keys)
 
     def to_path(self, path, **kwargs):
         quizgen.util.dirent.write_file(path, self.to_json(**kwargs))
@@ -101,8 +102,7 @@ class JSONSerializer(PODSerializer):
             raise quizgen.common.QuizValidationError('Path does not exist or is not a file.', ids = ids)
 
         try:
-            with open(path, 'r') as file:
-                data = json5.load(file)
+            data = quizgen.util.json.load_path(path)
         except Exception as ex:
             raise quizgen.common.QuizValidationError('Failed to read JSON file (invalid JSON?).', ids = ids) from ex
 

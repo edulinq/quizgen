@@ -1,10 +1,10 @@
 import glob
-import json
 import os
 import unittest
 
 import quizgen.constants
 import quizgen.parser.math
+import quizgen.util.json
 
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
@@ -35,8 +35,8 @@ class BaseTest(unittest.TestCase):
         pass
 
     def assertJSONDictEqual(self, expected, actual):
-        expected_json = json.dumps(expected, indent = 4, sort_keys = True)
-        actual_json = json.dumps(actual, indent = 4, sort_keys = True)
+        expected_json = quizgen.util.json.dumps(expected, indent = 4, sort_keys = True)
+        actual_json = quizgen.util.json.dumps(actual, indent = 4, sort_keys = True)
 
         message = f"\n---\nExpected: {expected_json}\n###\nActual: {actual_json}\n---\n"
         self.assertDictEqual(expected, actual, msg = message)

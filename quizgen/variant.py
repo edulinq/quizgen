@@ -24,8 +24,9 @@ class Variant(quizgen.quiz.Quiz):
     Quizzes created from files will undergo full validation.
     """
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, type = quizgen.constants.TYPE_VARIANT,
+            **kwargs):
+        super().__init__(type = type, **kwargs)
         self.validate(cls = Variant, **kwargs)
 
     def _validate(self, **kwargs):

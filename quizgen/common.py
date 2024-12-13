@@ -1,4 +1,4 @@
-import json
+import quizgen.util.json
 
 class QuizValidationError(ValueError):
     def __init__(self, message, ids = {}):
@@ -10,6 +10,6 @@ class QuizValidationError(ValueError):
             parsed_ids[key] = value
 
         if (len(parsed_ids) > 0):
-            message = "%s %s" % (message, json.dumps(parsed_ids))
+            message = "%s %s" % (message, quizgen.util.json.dumps(parsed_ids))
 
         super().__init__(message)

@@ -3,7 +3,6 @@ Create and upload a GradeScope PDF quiz.
 """
 
 import argparse
-import json
 import logging
 import os
 import sys
@@ -12,6 +11,7 @@ import quizgen.log
 import quizgen.pdf
 import quizgen.uploader.gradescope
 import quizgen.util.dirent
+import quizgen.util.json
 
 def run(args):
     quiz, variants, options = quizgen.pdf.make_with_args(args, write_options = False)
@@ -44,7 +44,7 @@ def run(args):
 
     path = os.path.join(out_dir, quizgen.pdf.OPTIONS_FILENAME)
     with open(path, 'w') as file:
-        json.dump(options, file, indent = 4)
+        quizgen.util.json.dump(options, file, indent = 4)
 
     return 0
 

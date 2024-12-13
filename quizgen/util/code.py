@@ -4,13 +4,13 @@ Utilities for extracting and working with Python source code.
 
 import ast
 import importlib.util
-import json
 import os
 import sys
 import types
 import uuid
 
 import quizgen.util.dirent
+import quizgen.util.json
 
 ALLOWED_EXTENSIONS = ['.py', '.ipynb']
 AST_NODE_WHITELIST = [ast.Import, ast.ImportFrom, ast.FunctionDef, ast.ClassDef]
@@ -43,7 +43,7 @@ def extract_notebook_code(path):
     """
 
     with open(path, 'r') as file:
-        notebook = json.load(file)
+        notebook = quizgen.util.json.load(file)
 
     contents = []
 

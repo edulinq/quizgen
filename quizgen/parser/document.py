@@ -1,5 +1,4 @@
 import copy
-import json
 import os
 import re
 import types
@@ -8,6 +7,7 @@ import quizgen.constants
 import quizgen.parser.ast
 import quizgen.parser.render
 import quizgen.parser.common
+import quizgen.util.json
 
 class ParsedDocument(object):
     def __init__(self, tokens, base_dir = '.'):
@@ -98,7 +98,7 @@ class ParsedDocument(object):
         return (len(self._tokens) == 0)
 
     def to_json(self, indent = 4, sort_keys = True, **kwargs):
-        return json.dumps(self.to_pod(**kwargs), indent = indent, sort_keys = sort_keys)
+        return quizgen.util.json.dumps(self.to_pod(**kwargs), indent = indent, sort_keys = sort_keys)
 
     def to_format(self, format, **kwargs):
         formatter = getattr(self, 'to_' + format)

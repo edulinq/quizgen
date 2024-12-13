@@ -2,7 +2,6 @@
 Upload quizes to GradeScope.
 """
 
-import json
 import logging
 import os
 import re
@@ -14,6 +13,7 @@ import requests
 import quizgen.constants
 import quizgen.variant
 import quizgen.util.dirent
+import quizgen.util.json
 
 URL_HOMEPAGE = 'https://www.gradescope.com'
 URL_LOGIN = 'https://www.gradescope.com/login'
@@ -380,7 +380,7 @@ class GradeScopeUploader(object):
         if (len(nodes) != 1):
             raise ValueError("Did not find exactly one assignments table, found %d." % (len(nodes)))
 
-        assignment_data = json.loads(nodes[0].get('data-react-props'))
+        assignment_data = quizgen.util.json.loads(nodes[0].get('data-react-props'))
 
         for row in assignment_data['table_data']:
             if (row['type'] != 'assignment'):
@@ -458,7 +458,7 @@ class GradeScopeUploader(object):
         }
 
         response = session.patch(patch_outline_url,
-            data = json.dumps(outline, separators = (',', ':')),
+            data = quizgen.util.json.dumps(outline, separators = (',', ':')),
             headers = headers,
         )
         response.raise_for_status()
@@ -519,7 +519,7 @@ class GradeScopeUploader(object):
             raise ValueError("Did not find exactly one rubric data tag, found %d." % (len(data_tag)))
         data_tag = data_tag[0]
 
-        data = json.loads(data_tag.get('data-react-props'))
+        data = quizgen.util.json.loads(data_tag.get('data-react-props'))
 
         ids = {}
         for question in data['questions']:

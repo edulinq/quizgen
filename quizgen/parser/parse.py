@@ -1,11 +1,11 @@
 import re
 
-import json5
 import markdown_it
 import mdit_py_plugins.container
 import mdit_py_plugins.dollarmath
 
 import quizgen.parser.document
+import quizgen.util.json
 
 _parser = None
 _options = None
@@ -142,7 +142,7 @@ def _process_style_content(raw_content):
         content = "{%s}" % (content)
 
     try:
-        style = json5.loads(content)
+        style = quizgen.util.json.loads(content)
         if (not isinstance(style, dict)):
             raise ValueError("Style is not a JSON object, found: '%s'." % (type(style)))
     except Exception as ex:

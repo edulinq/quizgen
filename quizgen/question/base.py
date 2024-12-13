@@ -1,15 +1,12 @@
 import abc
 import copy
 import importlib
-import json
 import logging
 import math
 import os
 import pkgutil
 import random
 import re
-
-import json5
 
 import quizgen.common
 import quizgen.constants
@@ -38,7 +35,7 @@ class Question(quizgen.util.serial.JSONSerializer):
 
         cls._types[question_type] = cls
 
-    def __init__(self,
+    def __init__(self, type = quizgen.constants.TYPE_QUESTION,
             prompt = '', prompt_path = None,
             question_type = '', answers = None,
             base_dir = '.',
@@ -48,7 +45,7 @@ class Question(quizgen.util.serial.JSONSerializer):
             hints = None, feedback = None,
             ids = {},
             **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(type = type, **kwargs)
 
         self.base_dir = base_dir
 

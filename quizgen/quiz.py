@@ -3,8 +3,6 @@ import logging
 import os
 import random
 
-import json5
-
 import quizgen.common
 import quizgen.constants
 import quizgen.group
@@ -19,7 +17,7 @@ class Quiz(quizgen.util.serial.JSONSerializer):
     A quiz object represents multiple possible assesments (called "variants").
     """
 
-    def __init__(self,
+    def __init__(self, type = quizgen.constants.TYPE_QUIZ,
             title = '',
             course_title = '', term_title = '',
             description = '', date = '',

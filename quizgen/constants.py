@@ -1,3 +1,8 @@
+TYPE_PROJECT = 'project'
+TYPE_QUIZ = 'quiz'
+TYPE_QUESTION = 'question'
+TYPE_VARIANT = 'variant'
+
 PROJECT_FILENAME = 'project.json'
 QUIZ_FILENAME = 'quiz.json'
 QUESTION_FILENAME = 'question.json'

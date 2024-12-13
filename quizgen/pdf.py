@@ -1,5 +1,4 @@
 import datetime
-import json
 import logging
 import os
 import random
@@ -9,6 +8,7 @@ import traceback
 import quizgen.converter.textemplate
 import quizgen.latex
 import quizgen.util.dirent
+import quizgen.util.json
 import quizgen.quiz
 
 OPTIONS_FILENAME = 'options.json'
@@ -108,7 +108,7 @@ def make(quiz,
     if (write_options):
         path = os.path.join(out_dir, OPTIONS_FILENAME)
         with open(path, 'w') as file:
-            json.dump(options, file, indent = 4)
+            quizgen.util.json.dump(options, file, indent = 4)
 
     return (quiz, variants, options)
 

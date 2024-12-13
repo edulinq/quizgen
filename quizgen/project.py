@@ -1,8 +1,6 @@
 import glob
 import os
 
-import json5
-
 import quizgen.common
 import quizgen.constants
 import quizgen.question.base
@@ -16,11 +14,11 @@ class Project(quizgen.util.serial.JSONSerializer):
     The directory (or any file structure) is never serialized.
     """
 
-    def __init__(self,
+    def __init__(self, type = quizgen.constants.TYPE_PROJECT,
             name = '',
             base_dir = '',
             **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(type = type, **kwargs)
 
         self.name = name
         self._base_dir = base_dir
