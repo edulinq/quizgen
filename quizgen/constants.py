@@ -3,6 +3,8 @@ TYPE_QUIZ = 'quiz'
 TYPE_QUESTION = 'question'
 TYPE_VARIANT = 'variant'
 
+JSON_OBJECT_TYPES = [TYPE_PROJECT, TYPE_QUIZ, TYPE_QUESTION, TYPE_VARIANT]
+
 PROJECT_FILENAME = 'project.json'
 QUIZ_FILENAME = 'quiz.json'
 QUESTION_FILENAME = 'question.json'
