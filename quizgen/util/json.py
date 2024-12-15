@@ -15,8 +15,11 @@ def loads(text, **kwargs):
     return json5.loads(text, **kwargs)
 
 def load_path(path, **kwargs):
-    with open(path, 'r') as file:
-        return load(file, **kwargs)
+    try:
+        with open(path, 'r') as file:
+            return load(file, **kwargs)
+    except Exception as ex:
+        raise ValueError(f"Failed to read JSON file '{path}'.") from ex
 
 def dump(data, file_obj, **kwargs):
     return json.dump(data, file_obj, **kwargs)
