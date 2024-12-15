@@ -20,6 +20,7 @@ def init(level = DEFAULT_LOGGING_LEVEL, format = DEFAULT_LOGGING_FORMAT, **kwarg
 
     # Ignore logging from third-party libraries.
     logging.getLogger("git").setLevel(logging.WARNING)
+    logging.getLogger("markdown_it").setLevel(logging.WARNING)
     logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 def set_cli_args(parser):
