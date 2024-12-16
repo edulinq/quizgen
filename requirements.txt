@@ -8,8 +8,3 @@ mdformat>=0.7.19
 mdformat_tables>=1.0.0
 mdit-py-plugins>=0.4.2
 requests>=2.31.0
-
-build
-packaging>=21.3
-twine
-vermin

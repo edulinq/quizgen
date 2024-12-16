@@ -1,0 +1,4 @@
+build
+packaging>=21.3
+twine
+vermin

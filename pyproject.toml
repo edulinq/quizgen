@@ -9,35 +9,32 @@ requires = [
 
 [project]
 name = "eq-quizgen"
-version = "0.3.0"
 description = "A tool that can generate multiple types of quizzes from a common configuration."
 readme = "README.md"
 requires-python = ">=3.9"
 license = {file = "LICENSE"}
 
 authors = [
-    {name = "Eriq Augustine", email = "eaugusti@ucsc.edu"},
+    {name = "Eriq Augustine", email = "eriq@edulinq.org"},
 ]
 
-keywords = ['education', 'quiz', 'canvas', 'tex', 'latex']
+keywords = ['education', 'quiz', 'canvas', 'tex', 'latex', 'qti']
 classifiers = [
     'Intended Audience :: Education',
     'License :: OSI Approved :: MIT License',
-    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
 ]
 
-dependencies = [
-    "GitPython>=3.1",
-    "Jinja2>=3.1.0",
-    "beautifulsoup4>=4.10",
-    "lxml>=5.3.0",
-    "json5>=0.9.14",
-    "markdown-it-py>=3.0.0",
-    "mdformat>=0.7.19",
-    "mdformat_tables>=1.0.0",
-    "mdit-py-plugins>=0.4.2",
-    "requests>=2.31.0",
+dynamic = [
+    "version",
+    "dependencies",
+    "optional-dependencies",
 ]
+
+[tool.setuptools.dynamic]
+version = {attr = "quizgen.__version__"}
+dependencies = {file = ["requirements.txt"]}
+optional-dependencies = {dev = {file = ["requirements-dev.txt"]}}
 
 [project.urls]
 Homepage = "https://github.com/edulinq/quizgen"
