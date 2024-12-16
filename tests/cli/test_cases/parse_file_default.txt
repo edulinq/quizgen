@@ -30,7 +30,7 @@
         "type": "root"
     },
     "context": {
-        "base_dir": "__DATA_DIR__()"
+        "base_dir": "__ESCAPE_JSON_STRING__(__DATA_DIR__())"
     },
     "type": "document"
 }

@@ -2,6 +2,7 @@ import contextlib
 import glob
 import importlib
 import io
+import json
 import os
 import re
 import sys
@@ -17,6 +18,7 @@ DATA_DIR = os.path.join(THIS_DIR, "data")
 TEST_CASE_SEP = '---'
 DATA_DIR_ID = '__DATA_DIR__'
 TEMP_DIR_ID = '__TEMP_DIR__'
+ESCAPE_JSON_STRING_ID = '__ESCAPE_JSON_STRING__'
 
 DEFAULT_OUTPUT_CHECK = 'content_equals'
 
@@ -78,24 +80,45 @@ def _prepare_string(text, temp_dir):
     for (key, base_dir) in replacements:
         text = _replace_path(text, key, base_dir)
 
+    # Check for any escape requests.
+    text = _process_escapes(text)
+
     return text
 
 def _replace_path(text, key, base_dir):
     match = re.search(r'%s\(([^)]*)\)' % (key), text)
-    if (match is not None):
-        filename = match.group(1)
+    if (match is None):
+        return text
 
-        # Normalize any path seperators.
-        filename = os.path.join(*filename.split('/'))
+    filename = match.group(1)
 
-        if (filename == ''):
-            path = base_dir
-        else:
-            path = os.path.join(base_dir, filename)
+    # Normalize any path seperators.
+    filename = os.path.join(*filename.split('/'))
 
-        text = text.replace(match.group(0), path)
+    if (filename == ''):
+        path = base_dir
+    else:
+        path = os.path.join(base_dir, filename)
+
+    text = text.replace(match.group(0), path)
 
     return text
+
+def _process_escapes(text):
+    while True:
+        match = re.search(r'%s\(([^)]*)\)' % (ESCAPE_JSON_STRING_ID), text)
+        if (match is None):
+            return text
+
+        inner_text = match.group(1)
+
+        # Encode as JSON.
+        inner_text = json.dumps(inner_text)
+
+        # Remove quotes.
+        inner_text = inner_text[1:-1]
+
+        text = text.replace(match.group(0), inner_text)
 
 def _read_test_file(path):
     json_lines = []
