@@ -2,10 +2,9 @@
 Read (an optionally save) a QuizGen project.
 """
 
-import argparse
 import sys
 
-import quizgen.log
+import quizgen.args
 import quizgen.project
 
 def run(args):
@@ -31,7 +30,7 @@ def run(args):
     return 0
 
 def _get_parser():
-    parser = argparse.ArgumentParser(description =
+    parser = quizgen.args.Parser(description =
         __doc__.strip())
 
     parser.add_argument('path', metavar = 'PATH',
@@ -42,13 +41,10 @@ def _get_parser():
         action = 'store', type = str, default = None,
         help = 'Save the project to this directory.')
 
-    quizgen.log.set_cli_args(parser)
-
     return parser
 
 def main():
     args = _get_parser().parse_args()
-    quizgen.log.init_from_args(args)
     return run(args)
 
 if (__name__ == '__main__'):
