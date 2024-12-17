@@ -12,6 +12,7 @@ Common args are registered at the bottom.
 import argparse
 
 # Import modules that have common args to ensure they are loaded.
+import quizgen.katex
 import quizgen.log
 
 # {module name: function(parser), ...}
@@ -57,3 +58,4 @@ def register(module_name, pre_callback = None, post_callback = None):
 
 # Register common args.
 register('log', quizgen.log.set_cli_args, quizgen.log.init_from_args)
+register('katex', quizgen.katex.set_cli_args, quizgen.katex.init_from_args)
