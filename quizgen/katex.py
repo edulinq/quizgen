@@ -29,7 +29,7 @@ def is_available(cwd = '.'):
         return False
 
     if (not _has_package('katex', cwd = cwd)):
-        logging.warning("Could not find the `katex` package, cannot use katex equations.")
+        logging.warning("Could not find the `katex` NodeJS package, cannot use katex equations.")
         return False
 
     return True
