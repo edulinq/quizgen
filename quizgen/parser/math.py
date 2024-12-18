@@ -1,3 +1,5 @@
+import html
+
 import quizgen.constants
 import quizgen.katex
 import quizgen.parser.common
@@ -37,9 +39,11 @@ def _render_html(text, inline, context):
     if (inline):
         text = text.strip()
 
-    content = f"<code>{text}</code>"
     if (_katex_available):
         content = quizgen.katex.to_html(text)
+    else:
+        text = html.escape(text)
+        content = f"<code>{text}</code>"
 
     element = 'span'
     attributes = 'style="margin-left: 0.25em; margin-right: 0.25em"'

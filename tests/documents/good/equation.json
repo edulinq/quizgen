@@ -169,6 +169,31 @@
                 ]
             }
         }
+    },
+
+    {
+        "name": "Inline Equation with Angle Bracket",
+        "text": "$ a < b > c $",
+        "formats": {
+            "md": "$ a < b > c $",
+            "html": "<p style=\"margin-top: 0\"><span style=\"margin-left: 0.25em; margin-right: 0.25em\"><code>a &lt; b &gt; c</code></span></p>",
+            "tex": "$ a < b > c $",
+            "text": "",
+            "json": {
+                "type": "paragraph",
+                "children": [
+                    {
+                        "type": "inline",
+                        "children": [
+                            {
+                                "type": "math_inline",
+                                "text": " a < b > c "
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
     }
 
 ]
