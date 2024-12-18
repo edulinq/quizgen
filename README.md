@@ -9,13 +9,15 @@ Quizzes can be taken from the standard definition and converted into:
  - HTML Forms
  - [QTI Zip Files](https://en.wikipedia.org/wiki/QTI)
 
-Sample quizzes that demonstrate all question types are available [in the CSE Cracks course](https://github.com/eriq-augustine/cse-cracks-course/tree/main/quizzes).
+Sample quizzes that demonstrate all question types are available
+[in the CSE Cracks course](https://github.com/eriq-augustine/cse-cracks-course/tree/main/quizzes).
 Additionally, you can see examples of good questions by looking at the [test cases for this project](tests/questions/good).
 
 Documentation Table of Contents:
  - [Installation / Requirements](#installation--requirements)
    - [Python](#python)
-   - [KaTeX (NodeJS)](#katex-nodejs)
+   - [PDF Files](#pdf-files)
+   - [Math Equations in HTML](#math-equations-in-html)
    - [Canvas Uploading](#canvas-uploading)
    - [GradeScope Uploading](#gradescope-uploading)
  - [Usage](#usage)
@@ -42,9 +44,11 @@ Documentation Table of Contents:
 
 ### Python
 
+This project requires [Python](https://www.python.org/) >= 3.9.
+
 The project can be installed from PyPi with:
 ```
-pip install eq-quizgen
+pip3 install eq-quizgen
 ```
 
 Standard Python requirements are listed in `pyproject.toml`.
@@ -53,7 +57,15 @@ The project and Python dependencies can be installed from source with:
 pip3 install .
 ```
 
-### KaTeX (NodeJS)
+### PDF Files
+
+To compile PDF files, the `pdflatex` program is used.
+`pdflatex` comes installed with most standard [LaTeX](https://en.wikipedia.org/wiki/LaTeX) packages.
+
+By default, your [PATH](https://en.wikipedia.org/wiki/PATH_(variable)) will be searched for `pdflatex`.
+To specify the path to your `pdflatex` binary, you can use the `--pdflatex-bin-path` flag.
+
+### Math Equations in HTML
 
 To output equations in HTML documents (which includes Canvas), [KaTeX](https://katex.org) is required.
 KaTeX is distributed as a NodeJS package, and this project requires that KaTeX is accessible via `npx` (which typically requires it to be installed via `npm`).
@@ -61,6 +73,9 @@ Once NodeJS and NPM are installed, you can just install KaTeX normally:
 ```
 npm install katex
 ```
+
+By default, your [PATH](https://en.wikipedia.org/wiki/PATH_(variable)) will be searched for `npm` and `npx`.
+To specify the directory where they both live, you can use the `--nodejs-bin-dir` flag.
 
 ### Canvas Uploading
 
@@ -146,7 +161,7 @@ However you will instead probably want a fill QTI zip archive,
 which is the common form used to upload to other platforms (like Canvas).
 To generate a full QTI zip archive, use the `quizgen.cli.qti.create` command:
 ```
-python -m quizgen.cli.qti.create ~/code/cse-cracks-course/quizzes/regex/quiz.json --canvas
+python3 -m quizgen.cli.qti.create ~/code/cse-cracks-course/quizzes/regex/quiz.json --canvas
 ```
 
 The `--canvas` flag enables Canvas-specific tweaks required when uploading a QTI file to Canvas.
