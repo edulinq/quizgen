@@ -3,7 +3,7 @@ import re
 import quizgen.parser.common
 import quizgen.parser.renderer.base
 
-DISALLOWED_CHARACTERS = re.compile(r'[^\w -]')
+DISALLOWED_CHARACTERS = re.compile(r'[^\w \-]')
 
 class QuizgenRendererText(quizgen.parser.renderer.base.QuizgenRendererBase):
     """

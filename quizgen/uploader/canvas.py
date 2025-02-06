@@ -384,7 +384,7 @@ def _serialize_fimb_answers(data, question, instance):
         key_text = item['key'].document.to_text()
 
         for i in range(len(item['values'])):
-            value_text = item['values'][i].document.to_text()
+            value_text = item['values'][i].document.to_text(text_allow_special_text = True, text_allow_all_characters = True)
 
             data[f"question[answers][{index}][blank_id]"] = key_text
             data[f"question[answers][{index}][answer_weight]"] = 100
