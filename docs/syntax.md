@@ -15,6 +15,7 @@ Below are some resources to reference or learn Markdown:
 Any variations from the CommonMark specification are listed in this document.
 
 Table of Contents:
+ - [Math](#math)
  - [Tables](#tables)
  - [HTML](#html)
  - [Blocks](#blocks)
@@ -23,6 +24,25 @@ Table of Contents:
  - [Style](#style)
  - [Anti-Recommendations](#anti-recommendations)
    - [Indented Code Blocks](#indented-code-blocks)
+
+## Math
+
+LaTeX-style math is supported in the Quiz Generator.
+When rendering to a PDF, standard LaTeX equation rendering is used (along with the `amsmath` package).
+When rendering to HTML, [KaTeX](https://katex.org/) is used.
+
+Inline math can be used with a single dollar sign (`$`):
+```
+This text has some math $ f(x) = x_i + x^2 + \alpha $ right in the middle of it.
+```
+
+Math blocks can be used with two dollar signs (`$$`):
+```
+The following is an equation block:
+$$
+    f(x) = x_i + x^2 + \alpha
+$$
+```
 
 ## Tables
 
