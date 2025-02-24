@@ -101,7 +101,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             raise ValueError("Template %s converter requires a %s, found %s." % (
                     container_label, str(container_type), type(container)))
 
-        inner_text = self.create_groups(container)
+        _, inner_text = self.create_groups(container)
 
         inner_context = container.to_dict()
         inner_context['description_text'] = self._format_doc(container.description.document)
@@ -118,16 +118,15 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         return text
 
     def create_groups(self, quiz):
-        return self._create_item_collection(quiz, 'groups', 'group', self.create_group)
+        return self._create_item_collection(quiz, 'groups', 'group', 1, self.create_group)
 
-    def _create_item_collection(self, container, container_attr, label, item_creation_function, id_prefix = None):
+    def _create_item_collection(self, container, container_attr, label, question_number, item_creation_function, id_prefix = None):
         """
         Create a collection of groups (for quizzes) or questions (for variants or inside groups)
         from a container (variant or quiz).
         """
 
         result = []
-        number = 1
         items = getattr(container, container_attr)
 
         for index in range(len(items)):
@@ -141,21 +140,18 @@ class TemplateConverter(quizgen.converter.converter.Converter):
                 result.append(self.create_question_separator(container))
 
             try:
-                result.append(item_creation_function(item_id, number, item, container))
+                question_number, text = item_creation_function(item_id, question_number, item, container)
+                result.append(text)
             except Exception as ex:
                 raise ValueError("Failed to convert %s %d (%s: %s)." % (label, index, item_id, item.name)) from ex
 
-            if (not item.should_skip_numbering()):
-                number += 1
+        return question_number, "\n\n".join(result)
 
-        return "\n\n".join(result)
-
-    def create_group(self, group_index, group_number, group, quiz):
+    def create_group(self, group_index, question_number, group, quiz):
         data = group.to_dict()
         data['id'] = group_index
-        data['number'] = group_number
 
-        questions_text = self._create_item_collection(group, 'questions', 'question', self.create_question, id_prefix = group_index)
+        question_number, questions_text = self._create_item_collection(group, 'questions', 'question', question_number, self.create_question, id_prefix = group_index)
 
         context = {
             'quiz': quiz,
@@ -166,7 +162,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         template = self.env.get_template(TEMPLATE_FILENAME_GROUP)
         text = template.render(**context)
 
-        return text
+        return question_number, text
 
     def create_question(self, question_id, question_number, question, variant):
         question_type = question.question_type
@@ -199,7 +195,10 @@ class TemplateConverter(quizgen.converter.converter.Converter):
         context = self.modify_question_context(context, question, variant)
         text = template.render(**context)
 
-        return text
+        if (not question.should_skip_numbering()):
+            question_number += 1
+
+        return question_number, text
 
     def modify_question_context(self, context, question, variant):
         """

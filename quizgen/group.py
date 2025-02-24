@@ -73,9 +73,6 @@ class Group(quizgen.util.serial.JSONSerializer):
                     self.name, self.pick_count, len(self.questions)))
             self.pick_count = len(self.questions)
 
-    def should_skip_numbering(self):
-        return ((self.skip_numbering is not None) and (self.skip_numbering))
-
     def collect_file_paths(self):
         paths = []
 
