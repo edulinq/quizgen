@@ -227,7 +227,7 @@ class GradeScopeUploader(object):
     def create_outline(self, variant, bounding_boxes, special_boxes):
         question_data = []
         for (question_id, parts) in bounding_boxes.items():
-            question_index = int(question_id)
+            question_index = int(float(question_id))
 
             if (len(parts) == 1):
                 # Single-part question.

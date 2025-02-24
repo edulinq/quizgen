@@ -29,6 +29,10 @@ class Variant(quizgen.quiz.Quiz):
         super().__init__(type = type, **kwargs)
         self.validate(cls = Variant, **kwargs)
 
+        self.questions = []
+        for group in self.groups:
+            self.questions += group.questions
+
     def _validate(self, **kwargs):
         # Ensure that each group has the correct number of questions.
         for i in range(len(self.groups)):
