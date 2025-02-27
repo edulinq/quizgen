@@ -70,6 +70,11 @@ def _get_good_convert_test(quiz_path):
                 rel_dir = os.path.relpath(base_dir, tests.base.TESTS_DIR)
                 question['base_dir'] = rel_dir
 
+        # Convert the paths in the expected output to the system path separator.
+        for group in expected['groups']:
+            for question in group['questions']:
+                question['base_dir'] = os.path.join(*question['base_dir'].split('/'))
+
         self.assertJSONDictEqual(expected, result)
 
     return __method
