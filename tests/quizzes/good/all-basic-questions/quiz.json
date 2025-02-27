@@ -1,0 +1,80 @@
+{
+    "title": "All Basic Questions",
+    "date": "2025-02-25",
+
+    "description": "All Basic Questions",
+
+    "shuffle_answers": false,
+
+    "groups": [
+        {
+            "name": "essay-basic",
+            "questions": [
+                "../../../questions/good/essay-basic"
+            ]
+        },
+        {
+            "name": "fimb-basic",
+            "questions": [
+                "../../../questions/good/fimb-basic"
+            ]
+        },
+        {
+            "name": "fitb-basic",
+            "questions": [
+                "../../../questions/good/fitb-basic"
+            ]
+        },
+        {
+            "name": "ma-basic",
+            "questions": [
+                "../../../questions/good/ma-basic"
+            ]
+        },
+        {
+            "name": "matching-basic",
+            "questions": [
+                "../../../questions/good/matching-basic"
+            ]
+        },
+        {
+            "name": "mcq-basic",
+            "questions": [
+                "../../../questions/good/mcq-basic"
+            ]
+        },
+        {
+            "name": "mdd-basic",
+            "questions": [
+                "../../../questions/good/mdd-basic"
+            ]
+        },
+        {
+            "name": "numeric-basic",
+            "questions": [
+                "../../../questions/good/numeric-basic"
+            ]
+        },
+        {
+            "name": "sa-basic",
+            "questions": [
+                "../../../questions/good/sa-basic"
+            ]
+        },
+        {
+            "name": "textonly-basic",
+            "questions": [
+                "../../../questions/good/textonly-basic"
+            ]
+        },
+        {
+            "name": "tf-true",
+            "questions": [
+                "../../../questions/good/tf-true"
+            ]
+        }
+    ]
+}
+
+
+

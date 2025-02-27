@@ -71,7 +71,7 @@ def _get_good_convert_test(quiz_path):
                 question['base_dir'] = rel_dir
 
         # Convert the paths in the expected output to the system path separator.
-        for group in expected['groups']:
+        for group in expected.get('groups', []):
             for question in group['questions']:
                 question['base_dir'] = os.path.join(*question['base_dir'].split('/'))
 
