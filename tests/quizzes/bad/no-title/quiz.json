@@ -1,0 +1,12 @@
+{
+    "description": "No Title",
+
+    "groups": [
+        {
+            "name": "A",
+            "questions": [
+                "../../../questions/good/mcq-basic"
+            ]
+        }
+    ]
+}

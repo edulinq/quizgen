@@ -2,7 +2,7 @@ import os
 import sys
 
 import quizgen.args
-import quizgen.converter.qtitemplate
+import quizgen.converter.qti
 import quizgen.quiz
 import quizgen.util.cli
 
@@ -17,7 +17,7 @@ def run(args):
 
     out_path = quizgen.util.cli.resolve_out_arg(args.out, f'{quiz.title}.qti.zip')
 
-    converter = quizgen.converter.qtitemplate.QTITemplateConverter(canvas = args.canvas)
+    converter = quizgen.converter.qti.QTITemplateConverter(canvas = args.canvas)
     converter.convert_quiz(quiz, out_path = out_path)
 
     return 0

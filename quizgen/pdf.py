@@ -5,7 +5,7 @@ import random
 import string
 import traceback
 
-import quizgen.converter.textemplate
+import quizgen.converter.tex
 import quizgen.latex
 import quizgen.util.dirent
 import quizgen.util.json
@@ -124,7 +124,7 @@ def make_pdf(variant,
     out_path = os.path.join(out_dir, "%s.tex" % (variant.title))
 
     if (not skip_tex):
-        converter = quizgen.converter.textemplate.TexTemplateConverter(answer_key = is_key,
+        converter = quizgen.converter.tex.TexTemplateConverter(answer_key = is_key,
                 image_base_dir = image_dir, image_relative_root = image_relative_root, cleanup_images = True)
         content = converter.convert_variant(variant)
 

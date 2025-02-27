@@ -75,7 +75,7 @@ class TemplateConverter(quizgen.converter.converter.Converter):
             self.env.filters[name] = function
 
         # Methods to generate answers.
-        # Signatuire: func(self, question_id, question_number, question, variant)
+        # Signature: func(self, question_id, question_number, question, variant)
         self.answer_functions = {
             quizgen.constants.QUESTION_TYPE_ESSAY: 'create_answers_essay',
             quizgen.constants.QUESTION_TYPE_FIMB: 'create_answers_fimb',

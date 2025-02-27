@@ -1,0 +1,17 @@
+{
+    "title": "Single Question",
+    "date": "2025-02-25",
+
+    "description": "Single Question",
+
+    "shuffle_answers": false,
+
+    "groups": [
+        {
+            "name": "A",
+            "questions": [
+                "../../../questions/good/mcq-basic"
+            ]
+        }
+    ]
+}

@@ -7,6 +7,7 @@ import quizgen.parser.math
 import quizgen.util.json
 
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+TESTS_DIR = THIS_DIR
 
 QUESTIONS_DIR = os.path.join(THIS_DIR, "questions")
 GOOD_QUESTIONS_DIR = os.path.join(QUESTIONS_DIR, "good")
@@ -15,6 +16,10 @@ BAD_QUESTIONS_DIR = os.path.join(QUESTIONS_DIR, "bad")
 DOCUMENTS_DIR = os.path.join(THIS_DIR, 'documents')
 GOOD_DOCUMENTS_DIR = os.path.join(DOCUMENTS_DIR, "good")
 BAD_DOCUMENTS_DIR = os.path.join(DOCUMENTS_DIR, "bad")
+
+QUIZZES_DIR = os.path.join(THIS_DIR, 'quizzes')
+GOOD_QUIZZES_DIR = os.path.join(QUIZZES_DIR, "good")
+BAD_QUIZZES_DIR = os.path.join(QUIZZES_DIR, "bad")
 
 DATA_DIR = os.path.join(THIS_DIR, 'data')
 COMMONMARK_TEST_DATA_PATH = os.path.join(DATA_DIR, 'commonmark_test_cases.json')
@@ -56,3 +61,9 @@ def discover_good_document_files():
 
 def discover_bad_document_files():
     return list(sorted(glob.glob(os.path.join(BAD_DOCUMENTS_DIR, "**", "*.json"), recursive = True)))
+
+def discover_good_quiz_files():
+    return list(sorted(glob.glob(os.path.join(GOOD_QUIZZES_DIR, "**", quizgen.constants.QUIZ_FILENAME), recursive = True)))
+
+def discover_bad_quiz_files():
+    return list(sorted(glob.glob(os.path.join(BAD_QUIZZES_DIR, "**", quizgen.constants.QUIZ_FILENAME), recursive = True)))

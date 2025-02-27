@@ -18,6 +18,9 @@ FORMAT_TEX = 'tex'
 FORMAT_TEXT = 'text'
 FORMAT_QTI = 'qti'
 
+# A special format mainly for testing.
+FORMAT_JSON_TEMPLATE = 'json_template'
+
 # Output formats.
 DOC_FORMATS = [FORMAT_CANVAS, FORMAT_HTML, FORMAT_JSON, FORMAT_TEX, FORMAT_QTI]
 

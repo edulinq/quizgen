@@ -1,8 +1,8 @@
 import quizgen.constants
 import quizgen.converter.html
 import quizgen.converter.json
-import quizgen.converter.textemplate
-import quizgen.converter.qtitemplate
+import quizgen.converter.tex
+import quizgen.converter.qti
 import quizgen.variant
 
 SUPPORTED_FORMATS = [
@@ -13,6 +13,11 @@ SUPPORTED_FORMATS = [
     quizgen.constants.FORMAT_QTI,
 ]
 
+# Formats for testing only.
+TEST_SUPPORTED_FORMAT = [
+    quizgen.constants.FORMAT_JSON_TEMPLATE,
+]
+
 def get_converter_class(format = quizgen.constants.FORMAT_JSON):
     if (format == quizgen.constants.FORMAT_JSON):
         return quizgen.converter.json.JSONConverter
@@ -21,9 +26,11 @@ def get_converter_class(format = quizgen.constants.FORMAT_JSON):
     elif (format == quizgen.constants.FORMAT_CANVAS):
         return quizgen.converter.html.CanvasTemplateConverter
     elif (format == quizgen.constants.FORMAT_TEX):
-        return quizgen.converter.textemplate.TexTemplateConverter
+        return quizgen.converter.tex.TexTemplateConverter
     elif (format == quizgen.constants.FORMAT_QTI):
-        return quizgen.converter.qtitemplate.QTITemplateConverter
+        return quizgen.converter.qti.QTITemplateConverter
+    elif (format == quizgen.constants.FORMAT_JSON_TEMPLATE):
+        return quizgen.converter.json.JSONTemplateConverter
     else:
         raise ValueError("No known converter for format '%s'." % (format))
 
