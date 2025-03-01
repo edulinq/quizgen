@@ -1,6 +1,7 @@
 import os
 
 import quizgen.cli.gradescope.upload
+import quizgen.latex
 import quizgen.uploader.gradescope
 import quizgen.util.httpsession
 import tests.base
@@ -17,6 +18,9 @@ class TestUploaderGradescope(tests.base.BaseTest):
     """
 
     def test_already_exists(self):
+        if (not quizgen.latex.is_available()):
+            self.skipTest("LaTeX is not available.")
+
         session_id = quizgen.uploader.gradescope.SESSION_ID_UPLOAD
         session_base_dir = os.path.join(tests.base.HTTP_SESSIONS_DIR, ALREADY_EXISTS_SESSION_NAME)
 

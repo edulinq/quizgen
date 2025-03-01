@@ -35,9 +35,52 @@ jobs:
         shell: bash
         run: pip3 install -r requirements.txt -r requirements-dev.txt
 
+      - name: Set Up NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install NodeJS Dependencies
+        shell: bash
+        run: npm ci
+
       - name: Check Python Version Compatibility
         shell: bash
         run: vermin --no-tips --no-parse-comments --exclude ast.unparse --target=3.9- --violations quizgen
+
+      - name: Run Tests
+        shell: bash
+        run: ./run_tests.py
+
+  advanced-test:
+    needs: test
+
+    strategy:
+      matrix:
+        python-version: ['3.11']
+        os: ['ubuntu-22.04']
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set Up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache Python Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.pythonLocation }}
+          key: ${{ runner.os }}-os:${{ matrix.os }}-python:${{ matrix.python-version }}-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-${{ hashFiles('requirements.txt') }}
+
+      - name: Install Python Dependencies
+        shell: bash
+        run: pip3 install -r requirements.txt -r requirements-dev.txt
 
       - name: Set Up NodeJS
         uses: actions/setup-node@v4
@@ -49,12 +92,18 @@ jobs:
         shell: bash
         run: npm ci
 
+      - name: Install TeX
+        shell: bash
+        run: |
+            sudo apt-get update -y
+            sudo apt-get install -y texlive-latex-extra
+
       - name: Run Tests
         shell: bash
         run: ./run_tests.py
 
   deploy:
-    needs: test
+    needs: advanced-test
 
     strategy:
       matrix:
