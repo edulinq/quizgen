@@ -27,9 +27,9 @@ class Parser(argparse.ArgumentParser):
     Extend an argparse parser to call the pre and post functions.
     """
 
-    def parse_args(self, skip_modules = [], **kwargs):
+    def parse_args(self, *args, skip_modules = [], **kwargs):
         pre_parse(self, skip_modules)
-        args = super().parse_args(**kwargs)
+        args = super().parse_args(*args, **kwargs)
         post_parse(args, skip_modules)
 
         return args

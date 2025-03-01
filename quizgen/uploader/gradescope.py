@@ -8,24 +8,25 @@ import re
 import time
 
 import bs4
-import requests
 
 import quizgen.constants
 import quizgen.variant
 import quizgen.util.dirent
+import quizgen.util.httpsession
 import quizgen.util.json
 
-URL_HOMEPAGE = 'https://www.gradescope.com'
-URL_LOGIN = 'https://www.gradescope.com/login'
-URL_ASSIGNMENTS = 'https://www.gradescope.com/courses/%s/assignments'
-URL_ASSIGNMENT = 'https://www.gradescope.com/courses/%s/assignments/%s'
-URL_ASSIGNMENT_GROUP = 'https://www.gradescope.com/courses/%s/assignment_containers'
-URL_ASSIGNMENT_EDIT = 'https://www.gradescope.com/courses/%s/assignments/%s/edit'
-URL_ASSIGNMENT_RUBRIC = 'https://www.gradescope.com/courses/%s/assignments/%s/rubric/edit'
-URL_ASSIGNMENT_ADD_RUBRIC_ITEM = 'https://www.gradescope.com/courses/%s/questions/%s/rubric_items'
-URL_NEW_ASSIGNMENT_FORM = 'https://www.gradescope.com/courses/%s/assignments/new'
-URL_EDIT_OUTLINE = 'https://www.gradescope.com/courses/%s/assignments/%s/outline/edit'
-URL_PATCH_OUTLINE = 'https://www.gradescope.com/courses/%s/assignments/%s/outline'
+URL_BASE = 'https://www.gradescope.com'
+URL_HOMEPAGE = URL_BASE
+URL_LOGIN = f"{URL_BASE}/login"
+URL_ASSIGNMENTS = f"{URL_BASE}/courses/%s/assignments"
+URL_ASSIGNMENT = f"{URL_BASE}/courses/%s/assignments/%s"
+URL_ASSIGNMENT_GROUP = f"{URL_BASE}/courses/%s/assignment_containers"
+URL_ASSIGNMENT_EDIT = f"{URL_BASE}/courses/%s/assignments/%s/edit"
+URL_ASSIGNMENT_RUBRIC = f"{URL_BASE}/courses/%s/assignments/%s/rubric/edit"
+URL_ASSIGNMENT_ADD_RUBRIC_ITEM = f"{URL_BASE}/courses/%s/questions/%s/rubric_items"
+URL_NEW_ASSIGNMENT_FORM = f"{URL_BASE}/courses/%s/assignments/new"
+URL_EDIT_OUTLINE = f"{URL_BASE}/courses/%s/assignments/%s/outline/edit"
+URL_PATCH_OUTLINE = f"{URL_BASE}/courses/%s/assignments/%s/outline"
 
 NAME_BOX_ID = 'name'
 ID_BOX_ID = 'id'
@@ -58,13 +59,14 @@ STANDARD_BOX_QUESTION_TYPES = [
 BOX_TYPES = EXTEND_BOX_QUESTION_TYPES + STANDARD_BOX_QUESTION_TYPES + SPECIAL_QUESTION_TYPES
 
 SP_PER_PT = 65536
-GRADESCOPE_SLEEP_TIME_SEC = 0.50
 
-# TODO: Sleep smarter, before request not after.
+SESSION_ID_CREATE_ASSIGNMENT_GROUP = 'gradescope_create_assignment_group'
+SESSION_ID_UPLOAD = 'gradescope_upload'
 
 class GradeScopeUploader(object):
     def __init__(self, course_id, user, password,
             force = False, rubric = False,
+            save_http = False,
             **kwargs):
         super().__init__(**kwargs)
 
@@ -73,6 +75,7 @@ class GradeScopeUploader(object):
         self.password = password
         self.force = force
         self.rubric = rubric
+        self.save_http = save_http
 
     def upload_quiz(self, variant, base_dir = None, **kwargs):
         """
@@ -92,7 +95,7 @@ class GradeScopeUploader(object):
         return self.upload(variant, base_dir, boxes, special_boxes)
 
     def create_assignment_group(self, title, gradescope_ids):
-        session = requests.Session()
+        session = quizgen.util.requests.get_session(SESSION_ID_CREATE_ASSIGNMENT_GROUP, save_http = self.save_http)
 
         self.login(session)
 
@@ -111,7 +114,6 @@ class GradeScopeUploader(object):
 
         response = session.post(post_url, params = data, headers = headers)
         response.raise_for_status()
-        time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
 
     def get_bounding_boxes(self, variant, base_dir):
         # {<quetion id>: {<part id>: box, ...}, ...}
@@ -288,7 +290,7 @@ class GradeScopeUploader(object):
 
         outline = self.create_outline(variant, bounding_boxes, special_boxes)
 
-        session = requests.Session()
+        session = quizgen.util.httpsession.get_session(SESSION_ID_UPLOAD, save_http = self.save_http)
 
         self.login(session)
         logging.debug("Logged in as '%s'.", self.user)
@@ -330,12 +332,10 @@ class GradeScopeUploader(object):
         # Login.
         response = session.post(URL_LOGIN, params = data)
         response.raise_for_status()
-        time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
 
     def get_authenticity_token(self, session, url, action = None):
         response = session.get(url)
         response.raise_for_status()
-        time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
 
         document = bs4.BeautifulSoup(response.text, 'html.parser')
 
@@ -354,7 +354,6 @@ class GradeScopeUploader(object):
         # Get outline submission csrf token.
         response = session.get(url)
         response.raise_for_status()
-        time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
 
         document = bs4.BeautifulSoup(response.text, 'html.parser')
         return self.parse_csrf_token(document)
@@ -372,7 +371,6 @@ class GradeScopeUploader(object):
 
         response = session.get(url)
         response.raise_for_status()
-        time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
 
         document = bs4.BeautifulSoup(response.text, 'html.parser')
 
@@ -407,7 +405,6 @@ class GradeScopeUploader(object):
 
         response = session.post(delete_url, data = data)
         response.raise_for_status()
-        time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
 
     def create_assignment(self, session, variant, base_dir):
         form_url = URL_NEW_ASSIGNMENT_FORM % (self.course_id)
@@ -434,7 +431,6 @@ class GradeScopeUploader(object):
 
         response = session.post(create_url, data = data, files = files)
         response.raise_for_status()
-        time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
 
         if (len(response.history) == 0):
             raise ValueError("Failed to create assignment. Is the name ('%s') unique?" % (variant.title))
@@ -462,7 +458,6 @@ class GradeScopeUploader(object):
             headers = headers,
         )
         response.raise_for_status()
-        time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
 
     def create_rubric(self, session, assignment_id, variant):
         questions_ids, csrf_token = self.fetch_question_ids(session, assignment_id)
@@ -495,7 +490,6 @@ class GradeScopeUploader(object):
 
         response = session.post(url, json = data, headers = headers)
         response.raise_for_status()
-        time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
 
     def fetch_question_ids(self, session, assignment_id):
         """
@@ -508,7 +502,6 @@ class GradeScopeUploader(object):
 
         response = session.get(url)
         response.raise_for_status()
-        time.sleep(GRADESCOPE_SLEEP_TIME_SEC)
 
         document = bs4.BeautifulSoup(response.text, 'html.parser')
 

@@ -9,20 +9,22 @@ import quizgen.util.json
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 TESTS_DIR = THIS_DIR
 
-QUESTIONS_DIR = os.path.join(THIS_DIR, "questions")
+QUESTIONS_DIR = os.path.join(TESTS_DIR, "questions")
 GOOD_QUESTIONS_DIR = os.path.join(QUESTIONS_DIR, "good")
 BAD_QUESTIONS_DIR = os.path.join(QUESTIONS_DIR, "bad")
 
-DOCUMENTS_DIR = os.path.join(THIS_DIR, 'documents')
+DOCUMENTS_DIR = os.path.join(TESTS_DIR, 'documents')
 GOOD_DOCUMENTS_DIR = os.path.join(DOCUMENTS_DIR, "good")
 BAD_DOCUMENTS_DIR = os.path.join(DOCUMENTS_DIR, "bad")
 
-QUIZZES_DIR = os.path.join(THIS_DIR, 'quizzes')
+QUIZZES_DIR = os.path.join(TESTS_DIR, 'quizzes')
 GOOD_QUIZZES_DIR = os.path.join(QUIZZES_DIR, "good")
 BAD_QUIZZES_DIR = os.path.join(QUIZZES_DIR, "bad")
 
-DATA_DIR = os.path.join(THIS_DIR, 'data')
+DATA_DIR = os.path.join(TESTS_DIR, 'data')
 COMMONMARK_TEST_DATA_PATH = os.path.join(DATA_DIR, 'commonmark_test_cases.json')
+
+HTTP_SESSIONS_DIR = os.path.join(TESTS_DIR, "httpsessions")
 
 class BaseTest(unittest.TestCase):
     # See full diffs regardless of size.

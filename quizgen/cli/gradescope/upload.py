@@ -28,7 +28,8 @@ def run(args):
         variant = variants[i]
 
         uploader = quizgen.uploader.gradescope.GradeScopeUploader(args.course_id, args.user, args.password,
-                force = args.force, rubric = args.rubric)
+                force = args.force, rubric = args.rubric,
+                save_http = args.save_http)
         gradescope_id, created = uploader.upload_quiz(variant, base_dir = out_dir)
 
         options['variants'][i]['gradescope_id'] = gradescope_id
@@ -37,7 +38,8 @@ def run(args):
     if (len(variants) > 1):
         ids = [variants_data['gradescope_id'] for variants_data in options['variants']]
 
-        uploader = quizgen.uploader.gradescope.GradeScopeUploader(args.course_id, args.user, args.password)
+        uploader = quizgen.uploader.gradescope.GradeScopeUploader(args.course_id, args.user, args.password,
+                save_http = args.save_http)
         uploader.create_assignment_group(quiz.title, ids)
         logging.info("Created GradeScope Assignment Group: '%s'.", quiz.title)
 
@@ -48,8 +50,9 @@ def run(args):
     return 0
 
 def _get_parser():
-    parser = quizgen.args.Parser(description =
-        "Create and upload a GradeScope PDF quiz.")
+    parser = quizgen.args.Parser(
+            prog = 'quizgen.cli.gradescope.upload',
+            description = "Create and upload a GradeScope PDF quiz.")
 
     quizgen.pdf.set_cli_args(parser)
 
@@ -71,7 +74,11 @@ def _get_parser():
 
     parser.add_argument('--force', dest = 'force',
         action = 'store_true', default = False,
-        help = 'Override (delete) any exiting quiz with the same name.')
+        help = 'Override (delete) any exiting quiz with the same name (default: %(default)s).')
+
+    parser.add_argument('--save-http', dest = 'save_http',
+        action = 'store_true', default = False,
+        help = 'Save any http requests to a debugging directory (default: %(default)s).')
 
     return parser
 
