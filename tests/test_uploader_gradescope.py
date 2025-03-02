@@ -6,9 +6,13 @@ import quizgen.uploader.gradescope
 import quizgen.util.httpsession
 import tests.base
 
+SIMPLE_SESSION_NAME = 'gradescope-simple'
 ALREADY_EXISTS_SESSION_NAME = 'gradescope-already-exists'
+VARIANT_FORCE_RUBRIC_A_SESSION_NAME = 'gradescope-variant-force-rubric-a'
+VARIANT_FORCE_RUBRIC_B_SESSION_NAME = 'gradescope-variant-force-rubric-b'
+VARIANT_FORCE_RUBRIC_GROUP_SESSION_NAME = 'gradescope-variant-force-rubric-group'
 
-TEST_COURSE = '123456'
+TEST_COURSE = '100001'
 TEST_USER = 'test@test.edulinq.org'
 TEST_PASS = 'abc123'
 
@@ -17,17 +21,16 @@ class TestUploaderGradescope(tests.base.BaseTest):
     Test uploading GradeScope quizzes using recorded HTTP sessions.
     """
 
-    def test_already_exists(self):
+    def _run_session_upload_test(self, session_infos, quiz_path, extra_args = []):
         if (not quizgen.latex.is_available()):
             self.skipTest("LaTeX is not available.")
 
-        session_id = quizgen.uploader.gradescope.SESSION_ID_UPLOAD
-        session_base_dir = os.path.join(tests.base.HTTP_SESSIONS_DIR, ALREADY_EXISTS_SESSION_NAME)
+        for (session_id, session_dirname) in session_infos:
+            session_base_dir = os.path.join(tests.base.HTTP_SESSIONS_DIR, session_dirname)
 
-        quizgen.util.httpsession.load_test_session(session_id, session_base_dir)
+            quizgen.util.httpsession.load_test_session(session_id, session_base_dir)
 
         temp_dir = quizgen.util.dirent.get_temp_path('quizgen-test-')
-        quiz_path = os.path.abspath(os.path.join(tests.base.GOOD_QUIZZES_DIR, 'single-question', 'quiz.json'))
 
         raw_args = [
             '--log-level', 'ERROR',
@@ -38,7 +41,44 @@ class TestUploaderGradescope(tests.base.BaseTest):
             quiz_path,
         ]
 
+        raw_args += extra_args
+
         parser = quizgen.cli.gradescope.upload._get_parser()
         args = parser.parse_args(raw_args)
 
         quizgen.cli.gradescope.upload.run(args)
+
+    def test_simple(self):
+        session_infos = [
+            (quizgen.uploader.gradescope.SESSION_ID_UPLOAD, SIMPLE_SESSION_NAME),
+        ]
+
+        quiz_path = os.path.abspath(os.path.join(tests.base.GOOD_QUIZZES_DIR, 'single-question', 'quiz.json'))
+
+        self._run_session_upload_test(session_infos, quiz_path)
+
+    def test_already_exists(self):
+        session_infos = [
+            (quizgen.uploader.gradescope.SESSION_ID_UPLOAD, ALREADY_EXISTS_SESSION_NAME),
+        ]
+
+        quiz_path = os.path.abspath(os.path.join(tests.base.GOOD_QUIZZES_DIR, 'single-question', 'quiz.json'))
+
+        self._run_session_upload_test(session_infos, quiz_path)
+
+    def test_variant_force_rubric(self):
+        session_infos = [
+            (quizgen.uploader.gradescope.SESSION_ID_UPLOAD, VARIANT_FORCE_RUBRIC_A_SESSION_NAME),
+            (quizgen.uploader.gradescope.SESSION_ID_UPLOAD, VARIANT_FORCE_RUBRIC_B_SESSION_NAME),
+            (quizgen.uploader.gradescope.SESSION_ID_CREATE_ASSIGNMENT_GROUP, VARIANT_FORCE_RUBRIC_GROUP_SESSION_NAME),
+        ]
+
+        quiz_path = os.path.abspath(os.path.join(tests.base.GOOD_QUIZZES_DIR, 'single-question', 'quiz.json'))
+
+        extra_args = [
+            '--variants', '2',
+            '--force',
+            '--rubric',
+        ]
+
+        self._run_session_upload_test(session_infos, quiz_path, extra_args = extra_args)

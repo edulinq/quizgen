@@ -28,6 +28,7 @@ import quizgen.util.json
 
 DEFAULT_WAIT_TIME_SECS = 0.25
 
+# {id: [session, ...], ...}
 _test_sessions = {}
 
 def get_session(id, save_http = False, **kwargs):
@@ -39,7 +40,11 @@ def get_session(id, save_http = False, **kwargs):
     """
 
     if (id in _test_sessions):
-        return _test_sessions[id]
+        session = _test_sessions[id].pop(0)
+        if (len(_test_sessions[id]) == 0):
+            del _test_sessions[id]
+
+        return session
 
     if (save_http):
         return SessionRecorder(id, **kwargs)
@@ -47,8 +52,17 @@ def get_session(id, save_http = False, **kwargs):
     return requests.Session(**kwargs)
 
 def load_test_session(id, base_dir):
+    """
+    Load a test session from a directory into the queue for a specific ID.
+    When a test session is used, it is removed from the queue.
+    """
+
     session = TestSession.from_dir(base_dir)
-    _test_sessions[id] = session
+
+    if (id not in _test_sessions):
+        _test_sessions[id] = []
+
+    _test_sessions[id].append(session)
 
 class RequestsSession(object):
     def __init__(self,

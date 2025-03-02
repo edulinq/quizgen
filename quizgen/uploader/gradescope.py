@@ -95,7 +95,7 @@ class GradeScopeUploader(object):
         return self.upload(variant, base_dir, boxes, special_boxes)
 
     def create_assignment_group(self, title, gradescope_ids):
-        session = quizgen.util.requests.get_session(SESSION_ID_CREATE_ASSIGNMENT_GROUP, save_http = self.save_http)
+        session = quizgen.util.httpsession.get_session(SESSION_ID_CREATE_ASSIGNMENT_GROUP, save_http = self.save_http)
 
         self.login(session)
 
@@ -394,8 +394,6 @@ class GradeScopeUploader(object):
 
     def delete_assignment(self, session, assignment_id):
         form_url = URL_ASSIGNMENT_EDIT % (self.course_id, assignment_id)
-        delete_url = URL_ASSIGNMENT % (self.course_id, assignment_id)
-
         token = self.get_csrf_token(session, form_url)
 
         data = {
@@ -403,13 +401,12 @@ class GradeScopeUploader(object):
             'authenticity_token': token,
         }
 
+        delete_url = URL_ASSIGNMENT % (self.course_id, assignment_id)
         response = session.post(delete_url, data = data)
         response.raise_for_status()
 
     def create_assignment(self, session, variant, base_dir):
         form_url = URL_NEW_ASSIGNMENT_FORM % (self.course_id)
-        create_url = URL_ASSIGNMENTS % (self.course_id)
-
         token = self.get_csrf_token(session, form_url)
 
         data = {
@@ -429,6 +426,7 @@ class GradeScopeUploader(object):
             ),
         }
 
+        create_url = URL_ASSIGNMENTS % (self.course_id)
         response = session.post(create_url, data = data, files = files)
         response.raise_for_status()
 
@@ -444,8 +442,6 @@ class GradeScopeUploader(object):
 
     def submit_outline(self, session, assignment_id, outline):
         edit_url = URL_EDIT_OUTLINE % (self.course_id, assignment_id)
-        patch_outline_url = URL_PATCH_OUTLINE % (self.course_id, assignment_id)
-
         csrf_token = self.get_csrf_token(session, edit_url)
 
         headers = {
@@ -453,6 +449,7 @@ class GradeScopeUploader(object):
             'x-csrf-token': csrf_token,
         }
 
+        patch_outline_url = URL_PATCH_OUTLINE % (self.course_id, assignment_id)
         response = session.patch(patch_outline_url,
             data = quizgen.util.json.dumps(outline, separators = (',', ':')),
             headers = headers,
