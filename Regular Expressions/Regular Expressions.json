@@ -1,0 +1,888 @@
+{
+    "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex",
+    "canvas": {
+        "allowed_attempts": 1,
+        "assignment_group_name": "Quizzes",
+        "hide_results": null,
+        "practice": true,
+        "published": false,
+        "scoring_policy": "keep_highest",
+        "show_correct_answers": true
+    },
+    "course_title": "CSE Cracks",
+    "date": "2025-03-05",
+    "description": "This quiz is open note, open book, and open world. Assume all regular expressions are done in Python using the `re` standard library. Good luck!",
+    "groups": [
+        {
+            "custom_header": null,
+            "hints": {},
+            "hints_first": {},
+            "hints_last": {},
+            "name": "Ice Breaker",
+            "pick_count": 1,
+            "pick_with_replacement": true,
+            "points": 5,
+            "questions": [
+                {
+                    "answers": [
+                        "detective work",
+                        "fight corruption",
+                        "other"
+                    ],
+                    "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/ice-breaker",
+                    "custom_header": null,
+                    "feedback": {
+                        "general": "You can have any answer you want."
+                    },
+                    "hints": {},
+                    "name": "Ice Breaker",
+                    "points": 5,
+                    "prompt": "Taking inspiration from the XKCD comic below,\nhow would you save the day using regular expressions?\n\n:::block\n\n<style>\n    \"content-align\": \"center\"\n</style>\n\n![XKCD Comic 208](xkcd-regular-expressions.png)\n\n:::",
+                    "question_type": "short_answer",
+                    "shuffle_answers": true,
+                    "skip_numbering": null,
+                    "type": "question"
+                }
+            ],
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "unknown"
+        },
+        {
+            "custom_header": null,
+            "hints": {},
+            "hints_first": {},
+            "hints_last": {},
+            "name": "Regular Expression in Programming Languages",
+            "pick_count": 1,
+            "pick_with_replacement": true,
+            "points": 5,
+            "questions": [
+                {
+                    "answers": [
+                        {
+                            "correct": true,
+                            "text": "True"
+                        },
+                        {
+                            "correct": false,
+                            "text": "False"
+                        }
+                    ],
+                    "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/basic-01",
+                    "custom_header": null,
+                    "feedback": {
+                        "correct": "You are right!",
+                        "incorrect": "Regular expressions are so useful that almost every language supports them."
+                    },
+                    "hints": {},
+                    "name": "Regular Expression in Programming Languages",
+                    "points": 5,
+                    "prompt": "Regular expressions are implemented as either a core feature or in the standard library of almost every major programming language.",
+                    "question_type": "true_false",
+                    "shuffle_answers": false,
+                    "skip_numbering": null,
+                    "type": "question"
+                }
+            ],
+            "shuffle_answers": false,
+            "skip_numbering": null,
+            "type": "unknown"
+        },
+        {
+            "custom_header": null,
+            "hints": {},
+            "hints_first": {},
+            "hints_last": {},
+            "name": "Regular Expression Vocabulary",
+            "pick_count": 1,
+            "pick_with_replacement": true,
+            "points": 20,
+            "questions": [
+                {
+                    "answers": {
+                        "distractors": [
+                            "The set of all alphanumeric characters and underscore.",
+                            "All digits.",
+                            "A repetition operator that matches the range $[1, infinity]$.",
+                            "An operator that allows us to select both of two options."
+                        ],
+                        "matches": [
+                            {
+                                "left": "Character Class",
+                                "right": "A set of character where any single member of the group can be matched."
+                            },
+                            {
+                                "left": "Anchor",
+                                "right": "A special character that can be used to match the beginning or end of a line."
+                            },
+                            {
+                                "left": "Word Boundary",
+                                "right": "The empty string between (`[\\W^]` and `\\w`) or between (`\\w` and `[\\W$]`)."
+                            },
+                            {
+                                "left": "Kleene Star",
+                                "right": "A repetition operator that matches the range $[0, infinity]$."
+                            },
+                            {
+                                "left": "Group",
+                                "right": "A collection of character that can be treated as a single unit."
+                            },
+                            {
+                                "left": "Disjunction",
+                                "right": "An operator that allows us to select one of two options."
+                            },
+                            {
+                                "left": "Back Reference",
+                                "right": "A special character that allows us to invoke a previous group."
+                            }
+                        ],
+                        "shuffle": true,
+                        "shuffle_seed": 2707359951802597395
+                    },
+                    "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/terms",
+                    "custom_header": null,
+                    "feedback": {},
+                    "hints": {},
+                    "name": "Regular Expression Vocabulary",
+                    "points": 20,
+                    "prompt": "Match the following terms to their corresponding definitions.",
+                    "question_type": "matching",
+                    "shuffle_answers": true,
+                    "skip_numbering": null,
+                    "type": "question"
+                }
+            ],
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "unknown"
+        },
+        {
+            "custom_header": null,
+            "hints": {},
+            "hints_first": {},
+            "hints_last": {},
+            "name": "Basic Regular Expressions",
+            "pick_count": 1,
+            "pick_with_replacement": true,
+            "points": 5,
+            "questions": [
+                {
+                    "answers": [
+                        {
+                            "correct": false,
+                            "feedback": "Can this take too many digits?",
+                            "text": "`r'\\d+ \\d+-\\d+'`"
+                        },
+                        {
+                            "correct": false,
+                            "feedback": "What about whitespace?",
+                            "text": "`r'\\d{10}'`"
+                        },
+                        {
+                            "correct": true,
+                            "text": "`r'\\d{3} \\d{3}-\\d{4}'`"
+                        },
+                        {
+                            "correct": false,
+                            "feedback": "What if there are no digits in the string?",
+                            "text": "`r'\\d* \\d*-\\d*'`"
+                        }
+                    ],
+                    "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/regex-01",
+                    "custom_header": null,
+                    "feedback": {},
+                    "hints": {},
+                    "name": "Basic Regular Expressions",
+                    "points": 5,
+                    "prompt": "Which of the following regular expressions would be best to match a 10-digit phone number formatted as: '123 456-7890'. (Assume any stretch of continuous whitespace is a single space character.)",
+                    "question_type": "multiple_choice",
+                    "shuffle_answers": true,
+                    "skip_numbering": null,
+                    "type": "question"
+                }
+            ],
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "unknown"
+        },
+        {
+            "custom_header": "",
+            "hints": {},
+            "hints_first": {},
+            "hints_last": {},
+            "name": "Passage",
+            "pick_count": 1,
+            "pick_with_replacement": true,
+            "points": 0,
+            "questions": [
+                {
+                    "answers": null,
+                    "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/passage",
+                    "custom_header": "",
+                    "feedback": {},
+                    "hints": {},
+                    "name": "Passage",
+                    "points": 0,
+                    "prompt": "Below is the opening paragraph (which is actually just one sentence) from\n*A Tale Of Two Cities* written by Charles Dickens.\nFuture questions may reference this passage as \"the provided passage\".\n\n\"It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness,\nit was the epoch of belief, it was the epoch of incredulity, it was the season of Light,\nit was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us,\nwe had nothing before us, we were all going direct to Heaven, we were all going direct the other way\n\u2014 in short, the period was so far like the present period, that some of its noisiest authorities insisted on its being received,\nfor good or for evil, in the superlative degree of comparison only.\"",
+                    "question_type": "text_only",
+                    "shuffle_answers": true,
+                    "skip_numbering": true,
+                    "type": "question"
+                }
+            ],
+            "shuffle_answers": true,
+            "skip_numbering": true,
+            "type": "unknown"
+        },
+        {
+            "custom_header": null,
+            "hints": {
+                "width": 0.25
+            },
+            "hints_first": {},
+            "hints_last": {},
+            "name": "Passage Search",
+            "pick_count": 1,
+            "pick_with_replacement": true,
+            "points": 10,
+            "questions": [
+                {
+                    "answers": [
+                        {
+                            "margin": 0,
+                            "type": "exact",
+                            "value": 6
+                        }
+                    ],
+                    "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/passage-search",
+                    "custom_header": null,
+                    "feedback": {
+                        "general": "Remember that your answer should be an integer."
+                    },
+                    "hints": {
+                        "width": 0.25
+                    },
+                    "name": "Passage Search",
+                    "points": 10,
+                    "prompt": "In the provided passage, how many non-specific time periods are mentioned,\ni.e., how many matches are there for the following regular expression:\n\n```python\nr'(age|season|epoch)\\s+of\\s+(\\w+)'\n```",
+                    "question_type": "numerical",
+                    "shuffle_answers": true,
+                    "skip_numbering": null,
+                    "type": "question"
+                }
+            ],
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "unknown"
+        },
+        {
+            "custom_header": null,
+            "hints": {
+                "inline": true
+            },
+            "hints_first": {},
+            "hints_last": {},
+            "name": "Quantifiers",
+            "pick_count": 1,
+            "pick_with_replacement": true,
+            "points": 5,
+            "questions": [
+                {
+                    "answers": {
+                        "PART1": {
+                            "key": "PART1",
+                            "values": [
+                                {
+                                    "correct": false,
+                                    "text": "`?`"
+                                },
+                                {
+                                    "correct": false,
+                                    "text": "`+`"
+                                },
+                                {
+                                    "correct": true,
+                                    "text": "`*`"
+                                }
+                            ]
+                        },
+                        "PART2": {
+                            "key": "PART2",
+                            "values": [
+                                {
+                                    "correct": false,
+                                    "text": "`*`"
+                                },
+                                {
+                                    "correct": true,
+                                    "text": "`?`"
+                                },
+                                {
+                                    "correct": false,
+                                    "text": "`+`"
+                                }
+                            ]
+                        },
+                        "PART3": {
+                            "key": "PART3",
+                            "values": [
+                                {
+                                    "correct": false,
+                                    "text": "`*`"
+                                },
+                                {
+                                    "correct": true,
+                                    "text": "`+`"
+                                },
+                                {
+                                    "correct": false,
+                                    "text": "`?`"
+                                }
+                            ]
+                        }
+                    },
+                    "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/quantifiers",
+                    "custom_header": null,
+                    "feedback": {},
+                    "hints": {
+                        "inline": true
+                    },
+                    "name": "Quantifiers",
+                    "points": 5,
+                    "prompt": "For each scenario, select the quantifier that is most appropriate.\n\nYou want to match the leading zeros for some number. E.g., \"00\" for \"005\".<br>\n<placeholder>PART1</placeholder>\n\nYou want to match the negative sign for some number. E.g., \"-\" for \"-9\".<br>\n<placeholder>PART2</placeholder>\n\nYou want to match the main digits (before any decimal point) for a required number,\ne.g., \"123\" for \"123\".<br>\n<placeholder>PART3</placeholder>",
+                    "question_type": "multiple_dropdowns",
+                    "shuffle_answers": true,
+                    "skip_numbering": null,
+                    "type": "question"
+                }
+            ],
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "unknown"
+        },
+        {
+            "custom_header": null,
+            "hints": {},
+            "hints_first": {},
+            "hints_last": {},
+            "name": "General Quantification",
+            "pick_count": 1,
+            "pick_with_replacement": true,
+            "points": 5,
+            "questions": [
+                {
+                    "answers": [
+                        {
+                            "correct": false,
+                            "text": "Long Cat"
+                        },
+                        {
+                            "correct": false,
+                            "text": "Loooong Cat"
+                        },
+                        {
+                            "correct": true,
+                            "text": "Loong Cat"
+                        },
+                        {
+                            "correct": true,
+                            "text": "Looong Cat"
+                        }
+                    ],
+                    "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/general-quantification/general-quantification-01",
+                    "custom_header": null,
+                    "feedback": {},
+                    "hints": {},
+                    "name": "General Quantification",
+                    "points": 5,
+                    "prompt": "Which of the following does the regex `r'Lo{2,3}ng Cat'` match? Select all that apply.",
+                    "question_type": "multiple_answers",
+                    "shuffle_answers": true,
+                    "skip_numbering": null,
+                    "type": "question"
+                }
+            ],
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "unknown"
+        },
+        {
+            "custom_header": null,
+            "hints": {
+                "inline": true
+            },
+            "hints_first": {},
+            "hints_last": {},
+            "name": "Backreference Matching",
+            "pick_count": 1,
+            "pick_with_replacement": true,
+            "points": 10,
+            "questions": [
+                {
+                    "answers": {
+                        "A": {
+                            "key": "A",
+                            "values": [
+                                "\\\\4"
+                            ]
+                        },
+                        "B": {
+                            "key": "B",
+                            "values": [
+                                "\\\\3"
+                            ]
+                        },
+                        "C": {
+                            "key": "C",
+                            "values": [
+                                "\\\\2"
+                            ]
+                        }
+                    },
+                    "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/backreference-matching",
+                    "custom_header": null,
+                    "feedback": {},
+                    "hints": {
+                        "inline": true
+                    },
+                    "name": "Backreference Matching",
+                    "points": 10,
+                    "prompt": "Suppose that we are trying to write a script extract name information from text and put it into a CSV (comma-separated value) file.\nThe order of the columns in our CSV file are: first name, last name, and title.\nAs part of our script, we have a regular expression that looks for people that have their name's written as \"last, first\".\n\n```python\nimport re\n\ndef create_csv_line(text_line):\n    regex = r'^\\s*((Dr).?)?\\s*([^,]+)\\s*,\\s*(.+)\\s*$'\n    replacement = MY_REPLACEMENT_STRING\n\n    return re.sub(regex, replacement, text_line)\n```\n\nFill in the blanks in `MY_REPLACEMENT_STRING` to make the above code work correctly.\n\n`MY_REPLACEMENT_STRING = r'`<placeholder>A</placeholder>`,`<placeholder>B</placeholder>`,`<placeholder>C</placeholder>`'`",
+                    "question_type": "fill_in_multiple_blanks",
+                    "shuffle_answers": true,
+                    "skip_numbering": null,
+                    "type": "question"
+                }
+            ],
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "unknown"
+        },
+        {
+            "custom_header": null,
+            "hints": {},
+            "hints_first": {},
+            "hints_last": {},
+            "name": "Regex Golf",
+            "pick_count": 1,
+            "pick_with_replacement": true,
+            "points": 15,
+            "questions": [
+                {
+                    "answers": {
+                        "": {
+                            "key": "",
+                            "values": [
+                                "`r'\\d\\d:\\d\\d [AP]M'`",
+                                "`r\"\\d\\d:\\d\\d [AP]M\"`",
+                                "`r'\\d{2}:\\d{2} [AP]M'`",
+                                "`r\"\\d{2}:\\d{2} [AP]M\"`"
+                            ]
+                        }
+                    },
+                    "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/golf/golf-01",
+                    "custom_header": null,
+                    "feedback": {},
+                    "hints": {},
+                    "name": "Regex Golf",
+                    "points": 15,
+                    "prompt": "Create a regular expression that matches successfully completes a game a golf with the table below.\n\nSpecifics:\n - Match all values in the `Match` column.\n - Do not match any values in the `No Match` column.\n - Write you regex as a raw string using a single or double quotes (not triple quotes).\n - Treat the contents of each table cell as a string (so you do not have the match the quotes).\n - You may assume that any contiguous whitespace is a single space character.\n - You only need to match (or not match) the values in the table, you do not need to extend this pattern to unseen values.\n\n\n| Match        | No Match      |\n|--------------|---------------|\n| `'12:00 AM'` | `'00:00'`     |\n| `'05:30 PM'` | `'17:30'`     |\n| `'01:45 AM'` | `'01:65 AM'`  |\n| `'10:10 PM'` | `'10:10 ZZ'`  |\n| `'12:34 PM'` | `'12:34 pm'`  |\n| `'11:59 PM'` | `'23:59'`     |\n|              | `'123:45 AM'` |\n|              | `'12:345 PM'` |",
+                    "question_type": "fill_in_the_blank",
+                    "shuffle_answers": true,
+                    "skip_numbering": null,
+                    "type": "question"
+                }
+            ],
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "unknown"
+        },
+        {
+            "custom_header": null,
+            "hints": {},
+            "hints_first": {},
+            "hints_last": {},
+            "name": "Write a Function",
+            "pick_count": 1,
+            "pick_with_replacement": true,
+            "points": 20,
+            "questions": [
+                {
+                    "answers": [
+                        "A complete solution can pull out all three components in one regex."
+                    ],
+                    "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/create-function",
+                    "custom_header": null,
+                    "feedback": {},
+                    "hints": {},
+                    "name": "Write a Function",
+                    "points": 20,
+                    "prompt": "Implement a function with the following signature and description:\n\n```\nimport re\n\ndef compute(text):\n    \"\"\"\n    Compute the result of the binary expression represented in the |text| variable.\n    The possible operators are: \"+\", \"-\", \"*\", and \"/\".\n    Operands may be any real number.\n    If the operation is division, the RHS (denominator) will not be zero.\n    \"\"\"\n\n    return NotImplemented\n```\n\nSpecifics:\n - Your function must use regular expressions.\n - You may not use `eval()` or any other Python ast functionality.\n - You may only import modules from the Python standard library.\n - You should return a float that is the result of the binary operation represented by `text`.\n - The operator will be one of:  $ \\{+, -, *, /\\} $.\n - Operands may be any real number.",
+                    "question_type": "essay",
+                    "shuffle_answers": true,
+                    "skip_numbering": null,
+                    "type": "question"
+                }
+            ],
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "unknown"
+        }
+    ],
+    "pick_with_replacement": true,
+    "questions": [
+        {
+            "answers": [
+                "detective work",
+                "fight corruption",
+                "other"
+            ],
+            "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/ice-breaker",
+            "custom_header": null,
+            "feedback": {
+                "general": "You can have any answer you want."
+            },
+            "hints": {},
+            "name": "Ice Breaker",
+            "points": 5,
+            "prompt": "Taking inspiration from the XKCD comic below,\nhow would you save the day using regular expressions?\n\n:::block\n\n<style>\n    \"content-align\": \"center\"\n</style>\n\n![XKCD Comic 208](xkcd-regular-expressions.png)\n\n:::",
+            "question_type": "short_answer",
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "question"
+        },
+        {
+            "answers": [
+                {
+                    "correct": true,
+                    "text": "True"
+                },
+                {
+                    "correct": false,
+                    "text": "False"
+                }
+            ],
+            "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/basic-01",
+            "custom_header": null,
+            "feedback": {
+                "correct": "You are right!",
+                "incorrect": "Regular expressions are so useful that almost every language supports them."
+            },
+            "hints": {},
+            "name": "Regular Expression in Programming Languages",
+            "points": 5,
+            "prompt": "Regular expressions are implemented as either a core feature or in the standard library of almost every major programming language.",
+            "question_type": "true_false",
+            "shuffle_answers": false,
+            "skip_numbering": null,
+            "type": "question"
+        },
+        {
+            "answers": {
+                "distractors": [
+                    "The set of all alphanumeric characters and underscore.",
+                    "All digits.",
+                    "A repetition operator that matches the range $[1, infinity]$.",
+                    "An operator that allows us to select both of two options."
+                ],
+                "matches": [
+                    {
+                        "left": "Character Class",
+                        "right": "A set of character where any single member of the group can be matched."
+                    },
+                    {
+                        "left": "Anchor",
+                        "right": "A special character that can be used to match the beginning or end of a line."
+                    },
+                    {
+                        "left": "Word Boundary",
+                        "right": "The empty string between (`[\\W^]` and `\\w`) or between (`\\w` and `[\\W$]`)."
+                    },
+                    {
+                        "left": "Kleene Star",
+                        "right": "A repetition operator that matches the range $[0, infinity]$."
+                    },
+                    {
+                        "left": "Group",
+                        "right": "A collection of character that can be treated as a single unit."
+                    },
+                    {
+                        "left": "Disjunction",
+                        "right": "An operator that allows us to select one of two options."
+                    },
+                    {
+                        "left": "Back Reference",
+                        "right": "A special character that allows us to invoke a previous group."
+                    }
+                ],
+                "shuffle": true,
+                "shuffle_seed": 2707359951802597395
+            },
+            "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/terms",
+            "custom_header": null,
+            "feedback": {},
+            "hints": {},
+            "name": "Regular Expression Vocabulary",
+            "points": 20,
+            "prompt": "Match the following terms to their corresponding definitions.",
+            "question_type": "matching",
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "question"
+        },
+        {
+            "answers": [
+                {
+                    "correct": false,
+                    "feedback": "Can this take too many digits?",
+                    "text": "`r'\\d+ \\d+-\\d+'`"
+                },
+                {
+                    "correct": false,
+                    "feedback": "What about whitespace?",
+                    "text": "`r'\\d{10}'`"
+                },
+                {
+                    "correct": true,
+                    "text": "`r'\\d{3} \\d{3}-\\d{4}'`"
+                },
+                {
+                    "correct": false,
+                    "feedback": "What if there are no digits in the string?",
+                    "text": "`r'\\d* \\d*-\\d*'`"
+                }
+            ],
+            "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/regex-01",
+            "custom_header": null,
+            "feedback": {},
+            "hints": {},
+            "name": "Basic Regular Expressions",
+            "points": 5,
+            "prompt": "Which of the following regular expressions would be best to match a 10-digit phone number formatted as: '123 456-7890'. (Assume any stretch of continuous whitespace is a single space character.)",
+            "question_type": "multiple_choice",
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "question"
+        },
+        {
+            "answers": null,
+            "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/passage",
+            "custom_header": "",
+            "feedback": {},
+            "hints": {},
+            "name": "Passage",
+            "points": 0,
+            "prompt": "Below is the opening paragraph (which is actually just one sentence) from\n*A Tale Of Two Cities* written by Charles Dickens.\nFuture questions may reference this passage as \"the provided passage\".\n\n\"It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness,\nit was the epoch of belief, it was the epoch of incredulity, it was the season of Light,\nit was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us,\nwe had nothing before us, we were all going direct to Heaven, we were all going direct the other way\n\u2014 in short, the period was so far like the present period, that some of its noisiest authorities insisted on its being received,\nfor good or for evil, in the superlative degree of comparison only.\"",
+            "question_type": "text_only",
+            "shuffle_answers": true,
+            "skip_numbering": true,
+            "type": "question"
+        },
+        {
+            "answers": [
+                {
+                    "margin": 0,
+                    "type": "exact",
+                    "value": 6
+                }
+            ],
+            "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/passage-search",
+            "custom_header": null,
+            "feedback": {
+                "general": "Remember that your answer should be an integer."
+            },
+            "hints": {
+                "width": 0.25
+            },
+            "name": "Passage Search",
+            "points": 10,
+            "prompt": "In the provided passage, how many non-specific time periods are mentioned,\ni.e., how many matches are there for the following regular expression:\n\n```python\nr'(age|season|epoch)\\s+of\\s+(\\w+)'\n```",
+            "question_type": "numerical",
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "question"
+        },
+        {
+            "answers": {
+                "PART1": {
+                    "key": "PART1",
+                    "values": [
+                        {
+                            "correct": false,
+                            "text": "`?`"
+                        },
+                        {
+                            "correct": false,
+                            "text": "`+`"
+                        },
+                        {
+                            "correct": true,
+                            "text": "`*`"
+                        }
+                    ]
+                },
+                "PART2": {
+                    "key": "PART2",
+                    "values": [
+                        {
+                            "correct": false,
+                            "text": "`*`"
+                        },
+                        {
+                            "correct": true,
+                            "text": "`?`"
+                        },
+                        {
+                            "correct": false,
+                            "text": "`+`"
+                        }
+                    ]
+                },
+                "PART3": {
+                    "key": "PART3",
+                    "values": [
+                        {
+                            "correct": false,
+                            "text": "`*`"
+                        },
+                        {
+                            "correct": true,
+                            "text": "`+`"
+                        },
+                        {
+                            "correct": false,
+                            "text": "`?`"
+                        }
+                    ]
+                }
+            },
+            "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/quantifiers",
+            "custom_header": null,
+            "feedback": {},
+            "hints": {
+                "inline": true
+            },
+            "name": "Quantifiers",
+            "points": 5,
+            "prompt": "For each scenario, select the quantifier that is most appropriate.\n\nYou want to match the leading zeros for some number. E.g., \"00\" for \"005\".<br>\n<placeholder>PART1</placeholder>\n\nYou want to match the negative sign for some number. E.g., \"-\" for \"-9\".<br>\n<placeholder>PART2</placeholder>\n\nYou want to match the main digits (before any decimal point) for a required number,\ne.g., \"123\" for \"123\".<br>\n<placeholder>PART3</placeholder>",
+            "question_type": "multiple_dropdowns",
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "question"
+        },
+        {
+            "answers": [
+                {
+                    "correct": false,
+                    "text": "Long Cat"
+                },
+                {
+                    "correct": false,
+                    "text": "Loooong Cat"
+                },
+                {
+                    "correct": true,
+                    "text": "Loong Cat"
+                },
+                {
+                    "correct": true,
+                    "text": "Looong Cat"
+                }
+            ],
+            "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/general-quantification/general-quantification-01",
+            "custom_header": null,
+            "feedback": {},
+            "hints": {},
+            "name": "General Quantification",
+            "points": 5,
+            "prompt": "Which of the following does the regex `r'Lo{2,3}ng Cat'` match? Select all that apply.",
+            "question_type": "multiple_answers",
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "question"
+        },
+        {
+            "answers": {
+                "A": {
+                    "key": "A",
+                    "values": [
+                        "\\\\4"
+                    ]
+                },
+                "B": {
+                    "key": "B",
+                    "values": [
+                        "\\\\3"
+                    ]
+                },
+                "C": {
+                    "key": "C",
+                    "values": [
+                        "\\\\2"
+                    ]
+                }
+            },
+            "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/backreference-matching",
+            "custom_header": null,
+            "feedback": {},
+            "hints": {
+                "inline": true
+            },
+            "name": "Backreference Matching",
+            "points": 10,
+            "prompt": "Suppose that we are trying to write a script extract name information from text and put it into a CSV (comma-separated value) file.\nThe order of the columns in our CSV file are: first name, last name, and title.\nAs part of our script, we have a regular expression that looks for people that have their name's written as \"last, first\".\n\n```python\nimport re\n\ndef create_csv_line(text_line):\n    regex = r'^\\s*((Dr).?)?\\s*([^,]+)\\s*,\\s*(.+)\\s*$'\n    replacement = MY_REPLACEMENT_STRING\n\n    return re.sub(regex, replacement, text_line)\n```\n\nFill in the blanks in `MY_REPLACEMENT_STRING` to make the above code work correctly.\n\n`MY_REPLACEMENT_STRING = r'`<placeholder>A</placeholder>`,`<placeholder>B</placeholder>`,`<placeholder>C</placeholder>`'`",
+            "question_type": "fill_in_multiple_blanks",
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "question"
+        },
+        {
+            "answers": {
+                "": {
+                    "key": "",
+                    "values": [
+                        "`r'\\d\\d:\\d\\d [AP]M'`",
+                        "`r\"\\d\\d:\\d\\d [AP]M\"`",
+                        "`r'\\d{2}:\\d{2} [AP]M'`",
+                        "`r\"\\d{2}:\\d{2} [AP]M\"`"
+                    ]
+                }
+            },
+            "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/golf/golf-01",
+            "custom_header": null,
+            "feedback": {},
+            "hints": {},
+            "name": "Regex Golf",
+            "points": 15,
+            "prompt": "Create a regular expression that matches successfully completes a game a golf with the table below.\n\nSpecifics:\n - Match all values in the `Match` column.\n - Do not match any values in the `No Match` column.\n - Write you regex as a raw string using a single or double quotes (not triple quotes).\n - Treat the contents of each table cell as a string (so you do not have the match the quotes).\n - You may assume that any contiguous whitespace is a single space character.\n - You only need to match (or not match) the values in the table, you do not need to extend this pattern to unseen values.\n\n\n| Match        | No Match      |\n|--------------|---------------|\n| `'12:00 AM'` | `'00:00'`     |\n| `'05:30 PM'` | `'17:30'`     |\n| `'01:45 AM'` | `'01:65 AM'`  |\n| `'10:10 PM'` | `'10:10 ZZ'`  |\n| `'12:34 PM'` | `'12:34 pm'`  |\n| `'11:59 PM'` | `'23:59'`     |\n|              | `'123:45 AM'` |\n|              | `'12:345 PM'` |",
+            "question_type": "fill_in_the_blank",
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "question"
+        },
+        {
+            "answers": [
+                "A complete solution can pull out all three components in one regex."
+            ],
+            "base_dir": "/home/ayush/Desktop/gsoc/cse-cracks-course/quizzes/regex/questions/create-function",
+            "custom_header": null,
+            "feedback": {},
+            "hints": {},
+            "name": "Write a Function",
+            "points": 20,
+            "prompt": "Implement a function with the following signature and description:\n\n```\nimport re\n\ndef compute(text):\n    \"\"\"\n    Compute the result of the binary expression represented in the |text| variable.\n    The possible operators are: \"+\", \"-\", \"*\", and \"/\".\n    Operands may be any real number.\n    If the operation is division, the RHS (denominator) will not be zero.\n    \"\"\"\n\n    return NotImplemented\n```\n\nSpecifics:\n - Your function must use regular expressions.\n - You may not use `eval()` or any other Python ast functionality.\n - You may only import modules from the Python standard library.\n - You should return a float that is the result of the binary operation represented by `text`.\n - The operator will be one of:  $ \\{+, -, *, /\\} $.\n - Operands may be any real number.",
+            "question_type": "essay",
+            "shuffle_answers": true,
+            "skip_numbering": null,
+            "type": "question"
+        }
+    ],
+    "seed": 805655525320369592,
+    "shuffle_answers": true,
+    "term_title": "20XX",
+    "time_limit_mins": 30,
+    "title": "Regular Expressions",
+    "type": "unknown",
+    "version": "5b1c7da4"
+}

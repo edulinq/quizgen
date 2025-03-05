@@ -1,12 +1,8 @@
-# Use a lightweight TeX base image
-FROM texlive/texlive:latest
-
-# Set working directory
+FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get install -y texlive && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 WORKDIR /workspace
-
-# Install any additional tools if needed (optional)
-RUN tlmgr update --self && \
-    tlmgr install latexmk
-
-
 CMD ["pdflatex", "--version"]
