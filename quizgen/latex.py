@@ -44,10 +44,6 @@ def compile(path,use_docker=False):
 
         result = subprocess.run([bin_path, '-interaction=nonstopmode', os.path.basename(path)], cwd = os.path.dirname(path),
             capture_output = True)
-
-    logging.info("pdflatex exit code: %d", result.returncode)
-    logging.info("Stdout: %s", result.stdout.decode())
-    logging.info("Stderr: %s", result.stderr.decode())
     if (result.returncode != 0):
         raise ValueError("pdflatex did not exit cleanly. Stdout: '%s', Stderr: '%s'" % (result.stdout, result.stderr))
 
