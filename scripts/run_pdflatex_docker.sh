@@ -16,7 +16,7 @@ if [ ! -f "$INPUT_FILE" ]; then
 fi
 
 # Run pdflatex inside Docker
-docker run --rm -v "$(pwd)":/workspace quizgen-tex pdflatex -interaction=nonstopmode "$INPUT_FILE"
+docker run --rm -v "$(pwd)":/workspace edulinq-quizgen-tex pdflatex -interaction=nonstopmode "$INPUT_FILE"
 
 # Check if the PDF was generated
 if [ -f "${INPUT_FILE%.tex}.pdf" ]; then

@@ -33,7 +33,7 @@ def compile(path,use_docker=False):
         cmd = [
             "docker", "run", "--rm",
             "-v", f"{dir_path}:/workspace",
-            "quizgen-tex",
+            "edulinq-quizgen-tex",
             "pdflatex", "-interaction=nonstopmode", file_name
         ]
         result = subprocess.run(cmd, cwd=dir_path, capture_output=True)

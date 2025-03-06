@@ -1,0 +1,25 @@
+{
+    "base_dir": "/home/ayush/Desktop/gsoc/quizgen",
+    "canvas": {
+        "allowed_attempts": 1,
+        "assignment_group_name": "Quizzes",
+        "hide_results": null,
+        "practice": true,
+        "published": false,
+        "scoring_policy": "keep_highest",
+        "show_correct_answers": true
+    },
+    "course_title": "",
+    "date": "2025-03-06",
+    "description": "A test quiz for Docker PDF conversion",
+    "groups": [],
+    "pick_with_replacement": true,
+    "questions": [],
+    "seed": 3993189552315343729,
+    "shuffle_answers": true,
+    "term_title": "",
+    "time_limit_mins": null,
+    "title": "Docker Test Quiz",
+    "type": "unknown",
+    "version": "f381d504-d"
+}
