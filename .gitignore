@@ -24,4 +24,4 @@ old/
 /.secrets
 
 /node_modules
-venv
+venv/

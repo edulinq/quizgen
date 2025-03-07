@@ -59,7 +59,7 @@ pip3 install .
 
 ### PDF Files
 
-**Local Compilation**
+#### Local Compilation
 
 To compile PDF files, the `pdflatex` program is used.
 `pdflatex` comes installed with most standard [LaTeX](https://en.wikipedia.org/wiki/LaTeX) packages.

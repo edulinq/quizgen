@@ -17,6 +17,7 @@ def make_with_args(args, **kwargs):
     """
     Use a standard args object from set_cli_args() to make a PDF quiz.
     """
+
     if (not os.path.exists(args.path)):
         raise ValueError(f"Provided path '{args.path}' does not exist.")
 
@@ -27,7 +28,7 @@ def make_with_args(args, **kwargs):
         raise ValueError("Number of variants must be in [1, %d), found %d." % (len(string.ascii_uppercase), args.variants))
 
     return make_with_path(args.path, base_out_dir = args.out_dir, seed = args.seed, num_variants = args.variants,
-            skip_key = args.skip_key, skip_tex = args.skip_tex, skip_pdf = args.skip_pdf, use_docker = args.use_docker,
+            skip_key = args.skip_key, skip_tex = args.skip_tex, skip_pdf = args.skip_pdf,
             **kwargs)
 
 def make_with_path(quiz_path, **kwargs):
@@ -37,7 +38,7 @@ def make_with_path(quiz_path, **kwargs):
 def make(quiz,
         quiz_path = None, base_out_dir = None,
         seed = None, num_variants = 1, write_options = True,
-        skip_key = False, skip_tex = False, skip_pdf = False, use_docker=False,
+        skip_key = False, skip_tex = False, skip_pdf = False,
         **kwargs):
     if (base_out_dir is None):
         base_out_dir = quizgen.util.dirent.get_temp_path(prefix = 'quizgen_pdf_', rm = False)
@@ -78,7 +79,7 @@ def make(quiz,
         out_path = os.path.join(out_dir, "%s.json" % (variant.title))
         quizgen.util.dirent.write_file(out_path, variant.to_json())
 
-        make_pdf(variant, out_dir = out_dir, is_key = False, skip_tex = skip_tex, skip_pdf = skip_pdf ,use_docker=use_docker)
+        make_pdf(variant, out_dir = out_dir, is_key = False, skip_tex = skip_tex, skip_pdf = skip_pdf)
 
         title = variant.title
 
@@ -87,7 +88,7 @@ def make(quiz,
         if (not skip_key):
             try:
                 variant.title = "%s -- Answer Key" % (title)
-                make_pdf(variant, out_dir = out_dir, is_key = True, skip_tex = skip_tex, skip_pdf = skip_pdf, use_docker=use_docker)
+                make_pdf(variant, out_dir = out_dir, is_key = True, skip_tex = skip_tex, skip_pdf = skip_pdf)
                 has_key = True
             except Exception as ex:
                 logging.warning("Failed to generate answer key for '%s'.", title)
@@ -113,8 +114,7 @@ def make(quiz,
 
 def make_pdf(variant,
         out_dir = None, is_key = False,
-        skip_tex = False, skip_pdf = False,
-        use_docker=False):
+        skip_tex = False, skip_pdf = False):
     if (out_dir is None):
         out_dir = quizgen.util.dirent.get_temp_path(prefix = 'quizgen_pdf_', rm = False)
 
@@ -132,8 +132,8 @@ def make_pdf(variant,
 
     if (not skip_pdf):
         # Need to compile twice to get positioning information.
-        quizgen.latex.compile(out_path ,use_docker=use_docker)
-        quizgen.latex.compile(out_path, use_docker=use_docker)
+        quizgen.latex.compile(out_path)
+        quizgen.latex.compile(out_path)
 
     return out_dir
 
@@ -165,9 +165,5 @@ def set_cli_args(parser):
     parser.add_argument('--seed', dest = 'seed',
         action = 'store', type = int, default = None,
         help = 'The random seed to use (defaults to a random seed).')
-    
-    parser.add_argument('--use-docker',dest='use_docker',
-        action='store_true', default = False,
-        help='Use Docker to compile PDFs instead of local pdflatex (default: %(default)s).')
     
     return parser
