@@ -53,7 +53,7 @@ def _compile_docker(path):
     temp_dir = quizgen.util.dirent.get_temp_path()
     temp_tex = os.path.join(temp_dir, os.path.basename(path))
     quizgen.util.dirent.copy_dirent(path, temp_tex)
-    
+
     result = subprocess.run(
         [
             "docker", "run", "--rm",
@@ -61,7 +61,7 @@ def _compile_docker(path):
             DOCKER_IMAGE,
             os.path.basename(temp_tex)
         ],
-        capture_output=True
+        capture_output=True,
     )
     
     if result.returncode == 0:
