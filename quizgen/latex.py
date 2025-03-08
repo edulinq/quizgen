@@ -8,7 +8,7 @@ import quizgen.util.dirent
 _pdflatex_bin_path = None
 _pdflatex_use_docker = False
 
-DOCKER_IMAGE = "edulinq/quizgen-tex:latest"
+DOCKER_IMAGE = "quizgen/latex.py"
 
 def set_pdflatex_bin_path(path):
     global _pdflatex_bin_path
