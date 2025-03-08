@@ -31,9 +31,9 @@ def make_with_args(args, **kwargs):
             skip_key = args.skip_key, skip_tex = args.skip_tex, skip_pdf = args.skip_pdf,
             **kwargs)
 
-def make_with_path(quiz_path, **kwargs):
+def make_with_path(quiz_path, base_out_dir = None, **kwargs):
     quiz = quizgen.quiz.Quiz.from_path(quiz_path)
-    return make(quiz, quiz_path = quiz_path, **kwargs)
+    return make(quiz, quiz_path = quiz_path, base_out_dir = base_out_dir, **kwargs)
 
 def make(quiz,
         quiz_path = None, base_out_dir = None,
