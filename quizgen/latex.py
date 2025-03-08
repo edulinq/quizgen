@@ -53,7 +53,7 @@ def _compile_docker(path):
     temp_dir = quizgen.util.dirent.get_temp_path()
     temp_tex = os.path.join(temp_dir, os.path.basename(path))
     quizgen.util.dirent.copy_dirent(path, temp_tex)
-
+    
     result = subprocess.run(
         [
             "docker", "run", "--rm",
@@ -65,7 +65,16 @@ def _compile_docker(path):
     )
     
     if result.returncode == 0:
-        shutil.copy(temp_tex.replace(".tex", ".pdf"), os.path.dirname(path))
+        base_name = os.path.basename(temp_tex)
+        target_dir = os.path.dirname(path)
+        for ext in [".pdf", ".aux", ".log", ".out", ".pos"]:
+            temp_file = os.path.join(temp_dir, base_name.replace(".tex", ext))
+            if os.path.exists(temp_file):
+                shutil.copy(temp_file, os.path.join(target_dir, os.path.basename(temp_file)))
+            else:
+                logging.warning(f"Expected file {temp_file} not generated")
+    else:
+        logging.error(f"Docker compilation failed: {result.stderr.decode()}")
 
     quizgen.util.dirent.remove_dirent(temp_dir)
     return result.returncode == 0

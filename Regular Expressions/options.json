@@ -1,0 +1,18 @@
+{
+    "create_time": "2025-03-08T15:01:12.707786",
+    "seed": 8094902229835445177,
+    "out_dir": "./Regular Expressions",
+    "quiz": {
+        "path": "../cse-cracks-course/quizzes/regex/quiz.json",
+        "title": "Regular Expressions",
+        "version": "5b1c7da4"
+    },
+    "variants": [
+        {
+            "id": null,
+            "title": "Regular Expressions",
+            "seed": 14677095342354573832,
+            "has_key": true
+        }
+    ]
+}
