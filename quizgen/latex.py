@@ -82,7 +82,10 @@ def _compile_docker(path):
 def set_cli_args(parser):
     parser.add_argument('--pdflatex-bin-path', dest = 'pdflatex_bin_path',
         action = 'store', type = str, default = None,
-        help = 'Path to pdflatex binary (used without Docker).')
+        help = ('The path to the pdflatex binary to use.'
+                + ' If not specified, $PATH will be searched.'
+                + ' Used to compile PDFs.'))
+
     parser.add_argument('--use-docker', dest = 'use_docker',
         action = 'store_true', default = False,
         help = 'Use Docker to compile PDFs.')

@@ -27,6 +27,8 @@ class TestDockerPdfConversion(tests.base.BaseTest):
         original_base_dir = os.path.dirname(source_quiz_path)
         quiz_data = quizgen.util.json.load_path(quiz_json_path)
         
+        # Make all question paths absolute.
+        
         for group in quiz_data["groups"]:
             for i, question_path in enumerate(group["questions"]):
                 if not os.path.isabs(question_path):
@@ -40,6 +42,8 @@ class TestDockerPdfConversion(tests.base.BaseTest):
         pdf_file = os.path.join(temp_dir, quiz_title, f"{quiz_title}.pdf")
         assert os.path.exists(pdf_file), f"PDF file '{pdf_file}' not generated"
         assert os.path.getsize(pdf_file) > 1000, f"Generated PDF '{pdf_file}' is too small"
+        
+        # Check for images directory.
         
         images_dir = os.path.join(temp_dir, quiz_title, "images")
         assert os.path.exists(images_dir), f"Images directory '{images_dir}' not found"
