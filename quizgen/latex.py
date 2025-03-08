@@ -48,7 +48,7 @@ def _compile_docker(path):
     images_dir = os.path.join(source_dir, 'images')
     if os.path.exists(images_dir):
         dest_images_dir = os.path.join(temp_dir, 'images')
-        shutil.copytree(images_dir, dest_images_dir, dirs_exist_ok=True)
+        shutil.copytree(images_dir, dest_images_dir, dirs_exist_ok = True)
 
     logging.info(f"Compiling {temp_tex} with Docker")
     

@@ -41,4 +41,7 @@ class TestDockerPdfConversion(tests.base.BaseTest):
         assert os.path.exists(pdf_file), f"PDF file '{pdf_file}' not generated"
         assert os.path.getsize(pdf_file) > 1000, f"Generated PDF '{pdf_file}' is too small"
         
+        images_dir = os.path.join(temp_dir, quiz_title, "images")
+        assert os.path.exists(images_dir), f"Images directory '{images_dir}' not found"
+        
         quizgen.util.dirent.remove_dirent(temp_dir)
