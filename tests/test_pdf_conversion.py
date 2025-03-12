@@ -8,28 +8,38 @@ import tests.base
 
 class PdfConversionTest(tests.base.BaseTest):
     """
-    Test PDF generation for quizzes in 'tests/quizzes/good/image-questions' directory.
+    Test PDF generation for quizzes in 'tests/quizzes/good' directory.
     A 'quiz.json' with an image question indicates a quiz that should be parsed and compiled to PDF.
     Tests covers local PDF generation, Docker PDF generation.
     """
 
     pass
 
+def _find_all_quiz_json_files():
+    """
+    Find all quiz.json files in the 'tests/quizzes/good/' directory.
+    """
+    quiz_files = []
+    
+    # Walk through all subdirectories in the good quizzes directory
+    for dirpath, _, filenames in os.walk(tests.base.GOOD_QUIZZES_DIR):
+        if "quiz.json" in filenames:
+            quiz_path = os.path.join(dirpath, "quiz.json")
+            quiz_files.append(quiz_path)
+    
+    return quiz_files
+
 def _add_pdf_tests():
-
-    good_quiz_dir = os.path.join(tests.base.GOOD_QUIZZES_DIR, "image-questions")
-    if (not os.path.exists(good_quiz_dir)):
-        raise ValueError(f"Expected directory '{good_quiz_dir}' not found for quiz tests.")
-
+    quiz_files = _find_all_quiz_json_files()
     
-    quiz_path = os.path.join(good_quiz_dir, "quiz.json")
-    if (not os.path.exists(quiz_path)):
-        raise ValueError(f"Expected quiz file '{quiz_path}' not found for quiz tests.")
+    if not quiz_files:
+        raise ValueError(f"No quiz.json files found in '{tests.base.GOOD_QUIZZES_DIR}' or its subdirectories.")
     
-    _add_pdf_test(quiz_path)
+    for quiz_path in quiz_files:
+        _add_pdf_test(quiz_path)
 
 def _add_pdf_test(path):
-    base_test_name = os.path.splitext(os.path.basename(os.path.dirname(path)))[0]
+    base_test_name = os.path.basename(os.path.dirname(path))
 
     # Test local PDF generation.
     test_name = f"test_quiz_pdf_local_{base_test_name}"
@@ -52,9 +62,10 @@ def _get_quiz_pdf_local_test_method(path):
         temp_dir = quizgen.util.dirent.get_temp_path(prefix = "quizgen_pdf_test_")
         quiz, variants, _ = quizgen.pdf.make_with_path(path, base_out_dir = temp_dir)
 
-        pdf_file = os.path.join(temp_dir, quiz.title, f"{variants[0].title}.pdf")
-        self.assertTrue(os.path.exists(pdf_file), f"Local PDF '{pdf_file}' not generated")
-        self.assertTrue(os.path.getsize(pdf_file) > 1000, f"Local PDF '{pdf_file}' is too small")
+        for variant in variants:
+            pdf_file = os.path.join(temp_dir, quiz.title, f"{variant.title}.pdf")
+            self.assertTrue(os.path.exists(pdf_file), f"Local PDF '{pdf_file}' not generated")
+            self.assertTrue(os.path.getsize(pdf_file) > 1000, f"Local PDF '{pdf_file}' is too small")
 
     return __method
 
