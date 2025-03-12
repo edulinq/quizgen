@@ -3,7 +3,9 @@
       "date": "2025-02-25",
 
       "description": "Image Quiz",
-    
+      
+      "shuffle_answers": false,
+
       "groups": [
           {
               "name": "image-question",

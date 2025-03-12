@@ -47,7 +47,7 @@ def _compile_local(path):
     if (_pdflatex_bin_path is not None):
         bin_path = _pdflatex_bin_path
 
-    result = subprocess.run([bin_path, "-interaction=nonstopmode", os.path.basename(path)],cwd = os.path.dirname(path),
+    result = subprocess.run([bin_path, '-interaction=nonstopmode', os.path.basename(path)], cwd = os.path.dirname(path),
         capture_output = True)
     
     if (result.returncode != 0):
@@ -121,9 +121,9 @@ def set_cli_args(parser):
     return parser
 
 def init_from_args(args):
-    if args.pdflatex_use_docker:
+    if (args.pdflatex_use_docker):
         set_pdflatex_use_docker(True)
 
-    if args.pdflatex_bin_path:
+    if (args.pdflatex_bin_path):
         set_pdflatex_bin_path(args.pdflatex_bin_path)
     return args
