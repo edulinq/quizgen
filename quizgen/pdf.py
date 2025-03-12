@@ -123,7 +123,6 @@ def make_pdf(variant,
 
     out_path = os.path.join(out_dir, "%s.tex" % (variant.title))
 
-
     if (not skip_tex):
         converter = quizgen.converter.tex.TexTemplateConverter(answer_key = is_key,
                 image_base_dir = image_dir, image_relative_root = image_relative_root, cleanup_images = True)

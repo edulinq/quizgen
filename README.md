@@ -76,7 +76,7 @@ python3 -m quizgen.cli.pdf.create quiz.json --pdflatex-use-docker
 
 ##### Docker Image:
 
-The Docker image used for compilation is quizgen/latex.py. This image includes pdflatex and all required LaTeX packages for generating PDFs.
+The Docker image used for compilation is `quizgen/latex.py`. This image includes pdflatex and all required LaTeX packages for generating PDFs.
 
 ##### Requirements:
 
