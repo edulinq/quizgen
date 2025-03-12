@@ -69,11 +69,30 @@ To specify the path to your `pdflatex` binary, you can use the `--pdflatex-bin-p
 
 #### Docker Compilation
 
-PDF File compilation using Docker Command.
+You can compile PDF files using Docker for a portable, dependency-free experience with:
+```
+python3 -m quizgen.cli.pdf.create quiz.json --pdflatex-use-docker
+```
 
-```
-python3 quizgen/cli/pdf/create.py <quiz.json> --use-docker
-```
+##### Docker Image:
+
+The Docker image used for compilation is quizgen/latex.py. This image includes pdflatex and all required LaTeX packages for generating PDFs.
+
+##### Requirements:
+
+1. Docker: Ensure Docker is installed and running. You can verify this by running `docker info`, which should succeed without errors.
+
+2. File System: The input quiz.json file and any associated resources (e.g., images) must be accessible in the current directory. These files will be mounted into the Docker container during compilation.
+
+##### Caveats:
+
+1. Space: Compilation uses a temporary directory within the container. Ensure sufficient disk space is available for the process.
+
+2. Performance: Docker-based compilation may be slightly slower than local compilation due to the overhead of running the container.
+
+##### Flags
+
+`--pdflatex-use-docker` : Enables Docker compilation.
 
 ### Math Equations in HTML
 

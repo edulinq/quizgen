@@ -1,0 +1,33 @@
+{
+      "title": "Image Quiz",
+      "date": "2025-02-25",
+
+      "description": "Image Quiz",
+    
+      "groups": [
+          {
+              "name": "image-question",
+              "questions": [
+                  "../../../questions/good/prompt-image"
+              ]
+          }, 
+          {
+            "name": "essay-basic",
+            "questions": [
+                "../../../questions/good/essay-basic"
+            ]
+        },
+        {
+            "name": "fimb-basic",
+            "questions": [
+                "../../../questions/good/fimb-basic"
+            ]
+        },
+        {
+            "name": "fitb-basic",
+            "questions": [
+                "../../../questions/good/fitb-basic"
+            ]
+        }
+      ]
+  }

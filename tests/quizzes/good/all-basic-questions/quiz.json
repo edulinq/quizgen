@@ -72,12 +72,6 @@
             "questions": [
                 "../../../questions/good/tf-true"
             ]
-        },
-        {
-            "name":"a-image-question",
-            "questions":[
-                "../../../questions/good/prompt-image"
-            ]
         }
     ]
 }

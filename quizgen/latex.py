@@ -14,43 +14,73 @@ def set_pdflatex_bin_path(path):
     global _pdflatex_bin_path
     _pdflatex_bin_path = path
 
-def set_pdflatex_use_docker(use_docker):
+def set_pdflatex_use_docker(pdflatex_use_docker):
     global _pdflatex_use_docker
-    _pdflatex_use_docker = use_docker
+    _pdflatex_use_docker = pdflatex_use_docker
 
-def is_available(use_docker = False):
-    if use_docker:
-        result = subprocess.call(["docker", "--version"], stdout = subprocess.DEVNULL, stderr = subprocess.DEVNULL)
-        return result == 0
-    return _pdflatex_bin_path is not None or shutil.which('pdflatex') is not None
+def is_available():
+    if (_pdflatex_use_docker):
+        result = subprocess.run(["docker", "info"], stdout = subprocess.DEVNULL, stderr = subprocess.DEVNULL)
 
-def compile(path):
-    if _pdflatex_use_docker:
-        return _compile_docker(path)
+        if result.returncode != 0:
+            logging.warning("Docker is not available, cannot compile PDFs")
+            return False
+        return True
+    
+    if (_pdflatex_bin_path is not None):
+        return True
+
+    if (shutil.which('pdflatex') is None):
+        logging.warning("Could not find `pdxlatex`, cannot compile PDFs")
+        return False
+
+    return True
+
+def compile(path, additional_paths = []):
+    if (_pdflatex_use_docker):
+        return _compile_docker(path, additional_paths = additional_paths)
+
     return _compile_local(path)
 
 def _compile_local(path):
-    bin_path = _pdflatex_bin_path or "pdflatex"
-    result = subprocess.run(
-        [bin_path, "-interaction=nonstopmode", os.path.basename(path)],
-        cwd=os.path.dirname(path),
-        capture_output = True
-    )
-    return result.returncode == 0
+    bin_path = "pdflatex"
+    if (_pdflatex_bin_path is not None):
+        bin_path = _pdflatex_bin_path
 
-def _compile_docker(path):
-    temp_dir = quizgen.util.dirent.get_temp_path()
+    result = subprocess.run([bin_path, "-interaction=nonstopmode", os.path.basename(path)],cwd = os.path.dirname(path),
+        capture_output = True)
+    
+    if (result.returncode != 0):
+        raise ValueError("pdflatex did not exit cleanly. Stdout: '%s', Stderr: '%s'" % (result.stdout, result.stderr))
+
+def _compile_docker(path, additional_paths = []):
+    """
+    Compile a LaTeX file using Docker.
+    
+    Args:
+        path: Path to the LaTeX file to compile
+        additional_paths: List of additional directory paths that should be 
+                         accessible during compilation. These will be placed at the
+                         same relative location to the tex file as in the original
+                         directory structure.
+    """
+    
+    temp_dir = quizgen.util.dirent.get_temp_path(prefix = 'quizgen_latex_')
     temp_tex = os.path.join(temp_dir, os.path.basename(path))
     
     quizgen.util.dirent.copy_dirent(path, temp_tex)
     
-    source_dir = os.path.dirname(path)
-    images_dir = os.path.join(source_dir, 'images')
-    if os.path.exists(images_dir):
-        dest_images_dir = os.path.join(temp_dir, 'images')
-        shutil.copytree(images_dir, dest_images_dir, dirs_exist_ok = True)
-
-    logging.info(f"Compiling {temp_tex} with Docker")
+    # Copy any additional required paths
+    for add_path in additional_paths:
+        if (os.path.exists(add_path)):
+            rel_path = os.path.basename(add_path)
+            dest_path = os.path.join(temp_dir, rel_path)
+            
+            if (os.path.isdir(add_path)):
+                shutil.copytree(add_path, dest_path, dirs_exist_ok = True)
+            else:
+                os.makedirs(os.path.dirname(dest_path), exist_ok = True)
+                shutil.copy(add_path, dest_path)
     
     docker_cmd = [
         "docker", "run", "--rm",
@@ -61,10 +91,10 @@ def _compile_docker(path):
 
     result = subprocess.run(docker_cmd, capture_output = True, text = True)
 
-    if result.returncode != 0:
+    if (result.returncode != 0):
         logging.error(f"Docker compilation failed with exit code {result.returncode}")
 
-    if result.returncode == 0:
+    if (result.returncode == 0):
         base_name = os.path.basename(temp_tex)
         target_dir = os.path.dirname(path)
         for ext in [".pdf", ".aux", ".log", ".out", ".pos"]:
@@ -72,12 +102,10 @@ def _compile_docker(path):
             if os.path.exists(temp_file):
                 shutil.copy(temp_file, os.path.join(target_dir, os.path.basename(temp_file)))
             else:
-                logging.warning(f"Expected file {temp_file} not generated")
+                logging.error(f"Expected file {temp_file} not generated")
     else:
         logging.error(f"Compilation failed, no files copied back")
 
-    quizgen.util.dirent.remove_dirent(temp_dir)
-    return result.returncode == 0
 
 def set_cli_args(parser):
     parser.add_argument('--pdflatex-bin-path', dest = 'pdflatex_bin_path',
@@ -86,14 +114,16 @@ def set_cli_args(parser):
                 + ' If not specified, $PATH will be searched.'
                 + ' Used to compile PDFs.'))
 
-    parser.add_argument('--use-docker', dest = 'use_docker',
+    parser.add_argument('--pdflatex-use-docker', dest = 'pdflatex_use_docker',
         action = 'store_true', default = False,
-        help = 'Use Docker to compile PDFs.')
+        help = ('Use Docker to compile PDFs with pdflatex.'
+                + ' The Docker image "quizgen/latex.py" will be used.'))
     return parser
 
 def init_from_args(args):
-    if args.use_docker:
+    if args.pdflatex_use_docker:
         set_pdflatex_use_docker(True)
+
     if args.pdflatex_bin_path:
         set_pdflatex_bin_path(args.pdflatex_bin_path)
     return args

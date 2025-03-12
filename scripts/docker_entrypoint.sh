@@ -1,9 +1,49 @@
 #!/bin/bash
 
-# Double compilation to get correct references
-pdflatex -interaction=nonstopmode "$(basename "$1")"
-pdflatex -interaction=nonstopmode "$(basename "$1")"
+# Docker entrypoint script to compile a TeX file into a PDF using pdflatex.
+# The script compiles the input file twice to ensure correct references and
+# adjusts the ownership of output files to match the input file's owner and group.
 
-# Change owner of output files to the owner of the input file
-INPUT_OWNER=$(stat -c "%u:%g" "$1")
-chown "$INPUT_OWNER" "${1%.tex}.pdf" "${1%.tex}.aux" "${1%.tex}.log" "${1%.tex}.out" "${1%.tex}.pos" 2>/dev/null || true
+readonly THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly ROOT_DIR="${THIS_DIR}/.."
+
+function main() {
+      set -e
+      trap exit SIGINT
+
+      local tex_path="$1"
+
+      if [ -z "${tex_path}" ]; then
+            echo "Error: No TeX file path provided." >&2
+            exit 1
+      fi
+
+      if [ ! -f "${tex_path}" ]; then
+            echo "Error: TeX file '${tex_path}' does not exist." >&2
+            exit 1
+      fi
+
+      local base_name
+      base_name=$(basename "${tex_path}")
+
+      # Double compilation to get correct references.
+      pdflatex -interaction=nonstopmode "${base_name}"
+      pdflatex -interaction=nonstopmode "${base_name}"
+
+      # Change owner of output files to match the input file.
+      local owner_group
+      owner_group=$(stat -c "%u:%g" "${tex_path}")
+
+      local extensions=(".pdf" ".aux" ".log" ".out" ".pos")
+      for ext in "${extensions[@]}"; do
+            local output_file="${base_name%.tex}${ext}"
+            if [ -f "${output_file}" ]; then
+                  chown "${owner_group}" "${output_file}"
+                  if [ $? -ne 0 ]; then
+                  echo "Warning: Failed to change ownership of '${output_file}'." >&2
+                  fi
+            fi
+      done
+}
+
+[[ "${BASH_SOURCE[0]}" == "${0}" ]] && main "$@"

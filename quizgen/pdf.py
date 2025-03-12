@@ -31,9 +31,9 @@ def make_with_args(args, **kwargs):
             skip_key = args.skip_key, skip_tex = args.skip_tex, skip_pdf = args.skip_pdf,
             **kwargs)
 
-def make_with_path(quiz_path, base_out_dir = None, **kwargs):
+def make_with_path(quiz_path, **kwargs):
     quiz = quizgen.quiz.Quiz.from_path(quiz_path)
-    return make(quiz, quiz_path = quiz_path, base_out_dir = base_out_dir, **kwargs)
+    return make(quiz, quiz_path = quiz_path, **kwargs)
 
 def make(quiz,
         quiz_path = None, base_out_dir = None,
@@ -123,6 +123,7 @@ def make_pdf(variant,
 
     out_path = os.path.join(out_dir, "%s.tex" % (variant.title))
 
+
     if (not skip_tex):
         converter = quizgen.converter.tex.TexTemplateConverter(answer_key = is_key,
                 image_base_dir = image_dir, image_relative_root = image_relative_root, cleanup_images = True)
@@ -131,9 +132,14 @@ def make_pdf(variant,
         quizgen.util.dirent.write_file(out_path, content)
 
     if (not skip_pdf):
+        # Define additional paths to include for compilation
+        additional_paths = []
+        if (os.path.exists(image_dir)):
+            additional_paths.append(os.path.join(out_dir, 'images'))
+
         # Need to compile twice to get positioning information.
-        quizgen.latex.compile(out_path)
-        quizgen.latex.compile(out_path)
+        quizgen.latex.compile(out_path, additional_paths = additional_paths)
+        quizgen.latex.compile(out_path, additional_paths = additional_paths)
 
     return out_dir
 
