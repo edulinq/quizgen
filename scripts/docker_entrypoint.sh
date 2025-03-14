@@ -15,7 +15,7 @@ function main() {
 
       if [ -z "${tex_path}" ]; then
             echo "Error: No TeX file path provided." >&2
-            exit 1
+            exit 2
       fi
 
       if [ ! -f "${tex_path}" ]; then
@@ -23,27 +23,15 @@ function main() {
             exit 1
       fi
 
-      local base_name
-      base_name=$(basename "${tex_path}")
+      local base_name=$(basename "${tex_path}")
 
       # Double compilation to get correct references.
       pdflatex -interaction=nonstopmode "${base_name}"
       pdflatex -interaction=nonstopmode "${base_name}"
 
       # Change owner of output files to match the input file.
-      local owner_group
-      owner_group=$(stat -c "%u:%g" "${tex_path}")
-
-      local extensions=(".pdf" ".aux" ".log" ".out" ".pos")
-      for ext in "${extensions[@]}"; do
-            local output_file="${base_name%.tex}${ext}"
-            if [ -f "${output_file}" ]; then
-                  chown "${owner_group}" "${output_file}"
-                  if [ $? -ne 0 ]; then
-                  echo "Warning: Failed to change ownership of '${output_file}'." >&2
-                  fi
-            fi
-      done
+      local owner_group=$(stat -c "%u:%g" "${tex_path}")
+      chown -R "${owner_group}" /work
 }
 
 [[ "${BASH_SOURCE[0]}" == "${0}" ]] && main "$@"

@@ -1,9 +1,9 @@
 {
   "quiz": {
-    "title": "Image Quiz",
+    "title": "Image Questions",
     "course_title": "",
     "term_title": "",
-    "description": "Image Quiz",
+    "description": "Image Questions",
     "date": "2025-02-25",
     "time_limit_mins": null,
     "shuffle_answers": false,
@@ -42,108 +42,6 @@
           ],
           "points": 10,
           "name": "image-question",
-          "hints": {},
-          "shuffle_answers": true,
-          "custom_header": null,
-          "skip_numbering": null
-        }
-      ]
-    },
-    {
-      "group": {
-        "id": "1",
-        "name": "essay-basic",
-        "pick_count": 1,
-        "points": 10,
-        "shuffle_answers": true,
-        "pick_with_replacement": true,
-        "custom_header": null,
-        "skip_numbering": null,
-        "hints": {},
-        "hints_first": {},
-        "hints_last": {}
-      },
-      "questions": [
-        {
-          "id": "1.0",
-          "number": 2,
-          "base_dir": "questions/good/essay-basic",
-          "prompt": "Essay: Basic",
-          "question_type": "essay",
-          "answers": [
-            {"text": ""}
-          ],
-          "points": 10,
-          "name": "essay-basic",
-          "hints": {},
-          "shuffle_answers": true,
-          "custom_header": null,
-          "skip_numbering": null
-        }
-      ]
-    },
-    {
-      "group": {
-        "id": "2",
-        "name": "fimb-basic",
-        "pick_count": 1,
-        "points": 10,
-        "shuffle_answers": true,
-        "pick_with_replacement": true,
-        "custom_header": null,
-        "skip_numbering": null,
-        "hints": {},
-        "hints_first": {},
-        "hints_last": {}
-      },
-      "questions": [
-        {
-          "id": "2.0",
-          "number": 3,
-          "base_dir": "questions/good/fimb-basic",
-          "prompt": "Fill in Multiple Blanks: Basic -- <placeholder>A</placeholder> <placeholder>B</placeholder> <placeholder>C</placeholder> <placeholder>D</placeholder>",
-          "question_type": "fill_in_multiple_blanks",
-          "answers": [
-            {"label": "A", "solutions": ["1"]},
-            {"label": "B", "solutions": ["2"]},
-            {"label": "C", "solutions": ["3"]},
-            {"label": "D", "solutions": ["4"]}
-          ],
-          "points": 10,
-          "name": "fimb-basic",
-          "hints": {},
-          "shuffle_answers": true,
-          "custom_header": null,
-          "skip_numbering": null
-        }
-      ]
-    },
-    {
-      "group": {
-        "id": "3",
-        "name": "fitb-basic",
-        "pick_count": 1,
-        "points": 10,
-        "shuffle_answers": true,
-        "pick_with_replacement": true,
-        "custom_header": null,
-        "skip_numbering": null,
-        "hints": {},
-        "hints_first": {},
-        "hints_last": {}
-      },
-      "questions": [
-        {
-          "id": "3.0",
-          "number": 4,
-          "base_dir": "questions/good/fitb-basic",
-          "prompt": "Short Answer \\/ Fill in The Blank: Basic",
-          "question_type": "fill_in_the_blank",
-          "answers": [
-            {"text": "1"}
-          ],
-          "points": 10,
-          "name": "fitb-basic",
           "hints": {},
           "shuffle_answers": true,
           "custom_header": null,

@@ -136,8 +136,6 @@ def make_pdf(variant,
         if (os.path.exists(image_dir)):
             additional_paths.append(os.path.join(out_dir, 'images'))
 
-        # Need to compile twice to get positioning information.
-        quizgen.latex.compile(out_path, additional_paths = additional_paths)
         quizgen.latex.compile(out_path, additional_paths = additional_paths)
 
     return out_dir
@@ -170,5 +168,5 @@ def set_cli_args(parser):
     parser.add_argument('--seed', dest = 'seed',
         action = 'store', type = int, default = None,
         help = 'The random seed to use (defaults to a random seed).')
-    
+
     return parser

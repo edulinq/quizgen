@@ -1,34 +1,16 @@
 {
-      "title": "Image Quiz",
+      "title": "Image Questions",
       "date": "2025-02-25",
 
-      "description": "Image Quiz",
+      "description": "Image Questions",
       
       "shuffle_answers": false,
 
       "groups": [
-          {
-              "name": "image-question",
-              "questions": [
-                  "../../../questions/good/prompt-image"
-              ]
-          }, 
-          {
-            "name": "essay-basic",
-            "questions": [
-                "../../../questions/good/essay-basic"
-            ]
-        },
         {
-            "name": "fimb-basic",
+            "name": "image-question",
             "questions": [
-                "../../../questions/good/fimb-basic"
-            ]
-        },
-        {
-            "name": "fitb-basic",
-            "questions": [
-                "../../../questions/good/fitb-basic"
+                "../../../questions/good/prompt-image"
             ]
         }
       ]
