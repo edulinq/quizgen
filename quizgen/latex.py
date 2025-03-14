@@ -57,10 +57,6 @@ def _compile_local(path):
 def _compile_docker(path, out_dir = None):
     """
     Compile a LaTeX file using Docker.
-
-    Args:
-        path: Path to the LaTeX file to compile.
-        out_dir: Directory to place compilation output files.
     """
 
     tex_file = os.path.basename(path)
