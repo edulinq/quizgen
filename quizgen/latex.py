@@ -40,15 +40,15 @@ def compile(path, out_dir = None):
         _compile_docker(path, out_dir = out_dir)
     else:
         # Need to compile twice to get positioning information.
-        _compile_local(path)
-        _compile_local(path)
+        _compile_local(path, out_dir = out_dir)
+        _compile_local(path, out_dir = out_dir)
 
-def _compile_local(path):
+def _compile_local(path, out_dir = None):
     bin_path = "pdflatex"
     if (_pdflatex_bin_path is not None):
         bin_path = _pdflatex_bin_path
 
-    result = subprocess.run([bin_path, '-interaction=nonstopmode', os.path.basename(path)], cwd = os.path.dirname(path),
+    result = subprocess.run([bin_path, '-interaction=nonstopmode', os.path.basename(path)], cwd = out_dir,
         capture_output = True)
 
     if (result.returncode != 0):
