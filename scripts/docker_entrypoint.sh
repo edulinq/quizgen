@@ -20,7 +20,7 @@ function main() {
 
       if [ ! -f "${tex_path}" ]; then
             echo "Error: TeX file '${tex_path}' does not exist." >&2
-            exit 1
+            exit 3
       fi
 
       local base_name=$(basename "${tex_path}")
