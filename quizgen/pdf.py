@@ -131,12 +131,7 @@ def make_pdf(variant,
         quizgen.util.dirent.write_file(out_path, content)
 
     if (not skip_pdf):
-        # Define additional paths to include for compilation
-        additional_paths = []
-        if (os.path.exists(image_dir)):
-            additional_paths.append(os.path.join(out_dir, 'images'))
-
-        quizgen.latex.compile(out_path, additional_paths = additional_paths)
+        quizgen.latex.compile(out_path, out_dir = out_dir)
 
     return out_dir
 
