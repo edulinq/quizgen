@@ -3,8 +3,6 @@ import os
 import shutil
 import subprocess
 
-import quizgen.util.dirent
-
 _pdflatex_bin_path = None
 _pdflatex_use_docker = False
 
@@ -38,7 +36,7 @@ def is_available():
     return True
 
 def compile(path, out_dir = None):
-    if (_pdflatex_use_docker):
+    if (_pdflatex_use_docker is True):
         _compile_docker(path, out_dir = out_dir)
     else:
         # Need to compile twice to get positioning information.
@@ -65,14 +63,14 @@ def _compile_docker(path, out_dir = None):
         out_dir: Directory to place compilation output files.
     """
 
-    tex_file =  os.path.basename(path)
+    tex_file = os.path.basename(path)
     out_dir_path = os.path.abspath(out_dir)
 
     docker_cmd = [
         "docker", "run", "--rm",
         "-v", f"{out_dir_path}:/work",
         DOCKER_IMAGE,
-        os.path.basename(tex_file)
+        tex_file
     ]
 
     result = subprocess.run(docker_cmd, capture_output = True, text = True)
@@ -95,7 +93,7 @@ def set_cli_args(parser):
     return parser
 
 def init_from_args(args):
-    if (args.pdflatex_use_docker):
+    if (args.pdflatex_use_docker is True):
         set_pdflatex_use_docker(args.pdflatex_use_docker)
 
     if (args.pdflatex_bin_path is not None):

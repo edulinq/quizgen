@@ -14,31 +14,31 @@ Sample quizzes that demonstrate all question types are available
 Additionally, you can see examples of good questions by looking at the [test cases for this project](tests/questions/good).
 
 Documentation Table of Contents:
- - [Installation / Requirements](#installation--requirements)
-   - [Python](#python)
-   - [PDF Files](#pdf-files)
-   - [Math Equations in HTML](#math-equations-in-html)
-   - [Canvas Uploading](#canvas-uploading)
-   - [GradeScope Uploading](#gradescope-uploading)
- - [Usage](#usage)
-   - [Parsing a Specific Quiz](#parsing-a-specific-quiz)
-     - [Outputting a JSON Quiz](#outputting-a-json-quiz)
-     - [Outputting a TeX Quiz](#outputting-a-tex-quiz)
-     - [Outputting an HTML Quiz](#outputting-an-html-quiz)
-     - [Outputting a QTI Quiz](#outputting-a-qti-quiz)
-   - [Parsing a Specific Question](#parsing-a-specific-question)
-   - [Parsing a Specific File](#parsing-a-specific-file)
-   - [Uploading a Quiz to Canvas](#uploading-a-quiz-to-canvas)
-   - [Uploading a Quiz to GradeScope](#uploading-a-quiz-to-gradescope)
- - [Quiz Format](#quiz-format)
-   - [Answer Shuffling](#answer-shuffling)
-   - [Question Selection from Groups](#question-selection-from-groups)
-   - [Question Prompts](#question-prompts)
-   - [Quiz Descriptions](#quiz-descriptions)
- - [Question Types](/docs/question-types.md)
- - [QuizGen Markdown Syntax](/docs/syntax.md)
- - [Builtin Templates and Hints](/docs/builtin-templates.md)
- - [Styling](/docs/styling.md)
+- [Quiz Generator](#quiz-generator)
+  - [Installation / Requirements](#installation--requirements)
+    - [Python](#python)
+    - [PDF Files](#pdf-files)
+      - [Local Compilation](#local-compilation)
+      - [Docker Compilation](#docker-compilation)
+    - [Math Equations in HTML](#math-equations-in-html)
+    - [Canvas Uploading](#canvas-uploading)
+    - [GradeScope Uploading](#gradescope-uploading)
+  - [Usage](#usage)
+    - [Parsing a Specific Quiz](#parsing-a-specific-quiz)
+      - [Outputting a JSON Quiz](#outputting-a-json-quiz)
+      - [Outputting a TeX Quiz](#outputting-a-tex-quiz)
+      - [Outputting an HTML Quiz](#outputting-an-html-quiz)
+      - [Outputting a QTI Quiz](#outputting-a-qti-quiz)
+    - [Parsing a Specific Question](#parsing-a-specific-question)
+    - [Parsing a Specific File](#parsing-a-specific-file)
+    - [Uploading a Quiz to Canvas](#uploading-a-quiz-to-canvas)
+    - [Creating a PDF Quiz](#creating-a-pdf-quiz)
+    - [Uploading a Quiz to GradeScope](#uploading-a-quiz-to-gradescope)
+  - [Quiz Format](#quiz-format)
+    - [Answer Shuffling](#answer-shuffling)
+    - [Question Selection from Groups](#question-selection-from-groups)
+    - [Question Prompts](#question-prompts)
+    - [Quiz Descriptions](#quiz-descriptions)
 
 ## Installation / Requirements
 
@@ -69,14 +69,18 @@ To specify the path to your `pdflatex` binary, you can use the `--pdflatex-bin-p
 
 #### Docker Compilation
 
-The QuizGen can compile PDFs using a Docker image with the `--pdflatex-use-docker` flag. The Docker image used for compilation is `quizgen/latex.py`.
-This image includes pdflatex and all required LaTeX packages for generating PDFs. The basic usage is as follows:
+The QuizGen can compile PDFs using [Docker](https://www.docker.com/) with the `--pdflatex-use-docker` flag.
+The Docker image used for compilation is `quizgen/latex.py`.
+This image includes pdflatex and all required LaTeX packages for generating PDFs.
+The basic usage is as follows:
 ```
 python3 -m quizgen.cli.pdf.create <path to JSON file> --pdflatex-use-docker
 ```
 
 Requirements:
 - Ensure Docker is installed and running. You can verify this by running `docker info`.
+
+**Note** : Docker-based compilation may be slightly slower than local compilation due to container overhead.
 
 ### Math Equations in HTML
 

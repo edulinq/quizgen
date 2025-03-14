@@ -1,6 +1,4 @@
 import os
-import time
-import logging
 
 import quizgen.latex
 import quizgen.pdf
@@ -36,42 +34,6 @@ def _add_pdf_test(path):
     # Test Docker PDF generation.
     test_name = f"test_quiz_pdf_docker_{base_test_name}"
     setattr(PdfConversionTest, test_name, _get_quiz_pdf_docker_test_method(path))
-
-    # Test performance comparison
-    test_name = f"test_quiz_pdf_performance_{base_test_name}"
-    setattr(PdfConversionTest, test_name, _get_quiz_pdf_performance_test_method(path))
-
-def _get_quiz_pdf_performance_test_method(path):
-    """
-    Get a test for comparing performance of local and Docker PDF generation.
-    """
-
-    def __method(self):
-        quizgen.latex.set_pdflatex_use_docker(False)
-        local_available = quizgen.latex.is_available()
-
-        quizgen.latex.set_pdflatex_use_docker(True)
-        docker_available = quizgen.latex.is_available()
-
-        if (not local_available or not docker_available):
-            self.skipTest("Both pdflatex and Docker must be available for performance comparison")
-
-        local_time = _run_pdf_performance_test(self, path, use_docker = False)
-        docker_time = _run_pdf_performance_test(self, path, use_docker = True)
-
-        logging.info(f"Performance test for {os.path.basename(os.path.dirname(path))}:")
-        logging.info(f"  Local PDF generation time: {local_time:.2f} seconds")
-        logging.info(f"  Docker PDF generation time: {docker_time:.2f} seconds")
-        logging.info(f"  Ratio (Docker/Local): {docker_time/local_time:.2f}x")
-
-    return __method
-
-def _run_pdf_performance_test(self, path, use_docker):
-    start_time = time.time()
-    _run_pdf_test(self, path, use_docker = use_docker)
-    end_time = time.time()
-
-    return end_time - start_time
 
 def _get_quiz_pdf_local_test_method(path):
     """
