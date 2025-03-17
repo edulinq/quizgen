@@ -28,11 +28,11 @@ def _add_pdf_test(path):
     base_test_name = os.path.basename(os.path.dirname(path))
 
     # Test local PDF generation.
-    test_name = f"test_quiz_pdf_local_{base_test_name}"
+    test_name = "test_quiz_pdf_local_%s" % (base_test_name)
     setattr(PdfConversionTest, test_name, _get_quiz_pdf_local_test_method(path))
 
     # Test Docker PDF generation.
-    test_name = f"test_quiz_pdf_docker_{base_test_name}"
+    test_name = "test_quiz_pdf_docker_%s" % (base_test_name)
     setattr(PdfConversionTest, test_name, _get_quiz_pdf_docker_test_method(path))
 
 def _get_quiz_pdf_local_test_method(path):
@@ -59,7 +59,7 @@ def _run_pdf_test(self, path, use_docker = False):
     quizgen.latex.set_pdflatex_use_docker(use_docker)
 
     if (not quizgen.latex.is_available()):
-        self.skipTest("pdflatex is not available.")
+        self.skipTest("LaTeX is not available.")
 
     temp_dir = quizgen.util.dirent.get_temp_path(prefix = "quizgen_pdf_test_")
     quiz, variants, _ = quizgen.pdf.make_with_path(path, base_out_dir = temp_dir)
