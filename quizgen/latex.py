@@ -78,7 +78,7 @@ def _compile_docker(path):
 
     result = subprocess.run(docker_cmd, capture_output = True, text = True)
     if (result.returncode != 0):
-        raise ValueError(f"Docker compilation failed with exit code {result.returncode}. Stdout: '{result.stdout}', Stderr: '{result.stderr}'")
+        raise ValueError("Docker compilation failed with exit code '%s'. Stdout: '%s', Stderr: '%s'" % (result.returncode, result.stdout, result.stderr))
 
 def set_cli_args(parser):
     parser.add_argument('--pdflatex-bin-path', dest = 'pdflatex_bin_path',
