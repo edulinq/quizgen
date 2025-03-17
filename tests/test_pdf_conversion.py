@@ -63,9 +63,8 @@ def _run_pdf_test(self, path, use_docker = False):
 
     temp_dir = quizgen.util.dirent.get_temp_path(prefix = "quizgen_pdf_test_")
     quiz, variants, _ = quizgen.pdf.make_with_path(path, base_out_dir = temp_dir)
-
     for variant in variants:
-        pdf_file = os.path.join(temp_dir, quiz.title, f"{variant.title}.pdf.")
+        pdf_file = os.path.join(temp_dir, quiz.title, f"{variant.title}.pdf")
         self.assertTrue(os.path.exists(pdf_file), f"PDF '{pdf_file}' not generated.")
         self.assertTrue(os.path.getsize(pdf_file) > MIN_PDF_SIZE_BYTES, f"PDF '{pdf_file}' is too small.")
 
