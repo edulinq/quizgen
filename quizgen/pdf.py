@@ -131,7 +131,7 @@ def make_pdf(variant,
         quizgen.util.dirent.write_file(out_path, content)
 
     if (not skip_pdf):
-        quizgen.latex.compile(out_path, out_dir = out_dir)
+        quizgen.latex.compile(out_path)
 
     return out_dir
 

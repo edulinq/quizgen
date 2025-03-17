@@ -59,7 +59,7 @@ def _run_pdf_test(self, path, use_docker = False):
     quizgen.latex.set_pdflatex_use_docker(use_docker)
 
     if (not quizgen.latex.is_available()):
-        self.skipTest(f"{'Docker' if use_docker else 'pdflatex'} is not available.")
+        self.skipTest("pdflatex is not available.")
 
     temp_dir = quizgen.util.dirent.get_temp_path(prefix = "quizgen_pdf_test_")
     quiz, variants, _ = quizgen.pdf.make_with_path(path, base_out_dir = temp_dir)

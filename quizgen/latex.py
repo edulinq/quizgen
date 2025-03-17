@@ -7,6 +7,7 @@ _pdflatex_bin_path = None
 _pdflatex_use_docker = False
 
 DOCKER_IMAGE = "quizgen/latex.py"
+NUM_COMPILATIONS = 2
 
 def set_pdflatex_bin_path(path):
     global _pdflatex_bin_path
@@ -19,9 +20,8 @@ def set_pdflatex_use_docker(pdflatex_use_docker):
 def is_available():
     if (_pdflatex_use_docker):
         result = subprocess.run(["docker", "info"], stdout = subprocess.DEVNULL, stderr = subprocess.DEVNULL)
-
         if (result.returncode != 0):
-            logging.warning("Docker is not available, cannot compile PDFs")
+            logging.warning("Docker is not available, cannot compile PDFs.")
             return False
 
         return True
@@ -30,37 +30,46 @@ def is_available():
         return True
 
     if (shutil.which('pdflatex') is None):
-        logging.warning("Could not find `pdxlatex`, cannot compile PDFs")
+        logging.warning("Could not find `pdxlatex`, cannot compile PDFs.")
         return False
 
     return True
 
-def compile(path, out_dir = None):
-    if (_pdflatex_use_docker is True):
-        _compile_docker(path, out_dir = out_dir)
-    else:
-        # Need to compile twice to get positioning information.
-        _compile_local(path, out_dir = out_dir)
-        _compile_local(path, out_dir = out_dir)
+def compile(path):
+    """
+    Compile a LaTeX file to PDF in its containing directory.
 
-def _compile_local(path, out_dir = None):
+    The caller must provide a path to a TeX file within a prepared output directory.
+    This directory should contain all necessary resources (e.g., images) and no non-relevant files.
+    Compilation may generate additional files (e.g., .aux, .log) in this directory,
+    and permissions may be modified as needed.
+
+    It is recommended that the caller cleans the directory before initiating compilation.
+    """
+
+    if (_pdflatex_use_docker is True):
+        _compile_docker(path)
+    else:
+        _compile_local(path)
+
+def _compile_local(path):
     bin_path = "pdflatex"
     if (_pdflatex_bin_path is not None):
         bin_path = _pdflatex_bin_path
 
-    result = subprocess.run([bin_path, '-interaction=nonstopmode', os.path.basename(path)], cwd = out_dir,
-        capture_output = True)
-
-    if (result.returncode != 0):
-        raise ValueError("pdflatex did not exit cleanly. Stdout: '%s', Stderr: '%s'" % (result.stdout, result.stderr))
-
-def _compile_docker(path, out_dir = None):
-    """
-    Compile a LaTeX file using Docker.
-    """
-
     tex_file = os.path.basename(path)
-    out_dir_path = os.path.abspath(out_dir)
+    out_dir = os.path.dirname(path)
+
+    # Need to compile twice to get positioning information.
+    for _ in range(NUM_COMPILATIONS):
+        result = subprocess.run([bin_path, '-interaction=nonstopmode', tex_file],
+                                cwd = out_dir, capture_output = True)
+        if (result.returncode != 0):
+            raise ValueError("pdflatex did not exit cleanly. Stdout: '%s', Stderr: '%s'" % (result.stdout, result.stderr))
+
+def _compile_docker(path):
+    tex_file = os.path.basename(path)
+    out_dir_path = os.path.abspath(os.path.dirname(path))
 
     docker_cmd = [
         "docker", "run", "--rm",
@@ -70,7 +79,6 @@ def _compile_docker(path, out_dir = None):
     ]
 
     result = subprocess.run(docker_cmd, capture_output = True, text = True)
-
     if (result.returncode != 0):
         raise ValueError(f"Docker compilation failed with exit code {result.returncode}. Stdout: '{result.stdout}', Stderr: '{result.stderr}'")
 
@@ -84,7 +92,7 @@ def set_cli_args(parser):
     parser.add_argument('--pdflatex-use-docker', dest = 'pdflatex_use_docker',
         action = 'store_true', default = False,
         help = ('Use Docker to compile PDFs with pdflatex.'
-                + f' The Docker image "{DOCKER_IMAGE}" will be used.'))
+                + " The Docker image '%s' will be used." % (DOCKER_IMAGE)))
 
     return parser
 
