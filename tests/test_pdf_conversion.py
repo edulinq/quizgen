@@ -19,7 +19,7 @@ class PdfConversionTest(tests.base.BaseTest):
 def _add_pdf_tests():
     quiz_files = tests.base.discover_good_quiz_files()
     if (not quiz_files):
-        raise ValueError(f"No quiz.json files found in '{tests.base.GOOD_QUIZZES_DIR}' or its subdirectories.")
+        raise ValueError("No quiz.json files found in '%s' or its subdirectories." % (tests.base.GOOD_QUIZZES_DIR))
 
     for quiz_path in quiz_files:
         _add_pdf_test(quiz_path)
@@ -63,6 +63,7 @@ def _run_pdf_test(self, path, use_docker = False):
 
     temp_dir = quizgen.util.dirent.get_temp_path(prefix = "quizgen_pdf_test_")
     quiz, variants, _ = quizgen.pdf.make_with_path(path, base_out_dir = temp_dir)
+
     for variant in variants:
         pdf_file = os.path.join(temp_dir, quiz.title, f"{variant.title}.pdf")
         self.assertTrue(os.path.exists(pdf_file), f"PDF '{pdf_file}' not generated.")
