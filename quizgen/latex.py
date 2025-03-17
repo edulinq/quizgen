@@ -43,8 +43,6 @@ def compile(path):
     This directory should contain all necessary resources (e.g., images) and no non-relevant files.
     Compilation may generate additional files (e.g., .aux, .log) in this directory,
     and permissions may be modified as needed.
-
-    It is recommended that the caller cleans the directory before initiating compilation.
     """
 
     if (_pdflatex_use_docker is True):
