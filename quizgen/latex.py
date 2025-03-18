@@ -6,7 +6,7 @@ import subprocess
 _pdflatex_bin_path = None
 _pdflatex_use_docker = False
 
-DOCKER_IMAGE = "ghcr.io/edulinq/pdflatex-docker"
+DOCKER_IMAGE = "ghcr.io/edulinq/pdflatex-docker:1.0.0"
 
 def set_pdflatex_bin_path(path):
     global _pdflatex_bin_path
@@ -54,25 +54,25 @@ def _compile_local(path):
     if (_pdflatex_bin_path is not None):
         bin_path = _pdflatex_bin_path
 
-    tex_file_name = os.path.basename(path)
+    tex_filename = os.path.basename(path)
     out_dir = os.path.dirname(path)
 
     # Need to compile twice to get positioning information.
     for _ in range(2):
-        result = subprocess.run([bin_path, '-interaction=nonstopmode', tex_file_name],
+        result = subprocess.run([bin_path, '-interaction=nonstopmode', tex_filename],
                                 cwd = out_dir, capture_output = True)
         if (result.returncode != 0):
             raise ValueError("pdflatex did not exit cleanly. Stdout: '%s', Stderr: '%s'" % (result.stdout, result.stderr))
 
 def _compile_docker(path):
-    tex_file_name = os.path.basename(path)
+    tex_filename = os.path.basename(path)
     out_dir_path = os.path.abspath(os.path.dirname(path))
 
     docker_cmd = [
         "docker", "run", "--rm",
         "-v", f"{out_dir_path}:/work",
         DOCKER_IMAGE,
-        tex_file_name
+        tex_filename
     ]
 
     result = subprocess.run(docker_cmd, capture_output = True, text = True)

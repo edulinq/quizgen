@@ -7,11 +7,11 @@
     "shuffle_answers": false,
 
     "groups": [
-    {
-        "name": "image-question",
-        "questions": [
-            "../../../questions/good/prompt-image"
-        ]
-    }
+        {
+            "name": "image-question",
+            "questions": [
+                "../../../questions/good/prompt-image"
+            ]
+        }
     ]
 }
