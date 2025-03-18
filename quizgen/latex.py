@@ -18,8 +18,7 @@ def set_pdflatex_use_docker(pdflatex_use_docker):
 
 def is_available():
     if (_pdflatex_use_docker):
-        result = subprocess.run(["docker", "info"], stdout = subprocess.DEVNULL, stderr = subprocess.DEVNULL)
-        if (result.returncode != 0):
+        if (not _is_docker_available()):
             logging.warning("Docker is not available, cannot compile PDFs.")
             return False
 
@@ -33,6 +32,13 @@ def is_available():
         return False
 
     return True
+
+def _is_docker_available():
+    if (shutil.which('docker') is None):
+        return False
+
+    result = subprocess.run(["docker", "info"], stdout = subprocess.DEVNULL, stderr = subprocess.DEVNULL)
+    return (result.returncode == 0)
 
 def compile(path):
     """
