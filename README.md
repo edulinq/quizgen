@@ -59,11 +59,24 @@ pip3 install .
 
 ### PDF Files
 
+#### Local Compilation
+
 To compile PDF files, the `pdflatex` program is used.
 `pdflatex` comes installed with most standard [LaTeX](https://en.wikipedia.org/wiki/LaTeX) packages.
 
 By default, your [PATH](https://en.wikipedia.org/wiki/PATH_(variable)) will be searched for `pdflatex`.
 To specify the path to your `pdflatex` binary, you can use the `--pdflatex-bin-path` flag.
+
+#### Docker Compilation
+
+The QuizGen can compile PDFs using [Docker](https://www.docker.com/) with the `--pdflatex-use-docker` flag.
+The Docker image used for compilation is [ghcr.io/edulinq/pdflatex-docker](https://github.com/edulinq/pdflatex-docker/pkgs/container/pdflatex-docker) (see the [repository here](https://github.com/edulinq/pdflatex-docker) for more details).
+This image includes `pdflatex` and most [standard LaTeX packages](https://packages.ubuntu.com/jammy/texlive-latex-extra) for generating PDFs.
+Ensure Docker is running and accessible by the current user (typically via the Docker daemon).
+The basic usage is as follows:
+```
+python3 -m quizgen.cli.pdf.create <path to JSON file> --pdflatex-use-docker
+```
 
 ### Math Equations in HTML
 
@@ -130,7 +143,7 @@ python3 -m quizgen.cli.parse.quiz <path to quiz JSON file> --format json > quiz.
 ```
 
 A JSON representation of a parsed quiz (which is different from a standard quiz definition) can be useful for debugging.
-If debugging, the `--flatten-groups` flag can be useful (which will include all questions from all groups in the output quiz.
+If debugging, the `--flatten-groups` flag can be useful (which will include all questions from all groups in the output quiz).
 
 #### Outputting a TeX Quiz
 
