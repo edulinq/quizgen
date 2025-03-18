@@ -70,7 +70,7 @@ To specify the path to your `pdflatex` binary, you can use the `--pdflatex-bin-p
 #### Docker Compilation
 
 The QuizGen can compile PDFs using [Docker](https://www.docker.com/) with the `--pdflatex-use-docker` flag.
-The Docker image used for compilation is `quizgen/latex.py` which includes `pdflatex` and most [standard LaTeX packages](https://packages.ubuntu.com/jammy/texlive-latex-extra) for generating PDFs.
+The Docker image used for compilation is `ghcr.io/edulinq/pdflatex-docker` which includes `pdflatex` and most [standard LaTeX packages](https://packages.ubuntu.com/jammy/texlive-latex-extra) for generating PDFs.
 To use this feature, ensure Docker is running and accessible by the current user (typically via the Docker daemon).
 The basic usage is as follows:
 ```

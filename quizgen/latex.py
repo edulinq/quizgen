@@ -6,8 +6,7 @@ import subprocess
 _pdflatex_bin_path = None
 _pdflatex_use_docker = False
 
-DOCKER_IMAGE = "quizgen/latex.py"
-NUM_COMPILATIONS = 2
+DOCKER_IMAGE = "ghcr.io/edulinq/pdflatex-docker"
 
 def set_pdflatex_bin_path(path):
     global _pdflatex_bin_path
@@ -55,25 +54,25 @@ def _compile_local(path):
     if (_pdflatex_bin_path is not None):
         bin_path = _pdflatex_bin_path
 
-    tex_file = os.path.basename(path)
+    tex_file_name = os.path.basename(path)
     out_dir = os.path.dirname(path)
 
     # Need to compile twice to get positioning information.
-    for _ in range(NUM_COMPILATIONS):
-        result = subprocess.run([bin_path, '-interaction=nonstopmode', tex_file],
+    for _ in range(2):
+        result = subprocess.run([bin_path, '-interaction=nonstopmode', tex_file_name],
                                 cwd = out_dir, capture_output = True)
         if (result.returncode != 0):
             raise ValueError("pdflatex did not exit cleanly. Stdout: '%s', Stderr: '%s'" % (result.stdout, result.stderr))
 
 def _compile_docker(path):
-    tex_file = os.path.basename(path)
+    tex_file_name = os.path.basename(path)
     out_dir_path = os.path.abspath(os.path.dirname(path))
 
     docker_cmd = [
         "docker", "run", "--rm",
         "-v", f"{out_dir_path}:/work",
         DOCKER_IMAGE,
-        tex_file
+        tex_file_name
     ]
 
     result = subprocess.run(docker_cmd, capture_output = True, text = True)
@@ -95,7 +94,7 @@ def set_cli_args(parser):
     return parser
 
 def init_from_args(args):
-    if (args.pdflatex_use_docker is True):
+    if (args.pdflatex_use_docker):
         set_pdflatex_use_docker(args.pdflatex_use_docker)
 
     if (args.pdflatex_bin_path is not None):

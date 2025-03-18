@@ -1,17 +1,17 @@
 {
-      "title": "Image Questions",
-      "date": "2025-02-25",
+    "title": "Image Questions",
+    "date": "2025-02-25",
 
-      "description": "Image Questions",
-      
-      "shuffle_answers": false,
+    "description": "Image Questions",
 
-      "groups": [
-        {
-            "name": "image-question",
-            "questions": [
-                "../../../questions/good/prompt-image"
-            ]
-        }
-      ]
-  }
+    "shuffle_answers": false,
+
+    "groups": [
+    {
+        "name": "image-question",
+        "questions": [
+            "../../../questions/good/prompt-image"
+        ]
+    }
+    ]
+}
