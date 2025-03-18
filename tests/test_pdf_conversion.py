@@ -1,4 +1,5 @@
 import os
+import sys
 
 import quizgen.latex
 import quizgen.pdf
@@ -8,7 +9,7 @@ import tests.base
 
 MIN_PDF_SIZE_BYTES = 1000
 
-class PdfConversionTest(tests.base.BaseTest):
+class PDFConversionTest(tests.base.BaseTest):
     """
     Test PDF generation for quizzes in 'tests/quizzes/good' directory.
     Tests cover both local and Docker-based PDF generation.
@@ -29,11 +30,11 @@ def _add_pdf_test(path):
 
     # Test local PDF generation.
     test_name = "test_quiz_pdf_local_%s" % (base_test_name)
-    setattr(PdfConversionTest, test_name, _get_quiz_pdf_local_test_method(path))
+    setattr(PDFConversionTest, test_name, _get_quiz_pdf_local_test_method(path))
 
     # Test Docker PDF generation.
     test_name = "test_quiz_pdf_docker_%s" % (base_test_name)
-    setattr(PdfConversionTest, test_name, _get_quiz_pdf_docker_test_method(path))
+    setattr(PDFConversionTest, test_name, _get_quiz_pdf_docker_test_method(path))
 
 def _get_quiz_pdf_local_test_method(path):
     """
@@ -56,6 +57,9 @@ def _get_quiz_pdf_docker_test_method(path):
     return __method
 
 def _run_pdf_test(self, path, use_docker = False):
+    if (use_docker and sys.platform.startswith("win")):
+        self.skipTest('Skipping Docker tests on Windows.')
+
     quizgen.latex.set_pdflatex_use_docker(use_docker)
 
     if (not quizgen.latex.is_available()):
