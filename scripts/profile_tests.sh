@@ -23,17 +23,17 @@ function main() {
     echo "Profiling Complete"
     echo ""
 
-    echo "--- BEGIN: All Functions, Sorted by Cummulitive Time, Top ${ROW_COUNT} ---"
+    echo "--- BEGIN: All Functions, Sorted by Cumulative Time, Top ${ROW_COUNT} ---"
     python -c "import pstats ; stats = pstats.Stats('${TEMP_STATS_PATH}') ; stats.sort_stats('cumtime').print_stats(${ROW_COUNT})"
-    echo "--- END: All Functions, Sorted by Cummulitive Time, Top ${ROW_COUNT} ---"
+    echo "--- END: All Functions, Sorted by Cumulative Time, Top ${ROW_COUNT} ---"
 
     echo "--- BEGIN: All Functions, Sorted by Total Time, Top ${ROW_COUNT} ---"
     python -c "import pstats ; stats = pstats.Stats('${TEMP_STATS_PATH}') ; stats.sort_stats('tottime').print_stats(${ROW_COUNT})"
     echo "--- END: All Functions, Sorted by Total Time, Top ${ROW_COUNT} ---"
 
-    echo "--- BEGIN: Quizgen Functions, Sorted by Cummulitive Time, Top ${ROW_COUNT} ---"
+    echo "--- BEGIN: Quizgen Functions, Sorted by Cumulative Time, Top ${ROW_COUNT} ---"
     python -c "import pstats ; stats = pstats.Stats('${TEMP_STATS_PATH}') ; stats.sort_stats('cumtime').print_stats('quizgen', ${ROW_COUNT})"
-    echo "--- END: Quizgen Functions, Sorted by Cummulitive Time, Top ${ROW_COUNT} ---"
+    echo "--- END: Quizgen Functions, Sorted by Cumulative Time, Top ${ROW_COUNT} ---"
 
     echo "--- BEGIN: Quizgen Functions, Sorted by Total Time, Top ${ROW_COUNT} ---"
     python -c "import pstats ; stats = pstats.Stats('${TEMP_STATS_PATH}') ; stats.sort_stats('tottime').print_stats('quizgen', ${ROW_COUNT})"
