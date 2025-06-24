@@ -48,7 +48,7 @@ This project requires [Python](https://www.python.org/) >= 3.9.
 
 The project can be installed from PyPi with:
 ```
-pip3 install eq-quizcomp
+pip3 install edq-quizcomp
 ```
 
 Standard Python requirements are listed in `pyproject.toml`.
