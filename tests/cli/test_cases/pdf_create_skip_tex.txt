@@ -1,5 +1,5 @@
 {
-    "cli": "quizgen.cli.pdf.create",
+    "cli": "quizcomp.cli.pdf.create",
     "arguments": [
         "__DATA_DIR__(simple-quiz/quiz.json)",
         "--skip-pdf",

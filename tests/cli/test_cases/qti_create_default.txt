@@ -1,5 +1,5 @@
 {
-    "cli": "quizgen.cli.qti.create",
+    "cli": "quizcomp.cli.qti.create",
     "arguments": [
         "__DATA_DIR__(simple-quiz/quiz.json)",
         "--out", "__TEMP_DIR__(quiz.qti.zip)"

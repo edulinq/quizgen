@@ -1,4 +1,4 @@
-# Quiz Generator
+# Quiz Composer
 
 A tool for generating quizzes from a standard, text-based definition.
 Quizzes can be taken from the standard definition and converted into:
@@ -36,7 +36,7 @@ Documentation Table of Contents:
    - [Question Prompts](#question-prompts)
    - [Quiz Descriptions](#quiz-descriptions)
  - [Question Types](/docs/question-types.md)
- - [QuizGen Markdown Syntax](/docs/syntax.md)
+ - [QuizComp Markdown Syntax](/docs/syntax.md)
  - [Builtin Templates and Hints](/docs/builtin-templates.md)
  - [Styling](/docs/styling.md)
 
@@ -48,7 +48,7 @@ This project requires [Python](https://www.python.org/) >= 3.9.
 
 The project can be installed from PyPi with:
 ```
-pip3 install eq-quizgen
+pip3 install eq-quizcomp
 ```
 
 Standard Python requirements are listed in `pyproject.toml`.
@@ -69,13 +69,13 @@ To specify the path to your `pdflatex` binary, you can use the `--pdflatex-bin-p
 
 #### Docker Compilation
 
-The QuizGen can compile PDFs using [Docker](https://www.docker.com/) with the `--pdflatex-use-docker` flag.
+The QuizComp can compile PDFs using [Docker](https://www.docker.com/) with the `--pdflatex-use-docker` flag.
 The Docker image used for compilation is [ghcr.io/edulinq/pdflatex-docker](https://github.com/edulinq/pdflatex-docker/pkgs/container/pdflatex-docker) (see the [repository here](https://github.com/edulinq/pdflatex-docker) for more details).
 This image includes `pdflatex` and most [standard LaTeX packages](https://packages.ubuntu.com/jammy/texlive-latex-extra) for generating PDFs.
 Ensure Docker is running and accessible by the current user (typically via the Docker daemon).
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.pdf.create <path to JSON file> --pdflatex-use-docker
+python3 -m quizcomp.cli.pdf.create <path to JSON file> --pdflatex-use-docker
 ```
 
 ### Math Equations in HTML
@@ -116,16 +116,16 @@ To upload quizzes to GradeScope, you will need three things:
 
 ## Usage
 
-This project has executable modules in the `quizgen.cli` package.
+This project has executable modules in the `quizcomp.cli` package.
 All executable modules have their own help/usage accessible with the `-h` / `--help` option.
 
 ### Parsing a Specific Quiz
 
-To parse an entire specific quiz, you can use the `quizgen.cli.parse-quiz` module.
+To parse an entire specific quiz, you can use the `quizcomp.cli.parse-quiz` module.
 This is useful if you want to check if a quiz properly parses.
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.parse.quiz <path to quiz JSON file>
+python3 -m quizcomp.cli.parse.quiz <path to quiz JSON file>
 ```
 
 This command will output the fully parsed quiz in for format controlled by the `--format` option,
@@ -139,7 +139,7 @@ Not all formats support answer keys.
 
 To output a JSON quiz to a file called `quiz.json`, you can use the following command:
 ```
-python3 -m quizgen.cli.parse.quiz <path to quiz JSON file> --format json > quiz.json
+python3 -m quizcomp.cli.parse.quiz <path to quiz JSON file> --format json > quiz.json
 ```
 
 A JSON representation of a parsed quiz (which is different from a standard quiz definition) can be useful for debugging.
@@ -149,7 +149,7 @@ If debugging, the `--flatten-groups` flag can be useful (which will include all 
 
 To output a TeX quiz to a file called `quiz.tex`, you can use the following command:
 ```
-python3 -m quizgen.cli.parse.quiz <path to quiz JSON file> --format tex > quiz.tex
+python3 -m quizcomp.cli.parse.quiz <path to quiz JSON file> --format tex > quiz.tex
 ```
 
 You can then compile or edit the TeX file as you see fit.
@@ -158,49 +158,49 @@ You can then compile or edit the TeX file as you see fit.
 
 To output a HTML quiz to a file called `quiz.html`, you can use the following command:
 ```
-python3 -m quizgen.cli.parse.quiz <path to quiz JSON file> --format html > quiz.html
+python3 -m quizcomp.cli.parse.quiz <path to quiz JSON file> --format html > quiz.html
 ```
 
 All question in an HTML quiz are grouped together into a single HTML form.
 
 #### Outputting a QTI Quiz
 
-You can use the same `quizgen.cli.parse.quiz` command to view the core QTI file for a quiz:
+You can use the same `quizcomp.cli.parse.quiz` command to view the core QTI file for a quiz:
 ```
-python3 -m quizgen.cli.parse.quiz <path to quiz JSON file> --format qti > quiz.qti.xml
+python3 -m quizcomp.cli.parse.quiz <path to quiz JSON file> --format qti > quiz.qti.xml
 ```
 
 However you will instead probably want a fill QTI zip archive,
 which is the common form used to upload to other platforms (like Canvas).
-To generate a full QTI zip archive, use the `quizgen.cli.qti.create` command:
+To generate a full QTI zip archive, use the `quizcomp.cli.qti.create` command:
 ```
-python3 -m quizgen.cli.qti.create ~/code/cse-cracks-course/quizzes/regex/quiz.json --canvas
+python3 -m quizcomp.cli.qti.create ~/code/cse-cracks-course/quizzes/regex/quiz.json --canvas
 ```
 
 The `--canvas` flag enables Canvas-specific tweaks required when uploading a QTI file to Canvas.
 
 ### Parsing a Specific Question
 
-To parse a specific quiz question, you can use the `quizgen.cli.parse.question` module.
+To parse a specific quiz question, you can use the `quizcomp.cli.parse.question` module.
 This is useful if you want to check if a question properly parses.
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.parse.question <path to question JSON file>
+python3 -m quizcomp.cli.parse.question <path to question JSON file>
 ```
 
 This command will output the fully parsed question in the JSON format,
 and will exit with a non-zero status if the parse failed.
 
-You can use the same `--format` options used in `quizgen.cli.parse.quiz` to change the output format of the question.
+You can use the same `--format` options used in `quizcomp.cli.parse.quiz` to change the output format of the question.
 The question will be placed in a "dummy" quiz, so the output should be fully stand-alone.
 
 ### Parsing a Specific File
 
-To parse a specific file, you can use the `quizgen.cli.parse.file` module.
+To parse a specific file, you can use the `quizcomp.cli.parse.file` module.
 This is useful if you want to check if/how a specific document parses.
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.parse.file <path to file> --format html
+python3 -m quizcomp.cli.parse.file <path to file> --format html
 ```
 
 This command will output the fully parsed file in for format controlled by the `--format` option,
@@ -209,20 +209,20 @@ This can be used to parse prompt markdown files.
 
 ### Uploading a Quiz to Canvas
 
-To upload a quiz to Canvas, the `quizgen.cli.canvas.upload` module can be used.
+To upload a quiz to Canvas, the `quizcomp.cli.canvas.upload` module can be used.
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.canvas.upload <path to quiz JSON file> --course <canvas course id> --token <canvas access token>
+python3 -m quizcomp.cli.canvas.upload <path to quiz JSON file> --course <canvas course id> --token <canvas access token>
 ```
 
 If an existing quiz with the same name is found, then nothing will be uploaded unless the `--force` flag is given..
 
 ### Creating a PDF Quiz
 
-To create a PDF version of a quiz, `quizgen.cli.pdf.create` module can be used.
+To create a PDF version of a quiz, `quizcomp.cli.pdf.create` module can be used.
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.pdf.create <path to quiz JSON file>
+python3 -m quizcomp.cli.pdf.create <path to quiz JSON file>
 ```
 
 Some additional options that may be useful:
@@ -231,14 +231,14 @@ Some additional options that may be useful:
 
 ### Uploading a Quiz to GradeScope
 
-To upload a quiz to GradeScope, the `quizgen.cli.gradescope.upload` module can be used.
+To upload a quiz to GradeScope, the `quizcomp.cli.gradescope.upload` module can be used.
 The basic usage is as follows:
 ```
-python3 -m quizgen.cli.gradescope.upload <path to quiz JSON file> --course <course id> --user <username> --pass <password>
+python3 -m quizcomp.cli.gradescope.upload <path to quiz JSON file> --course <course id> --user <username> --pass <password>
 ```
 
 Since GradeScope uses passwords instead of tokens, take extra caution about your password appearing in config files or command histories.
-All the same options for creating PDFs (`quizgen.cli.pdf.create`) can be used.
+All the same options for creating PDFs (`quizcomp.cli.pdf.create`) can be used.
 
 ## Quiz Format
 
@@ -308,7 +308,7 @@ having a whole file just for the prompt is generally recommended.
 
 **WARNING**: Remember that in JSON backslashes will need to be escaped.
 So prompts written in JSON will need to escape backslashes
-(which then in-turn may be used to escape characters in QuizGen markdown).
+(which then in-turn may be used to escape characters in QuizComp markdown).
 
 For example, in markdown you may have a prompt like:
 ```

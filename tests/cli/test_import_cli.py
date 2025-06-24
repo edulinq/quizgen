@@ -2,12 +2,12 @@ import glob
 import os
 import unittest
 
-import quizgen.util.code
+import quizcomp.util.code
 
 THIS_DIR = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 ROOT_DIR = os.path.join(THIS_DIR, "..", "..")
 CLI_DIRS = [
-    os.path.join(ROOT_DIR, "quizgen", "cli"),
+    os.path.join(ROOT_DIR, "quizcomp", "cli"),
 ]
 
 SKIP_BASENNAMES = ['__init__', '__main__']
@@ -37,7 +37,7 @@ def _add_cli_test(base_dir, path):
 
     test_name = 'test_cli_import__%s' % (test_basename)
 
-    cli_module = quizgen.util.code.import_path(path)
+    cli_module = quizcomp.util.code.import_path(path)
     if ('_get_parser' not in dir(cli_module)):
         return
 
@@ -45,7 +45,7 @@ def _add_cli_test(base_dir, path):
 
 def _get_cli_test_method(path):
     def __method(self):
-        quizgen.util.code.import_path(path)
+        quizcomp.util.code.import_path(path)
 
     return __method
 

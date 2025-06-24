@@ -1,9 +1,9 @@
 import os
 
-import quizgen.common
-import quizgen.question.base
-import quizgen.uploader.canvas
-import quizgen.util.json
+import quizcomp.common
+import quizcomp.question.base
+import quizcomp.uploader.canvas
+import quizcomp.util.json
 import tests.base
 
 CANVAS_FILENAME = 'canvas.json'
@@ -58,7 +58,7 @@ def _get_question_parse_test_method(path):
     """
 
     def __method(self):
-        question = quizgen.question.base.Question.from_path(path)
+        question = quizcomp.question.base.Question.from_path(path)
         self.assertIsNotNone(question)
 
     return __method
@@ -69,10 +69,10 @@ def _get_question_reparse_test_method(path):
     """
 
     def __method(self):
-        question = quizgen.question.base.Question.from_path(path)
+        question = quizcomp.question.base.Question.from_path(path)
         question_data = question.to_dict()
 
-        new_question = quizgen.question.base.Question.from_dict(question_data)
+        new_question = quizcomp.question.base.Question.from_dict(question_data)
         new_question_data = new_question.to_dict()
 
         self.assertJSONDictEqual(question_data, new_question_data)
@@ -81,11 +81,11 @@ def _get_question_reparse_test_method(path):
 
 def _get_question_canvas_test_method(path, canvas_path):
     def __method(self):
-        question = quizgen.question.base.Question.from_path(path)
-        canvas_info = quizgen.uploader.canvas._create_question_json(CANVAS_TEST_GROUP_ID, question, CANVAS_TEST_INDEX)
+        question = quizcomp.question.base.Question.from_path(path)
+        canvas_info = quizcomp.uploader.canvas._create_question_json(CANVAS_TEST_GROUP_ID, question, CANVAS_TEST_INDEX)
 
         with open(canvas_path, 'r') as file:
-            expected_canvas_info = quizgen.util.json.load(file)
+            expected_canvas_info = quizcomp.util.json.load(file)
 
         self.assertJSONDictEqual(expected_canvas_info, canvas_info)
 
@@ -99,8 +99,8 @@ def _add_fail_question_test(path):
 
 def _get_question_fail_test_method(path):
     def __method(self):
-        with self.assertRaises(quizgen.common.QuizValidationError):
-            quizgen.question.base.Question.from_path(path)
+        with self.assertRaises(quizcomp.common.QuizValidationError):
+            quizcomp.question.base.Question.from_path(path)
 
     return __method
 

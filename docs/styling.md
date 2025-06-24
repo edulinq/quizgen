@@ -1,10 +1,10 @@
 # Styling
 
-Styling can be used in the QuizGen to change the visual appearance of content.
+Styling can be used in the QuizComp to change the visual appearance of content.
 If you want to change the location or flow of information,
 then you are looking for [template hints](/docs/builtin-templates.md).
 
-Styling in the Quiz Generator is done via *style blocks* where specific options can be set.
+Styling in the Quiz Composer is done via *style blocks* where specific options can be set.
 Style blocks are specified with HTML `<style>` tags.
 The content inside the `<style>` tags must be a JSON object.
 However, the opening and closing braces of the JSON object may also be omitted.
@@ -33,7 +33,7 @@ see the [Blocks & Style Blocks](#blocks--style-blocks) section.
 
 The styling functionality provided is intended to be simple and cover some common use cases.
 If you have styling needs that are not covered here,
-then you can achieve you desired style by editing the output of the QuizGen or by using a custom template.
+then you can achieve you desired style by editing the output of the QuizComp or by using a custom template.
 
 Table of Contents:
  - [FAQ](#faq)
@@ -342,7 +342,7 @@ To get a table that only has an outer border, user:
 
 A styling rule applies within the *block* it was declared in,
 and all children of that block.
-By default, any QuizGen document starts out in a default block (called the "root" block).
+By default, any QuizComp document starts out in a default block (called the "root" block).
 
 Further blocks can be explicitly defined by surrounding content with the `:::block` and `:::` notation
 (using the [Markdown container](https://ref.coddy.tech/markdown/markdown-custom-containers) extended syntax).

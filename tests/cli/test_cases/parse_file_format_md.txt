@@ -1,5 +1,5 @@
 {
-    "cli": "quizgen.cli.parse.file",
+    "cli": "quizcomp.cli.parse.file",
     "arguments": [
         "__DATA_DIR__(simple.md)",
         "--format", "md"

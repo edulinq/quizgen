@@ -1,6 +1,6 @@
-# Quiz Generator Builtin Templates
+# Quiz Composer Builtin Templates
 
-The Quiz Generator comes with builtin templates for HTML and TeX.
+The Quiz Composer comes with builtin templates for HTML and TeX.
 For the most part, you can just use them without any additional knowledge.
 However if you wish to tinker with them,
 this document contains useful details.

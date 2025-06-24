@@ -1,11 +1,11 @@
 import logging
 
-import quizgen.log
+import quizcomp.log
 import tests.base
 
 class TestLog(tests.base.BaseTest):
     def test_base_levels(self):
-        quizgen.log.init()
+        quizcomp.log.init()
 
         print()
         logging.debug("log test: debug")

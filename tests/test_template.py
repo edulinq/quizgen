@@ -1,10 +1,10 @@
 import os
 import re
 
-import quizgen.constants
-import quizgen.converter.convert
-import quizgen.quiz
-import quizgen.util.json
+import quizcomp.constants
+import quizcomp.converter.convert
+import quizcomp.quiz
+import quizcomp.util.json
 import tests.base
 
 EXPECTED_FILENAME = 'expected.json'
@@ -34,7 +34,7 @@ def _add_good_convert_questions():
 
 def _get_good_convert_test(quiz_path):
     """
-    That that the tests here rely on the `quizgen.converter.json.JSONTemplateConverter` converter.
+    That that the tests here rely on the `quizcomp.converter.json.JSONTemplateConverter` converter.
     This is not meant for production use and may not have full functionality.
     The main difficulty it has is when converting answers to an easy format for testing.
     As more tests are developed, this conversion may need to be adjusted to better test different aspects,
@@ -49,15 +49,15 @@ def _get_good_convert_test(quiz_path):
         if (not os.path.exists(expected_path)):
             self.fail(f"Expected quiz output does not exist: '{expected_path}'.")
 
-        expected = quizgen.util.json.load_path(expected_path)
+        expected = quizcomp.util.json.load_path(expected_path)
 
-        quizgen.converter.convert
+        quizcomp.converter.convert
 
-        quiz = quizgen.quiz.Quiz.from_path(quiz_path)
+        quiz = quizcomp.quiz.Quiz.from_path(quiz_path)
         variant = quiz.create_variant()
-        raw_result = quizgen.converter.convert.convert_variant(variant, format = quizgen.constants.FORMAT_JSON_TEMPLATE)
+        raw_result = quizcomp.converter.convert.convert_variant(variant, format = quizcomp.constants.FORMAT_JSON_TEMPLATE)
 
-        result = quizgen.util.json.loads(raw_result)
+        result = quizcomp.util.json.loads(raw_result)
 
         # Clean up the result.
         self._assert_exists_replace(result['quiz'], 'seed', 0)
@@ -87,7 +87,7 @@ def _add_bad_validate_questions():
 def _get_bad_validate_test(quiz_path):
     def __method(self):
         try:
-            quiz = quizgen.quiz.Quiz.from_path(quiz_path)
+            quiz = quizcomp.quiz.Quiz.from_path(quiz_path)
         except Exception:
             # Expected.
             return

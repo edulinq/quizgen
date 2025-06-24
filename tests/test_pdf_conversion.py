@@ -1,9 +1,9 @@
 import os
 import sys
 
-import quizgen.latex
-import quizgen.pdf
-import quizgen.util.dirent
+import quizcomp.latex
+import quizcomp.pdf
+import quizcomp.util.dirent
 
 import tests.base
 
@@ -60,13 +60,13 @@ def _run_pdf_test(self, path, use_docker = False):
     if (use_docker and sys.platform.startswith("win")):
         self.skipTest('Skipping Docker tests on Windows.')
 
-    quizgen.latex.set_pdflatex_use_docker(use_docker)
+    quizcomp.latex.set_pdflatex_use_docker(use_docker)
 
-    if (not quizgen.latex.is_available()):
+    if (not quizcomp.latex.is_available()):
         self.skipTest("`pdflatex` is not available.")
 
-    temp_dir = quizgen.util.dirent.get_temp_path(prefix = "quizgen_pdf_test_")
-    quiz, variants, _ = quizgen.pdf.make_with_path(path, base_out_dir = temp_dir)
+    temp_dir = quizcomp.util.dirent.get_temp_path(prefix = "quizcomp_pdf_test_")
+    quiz, variants, _ = quizcomp.pdf.make_with_path(path, base_out_dir = temp_dir)
 
     for variant in variants:
         pdf_file = os.path.join(temp_dir, quiz.title, f"{variant.title}.pdf")

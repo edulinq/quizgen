@@ -47,7 +47,7 @@ jobs:
 
       - name: Check Python Version Compatibility
         shell: bash
-        run: vermin --no-tips --no-parse-comments --exclude ast.unparse --target=3.9- --violations quizgen
+        run: vermin --no-tips --no-parse-comments --exclude ast.unparse --target=3.9- --violations quizcomp
 
       - name: Run Tests
         shell: bash

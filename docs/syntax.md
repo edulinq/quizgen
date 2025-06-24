@@ -1,8 +1,8 @@
-# QuizGen Markdown Syntax
+# QuizComp Markdown Syntax
 
-The Quiz Generator uses [Markdown](https://en.wikipedia.org/wiki/Markdown) for text fields (unless specified otherwise).
+The Quiz Composer uses [Markdown](https://en.wikipedia.org/wiki/Markdown) for text fields (unless specified otherwise).
 Specifically, we use the [CommonMark](https://commonmark.org/) standard (v0.31.2) for Markdown.
-This means that most Markdown tutorials you encounter will usually work for the Quiz Generator.
+This means that most Markdown tutorials you encounter will usually work for the Quiz Composer.
 You can stick to CommonMark references if you want to be fully safe,
 but most simples cases are the same across all Markdown standards.
 
@@ -27,7 +27,7 @@ Table of Contents:
 
 ## Math
 
-LaTeX-style math is supported in the Quiz Generator.
+LaTeX-style math is supported in the Quiz Composer.
 When rendering to a PDF, standard LaTeX equation rendering is used (along with the `amsmath` package).
 When rendering to HTML, [KaTeX](https://katex.org/) is used.
 
@@ -58,7 +58,7 @@ Note that these tables require a header row.
 
 ## Blocks
 
-The Quiz Generator allows content to be separated into different logical blocks (usually for styling reasons).
+The Quiz Composer allows content to be separated into different logical blocks (usually for styling reasons).
 This is done using the [Markdown container](https://ref.coddy.tech/markdown/markdown-custom-containers) extended syntax.
 
 ```
@@ -75,7 +75,7 @@ See the [styling documentation on blocks](/docs/styling.md#blocks--style-blocks)
 
 ## HTML
 
-HTML is generally ignored (and removed) within any Quiz Generator documents.
+HTML is generally ignored (and removed) within any Quiz Composer documents.
 Any counterexamples are listed in this document.
 
 ## Comments
@@ -107,7 +107,7 @@ For example:
 
 ## Style
 
-The Quiz Generator has a [style system](/docs/styling.md)
+The Quiz Composer has a [style system](/docs/styling.md)
 for modifying a small number of styling options.
 Style is specified using an HTML `<style>` tag with JSON inside:
 ```html
@@ -123,7 +123,7 @@ See the [styling documentation](/docs/styling.md) for full details.
 ## Anti-Recommendations
 
 Markdown (CommonMark) supports [many different features](https://spec.commonmark.org/0.31.2/).
-Some of these we do not recommend using in the context of the Quiz Generator.
+Some of these we do not recommend using in the context of the Quiz Composer.
 They will work, but are easy to get wrong or have unintended output.
 
 ### Indented Code Blocks

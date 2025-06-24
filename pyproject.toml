@@ -8,7 +8,7 @@ requires = [
 ]
 
 [project]
-name = "eq-quizgen"
+name = "edq-quizcomp"
 description = "A tool that can generate multiple types of quizzes from a common configuration."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -32,13 +32,13 @@ dynamic = [
 ]
 
 [tool.setuptools.dynamic]
-version = {attr = "quizgen.__version__"}
+version = {attr = "quizcomp.__version__"}
 dependencies = {file = ["requirements.txt"]}
 optional-dependencies = {dev = {file = ["requirements-dev.txt"]}}
 
 [project.urls]
-Homepage = "https://github.com/edulinq/quizgen"
-Repository = "https://github.com/edulinq/quizgen"
+Homepage = "https://github.com/edulinq/quiz-composer"
+Repository = "https://github.com/edulinq/quiz-composer"
 
 [tool.setuptools]
 include-package-data = true
@@ -48,5 +48,5 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["quizgen*"]
+include = ["quizcomp*"]
 exclude = ["node_modules"]

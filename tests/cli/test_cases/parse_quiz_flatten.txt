@@ -1,5 +1,5 @@
 {
-    "cli": "quizgen.cli.parse.quiz",
+    "cli": "quizcomp.cli.parse.quiz",
     "arguments": [
         "__DATA_DIR__(simple-quiz/quiz.json)",
         "--flatten-groups"

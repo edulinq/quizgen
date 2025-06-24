@@ -1,6 +1,6 @@
-# Quiz Generator Question Types
+# Quiz Composer Question Types
 
-The Quiz Generator (QuizGen) supports several different types of questions
+The Quiz Composer (QuizComp) supports several different types of questions
 
 Table of Contents:
  - [Data Types](#data-types)
@@ -22,19 +22,19 @@ Table of Contents:
 
 ## Data Types
 
-Since the QuizGen config is based around [JSON](https://en.wikipedia.org/wiki/JSON),
-most data types used by the QuizGen are [simple JSON types](https://en.wikipedia.org/wiki/JSON#Data_types)
+Since the QuizComp config is based around [JSON](https://en.wikipedia.org/wiki/JSON),
+most data types used by the QuizComp are [simple JSON types](https://en.wikipedia.org/wiki/JSON#Data_types)
 (ints, floats, strings, booleans, arrays/lists, objects (dicts/maps), and nulls).
 
-The only difference between vanilla JSON types and QuizGen types is around the handling of strings.
-The QuizGen divides strings into two types: plain strings and parsed strings.
+The only difference between vanilla JSON types and QuizComp types is around the handling of strings.
+The QuizComp divides strings into two types: plain strings and parsed strings.
 
 Plain strings are limited to alphanumeric characters, spaces, underscores, and dashes.
 These strings will often be used as keys (e.g., in Canvas options)
 or as identifiers in some output language (e.g., as an HTML class).
 Therefore, the content in plain strings are very limited.
 
-Parsed strings are text that will be parsed by the QuizGen parser
+Parsed strings are text that will be parsed by the QuizComp parser
 (see [the syntax documentation](/docs/syntax.md)),
 and therefore must be valid syntax.
 When using some output formats (like Canvas),
@@ -124,7 +124,7 @@ The following example shows how all types of feedback can be attached to a multi
 
 ## Question Types
 
-Below are details on all the QuizGen's supported question types.
+Below are details on all the QuizComp's supported question types.
 
 The form of the `answers` value will change depending on the question type.
 Question types will often have a "short" answer form for simple/common cases,
@@ -132,7 +132,7 @@ and a "long" form where any available options can be specified.
 Internally, "short" forms will always be expanded to "extended" forms.
 This document will tend to start with the short form,
 and then show the extended form for more complex cases.
-Because of the flexibility of JSON and the QuizGen configuration,
+Because of the flexibility of JSON and the QuizComp configuration,
 only a subset of the possible ways a configuration can be written will be shown.
 However, this document will attempt to show a sufficient amount of example configurations.
 
@@ -142,7 +142,7 @@ Question Type: `multiple_choice`
 
 Multiple choice questions provide several different options (called distractors)
 with a **single** correct option.
-The QuizGen requires that there is exactly one correct choice,
+The QuizComp requires that there is exactly one correct choice,
 but does not set any limit on the number of distractors (incorrect options).
 Specific output formats may limit the maximum number of distractors.
 
@@ -509,15 +509,15 @@ in multiple subsequent questions, e.g., a table that can be referenced across mu
 
 ## Differences with Canvas
 
-The QuizGen supports almost all the questions used in "classic" style Canvas quizzes.
+The QuizComp supports almost all the questions used in "classic" style Canvas quizzes.
 
-The only text-input Canvas question type the Quiz Generator does not support are "Calculated" / "Formula" questions.
+The only text-input Canvas question type the Quiz Composer does not support are "Calculated" / "Formula" questions.
 We feel that this question type is overly complex and error-prone.
 Instead, we suggest that users use the "numeric" question type.
 
 Canvas users should also note that the "Fill in the Blank" (FITB) question type,
 also referred to as "Short Answer" (SA) in Canvas documentation, has been split from one Canvas question type
-into two QuizGen question types: "Fill in the Blank" (FITB) and "Short Answer" (SA).
+into two QuizComp question types: "Fill in the Blank" (FITB) and "Short Answer" (SA).
 When creating Canvas quizzes, both these types map back to the FITB type.
 For other quiz mediums, FITB questions generally expect the answer to be no more than a few words and reserve only a little space for the answer,
 while SA questions generally reserve about a paragraph's worth of space for an answer.
