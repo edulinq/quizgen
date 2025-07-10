@@ -16,10 +16,10 @@ class FITB(quizcomp.question.base.Question, question_type = quizcomp.constants.Q
         # but we want to validate the user-facing format so errors are more clear.
         if (isinstance(self.answers, dict)):
             if (len(self.answers) != 1):
-                raise quizcomp.common.QuizValidationError("Dict format should have exactly one entry (''), found %d entries." % (len(self.answers)))
+                raise quizcomp.common.QuestionValidationError(self, "Dict format should have exactly one entry (''), found %d entries." % (len(self.answers)))
 
             if ('' not in self.answers):
-                raise quizcomp.common.QuizValidationError("Dict format does not have required key '' (empty string).")
+                raise quizcomp.common.QuestionValidationError(self, "Dict format does not have required key '' (empty string).")
 
             self.answers = self.answers['']
 
@@ -30,7 +30,7 @@ class FITB(quizcomp.question.base.Question, question_type = quizcomp.constants.Q
         self._check_type(self.answers, list, f"'answers' value")
 
         if (len(self.answers) == 0):
-            raise quizcomp.common.QuizValidationError("Expected 'answers' value to be non-empty.")
+            raise quizcomp.common.QuestionValidationError(self, "Expected 'answers' value to be non-empty.")
 
         self.answers = {'': self.answers}
 

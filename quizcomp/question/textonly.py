@@ -8,5 +8,5 @@ class TextOnly(quizcomp.question.base.Question, question_type = quizcomp.constan
 
     def _validate_answers(self):
         if (self.answers is not None):
-            raise quizcomp.common.QuizValidationError("'answers' key must be missing or None/null, found: '%s'." % (
+            raise quizcomp.common.QuestionValidationError(self, "'answers' key must be missing or None/null, found: '%s'." % (
                     str(self.answers)))
