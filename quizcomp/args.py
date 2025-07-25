@@ -15,6 +15,7 @@ import argparse
 import quizcomp.katex
 import quizcomp.latex
 import quizcomp.log
+import quizcomp.pandoc
 
 # {module name: function(parser), ...}
 _pre = {}
@@ -61,3 +62,4 @@ def register(module_name, pre_callback = None, post_callback = None):
 register('log', quizcomp.log.set_cli_args, quizcomp.log.init_from_args)
 register('katex', quizcomp.katex.set_cli_args, quizcomp.katex.init_from_args)
 register('latex', quizcomp.latex.set_cli_args, quizcomp.latex.init_from_args)
+register('pandoc', quizcomp.pandoc.set_cli_args, quizcomp.pandoc.init_from_args)
