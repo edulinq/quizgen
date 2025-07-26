@@ -1,4 +1,3 @@
-# TEST
 import logging
 import os
 import shutil
@@ -95,7 +94,6 @@ def _convert_file_docker(in_path, out_path, in_format = None, out_format = None)
 
     quizcomp.util.dirent.copy_dirent(in_path, temp_in_path)
 
-    # TEST - Check permissions
     args = [
         "docker", "run", "--rm",
         "-v", f"{temp_dir}:/data",
@@ -106,6 +104,9 @@ def _convert_file_docker(in_path, out_path, in_format = None, out_format = None)
     result = subprocess.run(args, capture_output = True, text = True)
     if (result.returncode != 0):
         raise ValueError("Docker pandoc failed with exit code '%s'. Stdout: '%s', Stderr: '%s'" % (result.returncode, result.stdout, result.stderr))
+
+    # Copy the output to the target.
+    quizcomp.util.dirent.copy_dirent(temp_out_path, out_path)
 
 def _build_base_args(in_path, out_path, in_format = None, out_format = None):
     args = [
