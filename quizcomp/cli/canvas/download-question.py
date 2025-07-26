@@ -3,14 +3,28 @@ import sys
 
 import quizcomp.args
 import quizcomp.downloader.canvas
+import quizcomp.util.dirent
 
-# TEST - This shouldn't be defaulted to UCSC.
 DEFAULT_BASE_URL = 'https://canvas.ucsc.edu'
 
 def run(args):
-    # TEST - Check output dir.
+    # Default the out dir to question's query.
+    if (args.out_dir is None):
+        args.out_dir = args.question
 
-    quizcomp.downloader.canvas.download_quiz_question(args.base_url, args.course_id, args.token, args.quiz, args.question)
+    # Clean the out dir.
+    args.out_dir = os.path.realpath(args.out_dir)
+
+    if ((not args.force) and os.path.exists(args.out_dir)):
+        print(f"Output path for question already exists: '{args.out_dir}'.")
+        return 1
+
+    # Remove any existing out dir (as long as it is not the CWD).
+    if (args.out_dir != os.path.realpath('.')):
+        quizcomp.util.dirent.remove_dirent(args.out_dir)
+
+    question = quizcomp.downloader.canvas.download_quiz_question(args.base_url, args.course_id, args.token, args.quiz, args.question)
+    question.write(out_dir = args.out_dir, split_prompt = True)
 
     return 0
 
@@ -20,11 +34,11 @@ def _get_parser():
 
     parser.add_argument('quiz', metavar = '<quiz>',
         type = str,
-        help = 'The id or name of the target Canvas quiz.')
+        help = 'The query (id or name) of the target Canvas quiz.')
 
     parser.add_argument('question', metavar = '<question>',
         type = str,
-        help = 'The id or name of the target Canvas question.')
+        help = 'The query (id or name) of the target Canvas question.')
 
     parser.add_argument('--course', dest = 'course_id',
         action = 'store', type = str, required = True,
@@ -38,10 +52,13 @@ def _get_parser():
         action = 'store', type = str, required = True,
         help = 'The authentication token to use with Canvas.')
 
-    # TEST
+    parser.add_argument('--out', dest = 'out_dir',
+        action = 'store', type = str, default = None,
+        help = "The output question directory, defaults to a directory in the CWD named with the question's query.")
+
     parser.add_argument('--force', dest = 'force',
         action = 'store_true', default = False,
-        help = 'Override (delete) any exiting quiz with the same name.')
+        help = 'Override (delete) any exiting output directory.')
 
     return parser
 

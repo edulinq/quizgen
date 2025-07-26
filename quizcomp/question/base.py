@@ -33,11 +33,13 @@ class Question(quizcomp.util.serial.JSONSerializer):
         if (question_type is None):
             raise quizcomp.common.QuizValidationError("No question type provided for question subclass.")
 
+        cls._question_type = question_type
         cls._types[question_type] = cls
 
     def __init__(self, type = quizcomp.constants.TYPE_QUESTION,
             prompt = '', prompt_path = None,
-            question_type = '', answers = None,
+            question_type = None,
+            answers = None,
             base_dir = '.',
             points = 0, name = '',
             shuffle_answers = True,
@@ -51,6 +53,9 @@ class Question(quizcomp.util.serial.JSONSerializer):
 
         self.prompt = prompt
         self._prompt_path = prompt_path
+
+        if (question_type is None):
+            question_type = self.__class__._question_type
 
         self.question_type = question_type
 
@@ -78,6 +83,33 @@ class Question(quizcomp.util.serial.JSONSerializer):
             ids['question_type'] = self.question_type
 
             raise quizcomp.common.QuizValidationError('Error while validating question.', ids = ids) from ex
+
+    def write(self, out_dir = None, split_prompt = True):
+        """
+        Write out this question to the target out directory
+        (or self.base_dir if the out directory is not specified).
+        """
+
+        if (out_dir is None):
+            out_dir = self.base_dir
+
+        os.makedirs(out_dir, exist_ok = True)
+
+        question = self.copy()
+
+        # Zero out fields we don't want to write.
+        question.base_dir = None
+        question.ids = {}
+
+        if (split_prompt):
+            prompt_text = question.prompt.text
+            question.prompt = None
+
+            prompt_path = os.path.join(out_dir, quizcomp.constants.PROMPT_FILENAME)
+            quizcomp.util.dirent.write_file(prompt_path, prompt_text)
+
+        out_path = os.path.join(out_dir, quizcomp.constants.QUESTION_FILENAME)
+        question.to_path(out_path)
 
     def _validate(self):
         self._validate_prompt()
